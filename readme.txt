@@ -19,6 +19,8 @@ The BuddyPress plugins are bundled with a default theme to get you going out of 
 
 == Installation ==
 
+BuddyPress requires WordPress MU, it will not work on a single install of WordPress (yet).
+
 --- Plugins: ---
 
 1. Upload everything into the "/wp-content/plugins/buddypress/" directory of your installation.
@@ -36,6 +38,10 @@ There are a few more steps to get you going correctly, to read the full setup gu
 http://codex.buddypress.org/getting-started/installing-buddypress/
 
 == Frequently Asked Questions ==
+
+= Will this work on standard WordPress? =
+
+No, this will only work on WordPress MU for the time being, but watch this space.
 
 = Where can I get support? =
 
