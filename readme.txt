@@ -3,7 +3,7 @@ Contributors: apeatling
 Tags: wpmu, buddypress, social, networking, profiles, messaging, friends, groups, forums, activity
 Requires at least: 2.7.1
 Tested up to: 2.7.1
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 
 BuddyPress is a suite of WordPress MU social networking plugins and themes.
 
