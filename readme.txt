@@ -1,9 +1,9 @@
 === Plugin Name ===
 Contributors: apeatling
 Tags: wpmu, buddypress, social, networking, profiles, messaging, friends, groups, forums, activity
-Requires at least: WordPress MU 2.8.1
-Tested up to: 2.8.1
-Stable tag: 1.0.3
+Requires at least: WordPress MU 2.8.4
+Tested up to: WordPress MU 2.8.4
+Stable tag: 1.1
 
 BuddyPress is a suite of WordPress MU social networking plugins and themes.
 
@@ -24,26 +24,32 @@ BuddyPress requires WordPress MU, it will not work on a single install of WordPr
 --- Plugins: ---
 
 1. Upload everything into the "/wp-content/plugins/buddypress/" directory of your installation.
+
 2. Activate BuddyPress in the "Plugins" admin panel using the "Activate Site Wide" or "Activate" link (both work).
 
 --- Themes: ---
 
-1. Move the "/wp-content/plugins/buddypress/bp-themes/" directory to "/wp-content/bp-themes/"
+1. Move "/wp-content/plugins/buddypress/bp-themes/bp-sn-parent" and
+   "/wp-content/plugins/buddypress/bp-themes/bp-default" to "/wp-content/themes/"
 
-The default home theme is not required, you can use a standard WordPress theme for your root blog if you wish.
+You must then login as an admin and head to the "Site Admin > Themes" directory and activate the default
+BuddyPress theme (bp-default).
 
-2. To install the default home theme move "/wp-content/bp-themes/bphome/ to /wp-content/themes/bphome/"
-
-There are a few more steps to get you going correctly, to read the full setup guide, please visit:
-http://codex.buddypress.org/getting-started/installing-buddypress/
+Next, you will want to head to the "Appearance" menu and activate the BuddyPress default theme for the root blog of your WordPress MU installation.
 
 --- Upgrading from an earlier version: ---
 
 1. Backup!
-2. Overwrite the /plugins/buddypress/ directory with the latest version.
-3. If you are using the default themes, overwrite them using the new versions in the /plugins/buddypress/
-directory. If you are using your own custom themes, they will continue to work with no changes needed.
 
+2. Overwrite the /plugins/buddypress/ directory with the latest version.
+
+3. If you are using the default theme, move the themes in "wp-content/plugins/buddypress/bp-themes/" to "wp-content/themes" and overwrite any existing themes.
+
+4. VERY IMPORTANT: If you are no longer using the old two-theme system from BuddyPress 1.0, please make sure to delete your /wp-content/bp-themes/ folder to activate the new one-theme setup.
+
+--- Forums Support ---
+
+To enable forums please log in and head to "BuddyPress > Forums Setup" in the admin area.
 
 == Frequently Asked Questions ==
 
