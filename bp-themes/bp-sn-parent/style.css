@@ -1,0 +1,22 @@
+/*
+Theme Name: BuddyPress Social Network Parent Theme
+Theme URI: http://buddypress.org/extend/themes/
+Description: The social network parent theme for BuddyPress. This theme should not be activated and used directly. BuddyPress themes can be downloaded at: <a href="http://buddypress.org/extend/themes/">http://buddypress.org/extend/themes/</a>
+Version: 1.1.3
+Author: BuddyPress.org
+Author URI: http://buddypress.org
+*/
+
+/* Font styles */
+@import url( _inc/css/fonts/12px.css );
+
+/* Layout styles for home page, internal pages and blog/directory pages */
+@import url( _inc/css/layout/home-page/3c-right.css );
+@import url( _inc/css/layout/internal-pages/3c-left.css );
+@import url( _inc/css/layout/blog-dir-pages/2c-right.css );
+
+/* Admin bar styles */
+@import url( _inc/css/adminbar.css );
+
+/* Default example styles -- these should be your own styles in a child theme */
+@import url( _inc/css/screen.css );
