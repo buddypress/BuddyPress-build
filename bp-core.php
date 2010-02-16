@@ -1843,7 +1843,7 @@ function bp_core_print_generation_time() {
 	global $wpdb;
 	?>
 
-<!-- Generated in <?php timer_stop(1); ?> seconds. (<?php echo get_num_queries(); ?> q) -->
+<!-- Generated in <?php timer_stop(1); ?> seconds. -->
 
 	<?php
 }
