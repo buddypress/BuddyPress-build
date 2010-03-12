@@ -33,7 +33,7 @@ BuddyPress boasts an ever growing array of new features developed by the awesome
 *	<a href="http://wordpress.org/extend/plugins/bp-profile-privacy">BuddyPress Profile Privacy</a> - allow your users to set privacy options on their profile data.
 *	<a href="http://wordpress.org/extend/plugins/welcome-pack">BuddyPress Welcome Pack</a> - set defaults for new users, auto join them to groups or send welcome messages.
 *	<a href="http://wordpress.org/extend/plugins/bp-groupblog">BuddyPress Group Blog</a> (WordPress MU only) - allow your groups to include a fully functional WordPress blog.
-*	<a href="http://wordpress.org/extend/plugins/buddypress-links">BuddyPress Group Wiki</a> - add wiki functionality to your groups so all members can contribute to pages.
+*	<a href="http://wordpress.org/extend/plugins/buddypress-group-wiki/">BuddyPress Group Wiki</a> - add wiki functionality to your groups so all members can contribute to pages.
 
 There are already more than 125 BuddyPress plugins available, the list is growing every day. For a full list of plugins, please visit the <a href="http://buddypress.org/extend/plugins/">BuddyPress.org plugins page</a>. You can also install any of these plugins automatically through the plugin installer menu inside of your WordPress installation.
 
