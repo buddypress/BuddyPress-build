@@ -3,7 +3,7 @@ Contributors: apeatling
 Tags: buddypress, social networking, activity, profiles, messaging, friends, groups, forums, microblogging, twitter, facebook, mingle, social, community, networks, networking, cms
 Requires at least: WordPress 2.9.1
 Tested up to: WordPress 2.9.2
-Stable tag: 1.2.2
+Stable tag: 1.2.2.1
 
 == Description ==
 
@@ -118,6 +118,11 @@ BuddyPress is available in more than 20 languages. For more information about Bu
 *	<a href="http://tw.buddypress.org/">正體中文</a>
 
 The <a href="http://i18n.svn.buddypress.org/">BuddyPress langauge file repository</a> includes some language that have not yet set up a localization site.
+
+== Upgrade Notice ==
+
+= 1.2.2.1 =
+Fixes a bug where new account activation emails would not be sent correctly. Important upgrade.
 
 == Changelog ==
 
