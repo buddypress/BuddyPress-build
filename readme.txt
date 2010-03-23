@@ -25,7 +25,7 @@ More and more WordPress with BuddyPress powered sites are popping up. You can ta
 
 BuddyPress boasts an ever growing array of new features developed by the awesome plugin development community. Some of most popular BuddyPress plugins currently available are:
 
-*	<a href="http://wordpress.org/extend/plugins/buddypress-classifieds">BuddyPress Tweetstream</a> - allow your users to sync and post to their twitter stream.
+*	<a href="http://wordpress.org/extend/plugins/tweetstream">BuddyPress Tweetstream</a> - allow your users to sync and post to their twitter stream.
 *	<a href="http://wordpress.org/extend/plugins/buddypress-like">BuddyPress Like</a> - add a "like" button to site activity.
 *	<a href="http://wordpress.org/extend/plugins/buddypress-links">BuddyPress Links</a> - rich media embedding for your BuddyPress powered site.
 *	<a href="http://wordpress.org/extend/plugins/bp-album">BuddyPress Album+</a> - allow your users to upload photos and create albums.
