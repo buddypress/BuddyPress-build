@@ -1,8 +1,8 @@
 === Plugin Name ===
 Contributors: apeatling
 Tags: buddypress, social networking, activity, profiles, messaging, friends, groups, forums, microblogging, twitter, facebook, mingle, social, community, networks, networking, cms
-Requires at least: WordPress 2.9.1
-Tested up to: WordPress 2.9.2
+Requires at least: 2.9.1
+Tested up to: 2.9.2
 Stable tag: 1.2.2.1
 
 == Description ==
