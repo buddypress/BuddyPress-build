@@ -1,9 +1,9 @@
 === Plugin Name ===
-Contributors: apeatling
+Contributors: apeatling, johnjamesjacoby, mrmaz
 Tags: buddypress, social networking, activity, profiles, messaging, friends, groups, forums, microblogging, twitter, facebook, mingle, social, community, networks, networking, cms
-Requires at least: 2.9.1
+Requires at least: 2.9.2
 Tested up to: 2.9.2
-Stable tag: 1.2.3
+Stable tag: 1.2.4
 
 == Description ==
 
@@ -100,31 +100,31 @@ BuddyPress subversion trunk can be found at: http://svn.buddypress.org/trunk/
 BuddyPress is available in more than 20 languages. For more information about BuddyPress in your language please select a langauge site from the list below. Is your language missing? Please send a message to the <a href="http://lists.automattic.com/mailman/listinfo/wp-polyglots">WP-Polygots</a> mailing list and request for your language to be set up.
 
 *	<a href="http://br.buddypress.org/">Brasil</a>
-*	<a href="http://ca.buddypress.org/">Catal√†</a>
+*	<a href="http://ca.buddypress.org/">Català</a>
 *	<a href="http://de.buddypress.org/">Deutsch</a>
-*	<a href="http://es.buddypress.org/">Espa√±ol</a>
-*	<a href="http://fr.buddypress.org/">Fran√ßais</a>
+*	<a href="http://es.buddypress.org/">Español</a>
+*	<a href="http://fr.buddypress.org/">Français</a>
 *	<a href="http://id.buddypress.org/">Indonesia</a>
 *	<a href="http://it.buddypress.org/">Italia</a>
-*	<a href="http://lv.buddypress.org/">Latvie≈°u valodƒÅ</a>
+*	<a href="http://lv.buddypress.org/">Latviešu valodā</a>
 *	<a href="http://nl.buddypress.org/">Nederland</a>
 *	<a href="http://pl.buddypress.org/">Polska</a>
 *	<a href="http://pt.buddypress.org/">Portugal</a>
-*	<a href="http://ru.buddypress.org/">–†—É—Å—Å–∫–∏–π</a>
+*	<a href="http://ru.buddypress.org/">Русский</a>
 *	<a href="http://fi.buddypress.org/">Suomi</a>
 *	<a href="http://th.buddypress.org/">Thai</a>
-*	<a href="http://uk.buddypress.org/">–£–∫—Ä–∞—ó–Ω–∞</a>
-*	<a href="http://ja.buddypress.org/">Êó•Êú¨Ë™û</a>
-*	<a href="http://cn.buddypress.org/">ÁÆÄ‰Ωì‰∏≠Êñá</a>
-*	<a href="http://ko.buddypress.org/">ÌïúÍµ≠Ïñ¥</a>
-*	<a href="http://tw.buddypress.org/">Ê≠£È´î‰∏≠Êñá</a>
+*	<a href="http://uk.buddypress.org/">Україна</a>
+*	<a href="http://ja.buddypress.org/">日本語</a>
+*	<a href="http://cn.buddypress.org/">简体中文</a>
+*	<a href="http://ko.buddypress.org/">한국어</a>
+*	<a href="http://tw.buddypress.org/">正體中文</a>
 
 The <a href="http://i18n.svn.buddypress.org/">BuddyPress langauge file repository</a> includes some language that have not yet set up a localization site.
 
 == Upgrade Notice ==
 
-= 1.2.2.1 =
-Fixes a bug where new account activation emails would not be sent correctly. Important upgrade.
+= 1.2.4 =
+Bug fixes and improved upgrade support to WordPress 3.0. Important upgrade.
 
 == Changelog ==
 
