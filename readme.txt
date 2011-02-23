@@ -127,3 +127,4 @@ Compatibility with WordPress 3.1
 == Changelog ==
 
 See http://buddypress.org/about/release-history/ for a list of changes.
+
