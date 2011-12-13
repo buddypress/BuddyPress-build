@@ -1,9 +1,9 @@
 === Plugin Name ===
 Contributors: apeatling, johnjamesjacoby, MrMaz, DJPaul, boonebgorges
 Tags: buddypress, social networking, activity, profiles, messaging, friends, groups, forums, microblogging, twitter, facebook, social, community, networks, networking, cms
-Requires at least: 3.2
-Tested up to: 3.2.1
-Stable tag: 1.5.1
+Requires at least: 3.3
+Tested up to: 3.3
+Stable tag: 1.5.2
 
 Social networking in a box. Build a social network for your company, school, sports team or niche community.
 
@@ -23,7 +23,7 @@ More and more BuddyPress powered sites are popping up. You can take a look at so
 
 <h4>Plugins: Adding So Much More</h4>
 
-BuddyPress boasts an ever growing array of new features developed by an awesome plugin development community. There are more than 330 BuddyPress plugins available, and the list is growing every day. For a full list of plugins, please visit the <a href="http://buddypress.org/extend/plugins/">BuddyPress.org plugins page</a>. You can install any of these plugins automatically, using the plugin installer on your WordPress Dashboard.
+BuddyPress boasts an ever growing array of new features developed by an awesome plugin development community. There are more than 330 BuddyPress plugins available, and the list is growing every day. Check out our list of <a href="http://buddypress.org/extend/recommended-plugins/">popular and recommended plugins</a>; for a full list of plugins, please visit the <a href="http://buddypress.org/extend/plugins/">BuddyPress.org plugins page</a>. You can install any of these plugins automatically, using the plugin installer on your WordPress Dashboard.
 
 <h4>More Information</h4>
 
@@ -84,20 +84,24 @@ BuddyPress is available in more than 20 languages. For more information, check o
 
 == Upgrade Notice ==
 
+= 1.5.2 =
+* Compatibility with WordPress 3.3
+* Fixes 10 minor bugs/notices
+
 = 1.5.1 =
-Fixes over 25 issues
+* Fixes over 25 issues
 
 = 1.5 =
 See: http://codex.buddypress.org/releases/version-1-5/
 
 = 1.2.9 =
-Compatibility with WordPress 3.2
+* Compatibility with WordPress 3.2
 
 = 1.2.8 =
-Compatibility with WordPress 3.1
+* Compatibility with WordPress 3.1
 
 = 1.2.7 =
-Fixes over 10 bugs.
+* Fixes over 10 bugs.
 
 == Changelog ==
 
