@@ -47,8 +47,14 @@ class BP_Legacy extends BP_Theme_Compat {
 	public function __construct() {
 
 		// Bail if theme is a derivative of bp-default
-		if ( in_array( 'bp-default', array( get_template(), get_stylesheet() ) ) )
+		if ( in_array( 'bp-default', array( get_template(), get_stylesheet() ) ) ) {
 			return;
+		}
+
+		// Or if the theme supports 'buddypress'
+		if ( current_theme_supports( 'buddypress' ) ) {
+			return;
+		}
 
 		$this->setup_globals();
 		$this->setup_actions();
@@ -124,6 +130,12 @@ class BP_Legacy extends BP_Theme_Compat {
 			if ( bp_is_active( 'blogs' ) )
 				add_action( 'bp_directory_blogs_actions',  'bp_blogs_visit_blog_button' );
 
+		}
+
+		/** Notices ***********************************************************/
+
+		if ( bp_is_active( 'messages' ) ) {
+			add_action( 'wp_footer', array( $this, 'sitewide_notices' ), 9999 );
 		}
 
 		/** Ajax **************************************************************/
@@ -278,7 +290,7 @@ class BP_Legacy extends BP_Theme_Compat {
 
 		<script type="text/javascript" charset="utf-8">
 			/* <![CDATA[ */
-			var ajaxurl = '<?php echo network_site_url( '/wp-admin/admin-ajax.php' ); ?>';
+			var ajaxurl = '<?php echo bp_core_ajax_url(); ?>';
 			/* ]]> */
 		</script>
 
@@ -293,7 +305,26 @@ class BP_Legacy extends BP_Theme_Compat {
 	 * @since BuddyPress (1.7)
 	 */
 	public function localize_scripts() {
+	}
 
+	/**
+	 * Outputs sitewide notices markup in the footer.
+	 *
+	 * @since BuddyPress (1.7)
+	 *
+	 * @see https://buddypress.trac.wordpress.org/ticket/4802
+	 */
+	public function sitewide_notices() {
+		// Do not show notices if user is not logged in
+		if ( ! is_user_logged_in() )
+			return;
+
+		// add a class to determine if the admin bar is on or not
+		$class = did_action( 'admin_bar_menu' ) ? 'admin-bar-on' : 'admin-bar-off';
+
+		echo '<div id="sitewide-notice" class="' . $class . '">';
+		bp_message_get_notices();
+		echo '</div>';
 	}
 
 	/**

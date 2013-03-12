@@ -208,13 +208,16 @@ jq(document).ready( function() {
 				});
 
 				if ( 'fav' == type ) {
-					if ( !jq('.item-list-tabs #activity-favorites').length )
-						jq('.item-list-tabs ul #activity-mentions').before( '<li id="activity-favorites"><a href="#">' + BP_DTheme.my_favs + ' <span>0</span></a></li>');
+					if ( !jq('.item-list-tabs #activity-favs-personal-li').length ) {
+						if ( !jq('.item-list-tabs #activity-favorites').length )
+							jq('.item-list-tabs ul #activity-mentions').before( '<li id="activity-favorites"><a href="#">' + BP_DTheme.my_favs + ' <span>0</span></a></li>');
+
+						jq('.item-list-tabs ul #activity-favorites span').html( Number( jq('.item-list-tabs ul #activity-favorites span').html() ) + 1 );
+					}
 
 					target.removeClass('fav');
 					target.addClass('unfav');
 
-					jq('.item-list-tabs ul #activity-favorites span').html( Number( jq('.item-list-tabs ul #activity-favorites span').html() ) + 1 );
 				} else {
 					target.removeClass('unfav');
 					target.addClass('fav');
@@ -292,7 +295,7 @@ jq(document).ready( function() {
 
 		/* Load more updates at the end of the page */
 		if ( target.parent().hasClass('load-more') ) {
-			jq("#content li.load-more").addClass('loading');
+			jq("#buddypress li.load-more").addClass('loading');
 
 			if ( null == jq.cookie('bp-activity-oldestpage') )
 				jq.cookie('bp-activity-oldestpage', 1, {
@@ -308,11 +311,11 @@ jq(document).ready( function() {
 			},
 			function(response)
 			{
-				jq("#content li.load-more").removeClass('loading');
+				jq("#buddypress li.load-more").removeClass('loading');
 				jq.cookie( 'bp-activity-oldestpage', oldest_page, {
 					path: '/'
 				} );
-				jq("#content ul.activity-list").append(response.contents);
+				jq("#buddypress ul.activity-list").append(response.contents);
 
 				target.parent().hide();
 			}, 'json' );
@@ -580,6 +583,12 @@ jq(document).ready( function() {
 
 			return false;
 		}
+
+		// Canceling an activity comment	
+		if ( target.hasClass( 'ac-reply-cancel' ) ) {
+			jq(target).closest('.ac-form').slideUp( 200 );
+			return false;
+		};
 	});
 
 	/* Escape Key Press for cancelling comment forms */
@@ -604,12 +613,6 @@ jq(document).ready( function() {
 					jq(element).parent().parent().parent().slideUp( 200 );
 			}
 		}
-	});
-
-	/* Link for cancelling comment forms */
-	jq('.ac-reply-cancel').on( 'click', function() {
-		jq(this).closest('.ac-form').slideUp( 200 );
-		return false;
 	});
 
 	/**** Directory Search ****************************************************/
@@ -640,7 +643,6 @@ jq(document).ready( function() {
 
 		var targetElem = ( event.target.nodeName == 'SPAN' ) ? event.target.parentNode : event.target;
 		var target     = jq( targetElem ).parent();
-		console.log( target[0].nodeName );
 		if ( 'LI' == target[0].nodeName && !target.hasClass( 'last' ) ) {
 			var css_id = target.attr('id').split( '-' );
 			var object = css_id[0];
@@ -683,7 +685,7 @@ jq(document).ready( function() {
 	});
 
 	/* All pagination links run through this function */
-	jq('#content').on( 'click', function(event) {
+	jq('#buddypress').on( 'click', function(event) {
 		var target = jq(event.target);
 
 		if ( target.hasClass('button') )

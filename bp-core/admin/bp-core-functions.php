@@ -524,6 +524,11 @@ function bp_admin_separator() {
 	if ( ! bp_current_user_can( 'bp_moderate' ) )
 		return;
 
+	// Bail if there are no components with admin UI's. Hardcoded for now, until
+	// there's a real API for determining this later.
+	if ( ! bp_is_active( 'activity' ) && ! bp_is_active( 'groups' ) )
+		return;
+
 	global $menu;
 
 	$menu[] = array( '', 'read', 'separator-buddypress', '', 'wp-menu-separator buddypress' );
@@ -602,4 +607,28 @@ function bp_admin_menu_order( $menu_order = array() ) {
 
 	// Return our custom order
 	return $bp_menu_order;
+}
+
+/** Utility  *****************************************************************/
+
+/**
+ * When using a WP_List_Table, get the currently selected bulk action
+ *
+ * WP_List_Tables have bulk actions at the top and at the bottom of the tables,
+ * and the inputs have different keys in the $_REQUEST array. This function
+ * reconciles the two values and returns a single action being performed.
+ *
+ * @since BuddyPress (1.7)
+ * @return string
+ */
+function bp_admin_list_table_current_bulk_action() {
+
+	$action = ! empty( $_REQUEST['action'] ) ? $_REQUEST['action'] : '';
+
+	// If the bottom is set, let it override the action
+	if ( ! empty( $_REQUEST['action2'] ) && $_REQUEST['action2'] != "-1" ) {
+		$action = $_REQUEST['action2'];
+	}
+
+	return $action;
 }

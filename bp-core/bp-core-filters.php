@@ -43,6 +43,7 @@ if ( !defined( 'ABSPATH' ) ) exit;
 add_filter( 'request',                 'bp_request',             10    );
 add_filter( 'template_include',        'bp_template_include',    10    );
 add_filter( 'login_redirect',          'bp_login_redirect',      10, 3 );
+add_filter( 'map_meta_cap',            'bp_map_meta_caps',       10, 4 );
 
 // Add some filters to feedback messages
 add_filter( 'bp_core_render_message_content', 'wptexturize'       );
@@ -90,7 +91,7 @@ function bp_core_exclude_pages( $pages = array() ) {
 	if ( !empty( $bp->pages->register ) )
 		$pages[] = $bp->pages->register->id;
 
-	if ( !empty( $bp->pages->forums ) )
+	if ( !empty( $bp->pages->forums ) && ( !bp_is_active( 'forums' ) || ( bp_is_active( 'forums' ) && bp_forums_has_directory() && !bp_forums_is_installed_correctly() ) ) )
 		$pages[] = $bp->pages->forums->id;
 
 	return apply_filters( 'bp_core_exclude_pages', $pages );

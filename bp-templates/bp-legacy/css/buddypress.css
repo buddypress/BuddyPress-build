@@ -25,6 +25,10 @@ Hello, this is the BuddyPress Default theme stylesheet.
 	6.8 - Headers, Lists and Tabs - Activity, Groups, Blogs, Forums
 	6.9 - Private Messaging Threads
 	6.10 - Extended Profiles
+7.0 - Media Queries
+	7.1 - Smartphones Landscape
+	7.2 - Smartphones Portrait
+	7.3 - Smartphones - smaller screen sizes
 --------------------------------------------------------------*/
 
 /*--------------------------------------------------------------
@@ -107,6 +111,11 @@ Hello, this is the BuddyPress Default theme stylesheet.
 #buddypress form#whats-new-form #whats-new-content {
 	margin-left: 55px;
 	padding: 0 0 20px 20px;
+}
+#buddypress form#whats-new-form p.activity-greeting {
+	line-height: 0.5em;
+	margin-bottom: 15px;
+	margin-left: 75px;
 }
 #buddypress form#whats-new-form textarea {
 	background: #fff;
@@ -191,7 +200,7 @@ body.activity-permalink #buddypress .activity-list > li:first-child {
 }
 #buddypress .activity-list li.mini .activity-comments {
 	clear: both;
-	font-size: 80%;
+	font-size: 120%;
 }
 body.activity-permalink #buddypress li.mini .activity-meta {
 	margin-top: 4px;
@@ -506,7 +515,8 @@ body.activity-permalink #buddypress div.activity-comments div.acomment-content {
 #buddypress div#message.updated {
 	clear: both;
 }
-#buddypress div#message p {
+#buddypress div#message p,
+#sitewide-notice p {
 	font-size: 90%;
 	display: block;
 	padding: 10px 15px;
@@ -545,7 +555,20 @@ body.activity-permalink #buddypress div.activity-comments div.acomment-content {
 #buddypress ul.button-nav li.current a {
 	font-weight: bold;
 }
-
+#sitewide-notice #message {
+	left: 2%;
+	position: fixed;
+	top: 1em;
+	width: 96%;
+	z-index: 9999;
+}
+#sitewide-notice.admin-bar-on #message {
+	top: 3.3em;
+}
+#sitewide-notice strong {
+	display: block;
+	margin-bottom: -1em;
+}
 
 /*--------------------------------------------------------------
 6.5 - Forms
@@ -923,6 +946,7 @@ a.bp-title-button {
 #buddypress table.forum {
 	margin: 0;
 	width: auto;
+	clear: both;
 }
 #buddypress table.forum tr.sticky td {
 	font-size: 110%;
@@ -1003,7 +1027,8 @@ a.bp-title-button {
 	font-size: 120%;
 	font-weight: bold;
 }
-#buddypress div#message p {
+#buddypress div#message p,
+#sitewide-notice p {
 	border: 1px solid #e1ca82;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
@@ -1309,7 +1334,9 @@ body.activity-permalink #buddypress ul.item-list li.activity-item {
 #buddypress div#message-thread div.message-options {
 	text-align: right;
 }
-
+#buddypress #message-threads img.avatar {
+	max-width: none;
+}
 #buddypress div.message-search {
 	float: right;
 	margin: 0 20px;
@@ -1360,4 +1387,102 @@ body.register #buddypress div.page ul {
 #buddypress .field-visibility-settings legend,
 #buddypress .field-visibility-settings-toggle {
 	font-style: italic;
+}
+
+/*--------------------------------------------------------------
+7.0 - Media Queries
+--------------------------------------------------------------*/
+/*--------------------------------------------------------------
+7.1 - Smartphones - landscape
+--------------------------------------------------------------*/
+@media screen and (max-device-width: 480px), screen and (-webkit-min-device-pixel-ratio: 2) {
+	-webkit-text-size-adjust: none;
+}
+@media only screen and (max-width: 480px ){
+	#buddypress div.dir-search {
+		float: right;
+		margin-top: -50px;
+		text-align: right;
+	}
+	#buddypress div.dir-search input[type="text"] {
+		margin-bottom: 1em;
+		width: 50%;
+	}
+	a.bp-title-button {
+		margin-left: 10px;
+	}
+}
+
+/*--------------------------------------------------------------
+7.2 - Smartphones - portrait
+--------------------------------------------------------------*/
+@media only screen and (max-width: 320px) {
+	#buddypress div.dir-search {
+		clear: left;
+		float: left;
+		margin-top: 0;
+		text-align: left;
+	}
+	#buddypress li#groups-order-select {
+		clear: left;
+		float: left;
+	}
+	#buddypress ul.item-list li div.action {
+		clear: left;
+		float: left;
+		margin-top: 0;
+		margin-left: 70px;
+		position: relative;
+		top: 0;
+		right: 0;
+		text-align: left;
+	}
+	#buddypress ul.item-list li div.item-desc {
+		clear: left;
+		float: left;
+		margin: 10px 0 0;
+		width: auto;
+	}
+	#buddypress li div.item {
+		margin-left: 70px;
+		width: auto;
+	}
+	#buddypress ul.item-list li div.meta {
+		margin-top: 0;
+	}
+	#buddypress .item-desc p {
+		margin: 0 0 10px;
+	}
+	#buddypress div.pagination .pag-count {
+		margin-left: 0;
+	}
+}
+
+/*--------------------------------------------------------------
+7.2 - Smartphones - smaller screen sizes
+--------------------------------------------------------------*/
+@media only screen and (max-width: 240px) {
+	#buddypress div.dir-search {
+		float: left;
+		margin: 0;
+	}
+	#buddypress div.dir-search input[type="text"] {
+		width: 50%;
+	}
+	#buddypress li#groups-order-select {
+		float: left;
+	}
+	#buddypress ul.item-list li img.avatar {
+		width: 30px;
+		height: auto;
+	}
+	#buddypress ul.item-list li div.action,
+	#buddypress li div.item{ 
+		margin-left: 45px;
+	}
+	h1 a.bp-title-button {
+		clear: left;
+		float: left;
+		margin: 10px 0 20px;
+	}
 }

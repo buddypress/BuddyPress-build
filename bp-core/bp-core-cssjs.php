@@ -16,13 +16,9 @@ function bp_core_confirmation_js() {
 
 	<script type="text/javascript">
 		jQuery( document ).ready( function() {
-			jQuery( 'body' ).click( function(e) {
-				if ( 'a' == e.target.nodeName.toLowerCase() && jQuery(e.target).hasClass( 'confirm' ) ) {
-					if ( confirm( '<?php _e( 'Are you sure?', 'buddypress' ) ?>' ) )
-						return true; else return false;
-				} else {
-					return true;
-				}
+			jQuery( 'a.confirm').click( function() {
+				if ( confirm( '<?php _e( 'Are you sure?', 'buddypress' ) ?>' ) )
+					return true; else return false;
 			});
 		});
 	</script>
@@ -141,8 +137,6 @@ function bp_core_add_cropper_inline_css() {
 }
 
 /**
- * bp_core_add_ajax_url_js()
- *
  * Adds AJAX target URL so themes can access the WordPress AJAX functionality.
  *
  * @since BuddyPress (1.1)
@@ -150,8 +144,22 @@ function bp_core_add_cropper_inline_css() {
 function bp_core_add_ajax_url_js() {
 ?>
 
-	<script type="text/javascript">var ajaxurl = '<?php echo network_site_url( '/wp-admin/admin-ajax.php' ); ?>';</script>
+	<script type="text/javascript">var ajaxurl = '<?php echo bp_core_ajax_url(); ?>';</script>
 
 <?php
 }
 add_action( 'wp_head', 'bp_core_add_ajax_url_js' );
+
+/**
+ * Returns the proper value for BP's ajaxurl
+ *
+ * Designed to be sensitive to FORCE_SSL_ADMIN and non-standard multisite
+ * configurations.
+ *
+ * @since BuddyPress (1.7)
+ *
+ * @return string
+ */
+function bp_core_ajax_url() {
+	return apply_filters( 'bp_core_ajax_url', admin_url( 'admin-ajax.php', is_ssl() ? 'admin' : 'http' ) );
+}
