@@ -45,27 +45,11 @@ class BP_Legacy extends BP_Theme_Compat {
 	 * @uses BP_Legacy::setup_actions()
 	 */
 	public function __construct() {
-
-		// Bail if theme is a derivative of bp-default
-		if ( in_array( 'bp-default', array( get_template(), get_stylesheet() ) ) ) {
-			return;
-		}
-
-		// Or if the theme supports 'buddypress'
-		if ( current_theme_supports( 'buddypress' ) ) {
-			return;
-		}
-
-		$this->setup_globals();
-		$this->setup_actions();
+		parent::start();
 	}
 
 	/**
 	 * Component global variables
-	 *
-	 * Note that this function is currently commented out in the constructor.
-	 * It will only be used if you copy this file into your current theme and
-	 * uncomment the line above.
 	 *
 	 * You'll want to customize the values in here, so they match whatever your
 	 * needs are.
@@ -73,7 +57,7 @@ class BP_Legacy extends BP_Theme_Compat {
 	 * @since BuddyPress (1.7)
 	 * @access private
 	 */
-	private function setup_globals() {
+	protected function setup_globals() {
 		$bp            = buddypress();
 		$this->id      = 'legacy';
 		$this->name    = __( 'BuddyPress Legacy', 'buddypress' );
@@ -91,7 +75,7 @@ class BP_Legacy extends BP_Theme_Compat {
 	 * @uses add_filter() To add various filters
 	 * @uses add_action() To add various actions
 	 */
-	private function setup_actions() {
+	protected function setup_actions() {
 
 		// Template Output
 		add_filter( 'bp_get_activity_action_pre_meta', array( $this, 'secondary_avatars' ), 10, 2 );
@@ -102,7 +86,7 @@ class BP_Legacy extends BP_Theme_Compat {
 		add_action( 'bp_enqueue_scripts', array( $this, 'enqueue_scripts'  ) ); // Enqueue theme JS
 		add_filter( 'bp_enqueue_scripts', array( $this, 'localize_scripts' ) ); // Enqueue theme script localization
 		add_action( 'bp_head',            array( $this, 'head_scripts'     ) ); // Output some extra JS in the <head>
-		
+
 		/** Body no-js Class ********************************************************/
 		add_filter( 'body_class', array( $this, 'add_nojs_body_class' ), 20, 1 );
 
@@ -299,7 +283,7 @@ class BP_Legacy extends BP_Theme_Compat {
 
 	<?php
 	}
-	
+
 	/**
 	 * Adds the no-js class to the body tag.
 	 *
@@ -314,7 +298,7 @@ class BP_Legacy extends BP_Theme_Compat {
 	public function add_nojs_body_class( $classes ) {
 		if ( ! in_array( 'no-js', $classes ) )
 			$classes[] = 'no-js';
-			
+
 		return array_unique( $classes );
 	}
 

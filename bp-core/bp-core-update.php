@@ -150,8 +150,6 @@ function bp_version_bump() {
  * Setup the BuddyPress updater
  *
  * @since BuddyPress (1.6)
- *
- * @uses BBP_Updater
  */
 function bp_setup_updater() {
 
@@ -163,20 +161,20 @@ function bp_setup_updater() {
 }
 
 /**
- * bbPress's version updater looks at what the current database version is, and
- * runs whatever other code is needed.
+ * BuddyPress's version updater looks at what the current database version is,
+ * and runs whatever other code is needed.
  *
  * This is most-often used when the data schema changes, but should also be used
- * to correct issues with bbPress meta-data silently on software update.
+ * to correct issues with BuddyPress metadata silently on software update.
  *
- * @since bbPress (r4104)
+ * @since BuddyPress (r4104)
  */
 function bp_version_updater() {
 
 	// Get the raw database version
 	$raw_db_version = (int) bp_get_db_version_raw();
 
-	$default_components = apply_filters( 'bp_new_install_default_components', array( 'activity' => 1, 'xprofile' => 1, ) );
+	$default_components = apply_filters( 'bp_new_install_default_components', array( 'activity' => 1, 'members' => 1, 'xprofile' => 1, ) );
 	require_once( BP_PLUGIN_DIR . '/bp-core/admin/bp-core-schema.php' );
 
 	// Install BP schema and activate only Activity and XProfile
