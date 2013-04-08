@@ -814,26 +814,32 @@ function bp_core_delete_account( $user_id = 0 ) {
 	if ( is_super_admin( $user_id ) )
 		return false;
 
-	// Bail if current user cannot delete any users
-	if ( ! bp_current_user_can( 'delete_users' ) )
-		return false;
+	// Extra checks if user is not deleting themselves
+	if ( bp_loggedin_user_id() !== absint( $user_id ) ) {
 
-	// Bail if current user cannot delete this user
-	if ( ! current_user_can_for_blog( bp_get_root_blog_id(), 'delete_user', $user_id ) )
-		return false;
+		// Bail if current user cannot delete any users
+		if ( ! bp_current_user_can( 'delete_users' ) ) {
+			return false;
+		}
+
+		// Bail if current user cannot delete this user
+		if ( ! current_user_can_for_blog( bp_get_root_blog_id(), 'delete_user', $user_id ) ) {
+			return false;
+		}
+	}
 
 	do_action( 'bp_core_pre_delete_account', $user_id );
 
 	// Specifically handle multi-site environment
 	if ( is_multisite() ) {
-		require( ABSPATH . '/wp-admin/includes/ms.php'   );
-		require( ABSPATH . '/wp-admin/includes/user.php' );
+		require_once( ABSPATH . '/wp-admin/includes/ms.php'   );
+		require_once( ABSPATH . '/wp-admin/includes/user.php' );
 
 		$retval = wpmu_delete_user( $user_id );
 
 	// Single site user deletion
 	} else {
-		require( ABSPATH . '/wp-admin/includes/user.php' );
+		require_once( ABSPATH . '/wp-admin/includes/user.php' );
 		$retval = wp_delete_user( $user_id );
 	}
 
