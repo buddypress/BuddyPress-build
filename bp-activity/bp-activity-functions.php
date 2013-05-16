@@ -367,7 +367,7 @@ function bp_activity_add_user_favorite( $activity_id, $user_id = 0 ) {
 		$user_id = bp_loggedin_user_id();
 
 	// Update the user's personal favorites
-	$my_favs   = bp_get_user_meta( bp_loggedin_user_id(), 'bp_favorite_activities', true );
+	$my_favs   = bp_get_user_meta( $user_id, 'bp_favorite_activities', true );
 	$my_favs[] = $activity_id;
 
 	// Update the total number of users who have favorited this activity
@@ -375,7 +375,7 @@ function bp_activity_add_user_favorite( $activity_id, $user_id = 0 ) {
 	$fav_count = !empty( $fav_count ) ? (int) $fav_count + 1 : 1;
 
 	// Update user meta
-	bp_update_user_meta( bp_loggedin_user_id(), 'bp_favorite_activities', $my_favs );
+	bp_update_user_meta( $user_id, 'bp_favorite_activities', $my_favs );
 
 	// Update activity meta counts
 	if ( true === bp_activity_update_meta( $activity_id, 'favorite_count', $fav_count ) ) {
@@ -881,6 +881,7 @@ function bp_activity_get( $args = '' ) {
 		'display_comments' => false,        // false for no comments. 'stream' for within stream display, 'threaded' for below each activity item
 
 		'search_terms'     => false,        // Pass search terms as a string
+		'meta_query'       => false,        // Filter by activity meta. See WP_Meta_Query for format
 		'show_hidden'      => false,        // Show activity items that are hidden site-wide?
 		'exclude'          => false,        // Comma-separated list of activity IDs to exclude
 		'in'               => false,        // Comma-separated list or array of activity IDs to which you want to limit the query
@@ -902,7 +903,7 @@ function bp_activity_get( $args = '' ) {
 	extract( $r, EXTR_SKIP );
 
 	// Attempt to return a cached copy of the first page of sitewide activity.
-	if ( 1 == (int) $page && empty( $max ) && empty( $search_terms ) && empty( $filter ) && empty( $exclude ) && empty( $in ) && 'DESC' == $sort && empty( $exclude ) && 'ham_only' == $spam ) {
+	if ( 1 == (int) $page && empty( $max ) && empty( $search_terms ) && empty( $meta_query ) && empty( $filter ) && empty( $exclude ) && empty( $in ) && 'DESC' == $sort && empty( $exclude ) && 'ham_only' == $spam ) {
 		if ( !$activity = wp_cache_get( 'bp_activity_sitewide_front', 'bp' ) ) {
 			$args = array(
 				'page'             => $page,
@@ -910,6 +911,7 @@ function bp_activity_get( $args = '' ) {
 				'max'              => $max,
 				'sort'             => $sort,
 				'search_terms'     => $search_terms,
+				'meta_query'       => $meta_query,
 				'filter'           => $filter,
 				'display_comments' => $display_comments,
 				'show_hidden'      => $show_hidden,
@@ -926,6 +928,7 @@ function bp_activity_get( $args = '' ) {
 			'max'              => $max,
 			'sort'             => $sort,
 			'search_terms'     => $search_terms,
+			'meta_query'       => $meta_query,
 			'filter'           => $filter,
 			'display_comments' => $display_comments,
 			'show_hidden'      => $show_hidden,

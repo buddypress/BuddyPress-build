@@ -422,7 +422,7 @@ class BP_Admin {
 
 				<div class="feature-section">
 					<h4><?php _e( 'It Just Works', 'buddypress' ); ?></h4>
-					<p><?php _e( 'BuddyPress is now compatible with <strong>any WordPress theme</strong>. If your theme has BuddyPress-specific templates and styling, we&#8217;ll use them. If not, we provide what you need to make your BuddyPress content look great. Still want to customize? No problem - you can override our templates just like you would in a WordPress child theme. <a href="http://codex.buddypress.org/theme-compatibility/">Learn more about theme compatibility</a>.', 'buddypress' ); ?></p>
+					<p><?php _e( 'BuddyPress is now compatible with <strong>any WordPress theme</strong>. If your theme has BuddyPress-specific templates and styling, we&#8217;ll use them. If not, we provide what you need to make your BuddyPress content look great. Still want to customize? No problem - you can override our templates just like you would in a WordPress child theme. <a href="http://codex.buddypress.org/developer-and-designer-information/">Learn more about theme compatibility</a>.', 'buddypress' ); ?></p>
 				</div>
 			</div>
 
@@ -489,9 +489,9 @@ class BP_Admin {
 		list( $display_version ) = explode( '-', bp_get_version() ); ?>
 
 		<div class="wrap about-wrap">
-			<h1><?php printf( __( 'Welcome to BuddyPress %s' ), $display_version ); ?></h1>
-			<div class="about-text"><?php printf( __( 'Thank you for updating to the latest version! BuddyPress %s is ready to make your community a safer, faster, and better looking place to hang out!' ), $display_version ); ?></div>
-			<div class="bp-badge"><?php printf( __( 'Version %s' ), $display_version ); ?></div>
+			<h1><?php printf( __( 'Welcome to BuddyPress %s', 'buddypress' ), $display_version ); ?></h1>
+			<div class="about-text"><?php printf( __( 'Thank you for updating to the latest version! BuddyPress %s is ready to make your community a safer, faster, and better looking place to hang out!', 'buddypress' ), $display_version ); ?></div>
+			<div class="bp-badge"><?php printf( __( 'Version %s', 'buddypress' ), $display_version ); ?></div>
 
 			<h2 class="nav-tab-wrapper">
 				<a href="<?php echo esc_url( bp_get_admin_url( add_query_arg( array( 'page' => 'bp-about' ), 'index.php' ) ) ); ?>" class="nav-tab">

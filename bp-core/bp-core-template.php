@@ -1188,7 +1188,7 @@ function bp_is_my_profile() {
 }
 
 function bp_is_user() {
-	if ( bp_displayed_user_id() && !is_404() )
+	if ( bp_displayed_user_id() )
 		return true;
 
 	return false;
@@ -1760,7 +1760,7 @@ function bp_the_body_class() {
 		/** is_buddypress *****************************************************/
 
 		// Add BuddyPress class if we are within a BuddyPress page
-		if ( !empty( $bp_classes ) ) {
+		if ( ! bp_is_blog_page() ) {
 			$bp_classes[] = 'buddypress';
 		}
 

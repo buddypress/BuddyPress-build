@@ -654,11 +654,29 @@ function bp_is_user_spammer( $user_id = 0 ) {
 	if ( empty( $user_id ) )
 		return false;
 
+	$bp = buddypress();
+
 	// Assume user is not spam
 	$is_spammer = false;
 
-	// Get user data
-	$user = get_userdata( $user_id );
+	// Setup our user
+	$user = false;
+
+	// Get locally-cached data if available
+	switch ( $user_id ) {
+		case bp_loggedin_user_id() :
+			$user = ! empty( $bp->loggedin_user->userdata ) ? $bp->loggedin_user->userdata : false;
+			break;
+
+		case bp_displayed_user_id() :
+			$user = ! empty( $bp->displayed_user->userdata ) ? $bp->displayed_user->userdata : false;
+			break;
+	}
+
+	// Manually get userdata if still empty
+	if ( empty( $user ) ) {
+		$user = get_userdata( $user_id );
+	}
 
 	// No user found
 	if ( empty( $user ) ) {
@@ -691,11 +709,29 @@ function bp_is_user_deleted( $user_id = 0 ) {
 	if ( empty( $user_id ) )
 		return false;
 
+	$bp = buddypress();
+
 	// Assume user is not deleted
 	$is_deleted = false;
 
-	// Get user data
-	$user = get_userdata( $user_id );
+	// Setup our user
+	$user = false;
+
+	// Get locally-cached data if available
+	switch ( $user_id ) {
+		case bp_loggedin_user_id() :
+			$user = ! empty( $bp->loggedin_user->userdata ) ? $bp->loggedin_user->userdata : false;
+			break;
+
+		case bp_displayed_user_id() :
+			$user = ! empty( $bp->displayed_user->userdata ) ? $bp->displayed_user->userdata : false;
+			break;
+	}
+
+	// Manually get userdata if still empty
+	if ( empty( $user ) ) {
+		$user = get_userdata( $user_id );
+	}
 
 	// No user found
 	if ( empty( $user ) ) {
@@ -1413,3 +1449,71 @@ function bp_core_wpsignup_redirect() {
 	bp_core_redirect( bp_get_signup_page() );
 }
 add_action( 'bp_init', 'bp_core_wpsignup_redirect' );
+
+/**
+ * Stop a logged-in user who is marked as a spammer.
+ *
+ * When an admin marks a live user as a spammer, that user can still surf
+ * around and cause havoc on the site until that person is logged out.
+ *
+ * This code checks to see if a logged-in user is marked as a spammer.  If so,
+ * we redirect the user back to wp-login.php with the 'reauth' parameter.
+ *
+ * This clears the logged-in spammer's cookies and will ask the spammer to
+ * reauthenticate.
+ *
+ * Note: A spammer cannot log back in - {@see bp_core_boot_spammer()}.
+ *
+ * Runs on 'bp_init' at priority 5 so the members component globals are setup
+ * before we do our spammer checks.
+ *
+ * This is important as the $bp->loggedin_user object is setup at priority 4.
+ *
+ * @since BuddyPress (v1.8)
+ */
+function bp_stop_live_spammer() {
+	// if we're on the login page, stop now to prevent redirect loop
+	if ( strpos( $GLOBALS['pagenow'], 'wp-login.php' ) !== false ) {
+		return;
+	}
+
+	// user isn't logged in, so stop!
+	if ( ! is_user_logged_in() ) {
+		return;
+	}
+
+	// if spammer, redirect to wp-login.php and reauthorize
+	if ( bp_is_user_spammer( bp_loggedin_user_id() ) ) {
+		// setup login args
+		$args = array(
+			// custom action used to throw an error message
+			'action' => 'bp-spam',
+
+			// reauthorize user to login
+			'reauth' => 1
+		);
+
+		// setup login URL
+		$login_url = apply_filters( 'bp_live_spammer_redirect', add_query_arg( $args, wp_login_url() ) );
+
+		// redirect user to login page
+		wp_redirect( $login_url );
+		die();
+	}
+}
+add_action( 'bp_init', 'bp_stop_live_spammer', 5 );
+
+/**
+ * Show a custom error message when a logged-in user is marked as a spammer.
+ *
+ * @since BuddyPress (v1.8)
+ */
+function bp_live_spammer_login_error() {
+	global $error;
+
+	$error = __( '<strong>ERROR</strong>: Your account has been marked as a spammer.', 'buddypress' );
+
+	// shake shake shake!
+	add_action( 'login_head', 'wp_shake_js', 12 );
+}
+add_action( 'login_form_bp-spam', 'bp_live_spammer_login_error' ); 

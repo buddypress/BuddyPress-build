@@ -141,7 +141,7 @@ function bp_core_get_directory_pages() {
 		// Always get page data from the root blog, except on multiblog mode, when it comes
 		// from the current blog
 		$posts_table_name = bp_is_multiblog_mode() ? $wpdb->posts : $wpdb->get_blog_prefix( bp_get_root_blog_id() ) . 'posts';
-		$page_ids_sql     = implode( ',', (array) $page_ids );
+		$page_ids_sql     = implode( ',', wp_parse_id_list( $page_ids ) );
 		$page_names       = $wpdb->get_results( "SELECT ID, post_name, post_parent, post_title FROM {$posts_table_name} WHERE ID IN ({$page_ids_sql}) AND post_status = 'publish' " );
 
 		foreach ( (array) $page_ids as $component_id => $page_id ) {
@@ -1079,6 +1079,21 @@ function bp_core_parse_args_array( $old_args_keys, $func_args ) {
 	}
 
 	return $new_args;
+}
+
+/**
+ * Sanitize an 'order' parameter for use in building SQL queries
+ *
+ * Strings like 'DESC', 'desc', ' desc' will be interpreted into 'DESC'.
+ * Everything else becomes 'ASC'.
+ *
+ * @since BuddyPress (1.8)
+ * @param string $order The 'order' string, as passed to the SQL constructor
+ * @return string The sanitized value 'DESC' or 'ASC'
+ */
+function bp_esc_sql_order( $order = '' ) {
+	$order = strtoupper( trim( $order ) );
+	return 'DESC' === $order ? 'DESC' : 'ASC';
 }
 
 /** Embeds ********************************************************************/

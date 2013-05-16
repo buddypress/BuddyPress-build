@@ -252,6 +252,7 @@ class BP_Legacy extends BP_Theme_Compat {
 			'accepted'          => __( 'Accepted', 'buddypress' ),
 			'rejected'          => __( 'Rejected', 'buddypress' ),
 			'show_all_comments' => __( 'Show all comments for this thread', 'buddypress' ),
+			'show_x_comments'   => __( 'Show all %d comments', 'buddypress' ),
 			'show_all'          => __( 'Show all', 'buddypress' ),
 			'comments'          => __( 'comments', 'buddypress' ),
 			'close'             => __( 'Close', 'buddypress' ),
@@ -414,7 +415,7 @@ function bp_legacy_theme_ajax_querystring( $query_string, $object ) {
 
 	// If page and search_terms have been passed via the AJAX post request, use those.
 	if ( ! empty( $_POST['page'] ) && '-1' != $_POST['page'] )
-		$qs[] = 'page=' . $_POST['page'];
+		$qs[] = 'page=' . absint( $_POST['page'] );
 
 	$object_search_text = bp_get_search_default_text( $object );
  	if ( ! empty( $_POST['search_terms'] ) && $object_search_text != $_POST['search_terms'] && 'false' != $_POST['search_terms'] && 'undefined' != $_POST['search_terms'] )

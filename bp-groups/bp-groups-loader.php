@@ -305,7 +305,7 @@ class BP_Groups_Component extends BP_Component {
 		) );
 
 		// If avatar uploads are not disabled, add avatar option
-		if ( !(int)bp_get_option( 'bp-disable-avatar-uploads' ) ) {
+		if ( ! (int) buddypress()->site_options['bp-disable-avatar-uploads'] ) {
 			$this->group_creation_steps['group-avatar'] = array(
 				'name'     => __( 'Avatar',   'buddypress' ),
 				'position' => 20
@@ -545,6 +545,16 @@ class BP_Groups_Component extends BP_Component {
 				'title'  => $pending,
 				'href'   => trailingslashit( $groups_link . 'invites' )
 			);
+
+			// Create a Group
+			if ( bp_user_can_create_groups() ) {
+				$wp_admin_nav[] = array(
+					'parent' => 'my-account-' . $this->id,
+					'id'     => 'my-account-' . $this->id . '-create',
+					'title'  => __( 'Create a Group', 'buddypress' ),
+					'href'   => trailingslashit( bp_get_groups_directory_permalink() . 'create' )
+				);
+			}
 		}
 
 		parent::setup_admin_bar( $wp_admin_nav );

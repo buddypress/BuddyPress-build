@@ -49,21 +49,21 @@ function bp_blogs_record_existing_blogs() {
 	$wpdb->query( "TRUNCATE TABLE {$bp->blogs->table_name}" );
 
 	if ( is_multisite() ) {
-		$blog_ids = $wpdb->get_col( $wpdb->prepare( "SELECT blog_id FROM {$wpdb->base_prefix}blogs WHERE mature = 0 AND spam = 0 AND deleted = 0 AND site_id = %d" ), $wpdb->siteid );
+		$blog_ids = $wpdb->get_col( $wpdb->prepare( "SELECT blog_id FROM {$wpdb->base_prefix}blogs WHERE mature = 0 AND spam = 0 AND deleted = 0 AND site_id = %d", $wpdb->siteid ) );
 	} else {
 		$blog_ids = 1;
 	}
 
 	if ( !empty( $blog_ids ) ) {
 		foreach( (array) $blog_ids as $blog_id ) {
-			$users       = get_users( array( 'blog_id' => $blog_id ) );
-			$subscribers = get_users( array( 'blog_id' => $blog_id, 'role' => 'subscriber' ) );
+			$users       = get_users( array( 'blog_id' => $blog_id, 'fields' => 'ID' ) );
+			$subscribers = get_users( array( 'blog_id' => $blog_id, 'fields' => 'ID', 'role' => 'subscriber' ) );
 
 			if ( !empty( $users ) ) {
 				foreach ( (array) $users as $user ) {
 					// Don't record blogs for subscribers
 					if ( !in_array( $user, $subscribers ) ) {
-						bp_blogs_record_blog( $blog_id, $user->ID, true );
+						bp_blogs_record_blog( $blog_id, $user, true );
 					}
 				}
 			}
@@ -172,8 +172,8 @@ function bp_blogs_record_blog( $blog_id, $user_id, $no_activity = false ) {
 		// Record this in activity streams
 		bp_blogs_record_activity( array(
 			'user_id'      => $recorded_blog->user_id,
-			'action'       => apply_filters( 'bp_blogs_activity_created_blog_action', sprintf( __( '%s created the site %s', 'buddypress'), bp_core_get_userlink( $recorded_blog->user_id ), '<a href="' . get_site_url( $recorded_blog->blog_id ) . '">' . esc_attr( $name ) . '</a>' ), $recorded_blog, $name, $description ),
-			'primary_link' => apply_filters( 'bp_blogs_activity_created_blog_primary_link', get_site_url( $recorded_blog->blog_id ), $recorded_blog->blog_id ),
+			'action'       => apply_filters( 'bp_blogs_activity_created_blog_action', sprintf( __( '%s created the site %s', 'buddypress'), bp_core_get_userlink( $recorded_blog->user_id ), '<a href="' . get_home_url( $recorded_blog->blog_id ) . '">' . esc_attr( $name ) . '</a>' ), $recorded_blog, $name, $description ),
+			'primary_link' => apply_filters( 'bp_blogs_activity_created_blog_primary_link', get_home_url( $recorded_blog->blog_id ), $recorded_blog->blog_id ),
 			'type'         => 'new_blog',
 			'item_id'      => $recorded_blog->blog_id
 		) );

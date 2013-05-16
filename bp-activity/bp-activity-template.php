@@ -150,6 +150,7 @@ class BP_Activity_Template {
 			'in'               => false,
 			'filter'           => false,
 			'search_terms'     => false,
+			'meta_query'       => false,
 			'display_comments' => 'threaded',
 			'show_hidden'      => false,
 			'spam'             => 'ham_only',
@@ -172,7 +173,7 @@ class BP_Activity_Template {
 
 		// Fetch all activity items
 		else
-			$this->activities = bp_activity_get( array( 'display_comments' => $display_comments, 'max' => $max, 'per_page' => $this->pag_num, 'page' => $this->pag_page, 'sort' => $sort, 'search_terms' => $search_terms, 'filter' => $filter, 'show_hidden' => $show_hidden, 'exclude' => $exclude, 'in' => $in, 'spam' => $spam ) );
+			$this->activities = bp_activity_get( array( 'display_comments' => $display_comments, 'max' => $max, 'per_page' => $this->pag_num, 'page' => $this->pag_page, 'sort' => $sort, 'search_terms' => $search_terms, 'meta_query' => $meta_query, 'filter' => $filter, 'show_hidden' => $show_hidden, 'exclude' => $exclude, 'in' => $in, 'spam' => $spam ) );
 
 		if ( !$max || $max >= (int) $this->activities['total'] )
 			$this->total_activity_count = (int) $this->activities['total'];
@@ -361,6 +362,8 @@ function bp_has_activities( $args = '' ) {
 		'primary_id'       => $primary_id,  // object ID to filter on e.g. a group_id or forum_id or blog_id etc.
 		'secondary_id'     => false,        // secondary object ID to filter on e.g. a post_id
 
+		'meta_query'       => false,        // filter on activity meta. See WP_Meta_Query for format
+
 		// Searching
 		'search_terms'     => false         // specify terms to search on
 	);
@@ -410,8 +413,9 @@ function bp_has_activities( $args = '' ) {
 					if ( empty( $favs ) )
 						return false;
 
-					$include          = implode( ',', (array) $favs );
+					$in = implode( ',', (array) $favs );
 					$display_comments = true;
+					$user_id = 0;
 					break;
 				case 'mentions':
 
@@ -453,6 +457,7 @@ function bp_has_activities( $args = '' ) {
 		'in'               => $in,
 		'filter'           => $filter,
 		'search_terms'     => $search_terms,
+		'meta_query'       => $meta_query,
 		'display_comments' => $display_comments,
 		'show_hidden'      => $show_hidden,
 		'spam'             => $spam
@@ -1073,14 +1078,14 @@ function bp_activity_secondary_avatar( $args = '' ) {
 			case 'groups' :
 				$object  = 'group';
 				$item_id = $activities_template->activity->item_id;
+				$link    = '';
+				$name    = '';
 
 				// Only if groups is active
 				if ( bp_is_active( 'groups' ) ) {
 					$group = groups_get_group( array( 'group_id' => $item_id ) );
 					$link  = bp_get_group_permalink( $group );
 					$name  = $group->name;
-				} else {
-					$name = '';
 				}
 
 				if ( empty( $alt ) ) {
@@ -2408,7 +2413,7 @@ function bp_total_favorite_count_for_user( $user_id = 0 ) {
  * @uses bp_get_total_favorite_count_for_user()
  */
 function bp_total_mention_count_for_user( $user_id = 0 ) {
-	echo bp_get_total_favorite_count_for_user( $user_id );
+	echo bp_get_total_mention_count_for_user( $user_id );
 }
 
 	/**
@@ -2458,7 +2463,7 @@ function bp_send_public_message_link() {
 		if ( bp_is_my_profile() || !is_user_logged_in() )
 			return false;
 
-		return apply_filters( 'bp_get_send_public_message_link', wp_nonce_url( bp_loggedin_user_domain() . bp_get_activity_slug() . '/?r=' . bp_core_get_username( bp_displayed_user_id(), bp_get_displayed_user_username(), $bp->displayed_user->userdata->user_login ) ) );
+		return apply_filters( 'bp_get_send_public_message_link', wp_nonce_url( bp_get_activity_directory_permalink() . '?r=' . bp_core_get_username( bp_displayed_user_id(), bp_get_displayed_user_username(), $bp->displayed_user->userdata->user_login ) ) );
 	}
 
 /**

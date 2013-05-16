@@ -48,6 +48,9 @@ function add_option(forWhat) {
 	// re-initialize the sorable ui
 	enableSortableFieldOptions( forWhat );
 
+	// set focus on newly created element
+	document.getElementById(forWhat + "_option" + theId).focus();
+
 	theId++;
 
 	document.getElementById(forWhat + "_option_number").value = theId;
@@ -106,6 +109,9 @@ function destroySortableFieldOptions() {
 
 jQuery( document ).ready( function() {
 
+	// Set focus in Field Title, if we're on the right page
+	jQuery( '#bp-xprofile-add-field #title' ).focus();
+	
 	// Set up deleting options ajax
 	jQuery( 'a.ajax-option-delete' ).on( 'click', function() {
 		var theId = this.id.split( '-' );
@@ -207,7 +213,7 @@ jQuery( document ).ready( function() {
 				ui.draggable.hide( 'slow', function() {
 
 					// Select new tab as current
-					$tabs.tabs( 'select', $tab_items.index( $item ) );
+					$tabs.tabs( 'option', 'active', $tab_items.index( $item ) );
 
 					// Show new placement
 					jQuery(this).appendTo($list).show( 'slow' ).animate( {opacity: "1"}, 500 );

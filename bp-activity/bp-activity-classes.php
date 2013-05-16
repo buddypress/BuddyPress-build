@@ -144,6 +144,7 @@ class BP_Activity_Activity {
 			'sort'             => 'DESC',     // ASC or DESC
 			'exclude'          => false,      // Array of ids to exclude
 			'in'               => false,      // Array of ids to limit query by (IN)
+			'meta_query'       => false,      // Filter by activitymeta
 			'filter'           => false,      // See self::get_filter_sql()
 			'search_terms'     => false,      // Terms to search by
 			'display_comments' => false,      // Whether to include activity comments
@@ -158,6 +159,8 @@ class BP_Activity_Activity {
 
 		$from_sql = " FROM {$bp->activity->table_name} a LEFT JOIN {$wpdb->users} u ON a.user_id = u.ID";
 
+		$join_sql = '';
+
 		// Where conditions
 		$where_conditions = array();
 
@@ -170,7 +173,7 @@ class BP_Activity_Activity {
 		// Searching
 		if ( $search_terms ) {
 			$search_terms = $wpdb->escape( $search_terms );
-			$where_conditions['search_sql'] = "a.content LIKE '%%" . like_escape( $search_terms ) . "%%'";
+			$where_conditions['search_sql'] = "a.content LIKE '%%" . esc_sql( like_escape( $search_terms ) ) . "%%'";
 		}
 
 		// Filtering
@@ -195,6 +198,17 @@ class BP_Activity_Activity {
 		if ( !empty( $in ) ) {
 			$in = implode( ',', wp_parse_id_list( $in ) );
 			$where_conditions['in'] = "a.id IN ({$in})";
+		}
+
+		// Process meta_query into SQL
+		$meta_query_sql = self::get_meta_query_sql( $meta_query );
+
+		if ( ! empty( $meta_query_sql['join'] ) ) {
+			$join_sql .= $meta_query_sql['join'];
+		}
+
+		if ( ! empty( $meta_query_sql['where'] ) ) {
+			$where_conditions[] = $meta_query_sql['where'];
 		}
 
 		// Alter the query based on whether we want to show activity item
@@ -228,25 +242,21 @@ class BP_Activity_Activity {
 			$per_page = absint( $per_page );
 
 			$pag_sql    = $wpdb->prepare( "LIMIT %d, %d", absint( ( $page - 1 ) * $per_page ), $per_page );
-			$activities = $wpdb->get_results( apply_filters( 'bp_activity_get_user_join_filter', "{$select_sql} {$from_sql} {$where_sql} ORDER BY a.date_recorded {$sort} {$pag_sql}", $select_sql, $from_sql, $where_sql, $sort, $pag_sql ) );
+			$activities = $wpdb->get_results( apply_filters( 'bp_activity_get_user_join_filter', "{$select_sql} {$from_sql} {$join_sql} {$where_sql} ORDER BY a.date_recorded {$sort} {$pag_sql}", $select_sql, $from_sql, $where_sql, $sort, $pag_sql ) );
 		} else {
-			$activities = $wpdb->get_results( apply_filters( 'bp_activity_get_user_join_filter', "{$select_sql} {$from_sql} {$where_sql} ORDER BY a.date_recorded {$sort}", $select_sql, $from_sql, $where_sql, $sort ) );
+			$activities = $wpdb->get_results( apply_filters( 'bp_activity_get_user_join_filter', "{$select_sql} {$from_sql} {$join_sql} {$where_sql} ORDER BY a.date_recorded {$sort}", $select_sql, $from_sql, $where_sql, $sort ) );
 		}
 
-		$total_activities_sql = apply_filters( 'bp_activity_total_activities_sql', "SELECT count(a.id) FROM {$bp->activity->table_name} a {$index_hint_sql} {$where_sql} ORDER BY a.date_recorded {$sort}", $where_sql, $sort );
+		$total_activities_sql = apply_filters( 'bp_activity_total_activities_sql', "SELECT count(a.id) FROM {$bp->activity->table_name} a {$index_hint_sql} {$join_sql} {$where_sql} ORDER BY a.date_recorded {$sort}", $where_sql, $sort );
 
 		$total_activities = $wpdb->get_var( $total_activities_sql );
 
 		// Get the fullnames of users so we don't have to query in the loop
-		$activity_user_ids = array();
-		if ( bp_is_active( 'xprofile' ) && $activities ) {
-			foreach ( (array) $activities as $activity ) {
-				if ( (int) $activity->user_id )
-					$activity_user_ids[] = $activity->user_id;
-			}
+		if ( bp_is_active( 'xprofile' ) && !empty( $activities ) ) {
+			$activity_user_ids = wp_list_pluck( $activities, 'user_id' );
+			$activity_user_ids = implode( ',', wp_parse_id_list( $activity_user_ids ) );
 
-			$activity_user_ids = implode( ',', array_unique( (array) $activity_user_ids ) );
-			if ( !empty( $activity_user_ids ) ) {
+			if ( !empty( $activity_user_ids ) ) {				
 				if ( $names = $wpdb->get_results( "SELECT user_id, value AS user_fullname FROM {$bp->profile->table_name_data} WHERE field_id = 1 AND user_id IN ({$activity_user_ids})" ) ) {
 					foreach ( (array) $names as $name )
 						$tmp_names[$name->user_id] = $name->user_fullname;
@@ -285,6 +295,46 @@ class BP_Activity_Activity {
 	}
 
 	/**
+	 * Get the SQL for the 'meta_query' param in BP_Activity_Activity::get()
+	 *
+	 * We use WP_Meta_Query to do the heavy lifting of parsing the
+	 * meta_query array and creating the necessary SQL clauses. However,
+	 * since BP_Activity_Activity::get() builds its SQL differently than
+	 * WP_Query, we have to alter the return value (stripping the leading
+	 * AND keyword from the 'where' clause).
+	 *
+	 * @since 1.8
+	 *
+	 * @param array $meta_query An array of meta_query filters. See the
+	 *   documentation for WP_Meta_Query for details.
+	 * @return array $sql_array 'join' and 'where' clauses
+	 */
+	public static function get_meta_query_sql( $meta_query = array() ) {
+		global $wpdb;
+
+		$sql_array = array(
+			'join'  => '',
+			'where' => '',
+		);
+
+		if ( ! empty( $meta_query ) ) {
+			$activity_meta_query = new WP_Meta_Query( $meta_query );
+
+			// WP_Meta_Query expects the table name at
+			// $wpdb->activitymeta
+			$wpdb->activitymeta = buddypress()->activity->table_name_meta;
+
+			$meta_sql = $activity_meta_query->get_sql( 'activity', 'a', 'id' );
+
+			// Strip the leading AND - BP handles it in get()
+			$sql_array['where'] = preg_replace( '/^\sAND/', '', $meta_sql['where'] );
+			$sql_array['join']  = $meta_sql['join'];
+		}
+
+		return $sql_array;
+	}
+
+	/**
 	 * In BuddyPress 1.2.x, this was used to retrieve specific activity stream items (for example, on an activity's permalink page).
 	 * As of 1.5.x, use BP_Activity_Activity::get() with an 'in' parameter instead.
 	 *
@@ -319,10 +369,10 @@ class BP_Activity_Activity {
 			$where_args[] = $wpdb->prepare( "type = %s", $type );
 
 		if ( !empty( $item_id ) )
-			$where_args[] = $wpdb->prepare( "item_id = %s", $item_id );
+			$where_args[] = $wpdb->prepare( "item_id = %d", $item_id );
 
 		if ( !empty( $secondary_item_id ) )
-			$where_args[] = $wpdb->prepare( "secondary_item_id = %s", $secondary_item_id );
+			$where_args[] = $wpdb->prepare( "secondary_item_id = %d", $secondary_item_id );
 
 		if ( !empty( $action ) )
 			$where_args[] = $wpdb->prepare( "action = %s", $action );
@@ -384,10 +434,10 @@ class BP_Activity_Activity {
 			$where_args[] = $wpdb->prepare( "primary_link = %s", $primary_link );
 
 		if ( !empty( $item_id ) )
-			$where_args[] = $wpdb->prepare( "item_id = %s", $item_id );
+			$where_args[] = $wpdb->prepare( "item_id = %d", $item_id );
 
 		if ( !empty( $secondary_item_id ) )
-			$where_args[] = $wpdb->prepare( "secondary_item_id = %s", $secondary_item_id );
+			$where_args[] = $wpdb->prepare( "secondary_item_id = %d", $secondary_item_id );
 
 		if ( !empty( $date_recorded ) )
 			$where_args[] = $wpdb->prepare( "date_recorded = %s", $date_recorded );
@@ -416,24 +466,22 @@ class BP_Activity_Activity {
 		return $activity_ids;
 	}
 
-	function delete_activity_item_comments( $activity_ids ) {
+	function delete_activity_item_comments( $activity_ids = array() ) {
 		global $bp, $wpdb;
 
-		if ( is_array( $activity_ids ) )
-			$activity_ids = implode ( ',', array_map( 'absint', $activity_ids ) );
-		else
-			$activity_ids = implode ( ',', array_map( 'absint', explode ( ',', $activity_ids ) ) );
+		$activity_ids = implode( ',', wp_parse_id_list( $activity_ids ) );
 
 		return $wpdb->query( "DELETE FROM {$bp->activity->table_name} WHERE type = 'activity_comment' AND item_id IN ({$activity_ids})" );
 	}
 
-	function delete_activity_meta_entries( $activity_ids ) {
+	function delete_activity_meta_entries( $activity_ids = array() ) {
 		global $bp, $wpdb;
 
-		if ( is_array( $activity_ids ) )
-			$activity_ids = implode ( ',', array_map( 'absint', $activity_ids ) );
-		else
-			$activity_ids = implode ( ',', array_map( 'absint', explode ( ',', $activity_ids ) ) );
+		$activity_ids = implode( ',', wp_parse_id_list( $activity_ids ) );
+
+		foreach ( (array) $activity_ids as $activity_id ) {
+			bp_activity_clear_meta_cache_for_activity( $activity_id );
+		}
 
 		return $wpdb->query( "DELETE FROM {$bp->activity->table_name_meta} WHERE activity_id IN ({$activity_ids})" );
 	}
