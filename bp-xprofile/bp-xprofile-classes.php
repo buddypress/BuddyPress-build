@@ -386,7 +386,7 @@ class BP_XProfile_Group {
 								</div>
 							</div>
 
-							<div id="postdiv" class="postarea">
+							<div id="postdiv">
 								<div class="postbox">
 									<div id="titlediv"><h3 class="hndle"><?php _e( 'Group Description', 'buddypress' ); ?></h3></div>
 									<div class="inside">
@@ -453,10 +453,9 @@ class BP_XProfile_Field {
 	function populate( $id, $user_id, $get_data ) {
 		global $wpdb, $userdata, $bp;
 
-		// @todo Why are we nooping the user_id ?
-		$user_id = 0;
-		if ( is_null( $user_id ) )
-			$user_id = $userdata->ID;
+		if ( empty( $user_id ) ) {
+			$user_id = isset( $userdata->ID ) ? $userdata->ID : 0;
+		}
 
 		$sql = $wpdb->prepare( "SELECT * FROM {$bp->profile->table_name_fields} WHERE id = %d", $id );
 

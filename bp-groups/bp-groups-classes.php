@@ -91,6 +91,8 @@ class BP_Groups_Group {
 				else
 					$this->mods[] = $user;
 			}
+		} else {
+			$this->id = 0;
 		}
 	}
 
@@ -332,7 +334,9 @@ class BP_Groups_Group {
 		}
 
 		$defaults = array(
-			'type'            => 'newest',
+			'type'            => null,
+			'orderby'         => 'date_created',
+			'order'           => 'DESC',
 			'per_page'        => null,
 			'page'            => null,
 			'user_id'         => 0,
@@ -341,7 +345,7 @@ class BP_Groups_Group {
 			'include'         => false,
 			'populate_extras' => true,
 			'exclude'         => false,
-			'show_hidden'     => false
+			'show_hidden'     => false,
 		);
 
 		$r = wp_parse_args( $args, $defaults );
@@ -400,23 +404,39 @@ class BP_Groups_Group {
 			$sql['exclude'] = " AND g.id NOT IN ({$exclude})";
 		}
 
-		switch ( $r['type'] ) {
-			case 'newest':
-			default:
-				$sql['order'] = " ORDER BY g.date_created DESC";
-				break;
-			case 'active':
-				$sql[] = "ORDER BY last_activity DESC";
-				break;
-			case 'popular':
-				$sql[] = "ORDER BY CONVERT(gm1.meta_value, SIGNED) DESC";
-				break;
-			case 'alphabetical':
-				$sql[] = "ORDER BY g.name ASC";
-				break;
-			case 'random':
-				$sql[] = "ORDER BY rand()";
-				break;
+		/** Order/orderby ********************************************/
+
+		$order   = $r['order'];
+		$orderby = $r['orderby'];
+
+		// If a 'type' parameter was passed, parse it and overwrite
+		// 'order' and 'orderby' params passed to the function
+		if (  ! empty( $r['type'] ) ) {
+			$order_orderby = self::convert_type_to_order_orderby( $r['type'] );
+
+			// If an invalid type is passed, $order_orderby will be
+			// an array with empty values. In this case, we stick
+			// with the default values of $order and $orderby
+			if ( ! empty( $order_orderby['order'] ) ) {
+				$order = $order_orderby['order'];
+			}
+
+			if ( ! empty( $order_orderby['orderby'] ) ) {
+				$orderby = $order_orderby['orderby'];
+			}
+		}
+
+		// Sanitize 'order'
+		$order = bp_esc_sql_order( $order );
+
+		// Convert 'orderby' into the proper ORDER BY term
+		$orderby = self::convert_orderby_to_order_by_term( $orderby );
+
+		// Random order is a special case
+		if ( 'rand()' === $orderby ) {
+			$sql[] = "ORDER BY rand()";
+		} else {
+			$sql[] = "ORDER BY {$orderby} {$order}";
 		}
 
 		if ( ! empty( $r['per_page'] ) && ! empty( $r['page'] ) ) {
@@ -497,13 +517,14 @@ class BP_Groups_Group {
 	 * WP_Query, we have to alter the return value (stripping the leading
 	 * AND keyword from the 'where' clause).
 	 *
-	 * @since 1.8
+	 * @since BuddyPress (1.8)
+	 * @access protected
 	 *
 	 * @param array $meta_query An array of meta_query filters. See the
 	 *   documentation for WP_Meta_Query for details.
 	 * @return array $sql_array 'join' and 'where' clauses
 	 */
-	public static function get_meta_query_sql( $meta_query = array() ) {
+	protected static function get_meta_query_sql( $meta_query = array() ) {
 		global $wpdb;
 
 		$sql_array = array(
@@ -539,6 +560,83 @@ class BP_Groups_Group {
 		return $sql_array;
 	}
 
+	/**
+	 * Convert the 'type' parameter to 'order' and 'orderby'
+	 *
+	 * @since BuddyPress (1.8)
+	 * @access protected
+	 * @param string $type The 'type' shorthand param
+	 * @return array 'order' and 'orderby'
+	 */
+	protected function convert_type_to_order_orderby( $type = '' ) {
+		$order = $orderby = '';
+
+		switch ( $type ) {
+			case 'newest' :
+				$order   = 'DESC';
+				$orderby = 'date_created';
+				break;
+
+			case 'active' :
+				$order   = 'DESC';
+				$orderby = 'last_activity';
+				break;
+
+			case 'popular' :
+				$order   = 'DESC';
+				$orderby = 'total_member_count';
+				break;
+
+			case 'alphabetical' :
+				$order   = 'ASC';
+				$orderby = 'name';
+				break;
+
+			case 'random' :
+				$order   = '';
+				$orderby = 'random';
+				break;
+		}
+
+		return array( 'order' => $order, 'orderby' => $orderby );
+	}
+
+	/**
+	 * Convert the 'orderby' param into a proper SQL term/column
+	 *
+	 * @since BuddyPress (1.8)
+	 * @access protected
+	 * @param string $orderby
+	 * @return string $order_by_term
+	 */
+	protected function convert_orderby_to_order_by_term( $orderby ) {
+		$order_by_term = '';
+
+		switch ( $orderby ) {
+			case 'date_created' :
+			default :
+				$order_by_term = 'g.date_created';
+				break;
+
+			case 'last_activity' :
+				$order_by_term = 'last_activity';
+				break;
+
+			case 'total_member_count' :
+				$order_by_term = 'CONVERT(gm1.meta_value, SIGNED)';
+				break;
+
+			case 'name' :
+				$order_by_term = 'g.name';
+				break;
+
+			case 'random' :
+				$order_by_term = 'rand()';
+				break;
+		}
+
+		return $order_by_term;
+	}
 
 	function get_by_most_forum_topics( $limit = null, $page = null, $user_id = 0, $search_terms = false, $populate_extras = true, $exclude = false ) {
 		global $wpdb, $bp, $bbdb;
@@ -849,6 +947,182 @@ class BP_Groups_Group {
 	}
 }
 
+/**
+ * Query for the members of a group
+ *
+ * @since BuddyPress (1.8)
+ */
+class BP_Group_Member_Query extends BP_User_Query {
+	/**
+	 * Set up action hooks
+	 *
+	 * @since BuddyPress (1.8)
+	 */
+	public function setup_hooks() {
+		// Take this early opportunity to set the default 'type' param
+		// to 'last_modified', which will ensure that BP_User_Query
+		// trusts our order and does not try to apply its own
+		if ( empty( $this->query_vars_raw['type'] ) ) {
+			$this->query_vars_raw['type'] = 'last_modified';
+		}
+
+		// Set up our populate_extras method
+		add_action( 'bp_user_query_populate_extras', array( $this, 'populate_group_member_extras' ), 10, 2 );
+	}
+
+	/**
+	 * Get a list of user_ids to include in the IN clause of the main query
+	 *
+	 * Overrides BP_User_Query::get_include_ids(), adding our additional
+	 * group-member logic.
+	 *
+	 * @since BuddyPress (1.8)
+	 * @param array
+	 * @return array
+	 */
+	public function get_include_ids( $include ) {
+		// The following args are specific to group member queries, and
+		// are not present in the query_vars of a normal BP_User_Query.
+		// We loop through to make sure that defaults are set (though
+		// values passed to the constructor will, as usual, override
+		// these defaults).
+		$this->query_vars = wp_parse_args( $this->query_vars, array(
+			'group_id'   => 0,
+			'group_role' => array( 'member' ),
+		) );
+
+		$group_member_ids = $this->get_group_member_ids();
+
+		// If the group member query returned no users, bail with an
+		// array that will guarantee no matches for BP_User_Query
+		if ( empty( $group_member_ids ) ) {
+			return array( 0 );
+		}
+
+		if ( ! empty( $include ) ) {
+			$group_member_ids = array_intersect( $include, $group_member_ids );
+		}
+
+		return $group_member_ids;
+	}
+
+	/**
+	 * Get the members of the queried group
+	 *
+	 * @since BuddyPress (1.8)
+	 * @return array $ids User IDs of relevant group member ids
+	 */
+	protected function get_group_member_ids() {
+		global $wpdb;
+
+		$bp  = buddypress();
+		$sql = array(
+			'select'  => "SELECT user_id FROM {$bp->groups->table_name_members}",
+			'where'   => array(),
+			'orderby' => '',
+			'order'   => '',
+			'limit'   => '',
+		);
+
+		/** WHERE clauses *****************************************************/
+
+		$sql['where'][] = $wpdb->prepare( "group_id = %d", $this->query_vars['group_id'] );
+
+		// Role information is stored as follows: admins have
+		// is_admin = 1, mods have is_mod = 1, banned have is_banned =
+		// 1, and members have all three set to 0.
+		$roles = !empty( $this->query_vars['group_role'] ) ? $this->query_vars['group_role'] : array();
+		if ( is_string( $roles ) ) {
+			$roles = explode( ',', $roles );
+		}
+
+		// Sanitize: Only 'admin', 'mod', 'member', and 'banned' are valid
+		$allowed_roles = array( 'admin', 'mod', 'member', 'banned' );
+		foreach ( $roles as $role_key => $role_value ) {
+			if ( ! in_array( $role_value, $allowed_roles ) ) {
+				unset( $roles[ $role_key ] );
+			}
+		}
+
+		$roles = array_unique( $roles );
+
+		// When querying for a set of roles containing 'member' (for
+		// which there is no dedicated is_ column), figure out a list
+		// of columns *not* to match
+		$roles_sql = '';
+		if ( in_array( 'member', $roles ) ) {
+			$role_columns = array();
+			foreach ( array_diff( $allowed_roles, $roles ) as $excluded_role ) {
+				$role_columns[] = 'is_' . $excluded_role . ' = 0';
+			}
+
+			if ( ! empty( $role_columns ) ) {
+				$roles_sql = '(' . implode( ' AND ', $role_columns ) . ')';
+			}
+
+		// When querying for a set of roles *not* containing 'member',
+		// simply construct a list of is_* = 1 clauses
+		} else {
+			$role_columns = array();
+			foreach ( $roles as $role ) {
+				$role_columns[] = 'is_' . $role . ' = 1';
+			}
+
+			if ( ! empty( $role_columns ) ) {
+				$roles_sql = '(' . implode( ' OR ', $role_columns ) . ')';
+			}
+		}
+
+		if ( ! empty( $roles_sql ) ) {
+			$sql['where'][] = $roles_sql;
+		}
+
+		$sql['where'] = ! empty( $sql['where'] ) ? 'WHERE ' . implode( ' AND ', $sql['where'] ) : '';
+
+		/** ORDER BY clause ***************************************************/
+
+		// @todo For now, mimicking legacy behavior of
+		// bp_group_has_members(), which has us order by date_modified
+		// only. Should abstract it in the future
+		$sql['orderby'] = "ORDER BY date_modified";
+		$sql['order']   = "DESC";
+
+		/** LIMIT clause ******************************************************/
+
+		$ids = $wpdb->get_col( "{$sql['select']} {$sql['where']} {$sql['orderby']} {$sql['order']} {$sql['limit']}" );
+
+		return $ids;
+	}
+
+	/**
+	 * Fetch additional data required in bp_group_has_members() loops
+	 *
+	 * @since BuddyPress (1.8)
+	 * @param object $query BP_User_Query object. Because we're filtering
+	 *   the current object, we use $this inside of the method instead
+	 * @param string $user_ids_sql Sanitized, comma-separated string of
+	 *   the user ids returned by the main query
+	 */
+	public function populate_group_member_extras( $query, $user_ids_sql ) {
+		global $wpdb;
+
+		$bp     = buddypress();
+		$extras = $wpdb->get_results( $wpdb->prepare( "SELECT user_id, date_modified, is_banned FROM {$bp->groups->table_name_members} WHERE user_id IN ({$user_ids_sql}) AND group_id = %d", $this->query_vars['group_id'] ) );
+
+		foreach ( (array) $extras as $extra ) {
+			if ( isset( $this->results[ $extra->user_id ] ) ) {
+				// user_id is provided for backward compatibility
+				$this->results[ $extra->user_id ]->user_id       = (int) $extra->user_id;
+				$this->results[ $extra->user_id ]->is_banned     = (int) $extra->is_banned;
+				$this->results[ $extra->user_id ]->date_modified = $extra->date_modified;
+			}
+		}
+
+		// Don't filter other BP_User_Query objects on the same page
+		remove_action( 'bp_user_query_populate_extras', array( $this, 'populate_group_member_extras' ), 10, 2 );
+	}
+}
+
 class BP_Groups_Member {
 	var $id;
 	var $group_id;
@@ -948,6 +1222,12 @@ class BP_Groups_Member {
 
 		$this->id = $wpdb->insert_id;
 
+		// Update the user's group count
+		self::refresh_total_group_count_for_user( $this->user_id );
+
+		// Update the group's member count
+		self::refresh_total_member_count_for_group( $this->group_id );
+
 		do_action_ref_array( 'groups_member_after_save', array( &$this ) );
 
 		return true;
@@ -978,50 +1258,33 @@ class BP_Groups_Member {
 	}
 
 	function ban() {
-
 		if ( !empty( $this->is_admin ) )
 			return false;
 
 		$this->is_mod = 0;
 		$this->is_banned = 1;
 
-		groups_update_groupmeta( $this->group_id, 'total_member_count', ( (int) groups_get_groupmeta( $this->group_id, 'total_member_count' ) - 1 ) );
-
-		$group_count = bp_get_user_meta( $this->user_id, 'total_group_count', true );
-		if ( !empty( $group_count ) )
-			bp_update_user_meta( $this->user_id, 'total_group_count', (int) $group_count - 1 );
-
 		return $this->save();
 	}
 
 	function unban() {
-
 		if ( !empty( $this->is_admin ) )
 			return false;
 
 		$this->is_banned = 0;
 
-		groups_update_groupmeta( $this->group_id, 'total_member_count', ( (int) groups_get_groupmeta( $this->group_id, 'total_member_count' ) + 1 ) );
-		bp_update_user_meta( $this->user_id, 'total_group_count', (int) bp_get_user_meta( $this->user_id, 'total_group_count', true ) + 1 );
-
 		return $this->save();
 	}
 
 	function accept_invite() {
-
 		$this->inviter_id    = 0;
 		$this->is_confirmed  = 1;
 		$this->date_modified = bp_core_current_time();
-
-		bp_update_user_meta( $this->user_id, 'total_group_count', (int) bp_get_user_meta( $this->user_id, 'total_group_count', true ) + 1 );
 	}
 
 	function accept_request() {
-
 		$this->is_confirmed = 1;
 		$this->date_modified = bp_core_current_time();
-
-		bp_update_user_meta( $this->user_id, 'total_group_count', (int) bp_get_user_meta( $this->user_id, 'total_group_count', true ) + 1 );
 	}
 
 	function remove() {
@@ -1032,21 +1295,51 @@ class BP_Groups_Member {
 		if ( !$result = $wpdb->query( $sql ) )
 			return false;
 
-		groups_update_groupmeta( $this->group_id, 'total_member_count', ( (int) groups_get_groupmeta( $this->group_id, 'total_member_count' ) - 1 ) );
+		// Update the user's group count
+		self::refresh_total_group_count_for_user( $this->user_id );
 
-		$group_count = bp_get_user_meta( $this->user_id, 'total_group_count', true );
-		if ( !empty( $group_count ) )
-			bp_update_user_meta( $this->user_id, 'total_group_count', (int) $group_count - 1 );
+		// Update the group's member count
+		self::refresh_total_member_count_for_group( $this->group_id );
 
 		return $result;
 	}
 
 	/** Static Methods ********************************************************/
 
+	/**
+	 * Refresh the total_group_count for a user
+	 *
+	 * @since BuddyPress (1.8)
+	 * @param int $user_id
+	 * @return bool True on success
+	 */
+	public static function refresh_total_group_count_for_user( $user_id ) {
+		return bp_update_user_meta( $user_id, 'total_group_count', (int) self::total_group_count( $user_id ) );
+	}
+
+	/**
+	 * Refresh the total_member_count for a group
+	 *
+	 * @since BuddyPress (1.8)
+	 * @param int $group_id
+	 * @return bool True on success
+	 */
+	public static function refresh_total_member_count_for_group( $group_id ) {
+		return groups_update_groupmeta( $group_id, 'total_member_count', (int) BP_Groups_Group::get_total_member_count( $group_id ) );
+	}
+
 	function delete( $user_id, $group_id ) {
 		global $wpdb, $bp;
 
-		return $wpdb->query( $wpdb->prepare( "DELETE FROM {$bp->groups->table_name_members} WHERE user_id = %d AND group_id = %d", $user_id, $group_id ) );
+		$remove = $wpdb->query( $wpdb->prepare( "DELETE FROM {$bp->groups->table_name_members} WHERE user_id = %d AND group_id = %d", $user_id, $group_id ) );
+
+		// Update the user's group count
+		self::refresh_total_group_count_for_user( $user_id );
+
+		// Update the group's member count
+		self::refresh_total_member_count_for_group( $group_id );
+
+		return $remove;
 	}
 
 	function get_group_ids( $user_id, $limit = false, $page = false ) {
@@ -1300,6 +1593,8 @@ class BP_Groups_Member {
 
 	function get_all_for_group( $group_id, $limit = false, $page = false, $exclude_admins_mods = true, $exclude_banned = true, $exclude = false ) {
 		global $bp, $wpdb;
+
+		_deprecated_function( __METHOD__, '1.8', 'BP_Group_Member_Query' );
 
 		$pag_sql = '';
 		if ( !empty( $limit ) && !empty( $page ) )
@@ -1929,6 +2224,8 @@ class BP_Group_Extension {
 
 		$screen = $this->screens['edit'];
 
+		$position = isset( $screen['position'] ) ? (int) $screen['position'] : 10;
+
 		// Add the tab
 		// @todo BP should be using bp_core_new_subnav_item()
 		add_action( 'groups_admin_tabs', create_function( '$current, $group_slug',
@@ -1936,7 +2233,7 @@ class BP_Group_Extension {
 			if ( "' . esc_attr( $screen['slug'] ) . '" == $current )
 				$selected = " class=\"current\"";
 			echo "<li{$selected}><a href=\"' . trailingslashit( bp_get_root_domain() . '/' . bp_get_groups_root_slug() . '/{$group_slug}/admin/' . esc_attr( $screen['slug'] ) ) . '\">' . esc_attr( $screen['name'] ) . '</a></li>";'
-		), 10, 2 );
+		), $position, 2 );
 
 		// Catch the edit screen and forward it to the plugin template
 		if ( bp_is_groups_component() && bp_is_current_action( 'admin' ) && bp_is_action_variable( $screen['slug'], 0 ) ) {
@@ -1944,13 +2241,19 @@ class BP_Group_Extension {
 
 			add_action( 'groups_custom_edit_steps', array( &$this, 'call_edit_screen' ) );
 
+			// Determine the proper template and save for later
+			// loading
 			if ( '' !== bp_locate_template( array( 'groups/single/home.php' ), false ) ) {
-				bp_core_load_template( apply_filters( 'groups_template_group_home', 'groups/single/home' ) );
+				$this->edit_screen_template = '/groups/single/home';
 			} else {
 				add_action( 'bp_template_content_header', create_function( '', 'echo "<ul class=\"content-header-nav\">"; bp_group_admin_tabs(); echo "</ul>";' ) );
 				add_action( 'bp_template_content', array( &$this, 'call_edit_screen' ) );
-				bp_core_load_template( apply_filters( 'bp_core_template_plugin', '/groups/single/plugins' ) );
+				$this->edit_screen_template = '/groups/single/plugins';
 			}
+
+			// We load the template at bp_screens, to give all
+			// extensions a chance to load
+			add_action( 'bp_screens', array( $this, 'call_edit_screen_template_loader' ) );
 		}
 	}
 
@@ -1992,6 +2295,23 @@ class BP_Group_Extension {
 
 		$this->check_nonce( 'edit' );
 		call_user_func( $this->screens['edit']['screen_save_callback'], $this->group_id );
+	}
+
+	/**
+	 * Load the template that houses the Edit screen
+	 *
+	 * Separated out into a callback so that it can run after all other
+	 * Group Extensions have had a chance to register their navigation, to
+	 * avoid missing tabs.
+	 *
+	 * Hooked to 'bp_screens'.
+	 *
+	 * @see BP_Group_Extension::setup_edit_hooks()
+	 * @access public So that do_action() has access. Do not call directly.
+	 * @since BuddyPress (1.8)
+	 */
+	public function call_edit_screen_template_loader() {
+		bp_core_load_template( $this->edit_screen_template );
 	}
 
 	/**

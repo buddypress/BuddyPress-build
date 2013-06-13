@@ -166,6 +166,8 @@ class BP_Groups_Template {
 		} else {
 			$this->groups = groups_get_groups( array(
 				'type'            => $type,
+				'order'           => $order,
+				'orderby'         => $orderby,
 				'per_page'        => $this->pag_num,
 				'page'            => $this->pag_page,
 				'user_id'         => $user_id,
@@ -266,6 +268,17 @@ class BP_Groups_Template {
 	}
 }
 
+/**
+ * Start the Groups Template Loop
+ *
+ * See the $defaults definition below for a description of parameters.
+ *
+ * Note that the 'type' parameter overrides 'order' and 'orderby'. See
+ * BP_Groups_Group::get() for more details.
+ *
+ * @param array $args
+ * @return bool True if there are groups to display that match the params
+ */
 function bp_has_groups( $args = '' ) {
 	global $groups_template, $bp;
 
@@ -275,7 +288,7 @@ function bp_has_groups( $args = '' ) {
 	 * pass their parameters directly to the loop.
 	 */
 	$slug    = false;
-	$type    = 'active';
+	$type    = '';
 	$user_id = 0;
 	$order   = '';
 
@@ -284,6 +297,7 @@ function bp_has_groups( $args = '' ) {
 		$user_id = bp_displayed_user_id();
 
 	// Type
+	// @todo What is $order? At some point it was removed incompletely?
 	if ( bp_is_current_action( 'my-groups' ) ) {
 		if ( 'most-popular' == $order ) {
 			$type = 'popular';
@@ -298,7 +312,9 @@ function bp_has_groups( $args = '' ) {
 	}
 
 	$defaults = array(
-		'type'            => $type,
+		'type'            => $type, // 'type' is an override for 'order' and 'orderby'. See docblock.
+		'order'           => 'DESC',
+		'orderby'         => 'last_activity',
 		'page'            => 1,
 		'per_page'        => 20,
 		'max'             => false,
@@ -313,7 +329,7 @@ function bp_has_groups( $args = '' ) {
 		'include'         => false,    // Pass comma separated list or array of group ID's to return only these groups
 		'exclude'         => false,    // Pass comma separated list or array of group ID's to exclude these groups
 
-		'populate_extras' => true      // Get extra meta - is_member, is_banned
+		'populate_extras' => true,     // Get extra meta - is_member, is_banned
 	);
 
 	$r = wp_parse_args( $args, $defaults );
@@ -329,6 +345,8 @@ function bp_has_groups( $args = '' ) {
 
 	$groups_template = new BP_Groups_Template( array(
 		'type'            => $r['type'],
+		'order'           => $r['order'],
+		'orderby'         => $r['orderby'],
 		'page'            => (int) $r['page'],
 		'per_page'        => (int) $r['per_page'],
 		'max'             => (int) $r['max'],
@@ -1879,11 +1897,11 @@ class BP_Groups_Group_Members_Template {
 	var $pag_links;
 	var $total_group_count;
 
-	function __construct( $group_id, $per_page, $max, $exclude_admins_mods, $exclude_banned, $exclude ) {
+	function __construct( $group_id, $per_page, $max, $exclude_admins_mods, $exclude_banned, $exclude, $group_role = false ) {
 
 		$this->pag_page = isset( $_REQUEST['mlpage'] ) ? intval( $_REQUEST['mlpage'] ) : 1;
 		$this->pag_num  = isset( $_REQUEST['num'] ) ? intval( $_REQUEST['num'] ) : $per_page;
-		$this->members  = BP_Groups_Member::get_all_for_group( $group_id, $this->pag_num, $this->pag_page, $exclude_admins_mods, $exclude_banned, $exclude );
+		$this->members  = groups_get_group_members( $group_id, $this->pag_num, $this->pag_page, $exclude_admins_mods, $exclude_banned, $exclude, $group_role );
 
 		if ( !$max || $max >= (int) $this->members['count'] )
 			$this->total_member_count = (int) $this->members['count'];
@@ -1959,19 +1977,17 @@ class BP_Groups_Group_Members_Template {
 function bp_group_has_members( $args = '' ) {
 	global $members_template;
 
-	$defaults = array(
+	$r = wp_parse_args( $args, array(
 		'group_id' => bp_get_current_group_id(),
 		'per_page' => 20,
 		'max' => false,
 		'exclude' => false,
 		'exclude_admins_mods' => 1,
-		'exclude_banned' => 1
-	);
+		'exclude_banned' => 1,
+		'group_role' => false,
+	) );
 
-	$r = wp_parse_args( $args, $defaults );
-	extract( $r, EXTR_SKIP );
-
-	$members_template = new BP_Groups_Group_Members_Template( $group_id, $per_page, $max, (int) $exclude_admins_mods, (int) $exclude_banned, $exclude );
+	$members_template = new BP_Groups_Group_Members_Template( $r['group_id'], $r['per_page'], $r['max'], (int) $r['exclude_admins_mods'], (int) $r['exclude_banned'], $r['exclude'], $r['group_role'] );
 	return apply_filters( 'bp_group_has_members', $members_template->has_members(), $members_template );
 }
 

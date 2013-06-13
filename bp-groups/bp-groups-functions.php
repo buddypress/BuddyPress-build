@@ -123,6 +123,8 @@ function groups_create_group( $args = '' ) {
 		$member->date_modified = bp_core_current_time();
 		$member->save();
 
+		groups_update_groupmeta( $group->id, 'last_activity', bp_core_current_time() );
+
 		do_action( 'groups_create_group', $group->id, $member, $group );
 
 	} else {
@@ -296,12 +298,6 @@ function groups_leave_group( $group_id, $user_id = 0 ) {
 	if ( !groups_uninvite_user( $user_id, $group_id ) )
 		return false;
 
-	// Modify group member count
-	groups_update_groupmeta( $group_id, 'total_member_count', (int) groups_get_groupmeta( $group_id, 'total_member_count') - 1 );
-
-	// Modify user's group memberhip count
-	bp_update_user_meta( $user_id, 'total_group_count', (int) bp_get_user_meta( $user_id, 'total_group_count', true ) - 1 );
-
 	/**
 	 * If the user joined this group less than five minutes ago, remove the
 	 * joined_group activity so users cannot flood the activity stream by
@@ -361,7 +357,6 @@ function groups_join_group( $group_id, $user_id = 0 ) {
 	) );
 
 	// Modify group meta
-	groups_update_groupmeta( $group_id, 'total_member_count', (int) groups_get_groupmeta( $group_id, 'total_member_count') + 1 );
 	groups_update_groupmeta( $group_id, 'last_activity', bp_core_current_time() );
 
 	do_action( 'groups_join_group', $group_id, $user_id );
@@ -382,7 +377,11 @@ function groups_get_group_mods( $group_id ) {
 /**
  * Fetch the members of a group
  *
- * Procedural wrapper for BP_Groups_Member::get_all_for_group().
+ * Since BuddyPress 1.8, a procedural wrapper for BP_Group_Member_Query.
+ * Previously called BP_Groups_Member::get_all_for_group().
+ *
+ * To use the legacy query, filter 'bp_use_legacy_group_member_query',
+ * returning true.
  *
  * @param int $group_id
  * @param int $limit Maximum members to return
@@ -392,8 +391,49 @@ function groups_get_group_mods( $group_id ) {
  * @param array|string $exclude Array or comma-sep list of users to exclude
  * @return array Multi-d array of 'members' list and 'count'
  */
-function groups_get_group_members( $group_id, $limit = false, $page = false, $exclude_admins_mods = true, $exclude_banned = true, $exclude = false ) {
-	return BP_Groups_Member::get_all_for_group( $group_id, $limit, $page, $exclude_admins_mods, $exclude_banned, $exclude );
+function groups_get_group_members( $group_id, $limit = false, $page = false, $exclude_admins_mods = true, $exclude_banned = true, $exclude = false, $group_role = false ) {
+
+	// For legacy users. Use of BP_Groups_Member::get_all_for_group()
+	// is deprecated. func_get_args() can't be passed to a function in PHP
+	// 5.2.x, so we create a variable
+	$func_args = func_get_args();
+	if ( apply_filters( 'bp_use_legacy_group_member_query', false, __FUNCTION__, $func_args ) ) {
+		$retval = BP_Groups_Member::get_all_for_group( $group_id, $limit, $page, $exclude_admins_mods, $exclude_banned, $exclude );
+	} else {
+
+		// exclude_admins_mods and exclude_banned are legacy arguments.
+		// Convert to group_role
+		if ( empty( $group_role ) ) {
+			$group_role = array( 'member' );
+
+			if ( ! $exclude_admins_mods ) {
+				$group_role[] = 'mod';
+				$group_role[] = 'admin';
+			}
+
+			if ( ! $exclude_banned ) {
+				$group_role[] = 'banned';
+			}
+		}
+
+		// Perform the group member query (extends BP_User_Query)
+		$members = new BP_Group_Member_Query( array(
+			'group_id'       => $group_id,
+			'per_page'       => $limit,
+			'page'           => $page,
+			'group_role'     => $group_role,
+			'exclude'        => $exclude,
+			'type'           => 'last_modified',
+		) );
+
+		// Structure the return value as expected by the template functions
+		$retval = array(
+			'members' => array_values( $members->results ),
+			'count'   => $members->total_users,
+		);
+	}
+
+	return $retval;
 }
 
 function groups_get_total_member_count( $group_id ) {
@@ -413,7 +453,9 @@ function groups_get_total_member_count( $group_id ) {
 function groups_get_groups( $args = '' ) {
 
 	$defaults = array(
-		'type'            => 'active', // active, newest, alphabetical, random, popular, most-forum-topics or most-forum-posts
+		'type'            => false,    // active, newest, alphabetical, random, popular, most-forum-topics or most-forum-posts
+		'order'           => 'DESC',   // 'ASC' or 'DESC'
+		'orderby'         => 'date_created', // date_created, last_activity, total_member_count, name, random
 		'user_id'         => false,    // Pass a user_id to limit to only groups that this user is a member of
 		'include'         => false,    // Only include these specific groups (group_ids)
 		'exclude'         => false,    // Do not include these specific groups (group_ids)
@@ -437,7 +479,9 @@ function groups_get_groups( $args = '' ) {
 		'show_hidden'     => $r['show_hidden'],
 		'per_page'        => $r['per_page'],
 		'page'            => $r['page'],
-		'populate_extras' => $r['populate_extras']
+		'populate_extras' => $r['populate_extras'],
+		'order'           => $r['order'],
+		'orderby'         => $r['orderby'],
 	) );
 
 	return apply_filters_ref_array( 'groups_get_groups', array( &$groups, &$r ) );
@@ -672,7 +716,6 @@ function groups_accept_invite( $user_id, $group_id ) {
 		$member->delete_request( $user_id, $group_id );
 
 	// Modify group meta
-	groups_update_groupmeta( $group_id, 'total_member_count', (int) groups_get_groupmeta( $group_id, 'total_member_count') + 1 );
 	groups_update_groupmeta( $group_id, 'last_activity', bp_core_current_time() );
 
 	bp_core_delete_notifications_by_item_id( $user_id, $group_id, $bp->groups->id, 'group_invite' );
@@ -869,9 +912,6 @@ function groups_accept_membership_request( $membership_id, $user_id = 0, $group_
 	// Check if the user has an outstanding invite, if so delete it.
 	if ( groups_check_user_has_invite( $membership->user_id, $membership->group_id ) )
 		groups_delete_invite( $membership->user_id, $membership->group_id );
-
-	// Modify group member count
-	groups_update_groupmeta( $membership->group_id, 'total_member_count', (int) groups_get_groupmeta( $membership->group_id, 'total_member_count') + 1 );
 
 	// Record this in activity streams
 	$group = groups_get_group( array( 'group_id' => $membership->group_id ) );

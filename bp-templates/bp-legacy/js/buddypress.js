@@ -21,24 +21,26 @@ jq(document).ready( function() {
 	bp_init_objects( objects );
 
 	/* @mention Compose Scrolling */
-	if ( jq.query.get('r') && jq('#whats-new').length ) {
+	var $whats_new = jq('#whats-new');
+	if ( jq.query.get('r') && $whats_new.length ) {
 		jq('#whats-new-options').animate({
 			height:'40px'
 		});
 		jq("#whats-new-form textarea").animate({
 			height:'50px'
 		});
-		jq.scrollTo( jq('#whats-new'), 500, {
+		jq.scrollTo( $whats_new, 500, {
 			offset:-125,
 			easing:'easeOutQuad'
 		} );
-		jq('#whats-new').focus();
+		var whats_new_content = $whats_new.val();
+		$whats_new.val('').focus().val(whats_new_content);
 	}
 
 	/**** Activity Posting ********************************************************/
 
 	/* Textarea focus */
-	jq('#whats-new').focus( function(){
+	$whats_new.focus( function(){
 		jq("#whats-new-options").animate({
 			height:'40px'
 		});
@@ -46,12 +48,31 @@ jq(document).ready( function() {
 			height:'50px'
 		});
 		jq("#aw-whats-new-submit").prop("disabled", false);
+		
+		var $whats_new_form = jq("form#whats-new-form");
+		if ( $whats_new_form.hasClass("submitted") ) {
+			$whats_new_form.removeClass("submitted");	
+		}
+	});
+
+	/* On blur, shrink if it's empty */
+	$whats_new.blur( function(){
+		if (!this.value.match(/\S+/)) {
+			this.value = "";
+			jq("#whats-new-options").animate({
+				height:'40px'
+			});
+			jq("form#whats-new-form textarea").animate({
+				height:'20px'
+			});
+			jq("#aw-whats-new-submit").prop("disabled", true);
+		}
 	});
 
 	/* New posts */
 	jq("#aw-whats-new-submit").on( 'click', function() {
 		var button = jq(this);
-		var form = button.parent().parent().parent().parent();
+		var form = button.closest("form#whats-new-form");
 
 		form.children().each( function() {
 			if ( jq.nodeName(this, "textarea") || jq.nodeName(this, "input") )
@@ -62,6 +83,7 @@ jq(document).ready( function() {
 		jq('div.error').remove();
 		button.addClass('loading');
 		button.prop('disabled', true);
+		form.addClass("submitted");
 
 		/* Default POST values */
 		var object = '';
@@ -102,7 +124,7 @@ jq(document).ready( function() {
 				}
 
 				jq("#activity-stream").prepend(response);
-				jq("#activity-stream li:first").addClass('new-update');
+				jq("#activity-stream li:first").addClass('new-update just-posted');
 
 				if ( 0 != jq("#latest-update").length ) {
 					var l = jq("#activity-stream li.new-update .activity-content .activity-inner p").html();
@@ -304,10 +326,17 @@ jq(document).ready( function() {
 
 			var oldest_page = ( jq.cookie('bp-activity-oldestpage') * 1 ) + 1;
 
+			var just_posted = [];
+			
+			jq('.activity-list li.just-posted').each( function(){
+				just_posted.push( jq(this).attr('id').replace( 'activity-','' ) );
+			});
+
 			jq.post( ajaxurl, {
 				action: 'activity_get_older_updates',
 				'cookie': bp_get_cookies(),
-				'page': oldest_page
+				'page': oldest_page,
+				'exclude_just_posted': just_posted.join(',')
 			},
 			function(response)
 			{
@@ -850,14 +879,29 @@ jq(document).ready( function() {
 
 	jq('.field-visibility-settings-close').on( 'click', function() {
 		var settings_div = jq(this).parent();
+		var vis_setting_text = settings_div.find('input:checked').parent().text();
 
-		jq(settings_div).slideUp( 400, function(){
-			jq(settings_div).siblings('.field-visibility-settings-toggle').fadeIn(800);
-		});
+		settings_div.slideUp( 400, function() {
+			settings_div.siblings('.field-visibility-settings-toggle').fadeIn(800);
+			settings_div.siblings('.field-visibility-settings-toggle').children('.current-visibility-level').html(vis_setting_text);
+		} );
 
 		return false;
 	} );
 
+	jq("#profile-edit-form input:not(:submit), #profile-edit-form textarea, #profile-edit-form select, #signup_form input:not(:submit), #signup_form textarea, #signup_form select").change( function() {
+		var shouldconfirm = true;
+
+		jq('#profile-edit-form input:submit, #signup_form input:submit').on( 'click', function() {
+			shouldconfirm = false;
+		});
+		
+		window.onbeforeunload = function(e) {
+			if ( shouldconfirm ) {
+				return BP_DTheme.unsaved_changes;
+			}
+		};
+	});
 
 	/** Friendship Requests **************************************/
 

@@ -28,6 +28,30 @@ function bp_activity_has_directory() {
 }
 
 /**
+ * Are mentions enabled or disabled?
+ *
+ * The Mentions feature does a number of things, all of which will be turned
+ * off if you disable mentions:
+ *   - Detecting and auto-linking @username in all BP/WP content
+ *   - Sending BP notifications and emails to users when they are mentioned
+ *     using the @username syntax
+ *   - The Public Message button on user profiles
+ *
+ * Mentions are enabled by default. To disable, put the following line in
+ * bp-custom.php or your theme's functions.php file:
+ *
+ *   add_filter( 'bp_activity_do_mentions', '__return_false' );
+ *
+ * @since BuddyPress (1.8)
+ *
+ * @uses apply_filters() To call 'bp_activity_do_mentions' hook.
+ * @return bool $retval True to enable mentions, false to disable.
+ */
+function bp_activity_do_mentions() {
+	return (bool) apply_filters( 'bp_activity_do_mentions', true );
+}
+
+/**
  * Searches through the content of an activity item to locate usernames,
  * designated by an @ sign.
  *
@@ -1106,10 +1130,10 @@ function bp_activity_post_update( $args = '' ) {
 		'type'         => 'activity_update'
 	) );
 
-	$activity_content = apply_filters( 'bp_activity_latest_update_content', $content );
+	$activity_content = apply_filters( 'bp_activity_latest_update_content', $content, $activity_content );
 
 	// Add this update to the "latest update" usermeta so it can be fetched anywhere.
-	bp_update_user_meta( bp_loggedin_user_id(), 'bp_latest_update', array( 'id' => $activity_id, 'content' => $content ) );
+	bp_update_user_meta( bp_loggedin_user_id(), 'bp_latest_update', array( 'id' => $activity_id, 'content' => $activity_content ) );
 
 	do_action( 'bp_activity_posted_update', $content, $user_id, $activity_id );
 
