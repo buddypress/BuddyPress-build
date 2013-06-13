@@ -48,6 +48,14 @@ class BP_User_Query {
 	/** Variables *************************************************************/
 
 	/**
+	 * Unaltered params as passed to the constructor
+	 *
+	 * @since BuddyPress (1.8)
+	 * @var array
+	 */
+	public $query_vars_raw = array();
+
+	/**
 	 * Array of variables to query with
 	 *
 	 * @since BuddyPress (1.7)
@@ -119,8 +127,15 @@ class BP_User_Query {
 	 * @param string|array $query The query variables
 	 */
 	public function __construct( $query = null ) {
-		if ( ! empty( $query ) ) {
-			$this->query_vars = wp_parse_args( $query, array(
+
+		// Store the raw query vars for later access
+		$this->query_vars_raw = $query;
+
+		// Allow extending classes to register action/filter hooks
+		$this->setup_hooks();
+
+		if ( ! empty( $this->query_vars_raw ) ) {
+			$this->query_vars = wp_parse_args( $this->query_vars_raw, array(
 				'type'            => 'newest',
 				'per_page'        => 0,
 				'page'            => 1,
@@ -162,6 +177,22 @@ class BP_User_Query {
 	}
 
 	/**
+	 * Allow extending classes to set up action/filter hooks
+	 *
+	 * When extending BP_User_Query, you may need to use some of its
+	 * internal hooks to modify the output. It's not convenient to call
+	 * add_action() or add_filter() in your class constructor, because
+	 * BP_User_Query::__construct() contains a fair amount of logic that
+	 * you may not want to override in your class. Define this method in
+	 * your own class if you need a place where your extending class can
+	 * add its hooks early in the query-building process. See
+	 * BP_Group_Member_Query::setup_hooks() for an example.
+	 *
+	 * @since BuddyPress (1.8)
+	 */
+	public function setup_hooks() {}
+
+	/**
 	 * Prepare the query for user_ids
 	 *
 	 * @since BuddyPress (1.7)
@@ -198,11 +229,13 @@ class BP_User_Query {
 		switch ( $type ) {
 
 			// 'online' query happens against the last_activity usermeta key
+			// Filter 'bp_user_query_online_interval' to modify the
+			// number of minutes used as an interval
 			case 'online' :
 				$this->uid_name = 'user_id';
 				$sql['select']  = "SELECT DISTINCT u.{$this->uid_name} as id FROM {$wpdb->usermeta} u";
 				$sql['where'][] = $wpdb->prepare( "u.meta_key = %s", bp_get_user_meta_key( 'last_activity' ) );
-				$sql['where'][] = 'u.meta_value >= DATE_SUB( UTC_TIMESTAMP(), INTERVAL 5 MINUTE )';
+				$sql['where'][] = $wpdb->prepare( "u.meta_value >= DATE_SUB( UTC_TIMESTAMP(), INTERVAL %d MINUTE )", apply_filters( 'bp_user_query_online_interval', 15 ) );
 				$sql['orderby'] = "ORDER BY u.meta_value";
 				$sql['order']   = "DESC";
 
@@ -282,9 +315,10 @@ class BP_User_Query {
 		/** WHERE *************************************************************/
 
 		// 'include' - User ids to include in the results
-		if ( false !== $include ) {
-			$include        = wp_parse_id_list( $include );
-			$include_ids    = $wpdb->escape( implode( ',', (array) $include ) );
+		$include     = ! empty( $include ) ? wp_parse_id_list( $include ) : array();
+		$include_ids = $this->get_include_ids( $include );
+		if ( ! empty( $include_ids ) ) {
+			$include_ids    = implode( ',', wp_parse_id_list( $include_ids ) );
 			$sql['where'][] = "u.{$this->uid_name} IN ({$include_ids})";
 		}
 
@@ -425,6 +459,26 @@ class BP_User_Query {
 				$this->results[ $uid ]->id = $uid;
 			}
 		}
+	}
+
+	/**
+	 * Fetches the ids of users to put in the IN clause of the main query
+	 *
+	 * By default, returns the value passed to it
+	 * ($this->query_vars['include']). Having this abstracted into a
+	 * standalone method means that extending classes can override the
+	 * logic, parsing together their own user_id limits with the 'include'
+	 * ids passed to the class constructor. See BP_Group_Member_Query for
+	 * an example.
+	 *
+	 * @since BuddyPress (1.8)
+	 * @param array Sanitized array of user ids, as passed to the 'include'
+	 *   parameter of the class constructor
+	 * @return array The list of users to which the main query should be
+	 *   limited
+	 */
+	public function get_include_ids( $include = array() ) {
+		return $include;
 	}
 
 	/**

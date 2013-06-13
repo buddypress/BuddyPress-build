@@ -419,6 +419,11 @@ function bp_has_activities( $args = '' ) {
 					break;
 				case 'mentions':
 
+					// Are mentions disabled?
+					if ( ! bp_activity_do_mentions() ) {
+						return false;
+					}
+
 					// Start search at @ symbol and stop search at closing tag delimiter.
 					$search_terms     = '@' . bp_core_get_username( $user_id ) . '<';
 					$display_comments = 'stream';
@@ -2025,6 +2030,34 @@ function bp_activity_thread_permalink() {
 	}
 
 /**
+ * Echoes the activity comment permalink
+ *
+ * @since BuddyPress (1.8)
+ *
+ * @uses bp_get_activity_permalink_id()
+ */
+function bp_activity_comment_permalink() {
+	echo bp_get_activity_comment_permalink();
+}
+	/**
+	 * Gets the activity comment permalink
+	 *
+	 * @since BuddyPress (1.8)
+	 *
+	 * @uses bp_activity_get_permalink()
+	 * @uses apply_filters() To call the 'bp_get_activity_comment_permalink' hook
+	 *
+	 * @return string $link The activity comment permalink
+	 */
+	function bp_get_activity_comment_permalink() {
+		global $activities_template;
+
+		$link = bp_activity_get_permalink( $activities_template->activity->id, $activities_template->activity ) . '#acomment-' . $activities_template->activity->current_comment->id;
+
+		return apply_filters( 'bp_get_activity_comment_permalink', $link );
+	}
+
+/**
  * Echoes the activity favorite link
  *
  * @since BuddyPress (1.2)
@@ -2400,6 +2433,10 @@ function bp_total_favorite_count_for_user( $user_id = 0 ) {
 	 * @return int The total favorite count for a specified user
 	 */
 	function bp_get_total_favorite_count_for_user( $user_id = 0 ) {
+		if ( ! $user_id ) {
+			$user_id = bp_displayed_user_id();
+		}
+
 		return apply_filters( 'bp_get_total_favorite_count_for_user', bp_activity_total_favorites_for_user( $user_id ) );
 	}
 
@@ -2427,6 +2464,10 @@ function bp_total_mention_count_for_user( $user_id = 0 ) {
 	 * @return int The total mention count for a specified user
 	 */
 	function bp_get_total_mention_count_for_user( $user_id = 0 ) {
+		if ( ! $user_id ) {
+			$user_id = bp_displayed_user_id();
+		}
+
 		return apply_filters( 'bp_get_total_mention_count_for_user', bp_get_user_meta( $user_id, 'bp_new_mention_count', true ) );
 	}
 
@@ -2762,7 +2803,7 @@ function bp_activities_member_rss_link() { echo bp_get_member_activity_feed_link
 			$link = bp_displayed_user_domain() . bp_get_activity_slug() . '/' . bp_get_groups_slug() . '/feed/';
 		elseif ( 'favorites' == bp_current_action() )
 			$link = bp_displayed_user_domain() . bp_get_activity_slug() . '/favorites/feed/';
-		elseif ( 'mentions' == bp_current_action() )
+		elseif ( 'mentions' == bp_current_action() && bp_activity_do_mentions() )
 			$link = bp_displayed_user_domain() . bp_get_activity_slug() . '/mentions/feed/';
 		else
 			$link = '';

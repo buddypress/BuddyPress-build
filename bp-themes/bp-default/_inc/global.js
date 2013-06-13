@@ -46,12 +46,31 @@ jq(document).ready( function() {
 			height:'50px'
 		});
 		jq("#aw-whats-new-submit").prop("disabled", false);
+
+		var $whats_new_form = jq("form#whats-new-form");
+		if ( $whats_new_form.hasClass("submitted") ) {
+			$whats_new_form.removeClass("submitted");	
+		}
+	});
+
+	/* On blur, shrink if it's empty */
+	jq('#whats-new').blur( function(){
+		if (!this.value.match(/\S+/)) {
+			this.value = "";
+			jq("#whats-new-options").animate({
+				height:'40px'
+			});
+			jq("form#whats-new-form textarea").animate({
+				height:'20px'
+			});
+			jq("#aw-whats-new-submit").prop("disabled", true);
+		}
 	});
 
 	/* New posts */
 	jq("input#aw-whats-new-submit").click( function() {
 		var button = jq(this);
-		var form = button.parent().parent().parent().parent();
+		var form = button.closest("form#whats-new-form");
 
 		form.children().each( function() {
 			if ( jq.nodeName(this, "textarea") || jq.nodeName(this, "input") )
@@ -62,6 +81,7 @@ jq(document).ready( function() {
 		jq('div.error').remove();
 		button.addClass('loading');
 		button.prop('disabled', true);
+		form.addClass("submitted");
 
 		/* Default POST values */
 		var object = '';
@@ -102,7 +122,7 @@ jq(document).ready( function() {
 				}
 
 				jq("ul#activity-stream").prepend(response);
-				jq("ul#activity-stream li:first").addClass('new-update');
+				jq("ul#activity-stream li:first").addClass('new-update just-posted');
 
 				if ( 0 != jq("#latest-update").length ) {
 					var l = jq("ul#activity-stream li.new-update .activity-content .activity-inner p").html();
@@ -301,10 +321,17 @@ jq(document).ready( function() {
 
 			var oldest_page = ( jq.cookie('bp-activity-oldestpage') * 1 ) + 1;
 
+			var just_posted = [];
+			
+			jq('.activity-list li.just-posted').each( function(){
+				just_posted.push( jq(this).attr('id').replace( 'activity-','' ) );
+			});
+
 			jq.post( ajaxurl, {
 				action: 'activity_get_older_updates',
 				'cookie': bp_get_cookies(),
-				'page': oldest_page
+				'page': oldest_page,
+				'exclude_just_posted': just_posted.join(',')
 			},
 			function(response)
 			{
