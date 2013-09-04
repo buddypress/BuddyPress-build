@@ -29,11 +29,11 @@ Visit the <a href="http://buddypress.org/">BuddyPress website</a> for more infor
 
 You can download and install BuddyPress using the built in WordPress plugin installer. If you download BuddyPress manually, make sure it is uploaded to "/wp-content/plugins/buddypress/".
 
-Activate BuddyPress in the "Plugins" admin panel using the "Activate" link. You'll then see a message asking you to complete the BuddyPress Installation Wizard, which will guide you through configuring your site for BuddyPress.
+Activate BuddyPress in the "Plugins" admin panel using the "Activate" link. If you're using WordPress Multisite, you can optionally activate BuddyPress Network Wide, allowing it's toolbar integration to appear on all of your sites, and optionally turning on post and comment aggregation to the Activity Stream too!
 
---- Discussion Forums ---
+= Discussion Forums =
 
-BuddyPress includes full support for discussion forums. Each group created on your site can have its own forum. If you'd like to enable this feature, after completing the Installation Wizard, visit the "Forums Setup" item under the "BuddyPress" menu in your WordPress admin-area, and follow the on-screen instructions.
+Try <a href="http://wordpress.org/plugins/bbpress/">bbPress</a>. It's designed to work cohesively with BuddyPress Groups and Profiles. Each group on your site can choose to have its own forum, and each user's topics, replies, favorites, and subscriptions appear in their profiles.
 
 == Frequently Asked Questions ==
 
@@ -76,9 +76,6 @@ Check out the development trunk of BuddyPress via Subversion, from <a href="http
 BuddyPress is available in more than 20 languages. For more information, check out the <a href="http://codex.buddypress.org/getting-started/translations/">translation page</a> on the BuddyPress Codex.
 
 == Upgrade Notice ==
-
-= 1.8.1 =
-See: http://codex.buddypress.org/releases/version-1-8-1/
 
 = 1.8 =
 See: http://codex.buddypress.org/releases/version-1-8/
@@ -126,9 +123,6 @@ Compatibility with WordPress 3.1
 Fixes over 10 bugs.
 
 == Changelog ==
-
-= 1.8.1 =
-See: http://codex.buddypress.org/releases/version-1-8-1/
 
 = 1.8 =
 See: http://codex.buddypress.org/releases/version-1-8/
