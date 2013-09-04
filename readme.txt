@@ -77,6 +77,9 @@ BuddyPress is available in more than 20 languages. For more information, check o
 
 == Upgrade Notice ==
 
+= 1.8.1 =
+See: http://codex.buddypress.org/releases/version-1-8-1/
+
 = 1.8 =
 See: http://codex.buddypress.org/releases/version-1-8/
 
@@ -123,6 +126,9 @@ Compatibility with WordPress 3.1
 Fixes over 10 bugs.
 
 == Changelog ==
+
+= 1.8.1 =
+See: http://codex.buddypress.org/releases/version-1-8-1/
 
 = 1.8 =
 See: http://codex.buddypress.org/releases/version-1-8/
