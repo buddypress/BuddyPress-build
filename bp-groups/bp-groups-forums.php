@@ -7,6 +7,9 @@
  * have a template screen associated with them. Usually they will send the user
  * back to the default screen after execution.
  *
+ * Note that this file is only used for the retired version of bbPress (1.x) and
+ * will see minimal updates as of BuddyPress 1.9.0.
+ *
  * @package BuddyPress
  * @subpackage GroupsForums
  */
@@ -398,7 +401,7 @@ function groups_total_public_forum_topic_count( $type = 'newest' ) {
  * @package BuddyPress
  * @since BuddyPress (1.5)
  *
- * @param str $status 'public', 'private', 'hidden', 'all' Which group types to count
+ * @param string $status 'public', 'private', 'hidden', 'all' Which group types to count
  * @return int The topic count
  */
 function groups_total_forum_topic_count( $status = 'public', $search_terms = false ) {

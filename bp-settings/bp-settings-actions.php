@@ -23,7 +23,6 @@ if ( !defined( 'ABSPATH' ) ) exit;
  * users accounts already, without knowing their existing password.
  *
  * @global BuddyPress $bp
- * @return If no reason to proceed
  */
 function bp_settings_action_general() {
 
@@ -142,8 +141,10 @@ function bp_settings_action_general() {
 			}
 		}
 
-		// Make sure these changes are in $bp for the current page load
+		// Clear cached data, so that the changed settings take effect
+		// on the current page load
 		if ( ( false === $email_error ) && ( false === $pass_error ) && ( wp_update_user( $update_user ) ) ) {
+			wp_cache_delete( 'bp_core_userdata_' . bp_displayed_user_id(), 'bp' );
 			$bp->displayed_user->userdata = bp_core_get_core_userdata( bp_displayed_user_id() );
 		}
 
@@ -214,8 +215,6 @@ add_action( 'bp_actions', 'bp_settings_action_general' );
 
 /**
  * Handles the changing and saving of user notification settings
- *
- * @return If no reason to proceed
  */
 function bp_settings_action_notifications() {
 
@@ -260,8 +259,6 @@ add_action( 'bp_actions', 'bp_settings_action_notifications' );
 
 /**
  * Handles the setting of user capabilities, spamming, hamming, role, etc...
- *
- * @return If no reason to proceed
  */
 function bp_settings_action_capabilities() {
 
@@ -280,6 +277,12 @@ function bp_settings_action_capabilities() {
 	// 404 if there are any additional action variables attached
 	if ( bp_action_variables() ) {
 		bp_do_404();
+		return;
+	}
+
+	// Only super admins can currently spam users (but they can't spam
+	// themselves)
+	if ( ! is_super_admin() || bp_is_my_profile() ) {
 		return;
 	}
 
@@ -309,8 +312,6 @@ add_action( 'bp_actions', 'bp_settings_action_capabilities' );
 
 /**
  * Handles the deleting of a user
- *
- * @return If no reason to proceed
  */
 function bp_settings_action_delete_account() {
 

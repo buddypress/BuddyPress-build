@@ -1,7 +1,7 @@
 <?php
 
 /**
- * BuddyPress Blogs Activity
+ * BuddyPress Blogs Activity.
  *
  * @package BuddyPress
  * @subpackage BlogsActivity
@@ -11,13 +11,13 @@
 if ( !defined( 'ABSPATH' ) ) exit;
 
 /**
- * Register activity actions for the blogs component
+ * Register activity actions for the blogs component.
  *
- * @since BuddyPress (1.0)
- * @package BuddyPress
- * @subpackage BlogsActivity
- * @global type $bp
- * @return boolean
+ * @since BuddyPress (1.0.0)
+ *
+ * @global object $bp The BuddyPress global settings object.
+ *
+ * @return bool|null Returns false if activity component is not active.
  */
 function bp_blogs_register_activity_actions() {
 	global $bp;
@@ -39,14 +39,20 @@ function bp_blogs_register_activity_actions() {
 add_action( 'bp_register_activity_actions', 'bp_blogs_register_activity_actions' );
 
 /**
- * Record the activity to the actvity stream
+ * Record blog-related activity to the activity stream.
  *
- * @since BuddyPress (1.0)
- * @package BuddyPress
- * @subpackage BlogsActivity
- * @global BuddyPress $bp
- * @param array $args
- * @return boolean
+ * @since BuddyPress (1.0.0)
+ *
+ * @see bp_activity_add() for description of parameters.
+ * @global object $bp The BuddyPress global settings object.
+ *
+ * @param array $args {
+ *     See {@link bp_activity_add()} for complete description of arguments.
+ *     The arguments listed here have different default values from
+ *     bp_activity_add().
+ *     @type string $component Default: 'blogs'.
+ * }
+ * @return int|bool On success, returns the activity ID. False on failure.
  */
 function bp_blogs_record_activity( $args = '' ) {
 	global $bp;
@@ -73,7 +79,7 @@ function bp_blogs_record_activity( $args = '' ) {
 
 	// Remove large images and replace them with just one image thumbnail
  	if ( !empty( $content ) )
-		$content = bp_activity_thumbnail_content_images( $content, $primary_link );
+		$content = bp_activity_thumbnail_content_images( $content, $primary_link, $r );
 
 	if ( !empty( $action ) )
 		$action = apply_filters( 'bp_blogs_record_activity_action', $action );
@@ -94,14 +100,20 @@ function bp_blogs_record_activity( $args = '' ) {
 }
 
 /**
- * Delete a blogs activity stream item
+ * Delete a blog-related activity stream item.
  *
- * @since BuddyPress (1.0)
- * @package BuddyPress
- * @subpackage BlogsActivity
- * @global BuddyPress $bp
- * @param array $args
- * @return If activity is not active
+ * @since BuddyPress (1.0.0)
+ *
+ * @see bp_activity_delete() for description of parameters.
+ * @global object $bp The BuddyPress global settings object.
+ *
+ * @param array $args {
+ *     See {@link bp_activity_delete()} for complete description of arguments.
+ *     The arguments listed here have different default values from
+ *     bp_activity_add().
+ *     @type string $component Default: 'blogs'.
+ * }
+ * @return bool True on success, false on failure.
  */
 function bp_blogs_delete_activity( $args = true ) {
 	global $bp;

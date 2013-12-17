@@ -165,7 +165,8 @@ function bp_dtheme_enqueue_scripts() {
 		'close'             => __( 'Close', 'buddypress' ),
 		'view'              => __( 'View', 'buddypress' ),
 		'mark_as_fav'	    => __( 'Favorite', 'buddypress' ),
-		'remove_fav'	    => __( 'Remove Favorite', 'buddypress' )
+		'remove_fav'	    => __( 'Remove Favorite', 'buddypress' ),
+		'unsaved_changes'   => __( 'Your profile has unsaved changes. If you leave the page, the changes will be lost.', 'buddypress' ),
 	);
 	wp_localize_script( 'dtheme-ajax-js', 'BP_DTheme', $params );
 
@@ -520,7 +521,7 @@ if ( !function_exists( 'bp_dtheme_page_on_front' ) ) :
 /**
  * Return the ID of a page set as the home page.
  *
- * @return false|int ID of page set as the home page
+ * @return int|bool ID of page set as the home page
  * @since BuddyPress (1.2)
  */
 function bp_dtheme_page_on_front() {
@@ -718,7 +719,7 @@ function bp_dtheme_sidebar_login_redirect_to() {
 	$redirect_to = !empty( $_REQUEST['redirect_to'] ) ? $_REQUEST['redirect_to'] : '';
 	$redirect_to = apply_filters( 'bp_no_access_redirect', $redirect_to ); ?>
 
-	<input type="hidden" name="redirect_to" value="<?php echo esc_attr( $redirect_to ); ?>" />
+	<input type="hidden" name="redirect_to" value="<?php echo esc_url( $redirect_to ); ?>" />
 
 <?php
 }
