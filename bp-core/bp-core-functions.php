@@ -202,6 +202,52 @@ function bp_core_parse_args_array( $old_args_keys, $func_args ) {
 }
 
 /**
+ * Merge user defined arguments into defaults array.
+ *
+ * This function is used throughout BuddyPress to allow for either a string or
+ * array to be merged into another array. It is identical to wp_parse_args()
+ * except it allows for arguments to be passively or aggressively filtered using
+ * the optional $filter_key parameter. If no $filter_key is passed, no filters
+ * are applied.
+ *
+ * @since BuddyPress (r7704)
+ *
+ * @param string|array $args Value to merge with $defaults
+ * @param array $defaults Array that serves as the defaults.
+ * @param string $filter_key String to key the filters from
+ * @return array Merged user defined values with defaults.
+ */
+function bp_parse_args( $args, $defaults = array(), $filter_key = '' ) {
+
+	// Setup a temporary array from $args
+	if ( is_object( $args ) ) {
+		$r = get_object_vars( $args );
+	} elseif ( is_array( $args ) ) {
+		$r =& $args;
+	} else {
+		wp_parse_str( $args, $r );
+	}
+
+	// Passively filter the args before the parse
+	if ( !empty( $filter_key ) ) {
+		$r = apply_filters( 'bp_before_' . $filter_key . '_parse_args', $r );
+	}
+
+	// Parse
+	if ( is_array( $defaults ) && !empty( $defaults ) ) {
+		$r = array_merge( $defaults, $r );
+	}
+
+	// Aggressively filter the args after the parse
+	if ( !empty( $filter_key ) ) {
+		$r = apply_filters( 'bp_after_' . $filter_key . '_parse_args', $r );
+	}
+
+	// Return the parsed results
+	return $r;
+}
+
+/**
  * Sanitize an 'order' parameter for use in building SQL queries.
  *
  * Strings like 'DESC', 'desc', ' desc' will be interpreted into 'DESC'.
@@ -361,12 +407,17 @@ function bp_core_get_directory_pages() {
  *
  * @since BuddyPress (1.7.0)
  *
- * @param array $default_components Components to create pages for.
+ * @param array $components Components to create pages for.
  * @param string $existing 'delete' if you want to delete existing page
  *        mappings and replace with new ones. Otherwise existing page mappings
  *        are kept, and the gaps filled in with new pages. Default: 'keep'.
  */
 function bp_core_add_page_mappings( $components, $existing = 'keep' ) {
+
+	// If no value is passed, there's nothing to do.
+	if ( empty( $components ) ) {
+		return;
+	}
 
 	// Make sure that the pages are created on the root blog no matter which Dashboard the setup is being run on
 	if ( ! bp_is_root_blog() )

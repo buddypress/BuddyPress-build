@@ -317,7 +317,7 @@ class BP_Notifications_Notification {
 		// is_new
 		if ( ! empty( $args['is_new'] ) ) {
 			$where_conditions['is_new'] = "is_new = 1";
-		} elseif ( ( 0 === $args['is_new'] ) || ( false === $args['is_new'] ) ) {
+		} elseif ( isset( $args['is_new'] ) && ( 0 === $args['is_new'] || false === $args['is_new'] ) ) {
 			$where_conditions['is_new'] = "is_new = 0";
 		}
 
@@ -553,7 +553,7 @@ class BP_Notifications_Notification {
 			'user_id'           => false,
 			'item_id'           => false,
 			'secondary_item_id' => false,
-			'component_name'    => false,
+			'component_name'    => bp_notifications_get_registered_components(),
 			'component_action'  => false,
 			'is_new'            => true,
 			'search_terms'      => '',
@@ -612,12 +612,25 @@ class BP_Notifications_Notification {
 	public static function get_total_count( $args ) {
 		global $wpdb;
 
-		$bp         = buddypress();
+		/**
+		 * Default component_name to active_components
+		 *
+		 * @see http://buddypress.trac.wordpress.org/ticket/5300
+		 */
+		$args = wp_parse_args( $args, array(
+			'component_name' => bp_notifications_get_registered_components()
+		) );
+
+		// Load BuddyPress
+		$bp = buddypress();
+
+		// Build the query
 		$select_sql = "SELECT COUNT(*)";
 		$from_sql   = "FROM {$bp->notifications->table_name}";
 		$where_sql  = self::get_where_sql( $args );
 		$sql        = "{$select_sql} {$from_sql} {$where_sql}";
 
+		// Return the queried results
 		return $wpdb->get_var( $sql );
 	}
 
