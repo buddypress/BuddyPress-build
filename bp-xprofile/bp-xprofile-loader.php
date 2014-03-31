@@ -35,11 +35,11 @@ class BP_XProfile_Component extends BP_Component {
 	 *
 	 * @since BuddyPress (1.5)
 	 */
-	function __construct() {
+	public function __construct() {
 		parent::start(
 			'xprofile',
 			__( 'Extended Profiles', 'buddypress' ),
-			BP_PLUGIN_DIR,
+			buddypress()->plugin_dir,
 			array(
 				'adminbar_myaccount_order' => 20
 			)
@@ -59,6 +59,7 @@ class BP_XProfile_Component extends BP_Component {
 			'caps',
 			'classes',
 			'filters',
+			'settings',
 			'template',
 			'buddybar',
 			'functions',
@@ -97,15 +98,7 @@ class BP_XProfile_Component extends BP_Component {
 		}
 
 		// Set the support field type ids
-		$this->field_types = apply_filters( 'xprofile_field_types', array(
-			'textbox',
-			'textarea',
-			'radio',
-			'checkbox',
-			'selectbox',
-			'multiselectbox',
-			'datebox'
-		) );
+		$this->field_types = apply_filters( 'xprofile_field_types', array_keys( bp_xprofile_get_field_types() ) );
 
 		// Register the visibility levels. See bp_xprofile_get_visibility_levels() to filter
 		$this->visibility_levels = array(
@@ -138,11 +131,18 @@ class BP_XProfile_Component extends BP_Component {
 			'table_name_meta'   => $bp->table_prefix . 'bp_xprofile_meta',
 		);
 
+		$meta_tables = array(
+			'xprofile_group' => $bp->table_prefix . 'bp_xprofile_meta',
+			'xprofile_field' => $bp->table_prefix . 'bp_xprofile_meta',
+			'xprofile_data'  => $bp->table_prefix . 'bp_xprofile_meta',
+		);
+
 		$globals = array(
 			'slug'                  => BP_XPROFILE_SLUG,
 			'has_directory'         => false,
 			'notification_callback' => 'xprofile_format_notifications',
-			'global_tables'         => $global_tables
+			'global_tables'         => $global_tables,
+			'meta_tables'           => $meta_tables,
 		);
 
 		parent::setup_globals( $globals );
@@ -200,15 +200,35 @@ class BP_XProfile_Component extends BP_Component {
 		);
 
 		// Change Avatar
-		$sub_nav[] = array(
-			'name'            => __( 'Change Avatar', 'buddypress' ),
-			'slug'            => 'change-avatar',
-			'parent_url'      => $profile_link,
-			'parent_slug'     => $this->slug,
-			'screen_function' => 'xprofile_screen_change_avatar',
-			'position'        => 30,
-			'user_has_access' => bp_core_can_edit_settings()
-		);
+		if ( buddypress()->avatar->show_avatars ) {
+			$sub_nav[] = array(
+				'name'            => __( 'Change Avatar', 'buddypress' ),
+				'slug'            => 'change-avatar',
+				'parent_url'      => $profile_link,
+				'parent_slug'     => $this->slug,
+				'screen_function' => 'xprofile_screen_change_avatar',
+				'position'        => 30,
+				'user_has_access' => bp_core_can_edit_settings()
+			);
+		}
+
+		// Privacy Settings
+		if ( bp_is_active( 'settings' ) ) {
+
+			// Get the settings slug
+			$settings_slug = bp_get_settings_slug();
+
+			// Add the sub-navigation
+			$sub_nav[] = array(
+				'name'            => __( 'Profile', 'buddypress' ),
+				'slug'            => 'profile',
+				'parent_url'      => trailingslashit( $user_domain . $settings_slug ),
+				'parent_slug'     => $settings_slug,
+				'screen_function' => 'bp_xprofile_screen_settings',
+				'position'        => 30,
+				'user_has_access' => bp_core_can_edit_settings()
+			);
+		}
 
 		parent::setup_nav( $main_nav, $sub_nav );
 	}
@@ -252,14 +272,30 @@ class BP_XProfile_Component extends BP_Component {
 				'href'   => trailingslashit( $profile_link . 'edit' )
 			);
 
-			// Edit Profile
-			$wp_admin_nav[] = array(
-				'parent' => 'my-account-' . $this->id,
-				'id'     => 'my-account-' . $this->id . '-change-avatar',
-				'title'  => __( 'Change Avatar', 'buddypress' ),
-				'href'   => trailingslashit( $profile_link . 'change-avatar' )
-			);
+			// Edit Avatar
+			if ( buddypress()->avatar->show_avatars ) {
+				$wp_admin_nav[] = array(
+					'parent' => 'my-account-' . $this->id,
+					'id'     => 'my-account-' . $this->id . '-change-avatar',
+					'title'  => __( 'Change Avatar', 'buddypress' ),
+					'href'   => trailingslashit( $profile_link . 'change-avatar' )
+				);
+			}
 
+			// Privacy Settings
+			if ( bp_is_active( 'settings' ) ) {
+
+				// Setup the logged in user variables
+				$settings_link = trailingslashit( bp_loggedin_user_domain() . bp_get_settings_slug() );
+
+				// Add main Settings menu
+				$wp_admin_nav[] = array(
+					'parent' => 'my-account-' . $bp->settings->id,
+					'id'     => 'my-account-' . $bp->settings->id . '-profile',
+					'title'  => __( 'Profile', 'buddypress' ),
+					'href'   => trailingslashit( $settings_link . 'profile' )
+				);
+			}
 		}
 
 		parent::setup_admin_bar( $wp_admin_nav );

@@ -194,7 +194,7 @@ function bp_version_updater() {
 		'notifications' => 1,
 	) );
 
-	require_once( BP_PLUGIN_DIR . '/bp-core/admin/bp-core-schema.php' );
+	require_once( buddypress()->plugin_dir . '/bp-core/admin/bp-core-schema.php' );
 
 	// Install BP schema and activate only Activity and XProfile
 	if ( bp_is_install() ) {
@@ -224,6 +224,16 @@ function bp_version_updater() {
 		// 1.9
 		if ( $raw_db_version < 7553 ) {
 			bp_update_to_1_9();
+		}
+
+		// 1.9.2
+		if ( $raw_db_version < 7731 ) {
+			bp_update_to_1_9_2();
+		}
+
+		// 2.0
+		if ( $raw_db_version < 7892 ) {
+			bp_update_to_2_0();
 		}
 	}
 
@@ -301,6 +311,95 @@ function bp_update_to_1_9() {
 }
 
 /**
+ * Perform database updates for BP 1.9.2
+ *
+ * In 1.9, BuddyPress stopped registering its theme directory when it detected
+ * that bp-default (or a child theme) was not currently being used, in effect
+ * deprecating bp-default. However, this ended up causing problems when site
+ * admins using bp-default would switch away from the theme temporarily:
+ * bp-default would no longer be available, with no obvious way (outside of
+ * a manual filter) to restore it. In 1.9.2, we add an option that flags
+ * whether bp-default or a child theme is active at the time of upgrade; if so,
+ * the theme directory will continue to be registered even if the theme is
+ * deactivated temporarily. Thus, new installations will not see bp-default,
+ * but legacy installations using the theme will continue to see it.
+ *
+ * @since BuddyPress (1.9.2)
+ */
+function bp_update_to_1_9_2() {
+	if ( 'bp-default' === get_stylesheet() || 'bp-default' === get_template() ) {
+		update_site_option( '_bp_retain_bp_default', 1 );
+	}
+}
+
+/**
+ * 2.0 update routine.
+ *
+ * - Ensure that the activity tables are installed, for last_activity storage.
+ * - Migrate last_activity data from usermeta to activity table
+ * - Add values for all BuddyPress options to the options table
+ */
+function bp_update_to_2_0() {
+	global $wpdb;
+
+	/** Install activity tables for 'last_activity' ***************************/
+
+	bp_core_install_activity_streams();
+
+	/** Migrate 'last_activity' data ******************************************/
+
+	bp_last_activity_migrate();
+
+	/** Migrate signups data **************************************************/
+
+	if ( ! is_multisite() ) {
+
+		if ( empty( $wpdb->signups ) ) {
+			bp_core_install_signups();
+		}
+
+		$signups = get_users( array(
+			'fields'       => 'all_with_meta',
+			'meta_key'     => 'activation_key',
+			'meta_compare' => 'EXISTS',
+		) );
+
+		if ( empty( $signups ) ) {
+			return;
+		}
+
+		foreach ( $signups as $signup ) {
+			$meta = array();
+
+			if ( bp_is_active( 'xprofile' ) ) {
+				$meta['field_1'] = $signup->display_name;
+			}
+
+			$meta['password'] = $signup->user_pass;
+
+			$user_login = preg_replace( '/\s+/', '', sanitize_user( $signup->user_login, true ) );
+			$user_email = sanitize_email( $signup->user_email );
+
+			BP_Signup::add( array(
+				'user_login'     => $user_login,
+				'user_email'     => $user_email,
+				'registered'     => $signup->user_registered,
+				'activation_key' => $signup->activation_key,
+				'meta'           => $meta
+			) );
+
+			// Deleting these options will remove signups from users count
+			delete_user_option( $signup->ID, 'capabilities' );
+			delete_user_option( $signup->ID, 'user_level'   );
+		}
+	}
+
+	/** Add BP options to the options table ***********************************/
+
+	bp_add_options();
+}
+
+/**
  * Redirect user to BP's What's New page on first page load after activation.
  *
  * @since BuddyPress (1.7.0)
@@ -340,6 +439,9 @@ function bp_activation() {
 
 	// Force refresh theme roots.
 	delete_site_transient( 'theme_roots' );
+
+	// Add options
+	bp_add_options();
 
 	// Use as of (1.6)
 	do_action( 'bp_activation' );

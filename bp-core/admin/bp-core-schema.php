@@ -23,13 +23,13 @@ function bp_core_install( $active_components = false ) {
 	if ( empty( $active_components ) )
 		$active_components = apply_filters( 'bp_active_components', bp_get_option( 'bp-active-components' ) );
 
+	// Activity Streams
+	// Install tables even when inactive, to store last_activity data
+	bp_core_install_activity_streams();
+
 	// Notifications
 	if ( !empty( $active_components['notifications'] ) )
 		bp_core_install_notifications();
-
-	// Activity Streams
-	if ( !empty( $active_components['activity'] ) )
-		bp_core_install_activity_streams();
 
 	// Friend Connections
 	if ( !empty( $active_components['friends'] ) )
@@ -50,6 +50,10 @@ function bp_core_install( $active_components = false ) {
 	// Blog tracking
 	if ( !empty( $active_components['blogs'] ) )
 		bp_core_install_blog_tracking();
+
+	// Install the signups table
+	bp_core_install_signups();
+
 }
 
 function bp_core_install_notifications() {
@@ -342,4 +346,47 @@ function bp_core_install_blog_tracking() {
 		       ) {$charset_collate};";
 
 	dbDelta( $sql );
+}
+
+/**
+ * Install the signups table.
+ *
+ * @since BuddyPress (2.0.0)
+ *
+ * @global $wpdb
+ * @uses wp_get_db_schema() to get WordPress ms_global schema
+ */
+function bp_core_install_signups() {
+	global $wpdb;
+
+	// Multisite installations already have the signups table
+	if ( ! empty( $wpdb->signups ) ) {
+		return;
+	}
+
+	$wpdb->signups = bp_core_get_table_prefix() . 'signups';
+
+	// Setting the charset to be sure WordPress upgrade.php is loaded
+	$charset_collate = bp_core_set_charset();
+
+	// Use WP's core CREATE TABLE query
+	$create_queries = wp_get_db_schema( 'ms_global' );
+
+	if ( ! is_array( $create_queries ) ) {
+		$create_queries = explode( ';', $create_queries );
+		$create_queries = array_filter( $create_queries );
+	}
+
+	// Filter out all the queries except wp_signups
+	foreach ( $create_queries as $key => $query ) {
+		if ( preg_match( "|CREATE TABLE ([^ ]*)|", $query, $matches ) ) {
+			if ( $wpdb->signups != trim( $matches[1], '`' ) ) {
+				unset( $create_queries[ $key ] );
+			}
+		}
+	}
+
+	if ( ! empty( $create_queries ) ) {
+		dbDelta( $create_queries );
+	}
 }
