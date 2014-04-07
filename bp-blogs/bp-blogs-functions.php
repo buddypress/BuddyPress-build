@@ -630,7 +630,6 @@ function bp_blogs_record_comment( $comment_id, $is_approved = true ) {
 
 			// find the parent 'new_blog_post' activity entry
 			$parent_activity_id = bp_activity_get_activity_id( array(
-				'user_id'           => $user_id,
 				'component'         => 'blogs',
 				'type'              => 'new_blog_post',
 				'item_id'           => $blog_id,
@@ -973,6 +972,7 @@ function bp_blogs_transition_activity_status( $new_status, $old_status, $comment
 	 * If a blog comment transitions to a "delete" or "hold" status, delete the activity item.
 	 * If a blog comment transitions to trashed, or spammed, mark the activity as spam.
 	 * If a blog comment transitions to approved (and the activity exists), mark the activity as ham.
+	 * If a blog comment transitions to unapproved (and the activity exists), mark the activity as spam.
 	 * Otherwise, record the comment into the activity stream.
 	 */
 
@@ -981,7 +981,7 @@ function bp_blogs_transition_activity_status( $new_status, $old_status, $comment
 		return bp_blogs_remove_comment( $comment->comment_ID );
 
 	// These clauses handle trash, spam, and un-spams.
-	} elseif ( in_array( $new_status, array( 'trash', 'spam' ) ) ) {
+	} elseif ( in_array( $new_status, array( 'trash', 'spam', 'unapproved' ) ) ) {
 		$action = 'spam_activity';
 	} elseif ( 'approved' == $new_status ) {
 		$action = 'ham_activity';

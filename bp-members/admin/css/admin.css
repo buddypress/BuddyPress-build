@@ -84,6 +84,11 @@ div#community-profile-page div#bp_xprofile_user_admin_avatar div.avatar {
 	margin:0 auto;
 }
 
+div#community-profile-page div#bp_xprofile_user_admin_avatar div.avatar img {
+	max-width: 100%;
+	height: auto;
+}
+
 div#community-profile-page div#bp_xprofile_user_admin_avatar a {
 	display:block;
 	margin:1em 0;
@@ -96,6 +101,15 @@ div#community-profile-page p.not-activated {
 	color:red;
 }
 
+#community-profile-page #submitdiv #publishing-action {
+	float: none;
+	width: 100%;
+}
+
+.bp-view-profile {
+	float: left;
+}
+
 .alt {
 	background: none;
 }
@@ -103,6 +117,7 @@ div#community-profile-page p.not-activated {
 	border-bottom: dotted 1px #ccc;
 	font-size: 14px;
 	margin: 15px 0;
+	padding: 10px;
 }
 .bp-profile-field:last-child {
 	border-bottom: 0;
