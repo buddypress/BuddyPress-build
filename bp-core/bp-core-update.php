@@ -235,6 +235,11 @@ function bp_version_updater() {
 		if ( $raw_db_version < 7892 ) {
 			bp_update_to_2_0();
 		}
+
+		// 2.0.1
+		if ( $raw_db_version < 8311 ) {
+			bp_update_to_2_0_1();
+		}
 	}
 
 	/** All done! *************************************************************/
@@ -242,6 +247,8 @@ function bp_version_updater() {
 	// Bump the version
 	bp_version_bump();
 }
+
+/** Upgrade Routines **********************************************************/
 
 /**
  * Remove unused metadata from database when upgrading from < 1.5.
@@ -338,9 +345,10 @@ function bp_update_to_1_9_2() {
  * - Ensure that the activity tables are installed, for last_activity storage.
  * - Migrate last_activity data from usermeta to activity table
  * - Add values for all BuddyPress options to the options table
+ *
+ * @since BuddyPress (2.0.0)
  */
 function bp_update_to_2_0() {
-	global $wpdb;
 
 	/** Install activity tables for 'last_activity' ***************************/
 
@@ -354,49 +362,30 @@ function bp_update_to_2_0() {
 
 	if ( ! is_multisite() ) {
 
-		if ( empty( $wpdb->signups ) ) {
-			bp_core_install_signups();
-		}
+		// Maybe install the signups table
+		bp_core_maybe_install_signups();
 
-		$signups = get_users( array(
-			'fields'       => 'all_with_meta',
-			'meta_key'     => 'activation_key',
-			'meta_compare' => 'EXISTS',
-		) );
-
-		if ( empty( $signups ) ) {
-			return;
-		}
-
-		foreach ( $signups as $signup ) {
-			$meta = array();
-
-			if ( bp_is_active( 'xprofile' ) ) {
-				$meta['field_1'] = $signup->display_name;
-			}
-
-			$meta['password'] = $signup->user_pass;
-
-			$user_login = preg_replace( '/\s+/', '', sanitize_user( $signup->user_login, true ) );
-			$user_email = sanitize_email( $signup->user_email );
-
-			BP_Signup::add( array(
-				'user_login'     => $user_login,
-				'user_email'     => $user_email,
-				'registered'     => $signup->user_registered,
-				'activation_key' => $signup->activation_key,
-				'meta'           => $meta
-			) );
-
-			// Deleting these options will remove signups from users count
-			delete_user_option( $signup->ID, 'capabilities' );
-			delete_user_option( $signup->ID, 'user_level'   );
-		}
+		// Run the migration script
+		bp_members_migrate_signups();
 	}
 
 	/** Add BP options to the options table ***********************************/
 
 	bp_add_options();
+}
+
+/**
+ * 2.0.1 database upgrade routine
+ *
+ * @since BuddyPress (2.0.1)
+ *
+ * @return void
+ */
+function bp_update_to_2_0_1() {
+
+	// We purposely call this during both the 2.0 upgrade and the 2.0.1 upgrade.
+	// Don't worry; it won't break anything, and safely handles all cases.
+	bp_core_maybe_install_signups();
 }
 
 /**
@@ -422,6 +411,56 @@ function bp_add_activation_redirect() {
 
 	// Add the transient to redirect
 	set_transient( '_bp_activation_redirect', true, 30 );
+}
+
+/** Signups *******************************************************************/
+
+/**
+ * Check if the signups table needs to be created.
+ *
+ * @since BuddyPress (2.0.0)
+ *
+ * @global WPDB $wpdb
+ *
+ * @return bool If signups table exists
+ */
+function bp_core_maybe_install_signups() {
+
+	// Bail if we are explicitly not upgrading global tables
+	if ( defined( 'DO_NOT_UPGRADE_GLOBAL_TABLES' ) ) {
+		return false;
+	}
+
+	global $wpdb;
+
+	// The table to run queries against
+	$signups_table = $wpdb->base_prefix . 'signups';
+
+	// Suppress errors because users shouldn't see what happens next
+	$old_suppress  = $wpdb->suppress_errors();
+
+	// Never use bp_core_get_table_prefix() for any global users tables
+	$table_exists  = (bool) $wpdb->get_results( "DESCRIBE {$signups_table};" );
+
+	// Table already exists, so maybe upgrade instead?
+	if ( true === $table_exists ) {
+
+		// Look for the 'signup_id' column
+		$column_exists = $wpdb->query( "SHOW COLUMNS FROM {$signups_table} LIKE 'signup_id'" );
+
+		// 'signup_id' column doesn't exist, so run the upgrade
+		if ( empty( $column_exists ) ) {
+			bp_core_upgrade_signups();
+		}
+
+	// Table does not exist, and we are a single site, so install the multisite
+	// signups table using WordPress core's database schema.
+	} elseif ( ! is_multisite() ) {
+		bp_core_install_signups();
+	}
+
+	// Restore previous error suppression setting
+	$wpdb->suppress_errors( $old_suppress );
 }
 
 /** Activation Actions ********************************************************/

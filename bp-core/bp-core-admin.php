@@ -652,6 +652,7 @@ class BP_Admin {
 					<?php printf( __( 'Thanks for updating! With a focus on speed, admin tools, and developer enhancements, BuddyPress %s is our leanest and most powerful version yet.', 'buddypress' ), $display_version ); ?>
 				<?php endif; ?>
 			</div>
+
 			<div class="bp-badge"></div>
 
 			<h2 class="nav-tab-wrapper">
