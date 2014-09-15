@@ -3,7 +3,7 @@ Contributors: johnjamesjacoby, DJPaul, boonebgorges, r-a-y
 Tags: social networking, activity, profiles, messaging, friends, groups, forums, notifications, settings, twitter, facebook, social, community, networks, networking, cms
 Requires at least: 3.6
 Tested up to: 4.0
-Stable tag: 2.0.2
+Stable tag: 2.0.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -69,14 +69,16 @@ Check out the development trunk of BuddyPress via Subversion, from <a href="http
 4. **Extensible Groups** - Powerful public, private or hidden groups allow your users to break the discussion down into specific topics. Extend groups with your own custom features using the group extension API.
 5. **Friend Connections** - Let your users make connections so they can track the activity of others, or filter to show only those users they care about the most.
 6. **Private Messaging** - Private messaging will allow your users to talk to each other directly and in private. Not just limited to one-on-one discussions, your users can send messages to multiple recipients.
-7. **Site Tracking** - Track posts and comments in the activity stream, and allow your users to add their own blogs using WordPress' Multisite feature.
-8. **Notifications** - Keep your members up-to-date with relevant activity via toolbar and email notifications.
+7. **Blogging Network** - Allow your users to start their own blogs using WordPress's Multisite feature, and track posts and comments from across your blog network in the activity stream.
 
 == Languages ==
 
 BuddyPress is available in more than 20 languages. For more information, check out the <a href="http://codex.buddypress.org/getting-started/translations/">translation page</a> on the BuddyPress Codex.
 
 == Upgrade Notice ==
+
+= 2.0.3 =
+See: http://codex.buddypress.org/releases/version-2-0-3/
 
 = 2.0.2 =
 See: http://codex.buddypress.org/releases/version-2-0-2/
@@ -145,6 +147,9 @@ Compatibility with WordPress 3.1
 Fixes over 10 bugs.
 
 == Changelog ==
+
+= 2.0.3 =
+See: http://codex.buddypress.org/releases/version-2-0-3/
 
 = 2.0.2 =
 See: http://codex.buddypress.org/releases/version-2-0-2/
