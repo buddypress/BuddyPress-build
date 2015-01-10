@@ -301,6 +301,10 @@ class BP_Notifications_Template {
 		}
 
 		if ( (int) $this->total_notification_count && (int) $this->pag_num ) {
+			$add_args = array(
+				'sort_order' => $this->sort_order,
+			);
+
 			$this->pag_links = paginate_links( array(
 				'base'      => add_query_arg( $this->page_arg, '%#%' ),
 				'format'    => '',
@@ -309,6 +313,7 @@ class BP_Notifications_Template {
 				'prev_text' => _x( '&larr;', 'Notifications pagination previous text', 'buddypress' ),
 				'next_text' => _x( '&rarr;', 'Notifications pagination next text',     'buddypress' ),
 				'mid_size'  => 1,
+				'add_args'  => $add_args,
 			) );
 
 			// Remove first page from pagination
@@ -674,9 +679,6 @@ function bp_the_notification_description() {
 	 * @return string
 	 */
 	function bp_get_the_notification_description() {
-
-		// Setup local variables
-		$description  = '';
 		$bp           = buddypress();
 		$notification = $bp->notifications->query_loop->notification;
 
@@ -1048,4 +1050,26 @@ function bp_notifications_sort_order_form() {
 	</form>
 
 <?php
+}
+
+/**
+ * Output the dropdown for bulk management of notifications.
+ *
+ * @since BuddyPress (2.2.0)
+ */
+function bp_notifications_bulk_management_dropdown() {
+	?>
+	<label class="bp-screen-reader-text" for="notification-select"><?php _e( 'Select Bulk Action', 'buddypress' ); ?></label>
+	<select name="notification_bulk_action" id="notification-select">
+		<option value="" selected="selected"><?php _e( 'Bulk Actions', 'buddypress' ); ?></option>
+
+		<?php if ( bp_is_current_action( 'unread' ) ) : ?>
+			<option value="read"><?php _e( 'Mark read', 'buddypress' ); ?></option>
+		<?php elseif ( bp_is_current_action( 'read' ) ) : ?>
+			<option value="unread"><?php _e( 'Mark unread', 'buddypress' ); ?></option>
+		<?php endif; ?>
+		<option value="delete"><?php _e( 'Delete', 'buddypress' ); ?></option>
+	</select>
+	<input type="submit" id="notification-bulk-manage" class="button action" value="<?php esc_attr_e( 'Apply', 'buddypress' ); ?>">
+	<?php
 }
