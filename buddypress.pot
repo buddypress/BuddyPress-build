@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: BuddyPress 2.2-beta\n"
 "Report-Msgid-Bugs-To: https://buddypress.trac.wordpress.org\n"
-"POT-Creation-Date: 2015-01-09 23:28:38+00:00\n"
+"POT-Creation-Date: 2015-01-15 00:34:35+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -544,7 +544,7 @@ msgstr ""
 #: bp-groups/bp-groups-template.php:3038 bp-groups/bp-groups-template.php:4080
 #: bp-groups/bp-groups-template.php:4349
 #: bp-messages/bp-messages-classes.php:341
-#: bp-messages/bp-messages-template.php:126
+#: bp-messages/bp-messages-template.php:125
 msgid ""
 "Arguments passed to %1$s should be in an associative array. See the inline "
 "documentation at %2$s for more details."
@@ -633,7 +633,7 @@ msgstr ""
 #: bp-members/bp-members-template.php:1400
 #: bp-members/bp-members-template.php:1449
 #: bp-messages/bp-messages-loader.php:287
-#: bp-messages/bp-messages-template.php:1000
+#: bp-messages/bp-messages-template.php:999
 #: bp-notifications/bp-notifications-loader.php:232
 #: bp-templates/bp-legacy/buddypress/groups/single/admin.php:185
 #: bp-templates/bp-legacy/buddypress/groups/single/admin.php:212
@@ -793,9 +793,9 @@ msgstr ""
 #: bp-members/admin/bp-members-classes.php:285
 #: bp-members/admin/bp-members-classes.php:507
 #: bp-members/admin/bp-members-classes.php:633
-#: bp-messages/bp-messages-template.php:1265
-#: bp-notifications/bp-notifications-template.php:878
-#: bp-notifications/bp-notifications-template.php:1071
+#: bp-messages/bp-messages-template.php:1285
+#: bp-notifications/bp-notifications-template.php:1026
+#: bp-notifications/bp-notifications-template.php:1254
 #: bp-templates/bp-legacy/buddypress/activity/comment.php:43
 #: bp-templates/bp-legacy/buddypress/members/single/messages/messages-loop.php:73
 #: bp-templates/bp-legacy/buddypress/members/single/messages/single.php:28
@@ -1019,7 +1019,7 @@ msgstr ""
 #: bp-blogs/bp-blogs-template.php:1429 bp-core/deprecated/1.5.php:417
 #: bp-forums/bp-forums-template.php:2199 bp-groups/bp-groups-template.php:3860
 #: bp-members/bp-members-template.php:1237
-#: bp-messages/bp-messages-template.php:1105
+#: bp-messages/bp-messages-template.php:1113
 msgid "Search"
 msgstr ""
 
@@ -1259,7 +1259,7 @@ msgstr ""
 #: bp-members/admin/bp-members-classes.php:281
 #: bp-members/admin/bp-members-classes.php:625
 #: bp-members/admin/bp-members-classes.php:629
-#: bp-messages/bp-messages-template.php:1492
+#: bp-messages/bp-messages-template.php:1512
 #: bp-templates/bp-legacy/buddypress/members/activate.php:29
 msgid "Activate"
 msgstr ""
@@ -2216,11 +2216,11 @@ msgstr ""
 msgid "Search anything..."
 msgstr ""
 
-#: bp-core/bp-core-template.php:631
+#: bp-core/bp-core-template.php:629
 msgid " [&hellip;]"
 msgstr ""
 
-#: bp-core/bp-core-template.php:855
+#: bp-core/bp-core-template.php:853
 msgid "Community"
 msgstr ""
 
@@ -2478,8 +2478,8 @@ msgstr ""
 #: bp-forums/bp-forums-template.php:758 bp-forums/bp-forums-template.php:872
 #: bp-forums/bp-forums-template.php:2017
 #: bp-messages/bp-messages-classes.php:678
-#: bp-messages/bp-messages-template.php:2080
-#: bp-messages/bp-messages-template.php:2321
+#: bp-messages/bp-messages-template.php:2100
+#: bp-messages/bp-messages-template.php:2341
 msgid "Deleted User"
 msgstr ""
 
@@ -3991,7 +3991,7 @@ msgid "This is a hidden group and only invited members can join."
 msgstr ""
 
 #: bp-groups/bp-groups-template.php:3499
-#: bp-notifications/bp-notifications-template.php:1040
+#: bp-notifications/bp-notifications-template.php:1223
 #: bp-templates/bp-legacy/buddypress/blogs/index.php:36
 #: bp-templates/bp-legacy/buddypress/forums/index.php:42
 #: bp-templates/bp-legacy/buddypress/groups/index.php:36
@@ -4858,68 +4858,68 @@ msgstr ""
 msgid "A member sends you a new message"
 msgstr ""
 
-#: bp-messages/bp-messages-template.php:916
+#: bp-messages/bp-messages-template.php:915
 msgid "%d unread"
 msgid_plural "%d unread"
 msgstr[0] ""
 msgstr[1] ""
 
-#: bp-messages/bp-messages-template.php:1089
+#: bp-messages/bp-messages-template.php:1088
 msgid "Viewing 1 message"
 msgid_plural "Viewing %1$s - %2$s of %3$s messages"
 msgstr[0] ""
 msgstr[1] ""
 
-#: bp-messages/bp-messages-template.php:1103
+#: bp-messages/bp-messages-template.php:1111
 msgid "Search Messages"
 msgstr ""
 
-#: bp-messages/bp-messages-template.php:1231
+#: bp-messages/bp-messages-template.php:1251
 msgid "Select:"
 msgstr ""
 
-#: bp-messages/bp-messages-template.php:1235
+#: bp-messages/bp-messages-template.php:1255
 msgid "Select"
 msgstr ""
 
-#: bp-messages/bp-messages-template.php:1248
+#: bp-messages/bp-messages-template.php:1268
 msgid "Delete Selected"
 msgstr ""
 
-#: bp-messages/bp-messages-template.php:1260
-#: bp-notifications/bp-notifications-template.php:1062
+#: bp-messages/bp-messages-template.php:1280
+#: bp-notifications/bp-notifications-template.php:1245
 msgid "Select Bulk Action"
 msgstr ""
 
-#: bp-messages/bp-messages-template.php:1262
-#: bp-notifications/bp-notifications-template.php:1064
+#: bp-messages/bp-messages-template.php:1282
+#: bp-notifications/bp-notifications-template.php:1247
 msgid "Bulk Actions"
 msgstr ""
 
-#: bp-messages/bp-messages-template.php:1263
-#: bp-notifications/bp-notifications-template.php:1067
+#: bp-messages/bp-messages-template.php:1283
+#: bp-notifications/bp-notifications-template.php:1250
 msgid "Mark read"
 msgstr ""
 
-#: bp-messages/bp-messages-template.php:1264
-#: bp-notifications/bp-notifications-template.php:1069
+#: bp-messages/bp-messages-template.php:1284
+#: bp-notifications/bp-notifications-template.php:1252
 msgid "Mark unread"
 msgstr ""
 
-#: bp-messages/bp-messages-template.php:1267
-#: bp-notifications/bp-notifications-template.php:1073
+#: bp-messages/bp-messages-template.php:1287
+#: bp-notifications/bp-notifications-template.php:1256
 msgid "Apply"
 msgstr ""
 
-#: bp-messages/bp-messages-template.php:1318
+#: bp-messages/bp-messages-template.php:1338
 msgid "Currently Active"
 msgstr ""
 
-#: bp-messages/bp-messages-template.php:1490
+#: bp-messages/bp-messages-template.php:1510
 msgid "Deactivate"
 msgstr ""
 
-#: bp-messages/bp-messages-template.php:1557
+#: bp-messages/bp-messages-template.php:1577
 #: bp-templates/bp-legacy/buddypress/members/register.php:90
 #: bp-templates/bp-legacy/buddypress/members/single/profile/edit.php:45
 #: bp-templates/bp-legacy/buddypress-functions.php:241
@@ -4927,19 +4927,19 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
-#: bp-messages/bp-messages-template.php:1635
+#: bp-messages/bp-messages-template.php:1655
 msgid "Send a private message to this user."
 msgstr ""
 
-#: bp-messages/bp-messages-template.php:1636
+#: bp-messages/bp-messages-template.php:1656
 msgid "Private Message"
 msgstr ""
 
-#: bp-messages/bp-messages-template.php:2035
+#: bp-messages/bp-messages-template.php:2055
 msgid "%s recipients"
 msgstr ""
 
-#: bp-messages/bp-messages-template.php:2378
+#: bp-messages/bp-messages-template.php:2398
 #: bp-templates/bp-legacy/buddypress-functions.php:1349
 msgid "Sent %s"
 msgstr ""
@@ -4998,30 +4998,30 @@ msgid "Search Notifications..."
 msgstr ""
 
 #: bp-notifications/bp-notifications-loader.php:208
-#: bp-notifications/bp-notifications-template.php:722
+#: bp-notifications/bp-notifications-template.php:837
 #: bp-templates/bp-legacy/buddypress/members/single/messages/messages-loop.php:68
 msgid "Read"
 msgstr ""
 
-#: bp-notifications/bp-notifications-template.php:659
+#: bp-notifications/bp-notifications-template.php:759
 msgid "Date not found"
 msgstr ""
 
-#: bp-notifications/bp-notifications-template.php:995
+#: bp-notifications/bp-notifications-template.php:1163
 msgid "Viewing 1 notification"
 msgid_plural "Viewing %1$s - %2$s of %3$s notifications"
 msgstr[0] ""
 msgstr[1] ""
 
-#: bp-notifications/bp-notifications-template.php:1043
+#: bp-notifications/bp-notifications-template.php:1226
 msgid "Newest First"
 msgstr ""
 
-#: bp-notifications/bp-notifications-template.php:1044
+#: bp-notifications/bp-notifications-template.php:1227
 msgid "Oldest First"
 msgstr ""
 
-#: bp-notifications/bp-notifications-template.php:1048
+#: bp-notifications/bp-notifications-template.php:1231
 msgid "Go"
 msgstr ""
 
@@ -5493,12 +5493,11 @@ msgid "Crop Image"
 msgstr ""
 
 #: bp-templates/bp-legacy/buddypress/groups/create.php:207
-#: bp-templates/bp-legacy/buddypress/groups/single/invites-loop.php:79
 msgid "Select people to invite from your friends list."
 msgstr ""
 
 #: bp-templates/bp-legacy/buddypress/groups/create.php:225
-#: bp-templates/bp-legacy/buddypress/groups/single/invites-loop.php:51
+#: bp-templates/bp-legacy/buddypress/groups/single/invites-loop.php:52
 #: bp-templates/bp-legacy/buddypress-functions.php:1099
 msgid "Remove Invite"
 msgstr ""
@@ -5669,7 +5668,11 @@ msgstr ""
 msgid "Group Mods"
 msgstr ""
 
-#: bp-templates/bp-legacy/buddypress/groups/single/invites-loop.php:90
+#: bp-templates/bp-legacy/buddypress/groups/single/invites-loop.php:81
+msgid "Select friends to invite."
+msgstr ""
+
+#: bp-templates/bp-legacy/buddypress/groups/single/invites-loop.php:91
 msgid "Send Invites"
 msgstr ""
 
@@ -5703,6 +5706,20 @@ msgstr ""
 
 #: bp-templates/bp-legacy/buddypress/groups/single/requests-loop.php:62
 msgid "There are no pending membership requests."
+msgstr ""
+
+#: bp-templates/bp-legacy/buddypress/groups/single/send-invites.php:24
+msgid "Group invitations can only be extended to friends."
+msgstr ""
+
+#: bp-templates/bp-legacy/buddypress/groups/single/send-invites.php:25
+msgid ""
+"Once you've made some friendships, you'll be able to invite those members "
+"to this group."
+msgstr ""
+
+#: bp-templates/bp-legacy/buddypress/groups/single/send-invites.php:33
+msgid "All of your friends already belong to this group."
 msgstr ""
 
 #: bp-templates/bp-legacy/buddypress/members/activate.php:14
@@ -7274,37 +7291,37 @@ msgctxt "Records the timestamp that the user registered into the activity stream
 msgid "registered %s"
 msgstr ""
 
-#: bp-messages/bp-messages-template.php:228
+#: bp-messages/bp-messages-template.php:227
 msgctxt "Message pagination previous text"
 msgid "&larr;"
 msgstr ""
 
-#: bp-messages/bp-messages-template.php:229
+#: bp-messages/bp-messages-template.php:228
 msgctxt "Message pagination next text"
 msgid "&rarr;"
 msgstr ""
 
-#: bp-messages/bp-messages-template.php:1236
+#: bp-messages/bp-messages-template.php:1256
 msgctxt "Message dropdown filter"
 msgid "Read"
 msgstr ""
 
-#: bp-messages/bp-messages-template.php:1237
+#: bp-messages/bp-messages-template.php:1257
 msgctxt "Message dropdown filter"
 msgid "Unread"
 msgstr ""
 
-#: bp-messages/bp-messages-template.php:1238
+#: bp-messages/bp-messages-template.php:1258
 msgctxt "Message dropdown filter"
 msgid "All"
 msgstr ""
 
-#: bp-messages/bp-messages-template.php:1243
+#: bp-messages/bp-messages-template.php:1263
 msgctxt "Message management markup"
 msgid "Mark as Read"
 msgstr ""
 
-#: bp-messages/bp-messages-template.php:1244
+#: bp-messages/bp-messages-template.php:1264
 msgctxt "Message management markup"
 msgid "Mark as Unread"
 msgstr ""
@@ -7354,17 +7371,17 @@ msgctxt "My Account Notification sub nav"
 msgid "Unread"
 msgstr ""
 
-#: bp-notifications/bp-notifications-template.php:313
+#: bp-notifications/bp-notifications-template.php:345
 msgctxt "Notifications pagination previous text"
 msgid "&larr;"
 msgstr ""
 
-#: bp-notifications/bp-notifications-template.php:314
+#: bp-notifications/bp-notifications-template.php:346
 msgctxt "Notifications pagination next text"
 msgid "&rarr;"
 msgstr ""
 
-#: bp-notifications/bp-notifications-template.php:787
+#: bp-notifications/bp-notifications-template.php:915
 msgctxt "Notification screen action"
 msgid "Unread"
 msgstr ""

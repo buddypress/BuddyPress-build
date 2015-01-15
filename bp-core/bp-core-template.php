@@ -7,7 +7,7 @@
  */
 
 // Exit if accessed directly
-if ( !defined( 'ABSPATH' ) ) exit;
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Output the "options nav", the secondary-level single item navigation menu.
@@ -557,8 +557,6 @@ function bp_form_field_attributes( $name = '', $attributes = array() ) {
 		 * @param string $name       The field name
 		 */
 		$attributes = (array) apply_filters( 'bp_get_form_field_attributes', $attributes, $name );
-
-		$attributes = array_unique( $attributes );
 
 		foreach( $attributes as $attr => $value ) {
 			$retval .= sprintf( ' %s="%s"', sanitize_key( $attr ), esc_attr( $value ) );
