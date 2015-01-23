@@ -135,11 +135,12 @@ class BP_Activity_Activity {
 	 * Populate the object with data about the specific activity item.
 	 */
 	public function populate() {
-		global $wpdb, $bp;
+		global $wpdb;
 
 		$row = wp_cache_get( $this->id, 'bp_activity' );
 
 		if ( false === $row ) {
+			$bp  = buddypress();
 			$row = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$bp->activity->table_name} WHERE id = %d", $this->id ) );
 
 			wp_cache_set( $this->id, $row, 'bp_activity' );
@@ -184,7 +185,9 @@ class BP_Activity_Activity {
 	 * @return bool True on success.
 	 */
 	public function save() {
-		global $wpdb, $bp;
+		global $wpdb;
+
+		$bp = buddypress();
 
 		$this->id                = apply_filters_ref_array( 'bp_activity_id_before_save',                array( $this->id,                &$this ) );
 		$this->item_id           = apply_filters_ref_array( 'bp_activity_item_id_before_save',           array( $this->item_id,           &$this ) );
@@ -212,28 +215,33 @@ class BP_Activity_Activity {
 		 */
 		do_action_ref_array( 'bp_activity_before_save', array( &$this ) );
 
-		if ( !$this->component || !$this->type )
+		if ( empty( $this->component ) || empty( $this->type ) ) {
 			return false;
+		}
 
-		if ( !$this->primary_link )
+		if ( empty( $this->primary_link ) ) {
 			$this->primary_link = bp_loggedin_user_domain();
+		}
 
 		// If we have an existing ID, update the activity item, otherwise insert it.
-		if ( $this->id )
+		if ( ! empty( $this->id ) ) {
 			$q = $wpdb->prepare( "UPDATE {$bp->activity->table_name} SET user_id = %d, component = %s, type = %s, action = %s, content = %s, primary_link = %s, date_recorded = %s, item_id = %d, secondary_item_id = %d, hide_sitewide = %d, is_spam = %d WHERE id = %d", $this->user_id, $this->component, $this->type, $this->action, $this->content, $this->primary_link, $this->date_recorded, $this->item_id, $this->secondary_item_id, $this->hide_sitewide, $this->is_spam, $this->id );
-		else
+		} else {
 			$q = $wpdb->prepare( "INSERT INTO {$bp->activity->table_name} ( user_id, component, type, action, content, primary_link, date_recorded, item_id, secondary_item_id, hide_sitewide, is_spam ) VALUES ( %d, %s, %s, %s, %s, %s, %s, %d, %d, %d, %d )", $this->user_id, $this->component, $this->type, $this->action, $this->content, $this->primary_link, $this->date_recorded, $this->item_id, $this->secondary_item_id, $this->hide_sitewide, $this->is_spam );
+		}
 
-		if ( false === $wpdb->query( $q ) )
+		if ( false === $wpdb->query( $q ) ) {
 			return false;
+		}
 
 		// If this is a new activity item, set the $id property
-		if ( empty( $this->id ) )
+		if ( empty( $this->id ) ) {
 			$this->id = $wpdb->insert_id;
 
 		// If an existing activity item, prevent any changes to the content generating new @mention notifications.
-		else
+		} else {
 			add_filter( 'bp_activity_at_name_do_notifications', '__return_false' );
+		}
 
 		/**
 		 * Fires after an activity item has been saved to the database.
@@ -286,7 +294,7 @@ class BP_Activity_Activity {
 	 *     - 'activities' is an array of the located activities
 	 */
 	public static function get( $args = array() ) {
-		global $wpdb, $bp;
+		global $wpdb;
 
 		// Backward compatibility with old method of passing arguments
 		if ( !is_array( $args ) || func_num_args() > 1 ) {
@@ -310,7 +318,8 @@ class BP_Activity_Activity {
 			$args      = bp_core_parse_args_array( $old_args_keys, $func_args );
 		}
 
-		$defaults = array(
+		$bp = buddypress();
+		$r  = wp_parse_args( $args, array(
 			'page'              => 1,          // The current page
 			'per_page'          => 25,         // Activity items per page
 			'max'               => false,      // Max number of items to return
@@ -328,8 +337,7 @@ class BP_Activity_Activity {
 			'spam'              => 'ham_only', // Spam status
 			'update_meta_cache' => true,
 			'count_total'       => false,
-		);
-		$r = wp_parse_args( $args, $defaults );
+		) );
 
 		// Select conditions
 		$select_sql = "SELECT DISTINCT a.id";
@@ -351,20 +359,18 @@ class BP_Activity_Activity {
 			// Add our SQL conditions if matches were found
 			if ( ! empty( $scope_query['sql'] ) ) {
 				$where_conditions['scope_query_sql'] = $scope_query['sql'];
-
-			// No matches, so we should alter the SQL statement to match nothing
-			} else {
-				$where_conditions['scope_no_results'] = '0 = 1';
 			}
 
 			// override some arguments if needed
 			if ( ! empty( $scope_query['override'] ) ) {
 				$r = self::array_replace_recursive( $r, $scope_query['override'] );
 			}
+
 		// Advanced filtering
 		} elseif ( ! empty( $r['filter_query'] ) ) {
 			$filter_query = new BP_Activity_Query( $r['filter_query'] );
-			if ( $sql = $filter_query->get_sql() ) {
+			$sql          = $filter_query->get_sql();
+			if ( ! empty( $sql ) ) {
 				$where_conditions['filter_query_sql'] = $sql;
 			}
 		}
@@ -394,8 +400,9 @@ class BP_Activity_Activity {
 		}
 
 		// Hide Hidden Items?
-		if ( ! $r['show_hidden'] )
+		if ( ! $r['show_hidden'] ) {
 			$where_conditions['hidden_sql'] = "a.hide_sitewide = 0";
+		}
 
 		// Exclude specified items
 		if ( ! empty( $r['exclude'] ) ) {
@@ -465,7 +472,7 @@ class BP_Activity_Activity {
 		/**
 		 * Filters the preferred order of indexes for activity item.
 		 *
-		 * @since Buddypress (1.6.0)
+		 * @since BuddyPress (1.6.0)
 		 *
 		 * @param array Array of indexes in preferred order.
 		 */
@@ -607,8 +614,9 @@ class BP_Activity_Activity {
 			$total_activities     = $wpdb->get_var( $total_activities_sql );
 
 			if ( !empty( $r['max'] ) ) {
-				if ( (int) $total_activities > (int) $r['max'] )
+				if ( (int) $total_activities > (int) $r['max'] ) {
 					$total_activities = $r['max'];
+				}
 			}
 
 			$retval['total'] = $total_activities;
@@ -843,27 +851,33 @@ class BP_Activity_Activity {
 	 *
 	 * @since BuddyPress (2.2.0)
 	 *
-	 * @param  string $scope The activity scope
-	 * @param  array  $r     Current activity arguments. Same as those of BP_Activity_Activity::get(),
+	 * @param  mixed $scope  The activity scope. Accepts string or array of scopes
+	 * @param  array $r      Current activity arguments. Same as those of BP_Activity_Activity::get(),
 	 *                       but merged with defaults.
 	 * @return array 'sql' WHERE SQL string and 'override' activity args
 	 */
-	public static function get_scope_query_sql( $scope = '', $r = array() ) {
+	public static function get_scope_query_sql( $scope = false, $r = array() ) {
+
+		// Define arrays for future use
 		$query_args = array();
 		$override   = array();
 		$retval     = array();
 
-		if ( ! is_array( $scope ) ) {
-			$scopes = explode( ',', $scope );
-		} else {
+		// Check for array of scopes
+		if ( is_array( $scope ) ) {
 			$scopes = $scope;
+
+		// Explode a comma separated string of scopes
+		} elseif ( is_string( $scope ) ) {
+			$scopes = explode( ',', $scope );
 		}
 
+		// Bail if no scope passed
 		if ( empty( $scopes ) ) {
-			return $sql;
+			return false;
 		}
 
-		// helper to easily grab the 'user_id'
+		// Helper to easily grab the 'user_id'
 		if ( ! empty( $r['filter']['user_id'] ) ) {
 			$r['user_id'] = $r['filter']['user_id'];
 		}
@@ -918,7 +932,8 @@ class BP_Activity_Activity {
 			$query_args['relation'] = 'OR';
 
 			$query = new BP_Activity_Query( $query_args );
-			if ( $sql = $query->get_sql() ) {
+			$sql   = $query->get_sql();
+			if ( ! empty( $sql ) ) {
 				$retval['sql'] = $sql;
 			}
 		}
@@ -956,51 +971,64 @@ class BP_Activity_Activity {
 	/**
 	 * Get the first activity ID that matches a set of criteria.
 	 *
-	 * @param int $user_id The user ID to filter by.
-	 * @param string $component The component to filter by.
-	 * @param string $type The activity type to filter by.
-	 * @param int $item_id The associated item to filter by.
-	 * @param int $secondary_item_id The secondary associated item to filter by.
-	 * @param string $action The action to filter by.
-	 * @param string $content The content to filter by.
-	 * @param string $date_recorded The date to filter by.
+	 * @param int    $user_id           User ID to filter by
+	 * @param string $component         Component to filter by
+	 * @param string $type              Activity type to filter by
+	 * @param int    $item_id           Associated item to filter by
+	 * @param int    $secondary_item_id Secondary associated item to filter by
+	 * @param string $action            Action to filter by
+	 * @param string $content           Content to filter by
+	 * @param string $date_recorded     Date to filter by
+	 *
+	 * @todo Should parameters be optional?
+	 *
 	 * @return int|bool Activity ID on success, false if none is found.
 	 */
 	public static function get_id( $user_id, $component, $type, $item_id, $secondary_item_id, $action, $content, $date_recorded ) {
-		global $bp, $wpdb;
+		global $wpdb;
+
+		$bp = buddypress();
 
 		$where_args = false;
 
-		if ( !empty( $user_id ) )
+		if ( ! empty( $user_id ) ) {
 			$where_args[] = $wpdb->prepare( "user_id = %d", $user_id );
+		}
 
-		if ( !empty( $component ) )
+		if ( ! empty( $component ) ) {
 			$where_args[] = $wpdb->prepare( "component = %s", $component );
+		}
 
-		if ( !empty( $type ) )
+		if ( ! empty( $type ) ) {
 			$where_args[] = $wpdb->prepare( "type = %s", $type );
+		}
 
-		if ( !empty( $item_id ) )
+		if ( ! empty( $item_id ) ) {
 			$where_args[] = $wpdb->prepare( "item_id = %d", $item_id );
+		}
 
-		if ( !empty( $secondary_item_id ) )
+		if ( ! empty( $secondary_item_id ) ) {
 			$where_args[] = $wpdb->prepare( "secondary_item_id = %d", $secondary_item_id );
+		}
 
-		if ( !empty( $action ) )
+		if ( ! empty( $action ) ) {
 			$where_args[] = $wpdb->prepare( "action = %s", $action );
+		}
 
-		if ( !empty( $content ) )
+		if ( ! empty( $content ) ) {
 			$where_args[] = $wpdb->prepare( "content = %s", $content );
+		}
 
-		if ( !empty( $date_recorded ) )
+		if ( ! empty( $date_recorded ) ) {
 			$where_args[] = $wpdb->prepare( "date_recorded = %s", $date_recorded );
+		}
 
-		if ( !empty( $where_args ) )
+		if ( ! empty( $where_args ) ) {
 			$where_sql = 'WHERE ' . join( ' AND ', $where_args );
-		else
-			return false;
+			return $wpdb->get_var( "SELECT id FROM {$bp->activity->table_name} {$where_sql}" );
+		}
 
-		return $wpdb->get_var( "SELECT id FROM {$bp->activity->table_name} {$where_sql}" );
+		return false;
 	}
 
 	/**
@@ -1027,7 +1055,9 @@ class BP_Activity_Activity {
 	 * @return array|bool An array of deleted activity IDs on success, false on failure.
 	 */
 	public static function delete( $args = array() ) {
-		global $wpdb, $bp;
+		global $wpdb;
+
+		$bp = buddypress();
 
 		$defaults = array(
 			'id'                => false,
@@ -1128,10 +1158,11 @@ class BP_Activity_Activity {
 	 * @return bool True on success.
 	 */
 	public static function delete_activity_item_comments( $activity_ids = array(), $delete_meta = true ) {
-		global $bp, $wpdb;
+		global $wpdb;
 
-		$delete_meta = (bool) $delete_meta;
+		$bp = buddypress();
 
+		$delete_meta  = (bool) $delete_meta;
 		$activity_ids = implode( ',', wp_parse_id_list( $activity_ids ) );
 
 		if ( $delete_meta ) {
@@ -1199,7 +1230,6 @@ class BP_Activity_Activity {
 	 *
 	 * @since BuddyPress (1.2)
 	 *
-	 * @global BuddyPress $bp The one true BuddyPress instance.
 	 * @global wpdb $wpdb WordPress database object.
 	 *
 	 * @param int $activity_id Activity ID to fetch comments for.
@@ -1210,7 +1240,7 @@ class BP_Activity_Activity {
 	 * @return array The updated activities with nested comments.
 	 */
 	public static function get_activity_comments( $activity_id, $left, $right, $spam = 'ham_only', $top_level_parent_id = 0 ) {
-		global $wpdb, $bp;
+		global $wpdb;
 
 		if ( empty( $top_level_parent_id ) ) {
 			$top_level_parent_id = $activity_id;
@@ -1225,6 +1255,8 @@ class BP_Activity_Activity {
 
 		// A true cache miss
 		} elseif ( empty( $comments ) ) {
+
+			$bp = buddypress();
 
 			// Select the user's fullname with the query
 			if ( bp_is_active( 'xprofile' ) ) {
@@ -1352,35 +1384,39 @@ class BP_Activity_Activity {
 	 *
 	 * @since BuddyPress (1.2)
 	 *
-	 * @global BuddyPress $bp The one true BuddyPress instance.
-	 * @global wpdb $wpdb WordPress database object.
+	 * @global wpdb $wpdb WordPress database object
 	 *
-	 * @param int $parent_id ID of an activity or activity comment.
-	 * @param int $left Node boundary start for activity or activity comment.
-	 * @return int Right node boundary of activity or activity comment.
+	 * @param  int $parent_id ID of an activity or activity comment
+	 * @param  int $left      Node boundary start for activity or activity comment
+	 * @return int Right      Node boundary of activity or activity comment
 	 */
 	public static function rebuild_activity_comment_tree( $parent_id, $left = 1 ) {
-		global $wpdb, $bp;
+		global $wpdb;
+
+		$bp = buddypress();
 
 		// The right value of this node is the left value + 1
-		$right = $left + 1;
+		$right = intval( $left + 1 );
 
 		// Get all descendants of this node
-		$descendants = BP_Activity_Activity::get_child_comments( $parent_id );
+		$comments    = BP_Activity_Activity::get_child_comments( $parent_id );
+		$descendants = wp_list_pluck( $comments, 'id' );
 
 		// Loop the descendants and recalculate the left and right values
-		foreach ( (array) $descendants as $descendant )
-			$right = BP_Activity_Activity::rebuild_activity_comment_tree( $descendant->id, $right );
+		foreach ( (array) $descendants as $descendant_id ) {
+			$right = BP_Activity_Activity::rebuild_activity_comment_tree( $descendant_id, $right );
+		}
 
 		// We've got the left value, and now that we've processed the children
 		// of this node we also know the right value
-		if ( 1 == $left )
+		if ( 1 === $left ) {
 			$wpdb->query( $wpdb->prepare( "UPDATE {$bp->activity->table_name} SET mptt_left = %d, mptt_right = %d WHERE id = %d", $left, $right, $parent_id ) );
-		else
+		} else {
 			$wpdb->query( $wpdb->prepare( "UPDATE {$bp->activity->table_name} SET mptt_left = %d, mptt_right = %d WHERE type = 'activity_comment' AND id = %d", $left, $right, $parent_id ) );
+		}
 
 		// Return the right value of this node + 1
-		return $right + 1;
+		return intval( $right + 1 );
 	}
 
 	/**
@@ -1388,14 +1424,15 @@ class BP_Activity_Activity {
 	 *
 	 * @since BuddyPress (1.2)
 	 *
-	 * @global BuddyPress $bp The one true BuddyPress instance.
 	 * @global wpdb $wpdb WordPress database object.
 	 *
 	 * @param int $parent_id ID of an activity or activity comment.
 	 * @return object Numerically indexed array of child comments.
 	 */
 	public static function get_child_comments( $parent_id ) {
-		global $bp, $wpdb;
+		global $wpdb;
+
+		$bp = buddypress();
 
 		return $wpdb->get_results( $wpdb->prepare( "SELECT id FROM {$bp->activity->table_name} WHERE type = 'activity_comment' AND secondary_item_id = %d", $parent_id ) );
 	}
@@ -1411,9 +1448,11 @@ class BP_Activity_Activity {
 	 * @return array List of component names.
 	 */
 	public static function get_recorded_components( $skip_last_activity = true ) {
-		global $wpdb, $bp;
+		global $wpdb;
 
-		if ( $skip_last_activity ) {
+		$bp = buddypress();
+
+		if ( true === $skip_last_activity ) {
 			$components = $wpdb->get_col( "SELECT DISTINCT component FROM {$bp->activity->table_name} WHERE action != '' AND action != 'last_activity' ORDER BY component ASC" );
 		} else {
 			$components = $wpdb->get_col( "SELECT DISTINCT component FROM {$bp->activity->table_name} ORDER BY component ASC" );
@@ -1565,7 +1604,9 @@ class BP_Activity_Activity {
 	 * @return string ISO timestamp.
 	 */
 	public static function get_last_updated() {
-		global $bp, $wpdb;
+		global $wpdb;
+
+		$bp = buddypress();
 
 		return $wpdb->get_var( "SELECT date_recorded FROM {$bp->activity->table_name} ORDER BY date_recorded DESC LIMIT 1" );
 	}
@@ -1579,10 +1620,15 @@ class BP_Activity_Activity {
 	 * @return int A count of the user's favorites.
 	 */
 	public static function total_favorite_count( $user_id ) {
-		if ( !$favorite_activity_entries = bp_get_user_meta( $user_id, 'bp_favorite_activities', true ) )
-			return 0;
 
-		return count( maybe_unserialize( $favorite_activity_entries ) );
+		// Get activities from user meta
+		$favorite_activity_entries = bp_get_user_meta( $user_id, 'bp_favorite_activities', true );
+		if ( ! empty( $favorite_activity_entries ) ) {
+			return count( maybe_unserialize( $favorite_activity_entries ) );
+		}
+
+		// No favorites
+		return 0;
 	}
 
 	/**
@@ -1592,7 +1638,9 @@ class BP_Activity_Activity {
 	 * @return int|bool The ID of the first matching item if found, otherwise false.
 	 */
 	public static function check_exists_by_content( $content ) {
-		global $wpdb, $bp;
+		global $wpdb;
+
+		$bp = buddypress();
 
 		return $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$bp->activity->table_name} WHERE content = %s", $content ) );
 	}
@@ -1604,7 +1652,9 @@ class BP_Activity_Activity {
 	 * @param int
 	 */
 	public static function hide_all_for_user( $user_id ) {
-		global $wpdb, $bp;
+		global $wpdb;
+
+		$bp = buddypress();
 
 		return $wpdb->get_var( $wpdb->prepare( "UPDATE {$bp->activity->table_name} SET hide_sitewide = 1 WHERE user_id = %d", $user_id ) );
 	}
@@ -1879,7 +1929,7 @@ class BP_Activity_Query extends BP_Recursive_Query {
 	 * @since BuddyPress (2.2.0)
 	 * @access protected
 	 *
-	 * @param  array $q Clause to check.
+	 * @param  array $query Clause to check.
 	 * @return bool
 	 */
 	protected function is_first_order_clause( $query ) {
@@ -2225,7 +2275,8 @@ class BP_Activity_Feed {
 			$client_etag = trim( $client_etag, '"' );
 
 			// Strip suffixes from ETag if they exist (eg. "-gzip")
-			if ( $etag_suffix_pos = strpos( $client_etag, '-' ) ) {
+			$etag_suffix_pos = strpos( $client_etag, '-' );
+			if ( ! empty( $etag_suffix_pos ) ) {
 				$client_etag = substr( $client_etag, 0, $etag_suffix_pos );
 			}
 
