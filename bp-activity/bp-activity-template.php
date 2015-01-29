@@ -214,9 +214,9 @@ class BP_Activity_Template {
 		$r = wp_parse_args( $args, $defaults );
 		extract( $r );
 
-		$this->pag_arg  = $r['page_arg'];
-		$this->pag_page = isset( $_REQUEST[ $this->pag_arg ] ) ? intval( $_REQUEST[ $this->pag_arg ] ) : $page;
-		$this->pag_num  = isset( $_REQUEST['num'] ) ? intval( $_REQUEST['num'] ) : $per_page;
+		$this->pag_arg  = sanitize_key( $r['page_arg'] );
+		$this->pag_page = bp_sanitize_pagination_arg( $this->pag_arg, $r['page']     );
+		$this->pag_num  = bp_sanitize_pagination_arg( 'num',          $r['per_page'] );
 
 		// Check if blog/forum replies are disabled
 		$this->disable_blogforum_replies = isset( $bp->site_options['bp-disable-blogforum-comments'] ) ? $bp->site_options['bp-disable-blogforum-comments'] : false;
@@ -621,19 +621,6 @@ function bp_has_activities( $args = '' ) {
 	// Search terms
 	if ( empty( $search_terms ) && ! empty( $_REQUEST['s'] ) )
 		$search_terms = $_REQUEST['s'];
-
-	// Set some default arguments when using a scope
-	if ( ! empty( $scope ) ) {
-		// Determine which user ID applies
-		if ( empty( $user_id ) ) {
-			$user_id = bp_displayed_user_id() ? bp_displayed_user_id() : bp_loggedin_user_id();
-		}
-
-		// Should we show all items regardless of sitewide visibility?
-		if ( ! empty( $user_id ) ) {
-			$show_hidden = ( $user_id == bp_loggedin_user_id() ) ? 1 : 0;
-		}
-	}
 
 	// Do not exceed the maximum per page
 	if ( !empty( $max ) && ( (int) $per_page > (int) $max ) )
