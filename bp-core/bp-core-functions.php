@@ -289,11 +289,11 @@ function bp_sanitize_pagination_arg( $page_arg = '', $page = 1 ) {
 		// If override is 0, do not use it. This prevents unlimited result sets.
 		// @see https://buddypress.trac.wordpress.org/ticket/5796
 		if ( $int ) {
-			$page = intval( $int );
+			$page = $int;
 		}
 	}
 
-	return $page;
+	return intval( $page );
 }
 
 /**
@@ -786,7 +786,7 @@ function bp_do_register_theme_directory() {
 /**
  * Return the domain for the root blog.
  *
- * eg: http://domain.com OR https://domain.com
+ * eg: http://example.com OR https://example.com
  *
  * @uses get_blog_option() WordPress function to fetch blog meta.
  *
@@ -854,7 +854,7 @@ function bp_core_get_site_path() {
 		if ( count( $site_path ) < 2 ) {
 			$site_path = '/';
 		} else {
-			// Unset the first three segments (http(s)://domain.com part)
+			// Unset the first three segments (http(s)://example.com part)
 			unset( $site_path[0] );
 			unset( $site_path[1] );
 			unset( $site_path[2] );
