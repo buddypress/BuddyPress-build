@@ -2,7 +2,7 @@
 # This file is distributed under the GPLv2 or later (license.txt).
 msgid ""
 msgstr ""
-"Project-Id-Version: BuddyPress 2.2\n"
+"Project-Id-Version: BuddyPress 2.2.0\n"
 "Report-Msgid-Bugs-To: https://buddypress.trac.wordpress.org\n"
 "POT-Creation-Date: 2015-02-04 23:24:26+00:00\n"
 "MIME-Version: 1.0\n"
