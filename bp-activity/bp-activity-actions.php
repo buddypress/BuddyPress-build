@@ -33,9 +33,8 @@ add_action( 'bp_init', 'bp_register_activity_actions', 8 );
 /**
  * Catch and route requests for single activity item permalinks.
  *
- * @since BuddyPress (1.2)
+ * @since BuddyPress (1.2.0)
  *
- * @global object $bp BuddyPress global settings
  * @uses bp_is_activity_component()
  * @uses bp_is_current_action()
  * @uses bp_action_variable()
@@ -121,7 +120,7 @@ add_action( 'bp_actions', 'bp_activity_action_permalink_router' );
 /**
  * Delete specific activity item and redirect to previous page.
  *
- * @since BuddyPress (1.1)
+ * @since BuddyPress (1.1.0)
  *
  * @param int $activity_id Activity id to be deleted. Defaults to 0.
  *
@@ -198,14 +197,13 @@ add_action( 'bp_actions', 'bp_activity_action_delete_activity' );
 /**
  * Mark specific activity item as spam and redirect to previous page.
  *
- * @since BuddyPress (1.6)
+ * @since BuddyPress (1.6.0)
  *
- * @global object $bp BuddyPress global settings
  * @param int $activity_id Activity id to be deleted. Defaults to 0.
  * @return bool False on failure.
  */
 function bp_activity_action_spam_activity( $activity_id = 0 ) {
-	global $bp;
+	$bp = buddypress();
 
 	// Not viewing activity, or action is not spam, or Akismet isn't present
 	if ( !bp_is_activity_component() || !bp_is_current_action( 'spam' ) || empty( $bp->activity->akismet ) )
@@ -268,7 +266,7 @@ add_action( 'bp_actions', 'bp_activity_action_spam_activity' );
 /**
  * Post user/group activity update.
  *
- * @since BuddyPress (1.2)
+ * @since BuddyPress (1.2.0)
  *
  * @uses is_user_logged_in()
  * @uses bp_is_activity_component()
@@ -372,7 +370,7 @@ add_action( 'bp_actions', 'bp_activity_action_post_update' );
 /**
  * Post new activity comment.
  *
- * @since BuddyPress (1.2)
+ * @since BuddyPress (1.2.0)
  *
  * @uses is_user_logged_in()
  * @uses bp_is_activity_component()
@@ -436,7 +434,7 @@ add_action( 'bp_actions', 'bp_activity_action_post_comment' );
 /**
  * Mark activity as favorite.
  *
- * @since BuddyPress (1.2)
+ * @since BuddyPress (1.2.0)
  *
  * @uses is_user_logged_in()
  * @uses bp_is_activity_component()
@@ -470,7 +468,7 @@ add_action( 'bp_actions', 'bp_activity_action_mark_favorite' );
 /**
  * Remove activity from favorites.
  *
- * @since BuddyPress (1.2)
+ * @since BuddyPress (1.2.0)
  *
  * @uses is_user_logged_in()
  * @uses bp_is_activity_component()
@@ -504,9 +502,8 @@ add_action( 'bp_actions', 'bp_activity_action_remove_favorite' );
 /**
  * Load the sitewide activity feed.
  *
- * @since BuddyPress (1.0)
+ * @since BuddyPress (1.0.0)
  *
- * @global object $bp BuddyPress global settings
  * @uses bp_is_activity_component()
  * @uses bp_is_current_action()
  * @uses bp_is_user()
@@ -515,7 +512,7 @@ add_action( 'bp_actions', 'bp_activity_action_remove_favorite' );
  * @return bool False on failure.
  */
 function bp_activity_action_sitewide_feed() {
-	global $bp;
+	$bp = buddypress();
 
 	if ( ! bp_is_activity_component() || ! bp_is_current_action( 'feed' ) || bp_is_user() || ! empty( $bp->groups->current_group ) )
 		return false;
@@ -537,7 +534,7 @@ add_action( 'bp_actions', 'bp_activity_action_sitewide_feed' );
 /**
  * Load a user's personal activity feed.
  *
- * @since BuddyPress (1.0)
+ * @since BuddyPress (1.0.0)
  *
  * @uses bp_is_user_activity()
  * @uses bp_is_current_action()
@@ -567,7 +564,7 @@ add_action( 'bp_actions', 'bp_activity_action_personal_feed' );
 /**
  * Load a user's friends' activity feed.
  *
- * @since BuddyPress (1.0)
+ * @since BuddyPress (1.0.0)
  *
  * @uses bp_is_active()
  * @uses bp_is_user_activity()
@@ -600,7 +597,7 @@ add_action( 'bp_actions', 'bp_activity_action_friends_feed' );
 /**
  * Load the activity feed for a user's groups.
  *
- * @since BuddyPress (1.2)
+ * @since BuddyPress (1.2.0)
  *
  * @uses bp_is_active()
  * @uses bp_is_user_activity()
@@ -641,7 +638,7 @@ add_action( 'bp_actions', 'bp_activity_action_my_groups_feed' );
 /**
  * Load a user's @mentions feed.
  *
- * @since BuddyPress (1.2)
+ * @since BuddyPress (1.2.0)
  *
  * @uses bp_is_user_activity()
  * @uses bp_is_current_action()
@@ -678,7 +675,7 @@ add_action( 'bp_actions', 'bp_activity_action_mentions_feed' );
 /**
  * Load a user's favorites feed.
  *
- * @since BuddyPress (1.2)
+ * @since BuddyPress (1.2.0)
  *
  * @uses bp_is_user_activity()
  * @uses bp_is_current_action()
@@ -713,12 +710,10 @@ add_action( 'bp_actions', 'bp_activity_action_favorites_feed' );
 /**
  * Loads Akismet filtering for activity.
  *
- * @since BuddyPress (1.6)
- *
- * @global object $bp BuddyPress global settings
+ * @since BuddyPress (1.6.0)
  */
 function bp_activity_setup_akismet() {
-	global $bp;
+	$bp = buddypress();
 
 	// Bail if Akismet is not active
 	if ( ! defined( 'AKISMET_VERSION' ) )

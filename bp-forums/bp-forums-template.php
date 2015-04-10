@@ -27,8 +27,6 @@ function bp_forums_slug() {
 	 * @return string Slug for the forums component.
 	 */
 	function bp_get_forums_slug() {
-		global $bp;
-
 		/**
 		 * Filters the forums component slug.
 		 *
@@ -36,7 +34,7 @@ function bp_forums_slug() {
 		 *
 		 * @param string $slug Forums component slug.
 		 */
-		return apply_filters( 'bp_get_forums_slug', $bp->forums->slug );
+		return apply_filters( 'bp_get_forums_slug', buddypress()->forums->slug );
 	}
 
 /**
@@ -57,8 +55,6 @@ function bp_forums_root_slug() {
 	 * @return string Root slug for the forums component.
 	 */
 	function bp_get_forums_root_slug() {
-		global $bp;
-
 		/**
 		 * Filters the forums component root slug.
 		 *
@@ -66,7 +62,7 @@ function bp_forums_root_slug() {
 		 *
 		 * @param string $root_slug Forums component root slug.
 		 */
-		return apply_filters( 'bp_get_forums_root_slug', $bp->forums->root_slug );
+		return apply_filters( 'bp_get_forums_root_slug', buddypress()->forums->root_slug );
 	}
 
 /**
@@ -115,7 +111,7 @@ class BP_Forums_Template_Forum {
 	 * @access public
 	 * @var int
 	 */
-	var $current_topic = -1;
+	public $current_topic = -1;
 
 	/**
 	 * The number of topics returned by the paged query.
@@ -123,7 +119,7 @@ class BP_Forums_Template_Forum {
 	 * @access public
 	 * @var int
 	 */
-	var $topic_count;
+	public $topic_count;
 
 	/**
 	 * Array of topics located by the query.
@@ -131,7 +127,7 @@ class BP_Forums_Template_Forum {
 	 * @access public
 	 * @var array
 	 */
-	var $topics;
+	public $topics;
 
 	/**
 	 * The topic object currently being iterated on.
@@ -139,7 +135,7 @@ class BP_Forums_Template_Forum {
 	 * @access public
 	 * @var object
 	 */
-	var $topic;
+	public $topic;
 
 	/**
 	 * The ID of the forum whose topics are being queried.
@@ -147,7 +143,7 @@ class BP_Forums_Template_Forum {
 	 * @access public
 	 * @var int
 	 */
-	var $forum_id;
+	public $forum_id;
 
 	/**
 	 * A flag for whether the loop is currently being iterated.
@@ -155,7 +151,7 @@ class BP_Forums_Template_Forum {
 	 * @access public
 	 * @var bool
 	 */
-	var $in_the_loop;
+	public $in_the_loop;
 
 	/**
 	 * The page number being requested.
@@ -163,7 +159,7 @@ class BP_Forums_Template_Forum {
 	 * @access public
 	 * @var int
 	 */
-	var $pag_page;
+	public $pag_page;
 
 	/**
 	 * The number of items being requested per page.
@@ -171,7 +167,7 @@ class BP_Forums_Template_Forum {
 	 * @access public
 	 * @var int
 	 */
-	var $pag_num;
+	public $pag_num;
 
 	/**
 	 * An HTML string containing pagination links.
@@ -179,7 +175,7 @@ class BP_Forums_Template_Forum {
 	 * @access public
 	 * @var string
 	 */
-	var $pag_links;
+	public $pag_links;
 
 	/**
 	 * The total number of topics matching the query parameters.
@@ -187,7 +183,7 @@ class BP_Forums_Template_Forum {
 	 * @access public
 	 * @var int
 	 */
-	var $total_topic_count;
+	public $total_topic_count;
 
 	/**
 	 * Whether requesting a single topic. Not currently used.
@@ -195,7 +191,7 @@ class BP_Forums_Template_Forum {
 	 * @access public
 	 * @var bool
 	 */
-	var $single_topic = false;
+	public $single_topic = false;
 
 	/**
 	 * Term to sort by. Not currently used.
@@ -203,7 +199,7 @@ class BP_Forums_Template_Forum {
 	 * @access public
 	 * @var string
 	 */
-	var $sort_by;
+	public $sort_by;
 
 	/**
 	 * Sort order. Not currently used.
@@ -211,7 +207,7 @@ class BP_Forums_Template_Forum {
 	 * @access public
 	 * @var string
 	 */
-	var $order;
+	public $order;
 
 	/**
 	 * Constructor method.
@@ -230,7 +226,7 @@ class BP_Forums_Template_Forum {
 	 * @param int $number Optional. Total number of items to retrieve.
 	 */
 	function __construct( $type, $forum_id, $user_id, $page, $per_page, $max, $no_stickies, $search_terms, $offset = false, $number = false ) {
-		global $bp;
+		$bp = buddypress();
 
 		$this->pag_page     = $page;
 		$this->pag_num      = $per_page;
@@ -332,7 +328,7 @@ class BP_Forums_Template_Forum {
 		 * @param int    $max         The max number of posts to show.
 		 * @param string $no_stickies Requested sticky format.
 		 */
-		$this->topic_count       = apply_filters_ref_array( 'bp_forums_template_topic_count',                                 array( $this->topic_count, &$this->topics, $type, $forum_id, $per_page, $max, $no_stickies ) );
+		$this->topic_count = apply_filters_ref_array( 'bp_forums_template_topic_count', array( $this->topic_count, &$this->topics, $type, $forum_id, $per_page, $max, $no_stickies ) );
 
 		/**
 		 * Filters the total topic count for the forum being displayed.
@@ -498,7 +494,9 @@ class BP_Forums_Template_Forum {
  *         false otherwise.
  */
 function bp_has_forum_topics( $args = '' ) {
-	global $forum_template, $bp;
+	global $forum_template;
+
+	$bp = buddypress();
 
 	/***
 	 * Set the defaults based on the current page. Any of these will be overridden
@@ -1008,10 +1006,11 @@ function bp_the_topic_object_permalink() {
 	function bp_get_the_topic_object_permalink() {
 
 		// Currently this will only work with group forums, extended support in the future
-		if ( bp_is_active( 'groups' ) )
-			$permalink = trailingslashit( bp_get_root_domain() . '/' . bp_get_groups_root_slug() . '/' . bp_get_the_topic_object_slug() . '/forum' );
-		else
+		if ( bp_is_active( 'groups' ) ) {
+			$permalink = trailingslashit( bp_get_groups_directory_permalink() . bp_get_the_topic_object_slug() . '/forum' );
+		} else {
 			$permalink = '';
+		}
 
 		/**
 		 * Filters the permalink of the object associated with the current topic in the loop.
@@ -1041,12 +1040,13 @@ function bp_the_topic_last_poster_name() {
 	function bp_get_the_topic_last_poster_name() {
 		global $forum_template;
 
-		$domain = bp_core_get_user_domain( $forum_template->topic->topic_last_poster, $forum_template->topic->topic_last_poster_nicename, $forum_template->topic->topic_last_poster_login ) ;
+		$domain = bp_core_get_user_domain( $forum_template->topic->topic_last_poster, $forum_template->topic->topic_last_poster_nicename, $forum_template->topic->topic_last_poster_login );
 
 		// In the case where no user is found, bp_core_get_user_domain() may return the URL
 		// of the Members directory
-		if ( !$domain || $domain == bp_core_get_root_domain() . '/' . bp_get_members_root_slug() . '/' )
+		if ( empty( $domain ) || ( bp_get_members_directory_permalink() === $domain ) ) {
 			return __( 'Deleted User', 'buddypress' );
+		}
 
 		/**
 		 * Filters the linked name of the user who last posted to the current topic in the loop.
@@ -1425,15 +1425,15 @@ function bp_the_topic_permalink() {
 	 * @return string Permalink for the current topic.
 	 */
 	function bp_get_the_topic_permalink() {
-		global $forum_template, $bp;
+		global $forum_template;
 
 		// The topic is in a loop where its parent object is loaded
 		if ( bp_get_the_topic_object_slug() ) {
-			$permalink = trailingslashit( bp_get_root_domain() . '/' . bp_get_groups_root_slug() . '/' . bp_get_the_topic_object_slug() . '/forum' );
+			$permalink = trailingslashit( bp_get_groups_directory_permalink() . bp_get_the_topic_object_slug() . '/forum' );
 
 		// We are viewing a single group topic, so use the current item
 		} elseif ( bp_is_group_forum_topic() ) {
-			$permalink = trailingslashit( bp_get_root_domain() . '/' . bp_get_groups_root_slug() . '/' . bp_current_item() . '/forum' );
+			$permalink = trailingslashit( bp_get_groups_directory_permalink() . bp_current_item() . '/forum' );
 
 		// We are unsure what the context is, so fallback to forum root slug
 		} elseif ( bp_is_single_item() ) {
@@ -1663,8 +1663,6 @@ function bp_my_forum_topics_link() {
 	 * @return string Link to the 'personal' topics tab.
 	 */
 	function bp_get_my_forum_topics_link() {
-		global $bp;
-
 		/**
 		 * Filters the permalink to the 'personal' topics tab.
 		 *
@@ -1687,8 +1685,6 @@ function bp_unreplied_forum_topics_link() {
 	 * @return string Link to the 'unreplied' topics tab.
 	 */
 	function bp_get_unreplied_forum_topics_link() {
-		global $bp;
-
 		/**
 		 * Filters the permalink to the 'unreplied' topics tab.
 		 *
@@ -1711,8 +1707,6 @@ function bp_popular_forum_topics_link() {
 	 * @return string Link to the 'popular' topics tab.
 	 */
 	function bp_get_popular_forum_topics_link() {
-		global $bp;
-
 		/**
 		 * Filters the permalink to the 'popular' topics tab.
 		 *
@@ -1735,8 +1729,6 @@ function bp_newest_forum_topics_link() {
 	 * @return string Link to the forums directory.
 	 */
 	function bp_get_newest_forum_topics_link() {
-		global $bp;
-
 		/**
 		 * Filters the link to the forums directory.
 		 *
@@ -1761,7 +1753,6 @@ function bp_forum_topic_type() {
 	 * @return string Type of the currently viewed topic list.
 	 */
 	function bp_get_forum_topic_type() {
-		global $bp;
 
 		if ( !bp_is_directory() || !bp_current_action() )
 			return 'newest';
@@ -1876,7 +1867,7 @@ function bp_forum_pagination_count() {
 	 * @return string
 	 */
 	function bp_get_forum_pagination_count() {
-		global $bp, $forum_template;
+		global $forum_template;
 
 		$start_num  = intval( ( $forum_template->pag_page - 1 ) * $forum_template->pag_num ) + 1;
 		$from_num   = bp_core_number_format( $start_num );
@@ -1906,7 +1897,6 @@ function bp_forum_pagination_count() {
  * @return bool True if currently editing a topic, otherwise false.
  */
 function bp_is_edit_topic() {
-	global $bp;
 
 	if ( bp_is_action_variable( 'post' ) && bp_is_action_variable( 'edit' ) )
 		return false;
@@ -1926,7 +1916,7 @@ class BP_Forums_Template_Topic {
 	 * @access public
 	 * @var int
 	 */
-	var $current_post = -1;
+	public $current_post = -1;
 
 	/**
 	 * The number of posts returned by the paged query.
@@ -1934,7 +1924,7 @@ class BP_Forums_Template_Topic {
 	 * @access public
 	 * @var int
 	 */
-	var $post_count;
+	public $post_count;
 
 	/**
 	 * Array of posts located by the query.
@@ -1942,7 +1932,7 @@ class BP_Forums_Template_Topic {
 	 * @access public
 	 * @var array
 	 */
-	var $posts;
+	public $posts;
 
 	/**
 	 * The post object currently being iterated on.
@@ -1950,7 +1940,7 @@ class BP_Forums_Template_Topic {
 	 * @access public
 	 * @var object
 	 */
-	var $post;
+	public $post;
 
 	/**
 	 * The ID of the forum whose topic is being queried.
@@ -1958,7 +1948,7 @@ class BP_Forums_Template_Topic {
 	 * @access public
 	 * @var int
 	 */
-	var $forum_id;
+	public $forum_id;
 
 	/**
 	 * The ID of the topic whose posts are being queried.
@@ -1966,7 +1956,7 @@ class BP_Forums_Template_Topic {
 	 * @access public
 	 * @var int
 	 */
-	var $topic_id;
+	public $topic_id;
 
 	/**
 	 * The topic object to which the posts belong.
@@ -1974,7 +1964,7 @@ class BP_Forums_Template_Topic {
 	 * @access public
 	 * @var object
 	 */
-	var $topic;
+	public $topic;
 
 	/**
 	 * A flag for whether the loop is currently being iterated.
@@ -1982,7 +1972,7 @@ class BP_Forums_Template_Topic {
 	 * @access public
 	 * @var bool
 	 */
-	var $in_the_loop;
+	public $in_the_loop;
 
 	/**
 	 * Contains a 'total_pages' property holding total number of pages in
@@ -1999,7 +1989,7 @@ class BP_Forums_Template_Topic {
 	 * @access public
 	 * @var public
 	 */
-	var $pag_page;
+	public $pag_page;
 
 	/**
 	 * The number of items being requested per page.
@@ -2007,7 +1997,7 @@ class BP_Forums_Template_Topic {
 	 * @access public
 	 * @var public
 	 */
-	var $pag_num;
+	public $pag_num;
 
 	/**
 	 * An HTML string containing pagination links.
@@ -2015,7 +2005,7 @@ class BP_Forums_Template_Topic {
 	 * @access public
 	 * @var string
 	 */
-	var $pag_links;
+	public $pag_links;
 
 	/**
 	 * The total number of posts matching the query parameters.
@@ -2023,7 +2013,7 @@ class BP_Forums_Template_Topic {
 	 * @access public
 	 * @var int
 	 */
-	var $total_post_count;
+	public $total_post_count;
 
 	/**
 	 * Whether requesting a single topic. Not currently used.
@@ -2031,7 +2021,7 @@ class BP_Forums_Template_Topic {
 	 * @access public
 	 * @var bool
 	 */
-	var $single_post = false;
+	public $single_post = false;
 
 	/**
 	 * Term to sort by.
@@ -2039,7 +2029,7 @@ class BP_Forums_Template_Topic {
 	 * @access public
 	 * @var string
 	 */
-	var $sort_by;
+	public $sort_by;
 
 	/**
 	 * Sort order.
@@ -2047,7 +2037,7 @@ class BP_Forums_Template_Topic {
 	 * @access public
 	 * @var string
 	 */
-	var $order;
+	public $order;
 
 	/**
 	 * Constructor method.
@@ -2058,11 +2048,11 @@ class BP_Forums_Template_Topic {
 	 * @param string $order Direction to order results.
 	 */
 	function __construct( $topic_id, $per_page, $max, $order ) {
-		global $bp, $current_user, $forum_template;
+		global $forum_template;
 
-                if ( !isset( $forum_template ) ) {
-                        $forum_template = new stdClass;
-                }
+		if ( !isset( $forum_template ) ) {
+			$forum_template = new stdClass;
+		}
 
 		$this->pag_page        = isset( $_REQUEST['topic_page'] ) ? intval( $_REQUEST['topic_page'] ) : 1;
 		$this->pag_num         = isset( $_REQUEST['num'] ) ? intval( $_REQUEST['num'] ) : $per_page;
@@ -2190,7 +2180,6 @@ class BP_Forums_Template_Topic {
 	 * @see bp_the_forum_topic_post()
 	 */
 	function the_post() {
-		global $post;
 
 		$this->in_the_loop = true;
 		$this->post = $this->next_post();
@@ -2513,7 +2502,7 @@ function bp_the_topic_post_is_mine() {
 	 *         the logged-in user, otherwise false.
 	 */
 	function bp_get_the_topic_post_is_mine() {
-		global $bp, $topic_template;
+		global $topic_template;
 
 		return bp_loggedin_user_id() == $topic_template->post->poster_id;
 	}
@@ -2626,7 +2615,7 @@ function bp_the_topic_pagination() {
  * @return string
  */
 function bp_the_topic_pagination_count() {
-	global $bp, $topic_template;
+	global $topic_template;
 
 	$start_num = intval( ( $topic_template->pag_page - 1 ) * $topic_template->pag_num ) + 1;
 	$from_num = bp_core_number_format( $start_num );
@@ -2711,10 +2700,9 @@ function bp_forum_permalink( $forum_id = 0 ) {
 	 * @return string|bool False on failure, a URL on success.
 	 */
 	function bp_get_forum_permalink( $forum_id = 0 ) {
-		global $bp;
 
 		if ( bp_is_groups_component() ) {
-			$permalink = trailingslashit( bp_get_root_domain() . '/' . bp_get_groups_root_slug() . '/' . bp_current_item() . '/forum' );
+			$permalink = trailingslashit( bp_get_groups_directory_permalink() . bp_current_item() . '/forum' );
 		} else {
 			if ( empty( $forum_id ) ) {
 				global $topic_template;
@@ -2756,7 +2744,6 @@ function bp_forum_name( $forum_id = 0 ) {
 	 * @return string|bool False on failure, a name on success.
 	 */
 	function bp_get_forum_name( $forum_id = 0 ) {
-		global $bp;
 
 		if ( empty( $forum_id ) ) {
 			global $topic_template;

@@ -408,7 +408,6 @@ function bp_activity_set_action( $component_id, $type, $description, $format_cal
  */
 function bp_activity_set_post_type_tracking_args( $post_type = '', $args = array() ) {
 	global $wp_post_types;
-	$bp = buddypress();
 
 	if ( empty( $wp_post_types[ $post_type ] ) || ! post_type_supports( $post_type, 'buddypress-activity' ) || ! is_array( $args ) ) {
 		return false;
@@ -592,10 +591,9 @@ function bp_activity_get_action( $component_id, $key ) {
 		return false;
 	}
 
-	$bp      = buddypress();
 	$actions = bp_activity_get_actions();
+	$retval  = false;
 
-	$retval = false;
 	if ( isset( $actions->{$component_id}->{$key} ) ) {
 		$retval = $actions->{$component_id}->{$key};
 	}
@@ -911,7 +909,6 @@ function bp_activity_total_favorites_for_user( $user_id = 0 ) {
  * @since BuddyPress (1.2.0)
  *
  * @global object $wpdb WordPress database access object.
- * @global object $bp BuddyPress global settings.
  *
  * @param int $activity_id ID of the activity item whose metadata is being deleted.
  * @param string $meta_key Optional. The key of the metadata being deleted. If
@@ -1078,7 +1075,6 @@ add_action( 'delete_user',       'bp_activity_remove_all_user_data' );
  * @since BuddyPress (1.6.0)
  *
  * @global object $wpdb WordPress database access object.
- * @global object $bp BuddyPress global settings.
  *
  * @param int $user_id ID of the user whose activity is being spammed.
  */
@@ -1147,7 +1143,6 @@ add_action( 'bp_make_spam_user', 'bp_activity_spam_all_user_data' );
  * @since BuddyPress (1.6.0)
  *
  * @global object $wpdb WordPress database access object.
- * @global object $bp BuddyPress global settings.
  *
  * @param int $user_id ID of the user whose activity is being hammed.
  */
@@ -1791,7 +1786,6 @@ function bp_activity_post_update( $args = '' ) {
  * @return int|bool The ID of the activity on success. False on error.
  */
 function bp_activity_post_type_publish( $post_id = 0, $post = null, $user_id = 0 ) {
-	$bp = buddypress();
 
 	if ( ! is_a( $post, 'WP_Post' ) ) {
 		return;
@@ -1872,20 +1866,15 @@ function bp_activity_post_type_publish( $post_id = 0, $post = null, $user_id = 0
 		'recorded_time'     => $post->post_date_gmt,
 	);
 
-	// Remove large images and replace them with just one image thumbnail.
-	if ( ! empty( $activity_args['content'] ) ) {
-		$activity_args['content'] = bp_activity_thumbnail_content_images( $activity_args['content'], $activity_args['primary_link'], $activity_args );
-	}
-
 	if ( ! empty( $activity_args['content'] ) ) {
 		// Create the excerpt.
-		$activity_excerpt = bp_create_excerpt( $activity_args['content'] );
+		$activity_summary = bp_activity_create_summary( $activity_args['content'], $activity_args );
 
 		// Backward compatibility filter for blog posts.
 		if ( 'blogs' == $activity_post_object->component_id )  {
-			$activity_args['content'] = apply_filters( 'bp_blogs_record_activity_content', $activity_excerpt, $activity_args['content'], $activity_args, $post->post_type );
+			$activity_args['content'] = apply_filters( 'bp_blogs_record_activity_content', $activity_summary, $activity_args['content'], $activity_args, $post->post_type );
 		} else {
-			$activity_args['content'] = $activity_excerpt;
+			$activity_args['content'] = $activity_summary;
 		}
 	}
 
@@ -1932,7 +1921,6 @@ function bp_activity_post_type_publish( $post_id = 0, $post = null, $user_id = 0
  * @return bool    True on success, false on failure.
  */
 function bp_activity_post_type_update( $post = null ) {
-	$bp = buddypress();
 
 	if ( ! is_a( $post, 'WP_Post' ) ) {
 		return;
@@ -1966,17 +1954,13 @@ function bp_activity_post_type_update( $post = null ) {
 	$activity = new BP_Activity_Activity( $activity_id );
 
 	if ( ! empty( $post->post_content ) ) {
-		// Make sure to update the thumbnail image.
-		$post_content = bp_activity_thumbnail_content_images( $post->post_content, $activity->primary_link, (array) $activity );
-
-		// Generate an excerpt.
-		$activity_excerpt = bp_create_excerpt( $post_content );
+		$activity_summary = bp_activity_create_summary( $post->post_content, (array) $activity );
 
 		// Backward compatibility filter for the blogs component.
 		if ( 'blogs' == $activity_post_object->component_id ) {
-			$activity->content = apply_filters( 'bp_blogs_record_activity_content', $activity_excerpt, $post_content, (array) $activity, $post->post_type );
+			$activity->content = apply_filters( 'bp_blogs_record_activity_content', $activity_summary, $post->post_content, (array) $activity, $post->post_type );
 		} else {
-			$activity->content = $activity_excerpt;
+			$activity->content = $activity_summary;
 		}
 	}
 
@@ -2006,7 +1990,6 @@ function bp_activity_post_type_update( $post = null ) {
  * @return bool    True on success, false on failure.
  */
 function bp_activity_post_type_unpublish( $post_id = 0, $post = null ) {
-	$bp = buddypress();
 
 	if ( ! is_a( $post, 'WP_Post' ) ) {
 		return;
@@ -2053,7 +2036,6 @@ function bp_activity_post_type_unpublish( $post_id = 0, $post = null ) {
  *
  * @since BuddyPress (1.2.0)
  *
- * @global object $bp BuddyPress global settings.
  * @uses wp_parse_args()
  * @uses bp_activity_add()
  * @uses apply_filters() To call the 'bp_activity_comment_action' hook.
@@ -2589,6 +2571,8 @@ function bp_activity_hide_user_activity( $user_id ) {
  * through the content, grabs the first image and converts it to a thumbnail,
  * and removes the rest of the images from the string.
  *
+ * As of BuddyPress 2.3, this function is no longer in use.
+ *
  * @since BuddyPress (1.2.0)
  *
  * @uses esc_attr()
@@ -2618,10 +2602,16 @@ function bp_activity_thumbnail_content_images( $content, $link = false, $args = 
 		preg_match( '/<img.*?(height\=[\'|"]{0,1}.*?[\'|"]{0,1})[\s|>]{1}/i', $matches[0][0], $height );
 		preg_match( '/<img.*?(width\=[\'|"]{0,1}.*?[\'|"]{0,1})[\s|>]{1}/i',  $matches[0][0], $width  );
 
-		if ( !empty( $src ) ) {
-			$src    = substr( substr( str_replace( 'src=',    '', $src[1]    ), 0, -1 ), 1 );
-			$height = substr( substr( str_replace( 'height=', '', $height[1] ), 0, -1 ), 1 );
-			$width  = substr( substr( str_replace( 'width=',  '', $width[1]  ), 0, -1 ), 1 );
+		if ( ! empty( $src ) ) {
+			$src = substr( substr( str_replace( 'src=', '', $src[1] ), 0, -1 ), 1 );
+
+			if ( isset( $width[1] ) ) {
+				$width = substr( substr( str_replace( 'width=', '', $width[1] ), 0, -1 ), 1 );
+			}
+
+			if ( isset( $height[1] ) ) {
+				$height = substr( substr( str_replace( 'height=', '', $height[1] ), 0, -1 ), 1 );
+			}
 
 			if ( empty( $width ) || empty( $height ) ) {
 				$width  = 100;
@@ -2651,6 +2641,163 @@ function bp_activity_thumbnail_content_images( $content, $link = false, $args = 
 	 * @param array  $args Arguments passed into function creating the activity update.
 	 */
 	return apply_filters( 'bp_activity_thumbnail_content_images', $content, $matches, $args );
+}
+
+/**
+ * Create a rich summary of an activity item for the activity stream.
+ *
+ * More than just a simple excerpt, the summary could contain oEmbeds and other types of media.
+ * Currently, it's only used for blog post items, but it will probably be used for all types of
+ * activity in the future.
+ *
+ * @since BuddyPress (2.3.0)
+ *
+ * @param string $content  The content of the activity item.
+ * @param array  $activity The data passed to bp_activity_add() or the values
+ *                         from an Activity obj.
+ * @return string
+ */
+function bp_activity_create_summary( $content, $activity ) {
+	$args = array(
+		'width' => isset( $GLOBALS['content_width'] ) ? (int) $GLOBALS['content_width'] : 'medium',
+	);
+
+	// Get the WP_Post object if this activity type is a blog post.
+	if ( $activity['type'] === 'new_blog_post' ) {
+		$content = get_post( $activity['secondary_item_id'] );
+	}
+
+
+	/**
+	 * Filter the class name of the media extractor when creating an Activity summary.
+	 *
+	 * Use this filter to change the media extractor used to extract media info for the activity item.
+	 *
+	 * @param string $extractor Class name.
+	 * @param string $content The content of the activity item.
+	 * @param array $activity The data passed to bp_activity_add() or the values from an Activity obj.
+	 * @since BuddyPress (2.3.0)
+	 */
+	$extractor = apply_filters( 'bp_activity_create_summary_extractor_class', 'BP_Media_Extractor', $content, $activity );
+	$extractor = new $extractor;
+
+	/**
+	 * Filter the arguments passed to the media extractor when creating an Activity summary.
+	 *
+	 * @param array $args Array of bespoke data for the media extractor.
+	 * @param string $content The content of the activity item.
+	 * @param array $activity The data passed to bp_activity_add() or the values from an Activity obj.
+	 * @param BP_Media_Extractor $extractor The media extractor object.
+	 * @since BuddyPress (2.3.0)
+	 */
+	$args = apply_filters( 'bp_activity_create_summary_extractor_args', $args, $content, $activity, $extractor );
+
+
+	// Extract media information from the $content.
+	$media = $extractor->extract( $content, BP_Media_Extractor::ALL, $args );
+
+	// If we converted $content to an object earlier, flip it back to a string.
+	if ( is_a( $content, 'WP_Post' ) ) {
+		$content = $content->post_content;
+	}
+
+	$para_count     = substr_count( strtolower( wpautop( $content ) ), '<p>' );
+	$has_audio      = ! empty( $media['has']['audio'] )           && $media['has']['audio'];
+	$has_videos     = ! empty( $media['has']['videos'] )          && $media['has']['videos'];
+	$has_feat_image = ! empty( $media['has']['featured_images'] ) && $media['has']['featured_images'];
+	$has_galleries  = ! empty( $media['has']['galleries'] )       && $media['has']['galleries'];
+	$has_images     = ! empty( $media['has']['images'] )          && $media['has']['images'];
+	$has_embeds     = false;
+
+	// Embeds must be subtracted from the paragraph count.
+	if ( ! empty( $media['has']['embeds'] ) ) {
+		$has_embeds = $media['has']['embeds'] > 0;
+		$para_count -= count( $media['has']['embeds'] );
+	}
+
+	$extracted_media = array();
+	$use_media_type  = '';
+	$image_source    = '';
+
+	// If it's a short article and there's an embed/audio/video, use it.
+	if ( $para_count <= 3 ) {
+		if ( $has_embeds ) {
+			$use_media_type = 'embeds';
+		} elseif ( $has_audio ) {
+			$use_media_type = 'audio';
+		} elseif ( $has_videos ) {
+			$use_media_type = 'videos';
+		}
+	}
+
+	// If not, or in any other situation, try to use an image.
+	if ( ! $use_media_type && $has_images ) {
+		$use_media_type = 'images';
+		$image_source   = 'html';
+	
+		// Featured Image > Galleries > inline <img>.
+		if ( $has_feat_image ) {
+			$image_source = 'featured_images';
+
+		} elseif ( $has_galleries ) {
+			$image_source = 'galleries';
+		}
+	}
+
+	// Extract an item from the $media results.
+	if ( $use_media_type ) {
+		if ( $use_media_type === 'images' ) {
+			$extracted_media = wp_list_filter( $media[ $use_media_type ], array( 'source' => $image_source ) );
+			$extracted_media = array_shift( $extracted_media );
+		} else {
+			$extracted_media = array_shift( $media[ $use_media_type ] );
+		}
+
+		/**
+		 * Filter the results of the media extractor when creating an Activity summary.
+		 *
+		 * @param array $extracted_media Extracted media item. See {@link BP_Media_Extractor::extract()} for format.
+		 * @param string $content Content of the activity item.
+		 * @param array $activity The data passed to bp_activity_add() or the values from an Activity obj.
+		 * @param array $media All results from the media extraction. See {@link BP_Media_Extractor::extract()} for format.
+		 * @param string $use_media_type The kind of media item that was preferentially extracted.
+		 * @param string $image_source If $use_media_type was "images", the preferential source of the image.
+		 *               Otherwise empty.
+		 * @since BuddyPress (2.3.0)
+		 */
+		$extracted_media = apply_filters(
+			'bp_activity_create_summary_extractor_result',
+			$extracted_media,
+			$content,
+			$activity,
+			$media,
+			$use_media_type,
+			$image_source
+		);
+	}
+
+	// Generate a text excerpt for this activity item (and remove any oEmbeds URLs).
+	$summary = strip_shortcodes( html_entity_decode( strip_tags( $content ) ) );
+	$summary = bp_create_excerpt( preg_replace( '#^\s*(https?://[^\s"]+)\s*$#im', '', $summary ) );
+
+	if ( $use_media_type === 'embeds' ) {
+		$summary .= PHP_EOL . PHP_EOL . $extracted_media['url'];
+	} elseif ( $use_media_type === 'images' ) {
+		$summary .= sprintf( ' <img src="%s">', esc_url( $extracted_media['url'] ) );
+	} elseif ( in_array( $use_media_type, array( 'audio', 'videos' ), true ) ) {
+		$summary .= PHP_EOL . PHP_EOL . $extracted_media['original'];  // Full shortcode.
+	}
+
+	/**
+	 * Filters the newly-generated summary for the activity item.
+	 *
+	 * @param string $summary Activity summary HTML.
+	 * @param string $content $content Content of the activity item.
+	 * @param array $activity The data passed to bp_activity_add() or the values from an Activity obj.
+	 * @param array $extracted_media Media item extracted. See {@link BP_Media_Extractor::extract()} for format.
+	 * @since BuddyPress (2.3.0)
+	 */
+	return apply_filters( 'bp_activity_create_summary', $summary, $content, $activity, $extracted_media );
 }
 
 /**

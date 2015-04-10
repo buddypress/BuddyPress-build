@@ -10,11 +10,11 @@
 
 /**
  * Plugin Name: BuddyPress
- * Plugin URI:  http://buddypress.org
+ * Plugin URI:  https://buddypress.org/
  * Description: BuddyPress helps you run any kind of social network on your WordPress, with member profiles, activity streams, user groups, messaging, and more.
  * Author:      The BuddyPress Community
- * Author URI:  http://buddypress.org
- * Version:     2.2.0
+ * Author URI:  https://buddypress.org/
+ * Version:     2.3-alpha
  * Text Domain: buddypress
  * Domain Path: /bp-languages/
  * License:     GPLv2 or later (license.txt)
@@ -81,6 +81,11 @@ class BuddyPress {
 	public $action_variables = array();
 
 	/**
+	 * @var string Current member directory type.
+	 */
+	public $current_member_type = '';
+
+	/**
 	 * @var array Required components (core, members).
 	 */
 	public $required_components = array();
@@ -143,6 +148,8 @@ class BuddyPress {
 
 		// Always return the instance
 		return $instance;
+
+		// The last metroid is in captivity. The galaxy is at peace.
 	}
 
 	/** Magic Methods *********************************************************/
@@ -302,8 +309,8 @@ class BuddyPress {
 
 		/** Versions **********************************************************/
 
-		$this->version    = '2.2';
-		$this->db_version = 9181;
+		$this->version    = '2.3-alpha';
+		$this->db_version = 9695;
 
 		/** Loading ***********************************************************/
 
@@ -460,6 +467,8 @@ class BuddyPress {
 			require( $this->plugin_dir . 'bp-core/deprecated/1.9.php' );
 			require( $this->plugin_dir . 'bp-core/deprecated/2.0.php' );
 			require( $this->plugin_dir . 'bp-core/deprecated/2.1.php' );
+			require( $this->plugin_dir . 'bp-core/deprecated/2.2.php' );
+			require( $this->plugin_dir . 'bp-core/deprecated/2.3.php' );
 		}
 	}
 

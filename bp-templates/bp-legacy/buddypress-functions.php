@@ -206,13 +206,35 @@ class BP_Legacy extends BP_Theme_Compat {
 		$min = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
 		// Locate the BP stylesheet
-		$asset = $this->locate_asset_in_stack( "buddypress{$min}.css", 'css' );
+		$ltr = $this->locate_asset_in_stack( "buddypress{$min}.css",     'css' );
+		$rtl = $this->locate_asset_in_stack( "buddypress-rtl{$min}.css", 'css' );
 
-		// Enqueue BuddyPress-specific styling, if found
-		if ( isset( $asset['location'], $asset['handle'] ) ) {
+		// LTR
+		if ( ! is_rtl() && isset( $ltr['location'], $ltr['handle'] ) ) {
+			wp_enqueue_style( $ltr['handle'], $ltr['location'], array(), $this->version, 'screen' );
+
+			if ( $min ) {
+				wp_style_add_data( $ltr['handle'], 'suffix', $min );
+			}
+		}
+
+		// RTL
+		if ( is_rtl() && isset( $rtl['location'], $rtl['handle'] ) ) {
+			$rtl['handle'] = str_replace( '-css', '-css-rtl', $rtl['handle'] );  // Backwards compatibility
+			wp_enqueue_style( $rtl['handle'], $rtl['location'], array(), $this->version, 'screen' );
+
+			if ( $min ) {
+				wp_style_add_data( $rtl['handle'], 'suffix', $min );
+			}
+		}
+
+		// Compatibility stylesheets for specific themes.
+		$asset = $this->locate_asset_in_stack( get_stylesheet() . "{$min}.css", 'css' );
+		if ( isset( $asset['location'] ) ) {
+			// use a unique handle
+			$asset['handle'] = 'bp-' . get_stylesheet();
 			wp_enqueue_style( $asset['handle'], $asset['location'], array(), $this->version, 'screen' );
 
-			wp_style_add_data( $asset['handle'], 'rtl', true );
 			if ( $min ) {
 				wp_style_add_data( $asset['handle'], 'suffix', $min );
 			}
@@ -264,7 +286,7 @@ class BP_Legacy extends BP_Theme_Compat {
 		if ( bp_is_register_page() || ( function_exists( 'bp_is_user_settings_general' ) && bp_is_user_settings_general() ) ) {
 
 			// Locate the Register Page JS file
-			$asset = $this->locate_asset_in_stack( "password-verify{$min}.js", 'js' );
+			$asset = $this->locate_asset_in_stack( "password-verify{$min}.js", 'js', 'bp-legacy-password-verify' );
 
 			$dependencies = array_merge( bp_core_get_js_dependencies(), array(
 				'password-strength-meter',
@@ -299,35 +321,40 @@ class BP_Legacy extends BP_Theme_Compat {
 	 *
 	 * @since BuddyPress (1.8)
 	 * @access private
-	 * @param string $file A filename like buddypress.cs
-	 * @param string $type css|js
+	 * @param string $file A filename like buddypress.css
+	 * @param string $type Optional. Either "js" or "css" (the default).
+	 * @param string $script_handle Optional. If set, used as the script name in `wp_enqueue_script`.
 	 * @return array An array of data for the wp_enqueue_* function:
 	 *   'handle' (eg 'bp-child-css') and a 'location' (the URI of the
 	 *   asset)
 	 */
-	private function locate_asset_in_stack( $file, $type = 'css' ) {
-		// Child, parent, theme compat
+	private function locate_asset_in_stack( $file, $type = 'css', $script_handle = '' ) {
 		$locations = array();
+
+		// Ensure the assets can be located when running from /src/.
+		if ( defined( 'BP_SOURCE_SUBDIRECTORY' ) && BP_SOURCE_SUBDIRECTORY === 'src' ) {
+			$file = str_replace( '.min', '', $file );
+		}
 
 		// No need to check child if template == stylesheet
 		if ( is_child_theme() ) {
 			$locations['bp-child'] = array(
 				'dir'  => get_stylesheet_directory(),
 				'uri'  => get_stylesheet_directory_uri(),
-				'file' => str_replace( '.min', '', $file )
+				'file' => $file,
 			);
 		}
 
 		$locations['bp-parent'] = array(
 			'dir'  => get_template_directory(),
 			'uri'  => get_template_directory_uri(),
-			'file' => str_replace( '.min', '', $file )
+			'file' => $file,
 		);
 
 		$locations['bp-legacy'] = array(
 			'dir'  => bp_get_theme_compat_dir(),
 			'uri'  => bp_get_theme_compat_url(),
-			'file' => str_replace( '.min', '', $file )
+			'file' => $file,
 		);
 
 		// Subdirectories within the top-level $locations directories
@@ -343,7 +370,8 @@ class BP_Legacy extends BP_Theme_Compat {
 			foreach ( $subdirs as $subdir ) {
 				if ( file_exists( trailingslashit( $location['dir'] ) . trailingslashit( $subdir ) . $location['file'] ) ) {
 					$retval['location'] = trailingslashit( $location['uri'] ) . trailingslashit( $subdir ) . $location['file'];
-					$retval['handle']   = $location_type . '-' . $type;
+					$retval['handle']   = ( $script_handle ) ? $script_handle : "{$location_type}-{$type}";
+
 					break 2;
 				}
 			}
@@ -497,7 +525,16 @@ class BP_Legacy extends BP_Theme_Compat {
 		// Add it to the beginning of the templates array so it takes precedence
 		// over the default hierarchy.
 		if ( ! empty( $page_template ) ) {
-			array_unshift( $templates, $page_template );
+
+			/**
+			 * Check for existence of template before adding it to template
+			 * stack to avoid accidentally including an unintended file.
+			 *
+			 * @see: https://buddypress.trac.wordpress.org/ticket/6190
+			 */
+			if ( '' !== locate_template( $page_template ) ) {
+				array_unshift( $templates, $page_template );
+			}
 		}
 
 		return $templates;
@@ -1151,7 +1188,9 @@ function bp_legacy_theme_ajax_invite_user() {
 
 		$user = new BP_Core_User( $friend_id );
 
-		$uninvite_url = bp_is_current_action( 'create' ) ? bp_get_root_domain() . '/' . bp_get_groups_root_slug() . '/create/step/group-invites/?user_id=' . $friend_id : bp_get_group_permalink( $group ) . 'send-invites/remove/' . $friend_id;
+		$uninvite_url = bp_is_current_action( 'create' )
+			? bp_get_groups_directory_permalink() . 'create/step/group-invites/?user_id=' . $friend_id
+			: bp_get_group_permalink( $group )    . 'send-invites/remove/' . $friend_id;
 
 		echo '<li id="uid-' . esc_attr( $user->id ) . '">';
 		echo $user->avatar_thumb;
@@ -1536,7 +1575,7 @@ function bp_legacy_theme_ajax_messages_autocomplete_results() {
 		foreach ( $suggestions as $user ) {
 
 			// Note that the final line break acts as a delimiter for the
-			// autocomplete javascript and thus should not be removed
+			// autocomplete JavaScript and thus should not be removed
 			printf( '<span id="%s" href="#"></span><img src="%s" style="width: 15px"> &nbsp; %s (%s)' . "\n",
 				esc_attr( 'link-' . $user->ID ),
 				esc_url( $user->image ),

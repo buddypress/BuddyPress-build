@@ -20,7 +20,7 @@ defined( 'ABSPATH' ) || exit;
  * @return bool True if found, otherwise false.
  */
 function bp_members_has_directory() {
-	global $bp;
+	$bp = buddypress();
 
 	return (bool) !empty( $bp->pages->members->id );
 }
@@ -2159,16 +2159,12 @@ function bp_core_signup_avatar_upload_dir() {
 		return false;
 	}
 
-	$path  = bp_core_avatar_upload_path() . '/avatars/signups/' . $bp->signup->avatar_dir;
-	$newbdir = $path;
-
-	if ( ! file_exists( $path ) ) {
-		@wp_mkdir_p( $path );
-	}
-
-	$newurl = bp_core_avatar_url() . '/avatars/signups/' . $bp->signup->avatar_dir;
-	$newburl = $newurl;
-	$newsubdir = '/avatars/signups/' . $bp->signup->avatar_dir;
+	$directory = 'avatars/signups';
+	$path      = bp_core_avatar_upload_path() . '/' . $directory . '/' . $bp->signup->avatar_dir;
+	$newbdir   = $path;
+	$newurl    = bp_core_avatar_url() . '/' . $directory . '/' . $bp->signup->avatar_dir;
+	$newburl   = $newurl;
+	$newsubdir = '/' . $directory . '/' . $bp->signup->avatar_dir;
 
 	/**
 	 * Filters the avatar storage directory for use during registration.
@@ -2183,7 +2179,7 @@ function bp_core_signup_avatar_upload_dir() {
 		'subdir'  => $newsubdir,
 		'basedir' => $newbdir,
 		'baseurl' => $newburl,
-		'error' => false
+		'error'   => false
 	) );
 }
 
@@ -2455,12 +2451,16 @@ add_action( 'login_form_bp-spam', 'bp_live_spammer_login_error' );
  * @param array  $args {
  *     Array of arguments describing the member type.
  *
- *     @type array $labels {
+ *     @type array       $labels {
  *         Array of labels to use in various parts of the interface.
  *
  *         @type string $name          Default name. Should typically be plural.
  *         @type string $singular_name Singular name.
  *     }
+ *     @type bool|string $has_directory Whether the member type should have its own type-specific directory.
+ *                                      Pass `true` to use the `$member_type` string as the type's slug.
+ *                                      Pass a string to customize the slug. Pass `false` to disable.
+ *                                      Default: true.
  * }
  * @return object|WP_Error Member type object on success, WP_Error object on failure.
  */
@@ -2472,7 +2472,8 @@ function bp_register_member_type( $member_type, $args = array() ) {
 	}
 
 	$r = bp_parse_args( $args, array(
-		'labels' => array(),
+		'labels'        => array(),
+		'has_directory' => true,
 	), 'register_member_type' );
 
 	$member_type = sanitize_key( $member_type );
@@ -2486,6 +2487,23 @@ function bp_register_member_type( $member_type, $args = array() ) {
 		'name'          => $default_name,
 		'singular_name' => $default_name,
 	), $r['labels'] );
+
+	// Directory slug.
+	if ( $r['has_directory'] ) {
+		// A string value is intepreted as the directory slug. Otherwise fall back on member type.
+		if ( is_string( $r['has_directory'] ) ) {
+			$directory_slug = $r['has_directory'];
+		} else {
+			$directory_slug = $member_type;
+		}
+
+		// Sanitize for use in URLs.
+		$r['directory_slug'] = sanitize_title( $directory_slug );
+		$r['has_directory']  = true;
+	} else {
+		$r['directory_slug'] = '';
+		$r['has_directory']  = false;
+	}
 
 	$bp->members->types[ $member_type ] = $type = (object) $r;
 
@@ -2583,7 +2601,7 @@ function bp_set_member_type( $user_id, $member_type, $append = false ) {
 
 	// Bust the cache if the type has been updated.
 	if ( ! is_wp_error( $retval ) ) {
-		wp_cache_delete( $user_id, 'bp_member_type' );
+		wp_cache_delete( $user_id, 'bp_member_member_type' );
 
 		/**
 		 * Fires just after a user's member type has been changed.
@@ -2601,6 +2619,42 @@ function bp_set_member_type( $user_id, $member_type, $append = false ) {
 }
 
 /**
+ * Remove type for a member.
+ *
+ * @since BuddyPress (2.3.0)
+ *
+ * @param int    $user_id     ID of the user.
+ * @param string $member_type Member Type.
+ *
+ * @return bool|WP_Error
+ */
+function bp_remove_member_type( $user_id, $member_type ) {
+	// Bail if no valid member type was passed.
+	if ( empty( $member_type ) || ! bp_get_member_type_object( $member_type ) ) {
+		return false;
+	}
+
+	$deleted = bp_remove_object_terms( $user_id, $member_type, 'bp_member_type' );
+
+	// Bust the cache if the type has been removed.
+	if ( ! is_wp_error( $deleted ) ) {
+		wp_cache_delete( $user_id, 'bp_member_member_type' );
+
+		/**
+		 * Fires just after a user's member type has been removed.
+		 *
+		 * @since BuddyPress (2.3.0)
+		 *
+		 * @param int    $user_id     ID of the user whose member type has been updated.
+		 * @param string $member_type Member type.
+		 */
+		do_action( 'bp_remove_member_type', $user_id, $member_type );
+	}
+
+	return $deleted;
+}
+
+/**
  * Get type for a member.
  *
  * @since BuddyPress (2.2.0)
@@ -2612,14 +2666,14 @@ function bp_set_member_type( $user_id, $member_type, $append = false ) {
  *                           types (if $single is false). Returns false on failure.
  */
 function bp_get_member_type( $user_id, $single = true ) {
-	$types = wp_cache_get( $user_id, 'bp_member_type' );
+	$types = wp_cache_get( $user_id, 'bp_member_member_type' );
 
 	if ( false === $types ) {
-		$types = bp_get_object_terms( $user_id, 'bp_member_type'  );
+		$types = bp_get_object_terms( $user_id, 'bp_member_type' );
 
 		if ( ! is_wp_error( $types ) ) {
 			$types = wp_list_pluck( $types, 'name' );
-			wp_cache_set( $user_id, $types, 'bp_member_type' );
+			wp_cache_set( $user_id, $types, 'bp_member_member_type' );
 		}
 	}
 
@@ -2645,6 +2699,31 @@ function bp_get_member_type( $user_id, $single = true ) {
 }
 
 /**
+ * Check whether the given user has a certain member type.
+ *
+ * @since BuddyPress (2.3.0)
+ *
+ * @param  int    $user_id     $user_id ID of the user.
+ * @param  string $member_type Member Type.
+ * @return bool Whether the user has the given member type.
+ */
+function bp_has_member_type( $user_id, $member_type ) {
+	// Bail if no valid member type was passed.
+	if ( empty( $member_type ) || ! bp_get_member_type_object( $member_type ) ) {
+		return false;
+	}
+
+	// Get all user's member types.
+	$types = bp_get_member_type( $user_id, false );
+
+	if ( ! is_array( $types ) ) {
+		return false;
+	}
+
+	return in_array( $member_type, $types );
+}
+
+/**
  * Delete a user's member type when the user when the user is deleted.
  *
  * @since BuddyPress (2.2.0)
@@ -2657,3 +2736,14 @@ function bp_remove_member_type_on_user_delete( $user_id ) {
 }
 add_action( 'wpmu_delete_user', 'bp_remove_member_type_on_user_delete' );
 add_action( 'delete_user', 'bp_remove_member_type_on_user_delete' );
+
+/**
+ * Get the "current" member type, if one is provided, in member directories.
+ *
+ * @since BuddyPress (2.3.0)
+ *
+ * @return string
+ */
+function bp_get_current_member_type() {
+	return apply_filters( 'bp_get_current_member_type', buddypress()->current_member_type );
+}

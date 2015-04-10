@@ -496,7 +496,9 @@ body.activity-permalink #buddypress div.activity-comments div.acomment-content {
 	font-size: 90%;
 	padding: 1px 3px;
 }
-
+#buddypress .current-member-type {
+	font-style: italic;
+}
 #buddypress .dir-form {
 	clear: both;
 }
@@ -1584,6 +1586,7 @@ body.register #buddypress div.page ul {
 .widget.buddypress #groups-list li,
 .widget.buddypress #members-list li,
 .widget.buddypress #friends-list li {
+	clear: both;
 	list-style-type: none;
 }
 

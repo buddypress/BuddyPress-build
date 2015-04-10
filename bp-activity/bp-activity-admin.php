@@ -242,8 +242,8 @@ function bp_activity_admin_load() {
 		// Help panel - sidebar links
 		get_current_screen()->set_help_sidebar(
 			'<p><strong>' . __( 'For more information:', 'buddypress' ) . '</strong></p>' .
-			'<p>' . __( '<a href="http://codex.buddypress.org/buddypress-site-administration/managing-activity/">Managing Activity</a>', 'buddypress' ) . '</p>' .
-			'<p>' . __( '<a href="http://buddypress.org/support/">Support Forums</a>', 'buddypress' ) . '</p>'
+			'<p>' . __( '<a href="https://codex.buddypress.org/administrator-guide/activity-stream-management-panels/">Managing Activity</a>', 'buddypress' ) . '</p>' .
+			'<p>' . __( '<a href="https://buddypress.org/support/">Support Forums</a>', 'buddypress' ) . '</p>'
 		);
 
 		// Register metaboxes for the edit screen.
@@ -253,7 +253,7 @@ function bp_activity_admin_load() {
 		add_meta_box( 'bp_activity_type',    _x( 'Type', 'activity admin edit screen', 'buddypress' ), 'bp_activity_admin_edit_metabox_type', get_current_screen()->id, 'normal', 'core' );
 		add_meta_box( 'bp_activity_userid',  _x( 'Author ID', 'activity admin edit screen', 'buddypress' ), 'bp_activity_admin_edit_metabox_userid', get_current_screen()->id, 'normal', 'core' );
 
-		// Enqueue javascripts
+		// Enqueue JavaScript files
 		wp_enqueue_script( 'postbox' );
 		wp_enqueue_script( 'dashboard' );
 		wp_enqueue_script( 'comment' );
@@ -287,7 +287,7 @@ function bp_activity_admin_load() {
 		// Help panel - sidebar links
 		get_current_screen()->set_help_sidebar(
 			'<p><strong>' . __( 'For more information:', 'buddypress' ) . '</strong></p>' .
-			'<p>' . __( '<a href="http://buddypress.org/support/">Support Forums</a>', 'buddypress' ) . '</p>'
+			'<p>' . __( '<a href="https://buddypress.org/support/">Support Forums</a>', 'buddypress' ) . '</p>'
 		);
 	}
 
@@ -820,12 +820,10 @@ function bp_activity_admin_get_activity_actions() {
  *
  * @since BuddyPress (1.6.0)
  *
- * @global object $bp BuddyPress global settings.
- *
  * @param object $item Activity item.
  */
 function bp_activity_admin_edit_metabox_type( $item ) {
-	global $bp;
+	$bp = buddypress();
 
 	$actions  = array();
 	$selected = $item->type;
@@ -1023,7 +1021,7 @@ function bp_activity_admin_index() {
 /**
  * List table class for the Activity component admin page.
  *
- * @since BuddyPress (1.6)
+ * @since BuddyPress (1.6.0)
  */
 class BP_Activity_List_Table extends WP_List_Table {
 
@@ -1052,6 +1050,17 @@ class BP_Activity_List_Table extends WP_List_Table {
 	 * @var array
 	 */
 	protected $activity_user_id = array();
+
+	/**
+	 * If users can comment on blog & forum activity items
+	 *
+	 * @since BuddyPress (2.2.2)
+	 *
+	 * @link https://buddypress.trac.wordpress.org/ticket/6277
+	 *
+	 * @var bool
+	 */
+	public $disable_blogforum_comments = false;
 
 	/**
 	 * Constructor.
@@ -1482,7 +1491,7 @@ class BP_Activity_List_Table extends WP_List_Table {
 
 		// Rollover actions
 
-		// Reply - javascript only; implemented by AJAX.
+		// Reply - JavaScript only; implemented by AJAX.
 		if ( 'spam' != $item_status ) {
 			if ( $this->can_comment( $item ) ) {
 				$actions['reply'] = sprintf( '<a href="#" class="reply hide-if-no-js">%s</a>', __( 'Reply', 'buddypress' ) );

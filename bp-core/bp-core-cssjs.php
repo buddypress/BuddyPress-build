@@ -17,7 +17,14 @@ defined( 'ABSPATH' ) || exit;
 function bp_core_register_common_scripts() {
 	$min = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 	$url = buddypress()->plugin_url . 'bp-core/js/';
-	
+
+	/**
+	 * Filters the BuddyPress Core javascript files to register.
+	 *
+	 * @since BuddyPress (2.1.0)
+	 *
+	 * @param array $value Array of javascript file information to register.
+	 */
 	$scripts = apply_filters( 'bp_core_register_common_scripts', array(
 
 		// Legacy
@@ -25,6 +32,7 @@ function bp_core_register_common_scripts() {
 		'bp-widget-members' => array( 'file' => "{$url}widget-members{$min}.js", 'dependencies' => array( 'jquery' ) ),
 		'bp-jquery-query'   => array( 'file' => "{$url}jquery-query{$min}.js",   'dependencies' => array( 'jquery' ) ),
 		'bp-jquery-cookie'  => array( 'file' => "{$url}jquery-cookie{$min}.js",  'dependencies' => array( 'jquery' ) ),
+		'bp-jquery-scroll-to' => array( 'file' => "{$url}jquery-scroll-to{$min}.js", 'dependencies' => array( 'jquery' ) ),
 
 		// 2.1
 		'jquery-caret' => array( 'file' => "{$url}jquery.caret{$min}.js", 'dependencies' => array( 'jquery' ) ),
@@ -48,9 +56,25 @@ function bp_core_register_common_styles() {
 	$min = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 	$url = buddypress()->plugin_url . 'bp-core/css/';
 
+	/**
+	 * Filters the URL for the Admin Bar stylesheet.
+	 *
+	 * @since BuddyPress (1.1.0)
+	 *
+	 * @param string $value URL for the Admin Bar stylesheet.
+	 */
+	$admin_bar_file = apply_filters( 'bp_core_admin_bar_css', "{$url}admin-bar{$min}.css" );
+
+	/**
+	 * Filters the BuddyPress Core stylesheet files to register.
+	 *
+	 * @since BuddyPress (2.1.0)
+	 *
+	 * @param array $value Array of stylesheet file information to register.
+	 */
 	$styles = apply_filters( 'bp_core_register_common_styles', array(
 		'bp-admin-bar' => array(
-			'file'         => apply_filters( 'bp_core_admin_bar_css', "{$url}admin-bar{$min}.css" ),
+			'file'         => $admin_bar_file,
 			'dependencies' => array( 'admin-bar' )
 		)
 	) );
@@ -82,8 +106,8 @@ function bp_core_confirmation_js() {
 	) );
 
 }
-add_action( 'bp_enqueue_scripts',    'bp_core_confirmation_js' );
-add_action( 'admin_enqueue_scripts', 'bp_core_confirmation_js' );
+add_action( 'bp_enqueue_scripts',       'bp_core_confirmation_js' );
+add_action( 'bp_admin_enqueue_scripts', 'bp_core_confirmation_js' );
 
 /**
  * Enqueues jCrop library and hooks BP's custom cropper JS.
@@ -100,7 +124,13 @@ function bp_core_add_jquery_cropper() {
  */
 function bp_core_add_cropper_inline_js() {
 
-	// Bail if no image was uploaded
+	/**
+	 * Filters the return value of getimagesize to determine if an image was uploaded.
+	 *
+	 * @since BuddyPress (1.1.0)
+	 *
+	 * @param array $value Array of data found by getimagesize.
+	 */
 	$image = apply_filters( 'bp_inline_cropper_image', getimagesize( bp_core_avatar_upload_path() . buddypress()->avatar_admin->image->dir ) );
 	if ( empty( $image ) ) {
 		return;
@@ -163,7 +193,6 @@ function bp_core_add_cropper_inline_js() {
 				aspectRatio: <?php echo (int) $aspect_ratio; ?>,
 				setSelect: [ <?php echo (int) $crop_left; ?>, <?php echo (int) $crop_top; ?>, <?php echo (int) $crop_right; ?>, <?php echo (int) $crop_bottom; ?> ]
 			});
-			updateCoords({x: <?php echo (int) $crop_left; ?>, y: <?php echo (int) $crop_top; ?>, w: <?php echo (int) $crop_right; ?>, h: <?php echo (int) $crop_bottom; ?>});
 		});
 
 		function updateCoords(c) {
@@ -240,19 +269,35 @@ add_action( 'wp_head', 'bp_core_add_ajax_url_js' );
  * @return string AJAX endpoint URL.
  */
 function bp_core_ajax_url() {
+
+	/**
+	 * Filters the proper value for BuddyPress' ajaxurl.
+	 *
+	 * @since BuddyPress (1.7.0)
+	 *
+	 * @param string $value Proper ajaxurl value for BuddyPress.
+	 */
 	return apply_filters( 'bp_core_ajax_url', admin_url( 'admin-ajax.php', is_ssl() ? 'admin' : 'http' ) );
 }
 
 /**
- * Get the javascript dependencies for buddypress.js.
+ * Get the JavaScript dependencies for buddypress.js.
  *
  * @since BuddyPress (2.0.0)
  *
  * @uses apply_filters() to allow other component to load extra dependencies
  *
- * @return array The javascript dependencies.
+ * @return array The JavaScript dependencies.
  */
 function bp_core_get_js_dependencies() {
+
+	/**
+	 * Filters the javascript dependencies for buddypress.js.
+	 *
+	 * @since BuddyPress (2.0.0)
+	 *
+	 * @param array $value Array of javascript dependencies for buddypress.js.
+	 */
 	return apply_filters( 'bp_core_get_js_dependencies', array(
 		'jquery',
 		'bp-confirm',

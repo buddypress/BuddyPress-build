@@ -579,7 +579,7 @@ class BP_Members_Admin {
 		}
 
 		/**
-		 * Fires after all of the members JavaScript and CSS is enqueued.
+		 * Fires after all of the members JavaScript and CSS are enqueued.
 		 *
 		 * @since BuddyPress (2.0.0)
 		 *
@@ -711,8 +711,8 @@ class BP_Members_Admin {
 			// Help panel - sidebar links
 			get_current_screen()->set_help_sidebar(
 				'<p><strong>' . __( 'For more information:', 'buddypress' ) . '</strong></p>' .
-				'<p>' . __( '<a href="http://codex.buddypress.org/buddypress-site-administration/managing-user-profiles/">Managing Profiles</a>', 'buddypress' ) . '</p>' .
-				'<p>' . __( '<a href="http://buddypress.org/support/">Support Forums</a>', 'buddypress' ) . '</p>'
+				'<p>' . __( '<a href="https://codex.buddypress.org/administrator-guide/extended-profiles/">Managing Profiles</a>', 'buddypress' ) . '</p>' .
+				'<p>' . __( '<a href="https://buddypress.org/support/">Support Forums</a>', 'buddypress' ) . '</p>'
 			);
 
 			// Register metaboxes for the edit screen.
@@ -787,7 +787,7 @@ class BP_Members_Admin {
 			 */
 			do_action( 'bp_members_admin_user_metaboxes', $this->is_self_profile, $user_id );
 
-			// Enqueue javascripts
+			// Enqueue JavaScript files
 			wp_enqueue_script( 'postbox'   );
 			wp_enqueue_script( 'dashboard' );
 
@@ -1350,7 +1350,7 @@ class BP_Members_Admin {
 
 		if ( ! empty( $required ) ) {
 			require_once( ABSPATH . 'wp-admin/includes/class-wp-' . $required . '-list-table.php' );
-			require_once( buddypress()->members->admin->admin_dir . 'bp-members-classes.php'    );
+			require_once( buddypress()->members->admin->admin_dir . 'bp-members-admin-classes.php' );
 		}
 
 		return new $class();
@@ -1429,7 +1429,7 @@ class BP_Members_Admin {
 			// Help panel - sidebar links
 			get_current_screen()->set_help_sidebar(
 				'<p><strong>' . __( 'For more information:', 'buddypress' ) . '</strong></p>' .
-				'<p>' . __( '<a href="http://buddypress.org/support/">Support Forums</a>', 'buddypress' ) . '</p>'
+				'<p>' . __( '<a href="https://buddypress.org/support/">Support Forums</a>', 'buddypress' ) . '</p>'
 			);
 		} else {
 			if ( ! empty( $_REQUEST['signup_ids' ] ) ) {
