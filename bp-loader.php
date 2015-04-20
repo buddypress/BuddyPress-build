@@ -314,6 +314,13 @@ class BuddyPress {
 
 		/** Loading ***********************************************************/
 
+		/**
+		 * Filters the load_deprecated property value.
+		 *
+		 * @since BuddyPress (2.0.0)
+		 *
+		 * @param constant BP_IGNORE_DEPRECATED Whether or not to ignore deprecated functionality.
+		 */
 		$this->load_deprecated = ! apply_filters( 'bp_ignore_deprecated', BP_IGNORE_DEPRECATED );
 
 		/** Toolbar ***********************************************************/
@@ -361,6 +368,13 @@ class BuddyPress {
 		/** Root **************************************************************/
 
 		// BuddyPress Root blog ID
+		/**
+		 * Filters the BuddyPress Root blog ID.
+		 *
+		 * @since BuddyPress (1.5.0)
+		 *
+		 * @param constant BP_ROOT_BLOG BuddyPress Root blog ID.
+		 */
 		$this->root_blog_id = (int) apply_filters( 'bp_get_root_blog_id', BP_ROOT_BLOG );
 
 		/** Paths**************************************************************/
@@ -437,26 +451,27 @@ class BuddyPress {
 		require( $this->plugin_dir . 'bp-core/bp-core-theme-compatibility.php' );
 
 		// Require all of the BuddyPress core libraries
-		require( $this->plugin_dir . 'bp-core/bp-core-dependency.php' );
-		require( $this->plugin_dir . 'bp-core/bp-core-actions.php'    );
-		require( $this->plugin_dir . 'bp-core/bp-core-caps.php'       );
-		require( $this->plugin_dir . 'bp-core/bp-core-cache.php'      );
-		require( $this->plugin_dir . 'bp-core/bp-core-cssjs.php'      );
-		require( $this->plugin_dir . 'bp-core/bp-core-update.php'     );
-		require( $this->plugin_dir . 'bp-core/bp-core-options.php'    );
-		require( $this->plugin_dir . 'bp-core/bp-core-classes.php'    );
-		require( $this->plugin_dir . 'bp-core/bp-core-taxonomy.php'   );
-		require( $this->plugin_dir . 'bp-core/bp-core-filters.php'    );
-		require( $this->plugin_dir . 'bp-core/bp-core-avatars.php'    );
-		require( $this->plugin_dir . 'bp-core/bp-core-widgets.php'    );
-		require( $this->plugin_dir . 'bp-core/bp-core-template.php'   );
-		require( $this->plugin_dir . 'bp-core/bp-core-adminbar.php'   );
-		require( $this->plugin_dir . 'bp-core/bp-core-buddybar.php'   );
-		require( $this->plugin_dir . 'bp-core/bp-core-catchuri.php'   );
-		require( $this->plugin_dir . 'bp-core/bp-core-component.php'  );
-		require( $this->plugin_dir . 'bp-core/bp-core-functions.php'  );
-		require( $this->plugin_dir . 'bp-core/bp-core-moderation.php' );
-		require( $this->plugin_dir . 'bp-core/bp-core-loader.php'     );
+		require( $this->plugin_dir . 'bp-core/bp-core-dependency.php'  );
+		require( $this->plugin_dir . 'bp-core/bp-core-actions.php'     );
+		require( $this->plugin_dir . 'bp-core/bp-core-caps.php'        );
+		require( $this->plugin_dir . 'bp-core/bp-core-cache.php'       );
+		require( $this->plugin_dir . 'bp-core/bp-core-cssjs.php'       );
+		require( $this->plugin_dir . 'bp-core/bp-core-update.php'      );
+		require( $this->plugin_dir . 'bp-core/bp-core-options.php'     );
+		require( $this->plugin_dir . 'bp-core/bp-core-classes.php'     );
+		require( $this->plugin_dir . 'bp-core/bp-core-taxonomy.php'    );
+		require( $this->plugin_dir . 'bp-core/bp-core-filters.php'     );
+		require( $this->plugin_dir . 'bp-core/bp-core-attachments.php' );
+		require( $this->plugin_dir . 'bp-core/bp-core-avatars.php'     );
+		require( $this->plugin_dir . 'bp-core/bp-core-widgets.php'     );
+		require( $this->plugin_dir . 'bp-core/bp-core-template.php'    );
+		require( $this->plugin_dir . 'bp-core/bp-core-adminbar.php'    );
+		require( $this->plugin_dir . 'bp-core/bp-core-buddybar.php'    );
+		require( $this->plugin_dir . 'bp-core/bp-core-catchuri.php'    );
+		require( $this->plugin_dir . 'bp-core/bp-core-component.php'   );
+		require( $this->plugin_dir . 'bp-core/bp-core-functions.php'   );
+		require( $this->plugin_dir . 'bp-core/bp-core-moderation.php'  );
+		require( $this->plugin_dir . 'bp-core/bp-core-loader.php'      );
 
 		// Skip or load deprecated content
 		if ( false !== $this->load_deprecated ) {
@@ -515,7 +530,15 @@ class BuddyPress {
 			}
 		}
 
-		// All BuddyPress actions are setup (includes bbp-core-hooks.php)
+		/**
+		 * Fires after the setup of all BuddyPress actions.
+		 *
+		 * Includes bbp-core-hooks.php.
+		 *
+		 * @since BuddyPress (1.7.0)
+		 *
+		 * @param BuddyPress $this. Current BuddyPress instance. Passed by reference.
+		 */
 		do_action_ref_array( 'bp_after_setup_actions', array( &$this ) );
 	}
 

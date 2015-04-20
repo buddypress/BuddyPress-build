@@ -295,7 +295,7 @@ class BP_Activity_Template {
 		$this->pag_num  = bp_sanitize_pagination_arg( 'num',          $r['per_page'] );
 
 		// Check if blog/forum replies are disabled
-		$this->disable_blogforum_replies = (bool) bp_core_get_root_option( 'bp-disabled-blogforum-comments' );
+		$this->disable_blogforum_replies = (bool) bp_core_get_root_option( 'bp-disable-blogforum-comments' );
 
 		// Get an array of the logged in user's favorite activities
 		$this->my_favs = maybe_unserialize( bp_get_user_meta( bp_loggedin_user_id(), 'bp_favorite_activities', true ) );
@@ -387,7 +387,7 @@ class BP_Activity_Template {
 
 		if ( (int) $this->total_activity_count && (int) $this->pag_num ) {
 			$this->pag_links = paginate_links( array(
-				'base'      => add_query_arg( $page_arg, '%#%' ),
+				'base'      => add_query_arg( $this->pag_arg, '%#%' ),
 				'format'    => '',
 				'total'     => ceil( (int) $this->total_activity_count / (int) $this->pag_num ),
 				'current'   => (int) $this->pag_page,
@@ -847,7 +847,13 @@ function bp_activity_pagination_count() {
 		$to_num    = bp_core_number_format( ( $start_num + ( $activities_template->pag_num - 1 ) > $activities_template->total_activity_count ) ? $activities_template->total_activity_count : $start_num + ( $activities_template->pag_num - 1 ) );
 		$total     = bp_core_number_format( $activities_template->total_activity_count );
 
-		return sprintf( _n( 'Viewing 1 item', 'Viewing %1$s - %2$s of %3$s items', $total, 'buddypress' ), $from_num, $to_num, $total );
+		if ( 1 == $activities_template->total_activity_count ) {
+			$message = __( 'Viewing 1 item', 'buddypress' );
+		} else {
+			$message = sprintf( _n( 'Viewing %1$s - %2$s of %3$s item', 'Viewing %1$s - %2$s of %3$s items', $activities_template->total_activity_count, 'buddypress' ), $from_num, $to_num, $total );
+		}
+
+		return $message;
 	}
 
 /**
@@ -3083,7 +3089,6 @@ function bp_activity_delete_link() {
 	 * @uses bp_get_activity_root_slug()
 	 * @uses bp_is_activity_component()
 	 * @uses bp_current_action()
-	 * @uses add_query_arg()
 	 * @uses wp_get_referer()
 	 * @uses wp_nonce_url()
 	 * @uses apply_filters() To call the 'bp_get_activity_delete_link' hook.
@@ -3331,13 +3336,13 @@ function bp_activity_filter_links( $args = false ) {
 			 */
 			$link = apply_filters( 'bp_get_activity_filter_link_href', $link, $component );
 
-			$component_links[] = $before . '<a href="' . esc_attr( $link ) . '">' . ucwords( $component ) . '</a>' . $after;
+			$component_links[] = $before . '<a href="' . esc_url( $link ) . '">' . ucwords( $component ) . '</a>' . $after;
 		}
 
 		$link = remove_query_arg( 'afilter' , $link );
 
 		if ( isset( $_GET['afilter'] ) ) {
-			$component_links[] = '<' . $tag . ' id="afilter-clear"><a href="' . esc_attr( $link ) . '">' . __( 'Clear Filter', 'buddypress' ) . '</a></' . $tag . '>';
+			$component_links[] = '<' . $tag . ' id="afilter-clear"><a href="' . esc_url( $link ) . '">' . __( 'Clear Filter', 'buddypress' ) . '</a></' . $tag . '>';
 		}
 
 		/**
@@ -3585,7 +3590,7 @@ function bp_total_mention_count_for_user( $user_id = 0 ) {
  * @uses bp_get_send_public_message_link()
  */
 function bp_send_public_message_link() {
-	echo bp_get_send_public_message_link();
+	echo esc_url( bp_get_send_public_message_link() );
 }
 
 	/**

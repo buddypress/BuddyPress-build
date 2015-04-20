@@ -147,10 +147,16 @@ class BP_Messages_Thread {
 		$this->messages_order = $order;
 		$this->thread_id      = $thread_id;
 
-		$bp = buddypress();
+		// get messages for thread
+		$this->messages = self::get_messages( $thread_id );
 
-		if ( !$this->messages = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$bp->messages->table_name_messages} WHERE thread_id = %d ORDER BY date_sent " . $order, $this->thread_id ) ) ) {
+		if ( empty( $this->messages ) || is_wp_error( $this->messages ) ) {
 			return false;
+		}
+
+		// flip if order is DESC
+		if ( 'DESC' === $order ) {
+			$this->messages = array_reverse( $this->messages );
 		}
 
 		foreach ( (array) $this->messages as $key => $message ) {
@@ -206,24 +212,30 @@ class BP_Messages_Thread {
 	 * Returns recipients for a message thread.
 	 *
 	 * @since BuddyPress (1.0.0)
+	 * @since BuddyPress (2.3.0) Added $thread_id as a parameter.
 	 *
+	 * @param int $thread_id The thread ID
 	 * @return array
 	 */
-	public function get_recipients() {
+	public function get_recipients( $thread_id = 0 ) {
 		global $wpdb;
 
-		$recipients = wp_cache_get( 'thread_recipients_' . $this->thread_id, 'bp_messages' );
+		if ( empty( $thread_id ) ) {
+			$thread_id = $this->thread_id;
+		}
+
+		$recipients = wp_cache_get( 'thread_recipients_' . $thread_id, 'bp_messages' );
 		if ( false === $recipients ) {
 			$bp = buddypress();
 
 			$recipients = array();
-			$results    = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$bp->messages->table_name_recipients} WHERE thread_id = %d", $this->thread_id ) );
+			$results    = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$bp->messages->table_name_recipients} WHERE thread_id = %d", $thread_id ) );
 
 			foreach ( (array) $results as $recipient ) {
 				$recipients[ $recipient->user_id ] = $recipient;
 			}
 
-			wp_cache_set( 'thread_recipients_' . $this->thread_id, $recipients, 'bp_messages' );
+			wp_cache_set( 'thread_recipients_' . $thread_id, $recipients, 'bp_messages' );
 		}
 
 		/**
@@ -234,10 +246,48 @@ class BP_Messages_Thread {
 		 * @param array $recipients Array of recipient objects.
 		 * @param int   $thread_id  ID of the current thread.
 		 */
-		return apply_filters( 'bp_messages_thread_get_recipients', $recipients, $this->thread_id );
+		return apply_filters( 'bp_messages_thread_get_recipients', $recipients, $thread_id );
 	}
 
 	/** Static Functions ******************************************************/
+
+	/**
+	 * Get all messages associated with a thread.
+	 *
+	 * @since BuddyPress (2.3.0)
+	 *
+	 * @param int $thread_id The message thread ID
+	 * @return array
+	 */
+	public static function get_messages( $thread_id = 0 ) {
+		$messages = wp_cache_get( $thread_id, 'bp_messages_threads' );
+
+		if ( false === $messages ) {
+			global $wpdb;
+
+			$bp = buddypress();
+
+			// always sort by ASC by default
+			$messages = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$bp->messages->table_name_messages} WHERE thread_id = %d ORDER BY date_sent ASC", $thread_id ) );
+
+			wp_cache_set( $thread_id, (array) $messages, 'bp_messages_threads' );
+		}
+
+		return $messages;
+	}
+
+	/**
+	 * Static method to get message recipients by thread ID.
+	 *
+	 * @since BuddyPress (2.3.0)
+	 *
+	 * @param  int $thread_id The thread ID
+	 * @return array
+	 */
+	public static function get_recipients_for_thread( $thread_id = 0 ) {
+		$thread = new self( false );
+		return $thread->get_recipients( $thread_id );
+	}
 
 	/**
 	 * Mark messages in a thread as deleted or delete all messages in a thread.
@@ -644,17 +694,20 @@ class BP_Messages_Thread {
 	 *
 	 * @param int $thread_id The message thread ID.
 	 * @param int $user_id The user ID.
-	 * @return int The message ID on success.
+	 * @return int|null The recorded recipient ID on success, null on failure
 	 */
 	public static function check_access( $thread_id, $user_id = 0 ) {
-		global $wpdb;
-
-		if ( empty( $user_id ) )
+		if ( empty( $user_id ) ) {
 			$user_id = bp_loggedin_user_id();
+		}
 
-		$bp = buddypress();
+		$recipients = self::get_recipients_for_thread( $thread_id );
 
-		return $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$bp->messages->table_name_recipients} WHERE thread_id = %d AND is_deleted = 0 AND user_id = %d", $thread_id, $user_id ) );
+		if ( isset( $recipients[$user_id] ) && 0 == $recipients[$user_id]->is_deleted ) {
+			return $recipients[$user_id]->id;
+		} else {
+			return null;
+		}
 	}
 
 	/**
@@ -663,19 +716,21 @@ class BP_Messages_Thread {
 	 * @since BuddyPress (1.0.0)
 	 *
 	 * @param int $thread_id The message thread ID.
-	 * @return int The message thread ID on success.
+	 * @return int|null The message thread ID on success, null on failure
 	 */
 	public static function is_valid( $thread_id = 0 ) {
-		global $wpdb;
-
 		// Bail if no thread ID is passed
 		if ( empty( $thread_id ) ) {
 			return false;
 		}
 
-		$bp = buddypress();
+		$thread = self::get_messages( $thread_id );
 
-		return $wpdb->get_var( $wpdb->prepare( "SELECT thread_id FROM {$bp->messages->table_name_messages} WHERE thread_id = %d LIMIT 1", $thread_id ) );
+		if ( ! empty( $thread ) ) {
+			return $thread_id;
+		} else {
+			return null;
+		}
 	}
 
 	/**

@@ -28,20 +28,26 @@ function bp_core_register_common_scripts() {
 	$scripts = apply_filters( 'bp_core_register_common_scripts', array(
 
 		// Legacy
-		'bp-confirm'        => array( 'file' => "{$url}confirm{$min}.js",        'dependencies' => array( 'jquery' ) ),
-		'bp-widget-members' => array( 'file' => "{$url}widget-members{$min}.js", 'dependencies' => array( 'jquery' ) ),
-		'bp-jquery-query'   => array( 'file' => "{$url}jquery-query{$min}.js",   'dependencies' => array( 'jquery' ) ),
-		'bp-jquery-cookie'  => array( 'file' => "{$url}jquery-cookie{$min}.js",  'dependencies' => array( 'jquery' ) ),
-		'bp-jquery-scroll-to' => array( 'file' => "{$url}jquery-scroll-to{$min}.js", 'dependencies' => array( 'jquery' ) ),
+		'bp-confirm'        => array( 'file' => "{$url}confirm{$min}.js",        'dependencies' => array( 'jquery' ), 'footer' => false ),
+		'bp-widget-members' => array( 'file' => "{$url}widget-members{$min}.js", 'dependencies' => array( 'jquery' ), 'footer' => false ),
+		'bp-jquery-query'   => array( 'file' => "{$url}jquery-query{$min}.js",   'dependencies' => array( 'jquery' ), 'footer' => false ),
+		'bp-jquery-cookie'  => array( 'file' => "{$url}jquery-cookie{$min}.js",  'dependencies' => array( 'jquery' ), 'footer' => false ),
+		'bp-jquery-scroll-to' => array( 'file' => "{$url}jquery-scroll-to{$min}.js", 'dependencies' => array( 'jquery' ), 'footer' => false ),
 
 		// 2.1
-		'jquery-caret' => array( 'file' => "{$url}jquery.caret{$min}.js", 'dependencies' => array( 'jquery' ) ),
-		'jquery-atwho' => array( 'file' => "{$url}jquery.atwho{$min}.js", 'dependencies' => array( 'jquery', 'jquery-caret' ) ),
+		'jquery-caret' => array( 'file' => "{$url}jquery.caret{$min}.js", 'dependencies' => array( 'jquery' ), 'footer' => false ),
+		'jquery-atwho' => array( 'file' => "{$url}jquery.atwho{$min}.js", 'dependencies' => array( 'jquery', 'jquery-caret' ), 'footer' => false ),
+
+		// 2.3
+		'bp-plupload' => array( 'file' => "{$url}bp-plupload{$min}.js", 'dependencies' => array( 'plupload', 'jquery', 'json2', 'wp-backbone' ), 'footer' => true ),
+		'bp-avatar'   => array( 'file' => "{$url}avatar{$min}.js", 'dependencies' => array( 'jcrop' ), 'footer' => true ),
+		'bp-webcam'   => array( 'file' => "{$url}webcam{$min}.js", 'dependencies' => array( 'bp-avatar' ), 'footer' => true ),
+
 	) );
 
 	$version = bp_get_version();
 	foreach ( $scripts as $id => $script ) {
-		wp_register_script( $id, $script['file'], $script['dependencies'], $version );
+		wp_register_script( $id, $script['file'], $script['dependencies'], $version, $script['footer'] );
 	}
 }
 add_action( 'bp_enqueue_scripts',       'bp_core_register_common_scripts', 1 );
@@ -76,7 +82,11 @@ function bp_core_register_common_styles() {
 		'bp-admin-bar' => array(
 			'file'         => $admin_bar_file,
 			'dependencies' => array( 'admin-bar' )
-		)
+		),
+		'bp-avatar' => array(
+			'file'         => "{$url}avatar{$min}.css",
+			'dependencies' => array( 'jcrop' )
+		),
 	) );
 
 	foreach ( $styles as $id => $style ) {
@@ -108,6 +118,26 @@ function bp_core_confirmation_js() {
 }
 add_action( 'bp_enqueue_scripts',       'bp_core_confirmation_js' );
 add_action( 'bp_admin_enqueue_scripts', 'bp_core_confirmation_js' );
+
+/**
+ * Enqueues the css and js required by the Avatar UI
+ *
+ * @since  BuddyPress (2.3.0)
+ */
+function bp_core_avatar_scripts() {
+	if ( ! bp_avatar_is_front_edit() ) {
+		return false;
+	}
+
+	// Enqueue the Attachments scripts for the Avatar UI
+	bp_attachments_enqueue_scripts( 'BP_Attachment_Avatar' );
+
+	// Add Some actions for Theme backcompat
+	add_action( 'bp_after_profile_avatar_upload_content', 'bp_avatar_template_check' );
+	add_action( 'bp_after_group_admin_content',           'bp_avatar_template_check' );
+	add_action( 'bp_after_group_avatar_creation_step',    'bp_avatar_template_check' );
+}
+add_action( 'bp_enqueue_scripts', 'bp_core_avatar_scripts' );
 
 /**
  * Enqueues jCrop library and hooks BP's custom cropper JS.

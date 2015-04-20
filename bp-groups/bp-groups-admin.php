@@ -581,7 +581,7 @@ function bp_groups_admin_edit() {
 
 		<?php if ( ! empty( $group ) ) : ?>
 
-			<form action="<?php echo esc_attr( $form_url ); ?>" id="bp-groups-edit-form" method="post">
+			<form action="<?php echo esc_url( $form_url ); ?>" id="bp-groups-edit-form" method="post">
 				<div id="poststuff">
 
 					<div id="post-body" class="metabox-holder columns-<?php echo 1 == get_current_screen()->get_columns() ? '1' : '2'; ?>">
@@ -673,7 +673,7 @@ function bp_groups_admin_delete() {
 
 		<p><strong><?php _e( 'This action cannot be undone.', 'buddypress' ) ?></strong></p>
 
-		<a class="button-primary" href="<?php echo wp_nonce_url( add_query_arg( array( 'action' => 'do_delete', 'gid' => implode( ',', $gids ) ), $base_url ), 'bp-groups-delete' ) ?>"><?php _e( 'Delete Permanently', 'buddypress' ) ?></a>
+		<a class="button-primary" href="<?php echo esc_url( wp_nonce_url( add_query_arg( array( 'action' => 'do_delete', 'gid' => implode( ',', $gids ) ), $base_url ), 'bp-groups-delete' ) ); ?>"><?php _e( 'Delete Permanently', 'buddypress' ) ?></a>
 		<a class="button" href="<?php echo esc_attr( $base_url ); ?>"><?php _e( 'Cancel', 'buddypress' ) ?></a>
 	</div>
 
@@ -980,7 +980,7 @@ function bp_groups_admin_edit_metabox_status( $item ) {
 	<div id="submitcomment" class="submitbox">
 		<div id="major-publishing-actions">
 			<div id="delete-action">
-				<a class="submitdelete deletion" href="<?php echo wp_nonce_url( add_query_arg( 'action', 'delete', $base_url ), 'bp-groups-delete' ) ?>"><?php _e( 'Delete Group', 'buddypress' ) ?></a>
+				<a class="submitdelete deletion" href="<?php echo esc_url( wp_nonce_url( add_query_arg( 'action', 'delete', $base_url ), 'bp-groups-delete' ) ); ?>"><?php _e( 'Delete Group', 'buddypress' ) ?></a>
 			</div>
 
 			<div id="publishing-action">
@@ -1039,12 +1039,16 @@ function bp_groups_admin_create_pagination_links( BP_Group_Member_Query $query, 
 		'current'   => $page,
 	) );
 
-	$viewing_text = sprintf(
-		_n( 'Viewing 1 member', 'Viewing %1$s - %2$s of %3$s members', $query->total_users, 'buddypress' ),
-		number_format_i18n( $current_page_start ),
-		number_format_i18n( $current_page_end ),
-		(int) $query->total_users
-	);
+	if ( 1 == $query->total_users ) {
+		$viewing_text = __( 'Viewing 1 member', 'buddypress' );
+	} else {
+		$viewing_text = sprintf(
+			_n( 'Viewing %1$s - %2$s of %3$s member', 'Viewing %1$s - %2$s of %3$s members', $query->total_users, 'buddypress' ),
+			bp_core_number_format( $current_page_start ),
+			bp_core_number_format( $current_page_end ),
+			bp_core_number_format( $query->total_users )
+		);
+	}
 
 	$pagination .= '<span class="bp-group-admin-pagination-viewing">' . $viewing_text . '</span>';
 	$pagination .= '<span class="bp-group-admin-pagination-links">' . $pag_links . '</span>';
@@ -1374,10 +1378,10 @@ class BP_Groups_List_Table extends WP_List_Table {
 		$url_base = bp_get_admin_url( 'admin.php?page=bp-groups' ); ?>
 
 		<ul class="subsubsub">
-			<li class="all"><a href="<?php echo esc_attr( esc_url( $url_base ) ); ?>" class="<?php if ( 'all' == $this->view ) echo 'current'; ?>"><?php _e( 'All', 'buddypress' ); ?></a> |</li>
-			<li class="public"><a href="<?php echo esc_attr( esc_url( add_query_arg( 'group_status', 'public', $url_base ) ) ); ?>" class="<?php if ( 'public' == $this->view ) echo 'current'; ?>"><?php printf( _n( 'Public <span class="count">(%s)</span>', 'Public <span class="count">(%s)</span>', $this->group_counts['public'], 'buddypress' ), number_format_i18n( $this->group_counts['public'] ) ); ?></a> |</li>
-			<li class="private"><a href="<?php echo esc_attr( esc_url( add_query_arg( 'group_status', 'private', $url_base ) ) ); ?>" class="<?php if ( 'private' == $this->view ) echo 'current'; ?>"><?php printf( _n( 'Private <span class="count">(%s)</span>', 'Private <span class="count">(%s)</span>', $this->group_counts['private'], 'buddypress' ), number_format_i18n( $this->group_counts['private'] ) ); ?></a> |</li>
-			<li class="hidden"><a href="<?php echo esc_attr( esc_url( add_query_arg( 'group_status', 'hidden', $url_base ) ) ); ?>" class="<?php if ( 'hidden' == $this->view ) echo 'current'; ?>"><?php printf( _n( 'Hidden <span class="count">(%s)</span>', 'Hidden <span class="count">(%s)</span>', $this->group_counts['hidden'], 'buddypress' ), number_format_i18n( $this->group_counts['hidden'] ) ); ?></a></li>
+			<li class="all"><a href="<?php echo esc_url( $url_base ); ?>" class="<?php if ( 'all' == $this->view ) echo 'current'; ?>"><?php _e( 'All', 'buddypress' ); ?></a> |</li>
+			<li class="public"><a href="<?php echo esc_url( add_query_arg( 'group_status', 'public', $url_base ) ); ?>" class="<?php if ( 'public' == $this->view ) echo 'current'; ?>"><?php printf( _n( 'Public <span class="count">(%s)</span>', 'Public <span class="count">(%s)</span>', $this->group_counts['public'], 'buddypress' ), number_format_i18n( $this->group_counts['public'] ) ); ?></a> |</li>
+			<li class="private"><a href="<?php echo esc_url( add_query_arg( 'group_status', 'private', $url_base ) ); ?>" class="<?php if ( 'private' == $this->view ) echo 'current'; ?>"><?php printf( _n( 'Private <span class="count">(%s)</span>', 'Private <span class="count">(%s)</span>', $this->group_counts['private'], 'buddypress' ), number_format_i18n( $this->group_counts['private'] ) ); ?></a> |</li>
+			<li class="hidden"><a href="<?php echo esc_url( add_query_arg( 'group_status', 'hidden', $url_base ) ); ?>" class="<?php if ( 'hidden' == $this->view ) echo 'current'; ?>"><?php printf( _n( 'Hidden <span class="count">(%s)</span>', 'Hidden <span class="count">(%s)</span>', $this->group_counts['hidden'], 'buddypress' ), number_format_i18n( $this->group_counts['hidden'] ) ); ?></a></li>
 
 			<?php
 
