@@ -165,8 +165,6 @@ function groups_create_group( $args = '' ) {
 		$member->date_modified = bp_core_current_time();
 		$member->save();
 
-		groups_update_groupmeta( $group->id, 'last_activity', bp_core_current_time() );
-
 		/**
 		 * Fires after the creation of a new group and a group creator needs to be made.
 		 *
@@ -193,7 +191,7 @@ function groups_create_group( $args = '' ) {
 	}
 
 	/**
-	 * Fires after the creation of a group.
+	 * Fires after the creation or update of a group.
 	 *
 	 * @since BuddyPress (1.0.0)
 	 *
@@ -431,8 +429,7 @@ function groups_leave_group( $group_id, $user_id = 0 ) {
 		}
 	}
 
-	// This is exactly the same as deleting an invite, just is_confirmed = 1 NOT 0.
-	if ( !groups_uninvite_user( $user_id, $group_id ) ) {
+	if ( ! groups_remove_member( $user_id, $group_id ) ) {
 		return false;
 	}
 
@@ -501,9 +498,6 @@ function groups_join_group( $group_id, $user_id = 0 ) {
 		'item_id' => $group_id,
 		'user_id' => $user_id,
 	) );
-
-	// Modify group meta
-	groups_update_groupmeta( $group_id, 'last_activity', bp_core_current_time() );
 
 	/**
 	 * Fires after a user joins a group.
@@ -1087,7 +1081,7 @@ function groups_invite_user( $args = '' ) {
  */
 function groups_uninvite_user( $user_id, $group_id ) {
 
-	if ( !BP_Groups_Member::delete( $user_id, $group_id ) )
+	if ( ! BP_Groups_Member::delete_invite( $user_id, $group_id ) )
 		return false;
 
 	/**
@@ -1164,7 +1158,7 @@ function groups_accept_invite( $user_id, $group_id ) {
  * @return bool True on success, false on failure.
  */
 function groups_reject_invite( $user_id, $group_id ) {
-	if ( ! BP_Groups_Member::delete( $user_id, $group_id ) )
+	if ( ! BP_Groups_Member::delete_invite( $user_id, $group_id ) )
 		return false;
 
 	/**
@@ -1405,8 +1399,16 @@ function groups_unban_member( $user_id, $group_id ) {
  */
 function groups_remove_member( $user_id, $group_id ) {
 
-	if ( ! bp_is_item_admin() )
-		return false;
+	if ( ! bp_is_item_admin() ) {
+ 		// bp_is_item_admin may not be set if this function is called outside of group context.
+ 		// Site admins and group admins can remove a member from a group.
+ 		// A member may also request to remove herself from a group.
+ 		if ( ! current_user_can( 'bp_moderate' )
+ 			&& ! groups_is_user_admin( bp_loggedin_user_id(), $group_id )
+ 			&& $user_id != bp_loggedin_user_id() ) {
+ 				return false;
+ 			}
+ 	}
 
 	$member = new BP_Groups_Member( $user_id, $group_id );
 
@@ -1574,7 +1576,7 @@ function groups_delete_membership_request( $membership_id, $user_id = 0, $group_
 	else
 		$membership = new BP_Groups_Member( false, false, $membership_id );
 
-	if ( !BP_Groups_Member::delete( $membership->user_id, $membership->group_id ) )
+	if ( ! BP_Groups_Member::delete_request( $membership->user_id, $membership->group_id ) )
 		return false;
 
 	return $membership;

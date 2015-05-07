@@ -73,7 +73,7 @@ function bp_forums_root_slug() {
  * @uses bp_get_forums_directory_permalink()
  */
 function bp_forums_directory_permalink() {
-	echo bp_get_forums_directory_permalink();
+	echo esc_url( bp_get_forums_directory_permalink() );
 }
 	/**
 	 * Return permalink for the forum directory.
@@ -1889,7 +1889,7 @@ function bp_forum_pagination_count() {
 		 *
 		 * @since BuddyPress (1.5.0)
 		 *
-		 * @param string $value    Pagination count for the current topic list.
+		 * @param string $message  Pagination count for the current topic list.
 		 * @param string $from_num Low end count in the view.
 		 * @param string $to_num   High end count in the view.
 		 * @param string $total    Total count of topics found.
@@ -2499,7 +2499,7 @@ function bp_the_topic_post_time_since() {
  * Output whether the current post in the loop belongs to the logged-in user.
  */
 function bp_the_topic_post_is_mine() {
-	echo bp_the_topic_post_is_mine();
+	echo bp_get_the_topic_post_is_mine();
 }
 	/**
 	 * Does the current post belong to the logged-in user?
@@ -2639,7 +2639,7 @@ function bp_the_topic_pagination_count() {
 	 *
 	 * @since BuddyPress (1.0.0)
 	 *
-	 * @param string $value    Pagination count for the current topic page.
+	 * @param string $message  Pagination count for the current topic page.
 	 * @param string $from_num Low end count in the view.
 	 * @param string $to_num   High end count in the view.
 	 * @param string $total    Total count of topics found.

@@ -78,7 +78,7 @@ function bp_members_root_slug() {
  * @uses bp_get_members_directory_permalink()
  */
 function bp_members_directory_permalink() {
-	echo bp_get_members_directory_permalink();
+	echo esc_url( bp_get_members_directory_permalink() );
 }
 	/**
 	 * Return member directory permalink.
@@ -1436,16 +1436,14 @@ function bp_loggedin_user_avatar( $args = '' ) {
 	 */
 	function bp_get_loggedin_user_avatar( $args = '' ) {
 
-		$defaults = array(
-			'type'   => 'thumb',
-			'width'  => false,
-			'height' => false,
-			'html'   => true,
-			'alt'    => sprintf( __( 'Profile picture of %s', 'buddypress' ), bp_get_loggedin_user_fullname() )
-		);
-
-		$r = wp_parse_args( $args, $defaults );
-		extract( $r, EXTR_SKIP );
+		$r = wp_parse_args( $args, array(
+			'item_id' => bp_loggedin_user_id(),
+			'type'    => 'thumb',
+			'width'   => false,
+			'height'  => false,
+			'html'    => true,
+			'alt'     => sprintf( __( 'Profile picture of %s', 'buddypress' ), bp_get_loggedin_user_fullname() )
+		) );
 
 		/**
 		 * Filters the logged in user's avatar.
@@ -1454,7 +1452,7 @@ function bp_loggedin_user_avatar( $args = '' ) {
 		 *
 		 * @param string $value User avatar string.
 		 */
-		return apply_filters( 'bp_get_loggedin_user_avatar', bp_core_fetch_avatar( array( 'item_id' => bp_loggedin_user_id(), 'type' => $type, 'width' => $width, 'height' => $height, 'html' => $html, 'alt' => $alt ) ) );
+		return apply_filters( 'bp_get_loggedin_user_avatar', bp_core_fetch_avatar( $r ), $r, $args );
 	}
 
 /**
@@ -1485,16 +1483,14 @@ function bp_displayed_user_avatar( $args = '' ) {
 	 */
 	function bp_get_displayed_user_avatar( $args = '' ) {
 
-		$defaults = array(
-			'type'   => 'thumb',
-			'width'  => false,
-			'height' => false,
-			'html'   => true,
-			'alt'    => sprintf( __( 'Profile picture of %s', 'buddypress' ), bp_get_displayed_user_fullname() )
-		);
-
-		$r = wp_parse_args( $args, $defaults );
-		extract( $r, EXTR_SKIP );
+		$r = wp_parse_args( $args, array(
+			'item_id' => bp_displayed_user_id(),
+			'type'    => 'thumb',
+			'width'   => false,
+			'height'  => false,
+			'html'    => true,
+			'alt'     => sprintf( __( 'Profile picture of %s', 'buddypress' ), bp_get_displayed_user_fullname() )
+		) );
 
 		/**
 		 * Filters the displayed user's avatar.
@@ -1503,7 +1499,7 @@ function bp_displayed_user_avatar( $args = '' ) {
 		 *
 		 * @param string $value User avatar string.
 		 */
-		return apply_filters( 'bp_get_displayed_user_avatar', bp_core_fetch_avatar( array( 'item_id' => bp_displayed_user_id(), 'type' => $type, 'width' => $width, 'height' => $height, 'html' => $html, 'alt' => $alt ) ) );
+		return apply_filters( 'bp_get_displayed_user_avatar', bp_core_fetch_avatar( $r ), $r, $args );
 	}
 
 /**
@@ -1870,7 +1866,7 @@ function bp_has_custom_signup_page() {
  * Output the URL to the signup page.
  */
 function bp_signup_page() {
-	echo bp_get_signup_page();
+	echo esc_url( bp_get_signup_page() );
 }
 	/**
 	 * Get the URL to the signup page.
@@ -1916,7 +1912,7 @@ function bp_has_custom_activation_page() {
  * Output the URL of the activation page.
  */
 function bp_activation_page() {
-	echo bp_get_activation_page();
+	echo esc_url( bp_get_activation_page() );
 }
 	/**
 	 * Get the URL of the activation page.

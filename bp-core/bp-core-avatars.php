@@ -947,26 +947,33 @@ function bp_avatar_ajax_upload() {
 		}
 	}
 
+	// Init the feedback message
+	$feedback_message = false;
+
+	if ( ! empty( $bp->template_message ) ) {
+		$feedback_message = $bp->template_message;
+
+		// Remove template message.
+		$bp->template_message      = false;
+		$bp->template_message_type = false;
+		@setcookie( 'bp-message', false, time() - 1000, COOKIEPATH );
+		@setcookie( 'bp-message-type', false, time() - 1000, COOKIEPATH );
+	}
+
 	if ( empty( $avatar ) ) {
 		// Default upload error
-		$message = array();
+		$message = __( 'Upload failed.', 'buddypress' );
 
-		// Intercept the template message and remove it
-		if ( ! empty( $bp->template_message ) ) {
-			// Set the feedback message
-			$message = array(
-				'type'    => 'upload_error',
-				'message' => $bp->template_message,
-			);
-
-			// Remove template message.
-			$bp->template_message      = false;
-			$bp->template_message_type = false;
-			@setcookie( 'bp-message', false, time() - 1000, COOKIEPATH );
-			@setcookie( 'bp-message-type', false, time() - 1000, COOKIEPATH );
+		// Use the template message if set
+		if ( ! empty( $feedback_message ) ) {
+			$message = $feedback_message;
 		}
 
-		bp_attachments_json_response( false, $is_html4, $message );
+		// Upload error reply
+		bp_attachments_json_response( false, $is_html4, array(
+			'type'    => 'upload_error',
+			'message' => $message,
+		) );
 	}
 
 	if ( empty( $bp->avatar_admin->image->file ) ) {
@@ -990,6 +997,7 @@ function bp_avatar_ajax_upload() {
 		'url'       => $bp->avatar_admin->image->url,
 		'width'     => $uploaded_image[0],
 		'height'    => $uploaded_image[1],
+		'feedback'  => $feedback_message,
 	) );
 }
 add_action( 'wp_ajax_bp_avatar_upload', 'bp_avatar_ajax_upload' );
@@ -1793,6 +1801,11 @@ add_action( 'bp_parse_query', 'bp_core_avatar_reset_query', 10, 1 );
 function bp_avatar_is_front_edit() {
 	$retval = false;
 
+	// No need to carry on if the current WordPress version is not supported.
+	if ( ! bp_attachments_is_wp_version_supported() ) {
+		return $retval;
+	}
+
 	if ( bp_is_user_change_avatar() && 'crop-image' !== bp_get_avatar_admin_step() ) {
 		$retval = ! bp_core_get_root_option( 'bp-disable-avatar-uploads' );
 	}
@@ -1800,11 +1813,11 @@ function bp_avatar_is_front_edit() {
 	if ( bp_is_active( 'groups' ) ) {
 		// Group creation
 		if ( bp_is_group_create() && bp_is_group_creation_step( 'group-avatar' ) && 'crop-image' !== bp_get_avatar_admin_step() ) {
-			$retval = ! bp_core_get_root_option( 'bp-disable-avatar-uploads' );
+			$retval = ! bp_disable_group_avatar_uploads();
 
 		// Group Manage
 		} elseif ( bp_is_group_admin_page() && bp_is_group_admin_screen( 'group-avatar' ) && 'crop-image' !== bp_get_avatar_admin_step() ) {
-			$retval = ! bp_core_get_root_option( 'bp-disable-avatar-uploads' );
+			$retval = ! bp_disable_group_avatar_uploads();
 		}
 	}
 

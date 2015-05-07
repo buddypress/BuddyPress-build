@@ -67,7 +67,7 @@ function bp_groups_root_slug() {
  * @since BuddyPress (1.5.0)
  */
 function bp_groups_directory_permalink() {
-	echo bp_get_groups_directory_permalink();
+	echo esc_url( bp_get_groups_directory_permalink() );
 }
 	/**
 	 * Return group directory permalink
@@ -709,6 +709,13 @@ function bp_group_class() {
 				$classes[] = 'is-mod';
 		}
 
+		// Whether a group avatar will appear.
+		if ( bp_disable_group_avatar_uploads() || ! buddypress()->avatar->show_avatars ) {
+			$classes[] = 'group-no-avatar';
+		} else {
+			$classes[] = 'group-has-avatar';
+		}
+
 		/**
 		 * Filters classes that will be applied to row class of the current group in the loop.
 		 *
@@ -858,9 +865,8 @@ function bp_group_avatar( $args = '' ) {
 	function bp_get_group_avatar( $args = '' ) {
 		global $groups_template;
 
-		// Bail if avatars are turned off
-		// @todo Should we maybe still filter this?
-		if ( ! buddypress()->avatar->show_avatars ) {
+		// Bail if avatars are turned off.
+		if ( bp_disable_group_avatar_uploads() || ! buddypress()->avatar->show_avatars ) {
 			return false;
 		}
 
@@ -1804,7 +1810,7 @@ function bp_groups_pagination_count() {
 		 *
 		 * @since BuddyPress (1.5.0)
 		 *
-		 * @param string $value    "Viewing x-y of z groups" text.
+		 * @param string $message  "Viewing x-y of z groups" text.
 		 * @param string $from_num Total amount for the low value in the range.
 		 * @param string $to_num   Total amount for the high value in the range.
 		 * @param string $total    Total amount of groups found.
@@ -5261,7 +5267,10 @@ function bp_group_requests_pagination_count() {
 		 *
 		 * @since BuddyPress (2.0.0)
 		 *
-		 * @param string $value Pagination count text for group membership requests.
+		 * @param string $message  Pagination count text for group membership requests.
+		 * @param string $from_num Total amount for the low value in the range.
+		 * @param string $to_num   Total amount for the high value in the range.
+		 * @param string $total    Total amount of members found.
 		 */
 		return apply_filters( 'bp_get_group_requests_pagination_count', $message, $from_num, $to_num, $total );
 	}

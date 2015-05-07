@@ -10,6 +10,21 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
+ * Check if the current WordPress version is using Plupload 2.1.1
+ *
+ * Plupload 2.1.1 was introduced in WordPress 3.9. Our bp-plupload.js
+ * script requires it. So we need to make sure the current WordPress
+ * match with our needs.
+ *
+ * @since  BuddyPress (2.3.0)
+ *
+ * @return bool True if WordPress is 3.9+, false otherwise
+ */
+function bp_attachments_is_wp_version_supported() {
+	return (bool) version_compare( bp_get_major_wp_version(), '3.9', '>=' );
+}
+
+/**
  * Get the BuddyPress Plupload settings
  *
  * @since  BuddyPress (2.3.0)
@@ -98,7 +113,8 @@ function bp_attachments_get_plupload_l10n() {
 			'dismiss'                   => __( 'Dismiss', 'buddypress' ),
 			'crunching'                 => __( 'Crunching&hellip;', 'buddypress' ),
 			'unique_file_warning'       => __( 'Make sure to upload a unique file', 'buddypress' ),
-			'error_uploading'           => __( '&#8220;%s&#8221; has failed to upload.', 'buddypress' )
+			'error_uploading'           => __( '&#8220;%s&#8221; has failed to upload.', 'buddypress' ),
+			'has_avatar_warning'        => __( 'If you&#39;d like to delete the existing profile photo but not upload a new one, please use the delete tab.', 'buddypress' )
 	) );
 }
 

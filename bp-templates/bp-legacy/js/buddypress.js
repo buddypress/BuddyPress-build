@@ -33,7 +33,7 @@ jq(document).ready( function() {
 		var $member_nicename = $whats_new.val();
 
 		jq('#whats-new-options').animate({
-			height:'40px'
+			height:'50px'
 		});
 
 		$whats_new.animate({
@@ -53,7 +53,7 @@ jq(document).ready( function() {
 	/* Textarea focus */
 	$whats_new.focus( function(){
 		jq('#whats-new-options').animate({
-			height:'40px'
+			height:'50px'
 		});
 		jq('#whats-new-form textarea').animate({
 			height:'50px'
@@ -87,7 +87,7 @@ jq(document).ready( function() {
 			if (!this.value.match(/\S+/)) {
 				this.value = '';
 				jq('#whats-new-options').animate({
-					height:'40px'
+					height:'0'
 				});
 				jq('form#whats-new-form textarea').animate({
 					height:'20px'
@@ -912,7 +912,8 @@ jq(document).ready( function() {
 	jq('#buddypress').on( 'click', function(event) {
 		var target = jq(event.target),
 			el,
-			css_id, object, search_terms, pagination_id, template, page_number,
+			css_id, object, search_terms, pagination_id, template,
+			url_parameters,	page_number,
 			$gm_search,
 			caller;
 
@@ -937,7 +938,9 @@ jq(document).ready( function() {
 			pagination_id = jq(target).closest('.pagination-links').attr('id');
 			template = null;
 
-			page_number = target.attr('href').split( '=' );
+			url_parameters = target.attr('href').split( '&' );
+			// The page number is the first parameter.
+			page_number = url_parameters[0].split( '=' );
 			page_number = page_number[1];
 
 			// Search terms
@@ -1574,6 +1577,84 @@ jq(document).ready( function() {
 	jq('#messages-select').on('change', function(){
 		jq('#messages-bulk-manage').attr('disabled', jq(this).val().length <= 0);
 	});
+
+	/* Star action function */
+	starAction = function() {
+		var link = jq(this);
+
+		jq.post( ajaxurl, {
+			action: 'messages_star',
+			'message_id': link.data('message-id'),
+			'star_status': link.data('star-status'),
+			'nonce': link.data('star-nonce'),
+			'bulk': link.data('star-bulk')
+		},
+		function(response) {
+			if ( 1 === parseInt( response, 10 ) ) {
+				if ( 'unstar' === link.data('star-status') ) {
+					link.data('star-status', 'star');
+					link.removeClass('message-action-unstar').addClass('message-action-star');
+					link.find('.bp-screen-reader-text').text( BP_PM_Star.strings.text_star );
+
+					if ( 1 === BP_PM_Star.is_single_thread ) {
+						link.prop('title', BP_PM_Star.strings.title_star );
+					} else {
+						link.prop('title', BP_PM_Star.strings.title_star_thread );
+					}
+
+				} else {
+					link.data('star-status', 'unstar');
+					link.removeClass('message-action-star').addClass('message-action-unstar');
+					link.find('.bp-screen-reader-text').text(BP_PM_Star.strings.text_unstar);
+
+					if ( 1 === BP_PM_Star.is_single_thread ) {
+						link.prop('title', BP_PM_Star.strings.title_unstar );
+					} else {
+						link.prop('title', BP_PM_Star.strings.title_unstar_thread );
+					}
+				}
+			}
+		});
+		return false;
+	};
+
+	/* Star actions */
+	jq('#message-threads').on('click', 'td.thread-star a', starAction );
+	jq('#message-thread').on('click', '.message-star-actions a', starAction );
+
+	/* Star bulk manage - Show only the valid action based on the starred item. */
+	jq('#message-threads td.bulk-select-check :checkbox').on('change', function() {
+		var box = jq(this),
+			star = box.closest('tr').find('.thread-star a');
+
+		if ( box.prop('checked') ) {
+			if( 'unstar' === star.data('star-status') ) {
+				BP_PM_Star.star_counter++;
+			} else {
+				BP_PM_Star.unstar_counter++;
+			}
+		} else {
+			if( 'unstar' === star.data('star-status') ) {
+				BP_PM_Star.star_counter--;
+			} else {
+				BP_PM_Star.unstar_counter--;
+			}
+		}
+
+		if ( BP_PM_Star.star_counter > 0 && parseInt( BP_PM_Star.unstar_counter, 10 ) === 0 ) {
+			jq('option[value="star"]').hide();
+		} else {
+			jq('option[value="star"]').show();
+		}
+
+		if ( BP_PM_Star.unstar_counter > 0 && parseInt( BP_PM_Star.star_counter, 10 ) === 0 ) {
+			jq('option[value="unstar"]').hide();
+		} else {
+			jq('option[value="unstar"]').show();
+		}
+	});
+
+	/** Notifications **********************************************/
 
 	/* Selecting/Deselecting all notifications */
 	jq('#select-all-notifications').click(function(event) {
