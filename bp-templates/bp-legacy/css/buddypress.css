@@ -528,6 +528,12 @@ body.activity-permalink #buddypress div.activity-comments div.acomment-content {
 	clear: left;
 	color: #800;
 }
+#buddypress div#message.warning p {
+	background-color: #ffe0af;
+	border: 1px solid #ffd087;
+	clear: left;
+	color: #800;
+}
 #buddypress div#message.updated p {
 	background-color: #efc;
 	border: 1px solid #591;
@@ -1456,8 +1462,9 @@ body.activity-permalink #buddypress ul.item-list li.activity-item {
 	right: 0;
 	top: 0;
 }
-a.message-action-star,
-a.message-action-unstar {
+#buddypress a.message-action-star,
+#buddypress a.message-action-unstar {
+	border-bottom: 0;
 	text-decoration: none;
 	outline: none;
 }

@@ -35,73 +35,112 @@ $spacing-val-xs: 5px;
 	font-size: $rem-font-value + rem;
 }
 
-// Border border-radius mixins
-// To allow mixins to pass cscc-lint tests we will not provide vendor prefix
-// until such time as exemption lists can be built for the scss-lint.yml
+// To allow mixins to pass VendorPrefix scss-lint tests we disable lint-test
+// for specific blocks / rulesets
+// until such time as exemption lists can be built for the scss-lint.yml?
+// Any vendor prefix properties / mixins need to be in this block
+// scss-lint:disable VendorPrefix
 
+// Border border-radius mixins
 @mixin border-radius($radius) {
-//	-webkit-border-radius: $radius;
-//	-moz-border-radius: $radius;
-//	-ms-border-radius: $radius;
+	-webkit-border-radius: $radius;
+	-moz-border-radius: $radius;
+	-ms-border-radius: $radius;
 	border-radius: $radius;
 	background-clip: padding-box;
 }
 
 @mixin border-top-radius($radius) {
-//	-webkit-border-top-right-radius: $radius;
+	-webkit-border-top-right-radius: $radius;
 	border-top-right-radius: $radius;
-//	-webkit-border-top-left-radius: $radius;
+	-webkit-border-top-left-radius: $radius;
 	border-top-left-radius: $radius;
 	background-clip: padding-box;
 }
 
 @mixin border-right-radius($radius) {
-//	-webkit-border-bottom-right-radius: $radius;
+	-webkit-border-bottom-right-radius: $radius;
 	border-bottom-right-radius: $radius;
-//	-webkit-border-top-right-radius: $radius;
+	-webkit-border-top-right-radius: $radius;
 	border-top-right-radius: $radius;
 	background-clip: padding-box;
 }
 
 @mixin border-bottom-radius($radius) {
-//	-webkit-border-bottom-right-radius: $radius;
+	-webkit-border-bottom-right-radius: $radius;
 	border-bottom-right-radius: $radius;
-//	-webkit-border-bottom-left-radius: $radius;
+	-webkit-border-bottom-left-radius: $radius;
 	border-bottom-left-radius: $radius;
 	background-clip: padding-box;
 }
 
 @mixin border-left-radius($radius) {
-//	-webkit-border-bottom-left-radius: $radius;
+	-webkit-border-bottom-left-radius: $radius;
 	border-bottom-left-radius: $radius;
-//	-webkit-border-top-left-radius: $radius;
+	-webkit-border-top-left-radius: $radius;
 	border-top-left-radius: $radius;
 	background-clip: padding-box;
 }
 
 // Box sizing
 @mixin box-model($box-model) {
-//	-webkit-box-sizing: $box-model;
-//	-moz-box-sizing: $box-model;
+	-webkit-box-sizing: $box-model;
+	-moz-box-sizing: $box-model;
 	box-sizing: $box-model;
 }
 
-@mixin message-box($background) {
-	background: lighten($background, 10%);
-	border: 1px solid darken($background, 10%);
+// Calc
+@mixin calc($property, $expression) {
+	#{$property}: -webkit-calc(#{$expression});
+	#{$property}: -moz-calc(#{$expression});
+	#{$property}: calc(#{$expression});
 }
 
-// Variabals: color definitions
+// Re-enable the VendorPrefix lint test
+// scss-lint:enable VendorPrefix
+
+// BP message boxes
+@mixin message-box($background, $text-color: null) {
+
+	@if($text-color) {
+		// if a param was passed through
+		$text-color: $text-color;
+	} @else {
+		$text-color: darken($background, 50%);
+	}
+
+	background: lighten($background, 10%);
+	border: 1px solid darken($background, 10%);
+	color: $text-color;
+}
+
+// 2015 font family
+@mixin default-font-sans() {
+	font-family: "Noto Sans", sans-serif;
+}
+
+@mixin default-font-serif() {
+	font-family: "Noto Serif", serif;
+}
+
+// Variables: color definitions
 $content-background: #fff;
 $light-background:   #f7f7f7;
 $medium-background:  #ccc;
 $dark-background:    #555;
-$border-color:       #999; // border color is varied using rgba
+$border-color:       #999;    // border color is varied using rgba
 $border-light:       #eaeaea; // BP dividers
 $border-med:         #ddd;
-$body-text:          #333; // 2015 body text color
+$body-text:          #333;    // 2015 body text color
 $bp-button-hover:    #ededed; // this is the default BP button hover background
+$notice-error:       #c85a6e;
+$notice-warning:     #d05656;
 $notice-info:        #9fd1e2;
+$notice-update:      #ced98c;
+$stripe-odd:         #ebf0ff;
+$stripe-even:        #dbe5ff;
+$unread:             #dce5ff;
+
 /*--------------------------------------------------------------
 
 This is the BuddyPress companion stylesheet for
@@ -137,24 +176,23 @@ i.e. in child theme named 'twentyfifteen-child', twentyfifteen.css would become
 5.0 - Directories - Members, Groups, Blogs, Forums
 6.0 - Single Item screens: User Account & Single Group Screens
 	6.1 - Item Headers: Global
-		6.1.1 - Item-header: Groups;
-		6.1.2 -  item-header: User Accounts
+		6.1.1 - item-header: Groups
+		6.1.2 - item-header: User Accounts
 	6.2 - Item Body: Global
 		6.2.1 - item-body: Groups
-		 6.2.1.1- Management settings screens
-   6.2.1.2 - Group members list
+			6.2.1.1 - Management settings screens
+			6.2.1.2 - Group members list
 		6.2.2 - item-body: User Accounts
-	  6.2.2.1 - classes, pag, filters
-	  6.2.2.2 - Extended Profiles
-	  6.2.2.3 - Groups
-	  6.2.2.4 - friends
-	  6.2.2.5 - Private Messaging Threads
-	  6.2.2.6 - Settings
+			6.2.2.1 - classes, pag, filters
+			6.2.2.2 - Extended Profiles
+			6.2.2.3 - Groups
+			6.2.2.4 - friends
+			6.2.2.5 - Private Messaging Threads
+			6.2.2.6 - Settings
 7.0 - Forms  -  General
 8.0 - Tables -  General
 9.0 - Error / Success Messages
-10.0 - Ajax Loading
-11.0 - Widgets
+10.0 - Ajax Loading, Widgets, General classes
 --------------------------------------------------------------*/
 
 /**
@@ -205,7 +243,7 @@ i.e. in child theme named 'twentyfifteen-child', twentyfifteen.css would become
 
 			.entry-header,
 			.entry-content {
-				padding: 0 2rem 2rem;
+				padding: 0 3rem 3rem 3rem;
 			}
 
 			#buddypress {
@@ -280,7 +318,8 @@ i.e. in child theme named 'twentyfifteen-child', twentyfifteen.css would become
 	div.item-list-tabs {
 		ul {
 			background-color: $light-background;
-			border-bottom: 1px solid rgba($border-color, 0.4);
+			border-bottom: 1px solid rgba($border-light, 0.9);
+			border-top: 1px solid rgba($border-light, 0.9);
 			overflow: hidden;
 			padding: $spacing-val-xs 0;
 
@@ -294,6 +333,7 @@ i.e. in child theme named 'twentyfifteen-child', twentyfifteen.css would become
 
 	/*__ Horizontal menus __*/
 	#object-nav {
+
 		ul {
 			overflow: hidden;
 			li {float: none;}
@@ -305,7 +345,6 @@ i.e. in child theme named 'twentyfifteen-child', twentyfifteen.css would become
 				li {
 					float: left;
 				}
-				//	li:nth-child(1n+7) {clear: left;}
 			}
 		}
 	}
@@ -398,9 +437,10 @@ i.e. in child theme named 'twentyfifteen-child', twentyfifteen.css would become
 					overflow: hidden;
 
 					span {
+						background: $content-background;
 						border-radius: 10%;
 						float: right;
-						margin-right: 15px;
+						margin-right: 2px;
 					}
 				}
 			}
@@ -409,11 +449,11 @@ i.e. in child theme named 'twentyfifteen-child', twentyfifteen.css would become
 		#item-body {
 			border-left: 1px solid $border-med;
 			overflow: hidden;
-			padding: 0 $spacing-val-sm;
+			padding: 0 0 0 $spacing-val-md;
 			width: auto;
 
 			#subnav {
-				margin: 0 (-$spacing-val-sm);
+				margin: 0 0 0 (-$spacing-val-md);
 			}
 		}
 
@@ -468,18 +508,29 @@ i.e. in child theme named 'twentyfifteen-child', twentyfifteen.css would become
 *-------------------------------------------------------------------------------
 */
 
+// Adjusts Meta items and various elements to match 2015 font-family
+#buddypress {
+	.item-list {
+		.activity-header,
+		.activity-meta {
+			@include default-font-sans();
+		}
+	}
+}
+
 // Trying to position the action div absolute has bad consequences where
 // aditional items are displayed, floating is an alternative that
 // allows natural flow expansion.
 // This block:
 // * Manages li items, Stacks them small screen, floated left at wider screens.
-// * Adjusts display of action buttons at small screen
-// mobile up.
+// * Adjusts display of action buttons at small screen mobile up.
+// Adjusts Meta items to match 2015 font-family
 
 #buddypress {
 	ul.item-list {
 		li {
 			overflow: hidden !important;
+
 			// Undo BP floats to center avatars initially mobile up
 			.item-avatar {
 				margin-bottom: $spacing-val-sm;
@@ -609,39 +660,43 @@ i.e. in child theme named 'twentyfifteen-child', twentyfifteen.css would become
 			}
 		}
 
-		#whats-new-options[style] {
-			min-height: 6rem; // unit open to debate px value might be better.
-			overflow: visible;
+		#whats-new-content.active {
+			#whats-new-options[style] {
+				min-height: 6rem; // unit open to debate px value might be better.
+				overflow: visible;
 
-			#whats-new-post-in-box {
-				border: 1px solid rgba($border-color, 0.5);
-				float: left;
-				line-height: 1.5em;
-				margin-top: 12px;
-				padding-left: 0.2em;
-				width: 100%;
-
-				select {
-					background: none;
-					border: 0;
-					float: right;
-					margin: 0;
-					min-height: 1.5em;
-					padding-left: 0.4em;
-				}
-			}
-
-			@media screen and (min-width: 30em) {
 				#whats-new-post-in-box {
-					width: auto;
+					border: 1px solid rgba($border-color, 0.5);
+					float: left;
+					line-height: 1.5em;
+					margin-top: 12px;
+					padding-left: 0.2em;
+					width: 100%;
+
+					select {
+						background: none;
+						border: 0;
+						float: right;
+						margin: 0;
+						min-height: 1.5em;
+						padding-left: 0.4em;
+					}
 				}
 
-				#whats-new-submit {
-					float: right;
+				@media screen and (min-width: 30em) {
+					#whats-new-post-in-box {
+						width: auto;
+					}
+
+					#whats-new-submit {
+						float: right;
+					}
 				}
-			}
-		}
-	}
+
+			} // close #whats-new-options
+		} // close #whats-new-content.active
+
+	} // close #whats-new-form
 
 	// User account form requires matching bp default specificity
 	#item-body {
@@ -659,20 +714,60 @@ i.e. in child theme named 'twentyfifteen-child', twentyfifteen.css would become
 
 #buddypress {
 
-	.activity-list {
+	#activity-stream {
 
-		// re-size activity avatars
+		// re-size activity avatars and stack small screen
+		// refactor main elements positioning medium up.
 		li {
+			padding: 25px 0 15px;
+
 			.activity-avatar {
+				float: none;
+				text-align: center;
+
 				a {
+					display: inline-block;
+
 					img.avatar {
+						display: inline;
+						float: none;
 						height: 60px;
+						margin-bottom: $spacing-val-md;
 						margin-left: 0;
 						width: 60px;
 					}
 				}
+			} // close .activity-avatar
+
+			.activity-content {
+				margin-left: 0;
+
+				.activity-header {
+					@include font-size(14);
+				}
 			}
-		}
+
+			@media screen and (min-width: 46.25em) {
+
+				.activity-avatar {
+					float: left;
+					margin-right: $spacing-val-sm;
+					text-align: left;
+					a {border-bottom: 0;}
+				}
+
+				.activity-content {
+					margin: 0;
+					overflow: hidden;
+
+					.activity-header {
+						@include font-size(16);
+					}
+				}
+
+			} // close @media
+
+		} // close li
 
 		li.mini {
 			.activity-avatar {
@@ -696,7 +791,6 @@ i.e. in child theme named 'twentyfifteen-child', twentyfifteen.css would become
 			margin-top: -12px;
 
 			.activity-header {
-				@include font-size(16);
 				line-height: inherit;
 				margin-right: 0;
 
@@ -711,6 +805,7 @@ i.e. in child theme named 'twentyfifteen-child', twentyfifteen.css would become
 					margin-bottom: 0 !important; // have to match to BP
 				}
 			} // close .activity-header
+
 			.activity-meta {
 				a {
 					display: block;
@@ -724,10 +819,49 @@ i.e. in child theme named 'twentyfifteen-child', twentyfifteen.css would become
 
 		} // close .activity-content
 
-		.load-more a {display: block;}
+		.load-more {
+			background: $light-background;
+			border: 1px solid transparent;
+			padding: $spacing-val-sm;
 
-	} // close .activity-list
+			&:focus,
+			&:hover {
+				background: darken($light-background, 1%);
+				border: 1px solid rgba(#9fd1e2, 0.3);
+				a { font-style: italic; }
+			}
+
+			a {
+				display: block;
+			}
+		}
+
+	} // close #activity-stream
 } // close #buddypress
+
+/* Single activity view  - activity permalink */
+
+.activity-permalink {
+	#buddypress {
+		#activity-stream {
+
+			li.activity-item {
+				padding: $spacing-val-md;
+			}
+
+			li.mini {
+				.activity-header {
+					@include font-size(16);
+					@media screen and (min-width: 46.25em) {
+						@include font-size(20);
+					}
+					margin-bottom: $spacing-val-lg;
+					p {padding: $spacing-val-md;}
+				}
+			}
+		}
+	}
+}
 
 /**
 *-----------------------------------------------------
@@ -735,14 +869,15 @@ i.e. in child theme named 'twentyfifteen-child', twentyfifteen.css would become
 *-----------------------------------------------------
 */
 #buddypress {
-	.activity {
+
+	#activity-stream {
 		.activity-comments {
 			border-left: 1px solid $border-light;
 			margin-top: 5px;
 
 			ul {
 				background: rgba($light-background, 0.6);
-				margin: 30px 0 0 2px;
+				margin: 15px 0 0 2px;
 			}
 
 			.ac-form {
@@ -815,6 +950,51 @@ i.e. in child theme named 'twentyfifteen-child', twentyfifteen.css would become
 *-----------------------------------------------------------
 */
 
+.bp-user,
+.single-item.groups {
+	@media screen and (max-width: 46.25em) {
+		main {
+			header.entry-header {
+				padding-bottom: 1rem;
+			}
+		}
+	}
+
+	@media screen and (max-width: 38.75em) {
+		h1,
+		#item-header-content {
+			text-align: center;
+		}
+	}
+
+	#buddypress {
+		@media screen and (max-width: 46.25em) {
+			#item-header {
+				.generic-button {
+					float: none;
+					margin: 1.5em 0 0 0;
+				}
+			}
+		}
+
+		@media screen and (max-width: 38.75em) {
+			h1 {
+				margin-bottom: 0;
+			}
+
+			#item-header-avatar {
+				img.avatar {
+					margin-right: 0;
+				}
+			}
+
+			#item-header-content {
+				width: 100%;
+			}
+		}
+	}
+}
+
 /**
 *-----------------------------------------------------
 * @subsection 6.1.1 - item-header Groups
@@ -825,6 +1005,13 @@ i.e. in child theme named 'twentyfifteen-child', twentyfifteen.css would become
 
 .single-item.groups {
 	#buddypress {
+		@media screen and (max-width: 46.25em) {
+			#item-header {
+				#item-meta {
+					margin-bottom: $spacing-val-md;
+				}
+			}
+		}
 
 		// Move visual flow of avatar & item-actions at narrow width,
 		// avatar first after group title
@@ -1083,12 +1270,57 @@ i.e. in child theme named 'twentyfifteen-child', twentyfifteen.css would become
 *-----------------------------------------
 */
 
+/* Members loop */
+
+.groups.group-members {
+	#buddypress {
+		#members-group-list {
+			li {
+
+				@media screen and (max-width: 30em) {
+					> a {
+						border-bottom: 0;
+						display: block;
+						margin-bottom: $spacing-val-sm;
+						text-align: center;
+
+						img.avatar {
+							display: inline;
+							float: none;
+						}
+					}
+				}
+
+				h5 {
+					display: inline-block;
+					@include font-size(14);
+
+					@media screen and (min-width: 59.6875em) {
+						@include font-size(16);
+					}
+					margin: 0;
+
+					a {border-bottom: 0;}
+				} //  close h5
+
+				span.activity {
+					@include font-size(12);
+				}
+
+				.action {
+					top: 0;
+				}
+			} // close li
+		}
+	}
+}
+
 // Massage the members search for groups nav specifically.
 .groups.group-members {
 	#subnav {
 		li {
 			@media screen and (max-width: 38.75em) {
-				background: #fff;
+				background: $content-background;
 				padding: $spacing-val-md 0;
 			}
 			width: 100%;
@@ -1186,7 +1418,7 @@ i.e. in child theme named 'twentyfifteen-child', twentyfifteen.css would become
 		.profile {
 			.bp-widget {
 				h4 {
-					background: rgba($dark-background, 0.8);
+					background: lighten($dark-background, 10%);
 					color: #fff;
 					margin-bottom: 0;
 					padding: 0.4em;
@@ -1263,6 +1495,295 @@ i.e. in child theme named 'twentyfifteen-child', twentyfifteen.css would become
 						width: 50%;
 					}
 				}
+			}
+		}
+
+/**
+	*-------------------------------------------
+	* @subsection 6.2.2.5 - Private Messaging
+	*-------------------------------------------
+	*/
+
+		#message-thread {
+		//Single message view
+			a {
+				border-bottom: 0;
+			}
+
+			#message-subject {
+				background: lighten($dark-background, 10%);
+				color: $content-background;
+				padding: 0.3em 0 0.3em 0.2em;
+			}
+
+			#message-recipients {
+				font-style: italic;
+
+				a.confirm {
+					border: 1px solid $border-light;
+					font-style: normal;
+				}
+			}
+
+			.message-metadata {
+				overflow: hidden;
+
+				img.avatar {
+					float: none;
+				}
+
+				@media screen and (min-width: 46.25em) {
+					img.avatar {
+						float: left;
+					}
+				}
+
+				.message-star-actions {
+					float: right;
+					margin-right: $spacing-val-xs;
+					position: static;
+				}
+			} // close .message-meta
+
+			.message-content {
+				background: $light-background;
+				border: 1px solid $border-light;
+				margin: $spacing-val-sm 0 0 0;
+				padding: 0.3em;
+			}
+
+			#send-reply {
+				.message-content {
+					background: $content-background;
+					border: 0;
+				}
+			}
+
+			.alt {
+				background: $content-background;
+			}
+
+		} // close message-thread  Singular view!
+
+		#message-threads {
+			thead {
+				tr {
+					background: lighten($dark-background, 10%);
+				}
+			}
+
+			tr {
+				td {
+					background: $content-background;
+					display: inline-block;
+					float: left;
+				}
+
+				td.thread-star,
+				td.thread-options {
+					border-bottom-color: darken($border-light, 20%);
+					border-bottom-width: 2px;
+					height: 2.4em;
+					padding-bottom: 0.2em;
+					padding-top: 0.2em;
+
+					@media screen and (max-width: 46.25em) {
+						padding-top: 0;
+					}
+				}
+
+				td.bulk-select-check,
+				td.thread-from {
+					height: 2.6em;
+					@media screen and (max-width: 38.75em) {
+						height: 5.2em;
+					}
+				}
+
+				td.thread-from,
+				td.thread-options {
+					border-left: 0 !important;
+					@include calc(width, "100% - 30px");
+					margin-left: 0;
+				}
+
+				td.thread-info {
+					padding-left: 41px;
+					width: 100%;
+
+					a::after {
+						content: " \2013 \00a0"attr(title);
+						@include font-size(12);
+					}
+				}
+
+				td.thread-options {
+					text-align: right;
+
+					a {
+						@include font-size(12);
+						line-height: 2.2;
+					}
+				}
+
+				span.from {
+					display: none;
+				}
+
+				span.activity {
+					display: block;
+					float: right;
+					line-height: 2;
+					@media screen and (max-width: 38.75em) {
+						clear: both;
+						@include font-size(11);
+						width: 100%;
+					}
+				}
+			}
+
+			tr.unread {
+				td {
+					background: $unread;
+					border-bottom-color: darken($border-light, 20%);
+					border-color: darken($border-light, 10%);
+				}
+			}
+
+			th {
+				display: none;
+			}
+
+			th.bulk-select-all {
+				border-bottom: 0;
+				display: inline-block;
+				text-align: left;
+			}
+
+			th.bulk-select-all,
+			td.bulk-select-check,
+			td.thread-star {
+				border-right: 0;
+				width: 30px;
+			}
+		}
+
+	/* Auto Complete background */
+		.acfb-holder {
+
+			li.friend-tab {
+				margin-right: 0;
+
+				a {
+					border-bottom: 0;
+
+					img {
+	 				// this is the tiny user avatar
+						display: inline;
+						height: 20px;
+						margin-right: 0.5em;
+						width: 20px !important; // override inline style
+	 			}
+	 		}
+	 	}
+		}
+
+		/* Sitewide Notices loop */
+		#message-threads.sitewide-notices {
+			td {
+				width: 100%;
+
+				strong {
+					background: lighten($dark-background, 10%);
+					color: $content-background;
+					display: block;
+					margin-bottom: 0.4em;
+					padding-left: 0.2em;
+				}
+
+				a {
+					display: inline-block;
+				}
+			}
+
+			td:first-child {
+				display: none;
+			}
+
+			td:first-child + td + td {
+			// notice date
+				border-bottom: 0;
+
+				span {
+					line-height: 1;
+				}
+			}
+
+			td:last-child {
+			// notice actions
+				border-bottom-color: darken($border-light, 20%);
+				line-height: 1;
+				text-align: right;
+
+				a:last-child {
+				// hide the 'x' text
+					line-height: 0;
+					margin-left: 0.7em;
+					text-indent: -999em;
+				}
+
+				a:last-child::after {
+					content: attr(title);
+					display: block;
+					line-height: initial;
+					text-indent: 0;
+				}
+			}
+		}
+
+/**
+	*------------------------------
+	* @subsection 6.2.2.6 - Settings
+	*------------------------------
+	*/
+
+		#settings-form {
+			// 'p' = email notification screen sub heading
+			> p {
+				@include font-size(20);
+				margin: $spacing-val-md 0 $spacing-val-sm;
+			}
+		}
+
+		table.notification-settings {
+			td.yes,
+			td.no {
+				vertical-align: middle;
+			}
+		}
+		// Profile table td widths
+		table.profile-settings {
+			width: 100%;
+
+			th.field-group-name,
+			td.field-name {
+				width: 50%;
+			}
+
+			@media screen and (min-width: 46.25em) {
+				th.field-group-name,
+				td.field-name {
+					width: 70%;
+				}
+			}
+
+			th.title,
+			td.field-visibility {
+				width: 30%;
+			}
+
+			td.field-visibility {
+				select {width: 100%;}
 			}
 		}
 
@@ -1378,8 +1899,6 @@ i.e. in child theme named 'twentyfifteen-child', twentyfifteen.css would become
 				}
 			}
 		}
-
-		div.message-search {margin-right: $spacing-val-sm;}
 	} // close @media
 
 	// Attempt to replicate the 2015 breakpoint font resizing for buttons/submits
@@ -1420,6 +1939,15 @@ i.e. in child theme named 'twentyfifteen-child', twentyfifteen.css would become
 	table {
 		@include font-size(14);
 		margin: $spacing-val-md 0;
+
+		tr th {
+			background: lighten($dark-background, 10%);
+			border-color: darken($border-light, 20%);
+			color: $content-background;
+		}
+
+		// Reduce the themes inherited paragraph margins in tables
+		p {margin-bottom: 0.5em;}
 	}
 
 	@media screen and (min-width: 55em) {
@@ -1443,7 +1971,11 @@ i.e. in child theme named 'twentyfifteen-child', twentyfifteen.css would become
 			}
 		}
 
-		.bulk-select-check {text-align: center;}
+		.bulk-select-check,
+		.thread-star {
+			text-align: center;
+		}
+
 		.notification-actions,
 		td.thread-options {
 			text-align: center;
@@ -1474,10 +2006,61 @@ i.e. in child theme named 'twentyfifteen-child', twentyfifteen.css would become
 * @section 9.0 - Error / Success messages
 *-------------------------------------------------------------------------------
 */
+
+// message args ($variable-color, text-color)
+// Leave text-color undefined to automagically set text color
+// to background color darker by 50%
+
 #buddypress {
-	div#message.info {
+
+	div#message {
 		p {
-			@include message-box($notice-info);
+			@include font-size(18);
+			font-weight: bold;
 		}
+
+		&.info {
+			p {
+				@include message-box($notice-info);
+			}
+		}
+
+		&.updated {
+			p {
+				@include message-box($notice-update);
+			}
+		}
+
+	} // close #message
+
+} // close  #buddypress
+
+// Without direct classes on our mesages ( 'warning' )
+// we need to use the body classes
+// todo: If this is class .warning is included in main BP styles remove from here
+.delete-group {
+	#buddypress {
+		div#message.info {
+			p {
+				@include message-box($notice-warning, #fff);
+			}
+		}
+	}
+}
+
+/**
+*-------------------------------------------------------------------------------
+* @section 10.0 - Ajax Loading, Widgets, General classes
+*-------------------------------------------------------------------------------
+*/
+
+#buddypress {
+	/* Auto Complete background */
+	.acfb-holder {
+
+		li.friend-tab {
+			background: $notice-info;
+			border: inherit;
+	 }
 	}
 }
