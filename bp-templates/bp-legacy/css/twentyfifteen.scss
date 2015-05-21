@@ -652,49 +652,71 @@ i.e. in child theme named 'twentyfifteen-child', twentyfifteen.css would become
 		textarea {width: 100%;}
 		// corrective measure for clipped elements due to JS inline styling
 
-		@media screen and (max-width: 46.25em) {
-			#whats-new-content {
-				clear: left;
-				margin: $spacing-val-sm 0 $spacing-val-md;
-				padding: $spacing-val-sm 0 0;
+		@media screen and (max-width: 30em) {
+			#whats-new-post-in-box {
+				select {
+					@include font-size(14);
+					max-width: 120px;
+				}
 			}
 		}
 
-		#whats-new-content.active {
-			#whats-new-options[style] {
-				min-height: 6rem; // unit open to debate px value might be better.
-				overflow: visible;
+		@media screen and (max-width: 38.75em) {
+			#whats-new-content {
+				clear: left;
+				margin: $spacing-val-sm 0 $spacing-val-lg;
+				padding: $spacing-val-sm 0 0;
 
+				#whats-new-submit {
+					float: none;
+
+					input {width: 100%;}
+				}
+			}
+
+			#whats-new-options {
+				display: flex;
+				flex-direction: column;
+
+				#whats-new-submit {order: 2;}
+				#whats-new-post-in-box {order: 1;}
+			}
+		} // close @media
+
+		#whats-new-options[style] {
+			min-height: 6rem;
+			overflow: visible;
+
+			#whats-new-post-in-box {
+				border: 1px solid rgba($border-color, 0.5);
+				float: left;
+				line-height: 1.5em;
+				margin-top: 12px;
+				padding-left: 0.2em;
+				width: 100%;
+
+				select {
+					background: none;
+					border: 0;
+					float: right;
+					margin: 0;
+					min-height: 1.5em;
+					outline: 0;
+					padding-left: 0.4em;
+				}
+			}
+
+			@media screen and (min-width: 30em) {
 				#whats-new-post-in-box {
-					border: 1px solid rgba($border-color, 0.5);
-					float: left;
-					line-height: 1.5em;
-					margin-top: 12px;
-					padding-left: 0.2em;
-					width: 100%;
-
-					select {
-						background: none;
-						border: 0;
-						float: right;
-						margin: 0;
-						min-height: 1.5em;
-						padding-left: 0.4em;
-					}
+					width: auto;
 				}
 
-				@media screen and (min-width: 30em) {
-					#whats-new-post-in-box {
-						width: auto;
-					}
-
-					#whats-new-submit {
-						float: right;
-					}
+				#whats-new-submit {
+					float: right;
 				}
+			}
 
-			} // close #whats-new-options
-		} // close #whats-new-content.active
+		} // close #whats-new-options
 
 	} // close #whats-new-form
 
@@ -809,10 +831,10 @@ i.e. in child theme named 'twentyfifteen-child', twentyfifteen.css would become
 			.activity-meta {
 				a {
 					display: block;
-					margin-bottom: $spacing-val-xs;
+					margin: 0 0 $spacing-val-xs;
 					@media screen and (min-width: 38.75em) {
 						display: inline-block;
-						margin-bottom: 0;
+						margin: 0;
 					}
 				}
 			}
@@ -843,6 +865,7 @@ i.e. in child theme named 'twentyfifteen-child', twentyfifteen.css would become
 
 .activity-permalink {
 	#buddypress {
+		background: none; // counter the .bp-user faux column background
 		#activity-stream {
 
 			li.activity-item {
@@ -872,12 +895,37 @@ i.e. in child theme named 'twentyfifteen-child', twentyfifteen.css would become
 
 	#activity-stream {
 		.activity-comments {
-			border-left: 1px solid $border-light;
-			margin-top: 5px;
+			margin: $spacing-val-sm 0 0;
 
-			ul {
+			&.has-comments {
+				border-left: 1px solid $border-light;
+			}
+
+			.ac-form {
+				padding: $spacing-val-md 0 0;
+			}
+
+			> ul {
 				background: rgba($light-background, 0.6);
 				margin: 15px 0 0 2px;
+				@media screen and (min-width: 38.75em) {
+					margin-left: 70px;
+				}
+			}
+
+			.ac-reply-avatar {display: none;}
+
+			.ac-reply-content {
+				margin-left: 0;
+				padding-left: 0;
+			}
+
+			@media screen and (min-width: 38.75em) {
+				.ac-reply-avatar {display: block;}
+
+				.ac-reply-content {
+					overflow: hidden;
+				}
 			}
 
 			.ac-form {
@@ -1202,11 +1250,14 @@ i.e. in child theme named 'twentyfifteen-child', twentyfifteen.css would become
 } // close .groups.edit-details
 
 .groups.group-settings {
-	#group-settings-form {
+	#group-settings-form,
+	#create-group-form {
 
-		div.radio label {
-			border: 1px solid $border-light;
-			padding: 0.2em;
+		div.radio {
+			label {
+				border: 1px solid $border-light;
+				padding: 0.2em;
+			}
 
 			ul {
 				color: rgba($body-text, 0.6);
@@ -1352,15 +1403,20 @@ i.e. in child theme named 'twentyfifteen-child', twentyfifteen.css would become
 */
 
 .bp-user {
-	.entry-title {margin-bottom: 0.5em;}
-
-	#buddypress {
+	.entry-title {
+		margin-bottom: 0.5em;
+	}
+}
 
 /**
 *--------------------------------------------
 * @subsection 6.2.2.1 - classes, pag, filters
 *--------------------------------------------
 */
+
+.bp-user {
+
+	#buddypress {
 
 		table {
 			th {@include font-size(14)}
@@ -1379,17 +1435,16 @@ i.e. in child theme named 'twentyfifteen-child', twentyfifteen.css would become
 
 		.pag-count {font-style: italic;}
 
-		.notifications-options-nav {
-			border: 1px solid rgba($border-color, 0.5);
+		.notifications-options-nav,
+		.messages-options-nav {
 			float: left;
 			width: 100%;
-			@media screen and (min-width: 38.75em) {
-				width: 300px;
+			@media screen and (min-width: 30em) {
+				width: 50%;
 			}
 
 			select,
 			input {
-				border: 0;
 				@include font-size(14);
 				outline: 0;
 				padding: 0;
@@ -1398,23 +1453,42 @@ i.e. in child theme named 'twentyfifteen-child', twentyfifteen.css would become
 			select {
 				float: left;
 				margin-right: 0;
-				width: 60%;
+				width: 100%;
+
+				@media screen and (min-width: 30em) {
+					width: 60%;
+				}
 			}
 
 			input {
 				float: right;
-				font-family: inherit;
-				line-height: 20px;
-				width: 40%;
+				@include default-font-serif();
+				line-height: 1.5;
+				margin-top: $spacing-val-sm;
+				width: 100%;
+
+				&[disabled]:hover {background: none;}
+
+				@media screen and (min-width: 30em) {
+					margin-top: 0;
+					width: 38%;
+				}
 			}
 
 		} // close .notifications-options-nav
+
+	} // close #BuddyPress
+
+} // close .bp-user
 
 /**
 	*-------------------------------------------
 	* @subsection 6.2.2.2 - Extended Profiles
 	*-------------------------------------------
 	*/
+
+.bp-user {
+	#buddypress {
 		.profile {
 			.bp-widget {
 				h4 {
@@ -1426,8 +1500,15 @@ i.e. in child theme named 'twentyfifteen-child', twentyfifteen.css would become
 
 				table {margin-top: 0;}
 			}
-			/* Edit profile */
+		}
+	}
+}
 
+/* Edit Profile */
+.bp-user {
+	#buddypress {
+
+		.profile {
 			#profile-edit-form {
 				.button-nav:before,
 				.button-nav:after {
@@ -1481,11 +1562,17 @@ i.e. in child theme named 'twentyfifteen-child', twentyfifteen.css would become
 			}
 		} // close .profile
 
+	} // close #BuddyPress
+} // close .bp-user
+
 /**
 	*-------------------------------------------
 	* @subsection 6.2.2.3 - Groups
 	*-------------------------------------------
 	*/
+.bp-user {
+
+	#buddypress {
 
 		#groups-list {
 			li {
@@ -1498,11 +1585,19 @@ i.e. in child theme named 'twentyfifteen-child', twentyfifteen.css would become
 			}
 		}
 
+	} // close #BuddyPress
+
+} // close .bp-user
+
 /**
 	*-------------------------------------------
 	* @subsection 6.2.2.5 - Private Messaging
 	*-------------------------------------------
 	*/
+
+.bp-user {
+
+	#buddypress {
 
 		#message-thread {
 		//Single message view
@@ -1741,11 +1836,18 @@ i.e. in child theme named 'twentyfifteen-child', twentyfifteen.css would become
 			}
 		}
 
+	} // close #BuddyPress
+
+} // close .bp-user
+
 /**
 	*------------------------------
 	* @subsection 6.2.2.6 - Settings
 	*------------------------------
 	*/
+
+.bp-user {
+	#buddypress {
 
 		#settings-form {
 			// 'p' = email notification screen sub heading
@@ -1756,12 +1858,13 @@ i.e. in child theme named 'twentyfifteen-child', twentyfifteen.css would become
 		}
 
 		table.notification-settings {
+			th.title {width: 75%;}
 			td.yes,
 			td.no {
 				vertical-align: middle;
 			}
 		}
-		// Profile table td widths
+		// Profile visibility table td widths
 		table.profile-settings {
 			width: 100%;
 
@@ -1819,18 +1922,17 @@ i.e. in child theme named 'twentyfifteen-child', twentyfifteen.css would become
 
 } // close #buddypress
 
-// 2015 applies 100% width to form element, remove this initially for BP search
 
 #buddypress {
 
-	// Manage form control widths under #item-body in user account screens
-	#item-body {
-		.standard-form {
-			li {float: none;}
-			input[type='text'],
-			textarea {
-				width: 100%;
-			}
+	// Manage form control widths override BP 75% width.
+
+	.standard-form,
+	.group-create-form {
+		li {float: none;}
+		input[type='text'],
+		textarea {
+			width: 100%;
 		}
 	}
 
@@ -2012,6 +2114,14 @@ i.e. in child theme named 'twentyfifteen-child', twentyfifteen.css would become
 // to background color darker by 50%
 
 #buddypress {
+	#item-body {
+		div#message {
+			margin-top: $spacing-val-md;
+			@media screen and (min-width: 55em) {
+				margin-right: $spacing-val-md;
+			}
+		}
+	}
 
 	div#message {
 		p {
@@ -2037,12 +2147,12 @@ i.e. in child theme named 'twentyfifteen-child', twentyfifteen.css would become
 
 // Without direct classes on our mesages ( 'warning' )
 // we need to use the body classes
-// todo: If this is class .warning is included in main BP styles remove from here
 .delete-group {
 	#buddypress {
 		div#message.info {
+
 			p {
-				@include message-box($notice-warning, #fff);
+				@include message-box($notice-warning);
 			}
 		}
 	}
