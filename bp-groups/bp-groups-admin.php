@@ -1,6 +1,6 @@
 <?php
 /**
- * BuddyPress Groups component admin screen
+ * BuddyPress Groups component admin screen.
  *
  * Props to WordPress core for the Comments admin screen, and its contextual
  * help text, on which this implementation is heavily based.
@@ -51,6 +51,7 @@ add_action( bp_core_admin_hook(), 'bp_groups_add_admin_menu' );
  * @since BuddyPress (1.7.0)
  *
  * @param array $custom_menus Array of BP top-level menu items.
+ *
  * @return array Menu item array, with Groups added.
  */
 function bp_groups_admin_menu_order( $custom_menus = array() ) {
@@ -246,7 +247,6 @@ function bp_groups_admin_load() {
 		$allowed_status = apply_filters( 'groups_allowed_status', array( 'public', 'private', 'hidden' ) );
 		$status         = ( in_array( $_POST['group-status'], (array) $allowed_status ) ) ? $_POST['group-status'] : 'public';
 
-		// Invite status
 		/**
 		 * Filters the allowed invite status values for the group.
 		 *
@@ -433,9 +433,10 @@ function bp_groups_admin_load() {
  *
  * @since BuddyPress (1.7.0)
  *
- * @param string $value Will always be false unless another plugin filters it first.
- * @param string $option Screen option name.
+ * @param string $value     Will always be false unless another plugin filters it first.
+ * @param string $option    Screen option name.
  * @param string $new_value Screen option form value.
+ *
  * @return string Option value. False to abandon update.
  */
 function bp_groups_admin_screen_options( $value, $option, $new_value ) {
@@ -560,7 +561,7 @@ function bp_groups_admin_edit() {
 	 *
 	 * @since BuddyPress (1.7.0)
 	 *
-	 * @param BP_Groups_Group Instance of the current group being edited. Passed by reference.
+	 * @param BP_Groups_Group $this Instance of the current group being edited. Passed by reference.
 	 */
 	do_action_ref_array( 'bp_groups_admin_edit', array( &$group ) ); ?>
 
@@ -687,7 +688,7 @@ function bp_groups_admin_delete() {
  *
  * @since BuddyPress (1.7.0)
  *
- * @global BP_Group_List_Table $bp_groups_list_table Group screen list table.
+ * @global BP_Groups_List_Table $bp_groups_list_table Group screen list table.
  * @global string $plugin_page Currently viewed plugin page.
  */
 function bp_groups_admin_index() {
@@ -813,8 +814,7 @@ function bp_groups_admin_edit_metabox_add_new_members( $item ) {
  *
  * @since BuddyPress (1.7.0)
  *
- * @param BP_Groups_Group $item The BP_Groups_Group object for the current
- *        group.
+ * @param BP_Groups_Group $item The BP_Groups_Group object for the current group.
  */
 function bp_groups_admin_edit_metabox_members( $item ) {
 
@@ -1004,8 +1004,9 @@ function bp_groups_admin_edit_metabox_status( $item ) {
  *
  * @since BuddyPress (1.8.0)
  *
- * @param BP_Group_Member_Query $query A BP_Group_Member_Query object.
- * @param string $member_type member|mod|admin|banned.
+ * @param BP_Group_Member_Query $query       A BP_Group_Member_Query object.
+ * @param string                $member_type member|mod|admin|banned.
+ *
  * @return string Pagination links HTML.
  */
 function bp_groups_admin_create_pagination_links( BP_Group_Member_Query $query, $member_type ) {
@@ -1062,6 +1063,7 @@ function bp_groups_admin_create_pagination_links( BP_Group_Member_Query $query, 
  * @since BuddyPress (1.7.0)
  *
  * @param array $user_ids Array of user IDs.
+ *
  * @return array Array of user_logins corresponding to $user_ids.
  */
 function bp_groups_admin_get_usernames_from_ids( $user_ids = array() ) {
@@ -1132,6 +1134,7 @@ class BP_Groups_List_Table extends WP_List_Table {
 	 * e.g. "All", "Pending", "Approved", "Spam"...
 	 *
 	 * @since BuddyPress (1.7.0)
+	 *
 	 * @access public
 	 * @var string
 	 */
@@ -1141,6 +1144,7 @@ class BP_Groups_List_Table extends WP_List_Table {
 	 * Group counts for each group type.
 	 *
 	 * @since BuddyPress (1.7.0)
+	 *
 	 * @access public
 	 * @var int
 	 */
@@ -1338,7 +1342,7 @@ class BP_Groups_List_Table extends WP_List_Table {
 	 *
 	 * @since BuddyPress (1.7.0)
 	 *
-	 * @param object $item The current group item in the loop.
+	 * @param object|array $item The current group item in the loop.
 	 */
 	public function single_row( $item = array() ) {
 		static $even = false;
@@ -1448,7 +1452,7 @@ class BP_Groups_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Get the column names for sortable columns
+	 * Get the column names for sortable columns.
 	 *
 	 * Note: It's not documented in WP, but the second item in the
 	 * nested arrays below is $desc_first. Normally, we would set
@@ -1584,7 +1588,7 @@ class BP_Groups_List_Table extends WP_List_Table {
 	 *
 	 * @since BuddyPress (1.7.0)
 	 *
-	 * @param array Information about the current row.
+	 * @param array $item Information about the current row.
 	 */
 	public function column_description( $item = array() ) {
 
@@ -1604,7 +1608,7 @@ class BP_Groups_List_Table extends WP_List_Table {
 	 *
 	 * @since BuddyPress (1.7.0)
 	 *
-	 * @param array Information about the current row.
+	 * @param array $item Information about the current row.
 	 */
 	public function column_status( $item = array() ) {
 		$status      = $item['status'];
@@ -1640,7 +1644,7 @@ class BP_Groups_List_Table extends WP_List_Table {
 	 *
 	 * @since BuddyPress (1.7.0)
 	 *
-	 * @param array Information about the current row.
+	 * @param array $item Information about the current row.
 	 */
 	public function column_members( $item = array() ) {
 		$count = groups_get_groupmeta( $item['id'], 'total_member_count' );
@@ -1661,7 +1665,7 @@ class BP_Groups_List_Table extends WP_List_Table {
 	 *
 	 * @since BuddyPress (1.7.0)
 	 *
-	 * @param array Information about the current row.
+	 * @param array $item Information about the current row.
 	 */
 	public function column_last_active( $item = array() ) {
 		$last_active = groups_get_groupmeta( $item['id'], 'last_activity' );
@@ -1682,8 +1686,8 @@ class BP_Groups_List_Table extends WP_List_Table {
 	 *
 	 * @since BuddyPress (2.0.0)
 	 *
-	 * @param array Information about the current row.
-	 * @param string the column name.
+	 * @param array  $item        Information about the current row.
+	 * @param string $column_name The column name.
 	 *
 	 * @return string
 	 */

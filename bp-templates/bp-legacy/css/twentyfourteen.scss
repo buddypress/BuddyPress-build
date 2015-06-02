@@ -8,7 +8,7 @@
 // We follow the dictats of the parent theme in respect of media queries,
 // font sizing etc. Media queries are used in a modular sense (OOCSS)
 // rather than described as blocks to the end of the sheet, this aids ease
-// of managing media queries, scalability & flexibility .
+// of managing media queries, scalability & flexibility.
 
 // Twentyfourteen Media Queries / Breakpoints
 //@media screen and (max-width: 400px)
@@ -145,15 +145,22 @@ $unread:                 #cddaff;
 	font-family: Lato, sans-serif;
 }
 
-/*--------------------------------------------------------------
+/*------------------------------------------------------------------------------
 
 This is the BuddyPress companion stylesheet for
 the WordPress Twentyfourteen theme.
 
 This sheet supports the primary BuddyPress styles in buddypress.css
 
-The Rulesets shadow the BP default stylesheet sectioning
-to maintain uniformity.
+If you are running as a child theme of twentyfourteen this stylesheet will be
+loaded by default. If you want to modify the styles the normal BP Theme Compat
+hierarchy works and you can copy the file to buddypress/css/ or community/css/
+in your child themes root & either start over or modify the ruelesets.
+
+If you do not require the styles you can dequeue them from the themes functions file.
+
+Please see this codex article for more information:
+http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 
 --------------------------------------------------------------------------------
 >>> TABLE OF CONTENTS:
@@ -1288,8 +1295,20 @@ body.activity-permalink {
 				border-top: 1px solid $nav-background-border;
 			}
 
-			#invite-list {width: 120px;}
-			.main-column {margin-left: 160px;}
+			@media screen and (max-width: 400px) {
+				.left-menu {
+					float: none;
+
+					#invite-list {
+						height: auto;
+						width: auto;
+					}
+				}
+
+				.main-column {
+					margin-left: 0;
+				}
+			}
 
 			li {
 				img.avatar {

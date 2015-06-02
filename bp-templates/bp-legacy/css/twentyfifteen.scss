@@ -141,25 +141,26 @@ $stripe-odd:         #ebf0ff;
 $stripe-even:        #dbe5ff;
 $unread:             #dce5ff;
 
-/*--------------------------------------------------------------
+/*------------------------------------------------------------------------------
 
 This is the BuddyPress companion stylesheet for
 the WordPress Twentyfifteen theme.
 
 This sheet supports the primary BuddyPress styles in buddypress.css
 
-The Rulesets shadow the BP default stylesheet sectioning
-to maintain uniformity.
+If you are running as a child theme of twentyfifteen this stylesheet will be
+loaded by default. If you want to modify the styles the normal BP Theme Compat
+hierarchy works and you can copy the file to buddypress/css/ or community/css/
+in your child themes root & either start over or modify the rulesets.
 
-If you are running as a child theme of twentyfifteen and wish to use
-this stylesheet then please copy it to buddypress/css/ or community/css/
-in your child theme root and rename the file to match your child theme name
-i.e. in child theme named 'twentyfifteen-child', twentyfifteen.css would become
-'twentyfifteen-child.css'
+If you do not require the styles you can dequeue them from the themes functions file.
 
-----------------------------------------------------------------
+Please see this codex article for more information:
+http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
+
+--------------------------------------------------------------------------------
 >>> TABLE OF CONTENTS:
-----------------------------------------------------------------
+--------------------------------------------------------------------------------
 1.0 Theme Structural Elements & overrides
 2.0 - Navigation - General
 	2.1 - Navs - Object Nav / Sub Nav (item-list-tabs)
@@ -182,6 +183,7 @@ i.e. in child theme named 'twentyfifteen-child', twentyfifteen.css would become
 		6.2.1 - item-body: Groups
 			6.2.1.1 - Management settings screens
 			6.2.1.2 - Group members list
+			6.2.1.3 - Group Send Invites
 		6.2.2 - item-body: User Accounts
 			6.2.2.1 - classes, pag, filters
 			6.2.2.2 - Extended Profiles
@@ -193,7 +195,7 @@ i.e. in child theme named 'twentyfifteen-child', twentyfifteen.css would become
 8.0 - Tables -  General
 9.0 - Error / Success Messages
 10.0 - Ajax Loading, Widgets, General classes
---------------------------------------------------------------*/
+------------------------------------------------------------------------------*/
 
 /**
 *-------------------------------------------------------------------------------
@@ -1235,7 +1237,20 @@ i.e. in child theme named 'twentyfifteen-child', twentyfifteen.css would become
 * @subsection 6.2 - Item Body: Global
 *-----------------------------------------------------------
 */
+// Manage the margins inherited from 2015 inside the item-body sections
+// generally far too large a top margin for headings in our lists
+#item-body {
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6 {
+		margin: 1em 0;
 
+		a {border-bottom: 0;}
+	}
+}
 /**
 *----------------------------------------------------
 * @subsection 6.2.1 - Item Body Groups
@@ -1243,6 +1258,7 @@ i.e. in child theme named 'twentyfifteen-child', twentyfifteen.css would become
 * Groups specific item body rules -  screens
 *----------------------------------------------------
 */
+
 
 /**
 *-----------------------------------------
@@ -1257,6 +1273,13 @@ i.e. in child theme named 'twentyfifteen-child', twentyfifteen.css would become
 			background: $dark-background;
 			color: $content-background;
 			padding: 0.2em;
+		}
+		// remove backgrounds from request list member names.
+		#request-list {
+			h4 {
+				background: none;
+				color: inherit;
+			}
 		}
 	}
 }
@@ -1432,6 +1455,64 @@ i.e. in child theme named 'twentyfifteen-child', twentyfifteen.css would become
 			}
 		}
 	}
+}
+
+/**
+*-----------------------------------------
+* @subsection 6.2.1.3 - Group Send Invites
+*-----------------------------------------
+*/
+
+.groups.group-invites {
+	#item-body {
+		.item-list {
+			.action {
+				margin-bottom: 0;
+			}
+		}
+	}
+
+	@media screen and (min-width: 46.25em) {
+		#buddypress {
+			#item-body {
+				#message {
+					margin-top: 0;
+				}
+			}
+		}
+	}
+
+	@media screen and (min-width: 55em) {
+		#buddypress {
+			#send-invite-form { margin-top: 0;}
+		}
+	}
+
+	#item-body {
+		@media screen and (max-width: 46.25em) {
+			.left-menu {
+				float: none;
+				margin: $spacing-val-sm 0;
+
+				#invite-list {
+					height: auto;
+					width: auto;
+ 			}
+ 		}
+
+			.main-column {
+				margin-left: 0;
+ 		}
+
+			.submit {
+				input {
+					display: inline-block;
+					width: 100%;
+ 			}
+ 		}
+ 	}
+ }
+
 }
 
 /**
