@@ -78,18 +78,21 @@ add_action( 'bp_setup_globals', 'bp_core_define_slugs', 11 );
  * @param array|string $args {
  *     Array of arguments. All are optional. See {@link BP_User_Query} for
  *     a more complete description of arguments.
- *     @type string       $type            Sort order. Default: 'active'.
- *     @type int          $user_id         Limit results to friends of a user. Default: false.
- *     @type mixed        $exclude         IDs to exclude from results. Default: false.
- *     @type string       $search_terms    Limit to users matching search terms. Default: false.
- *     @type string       $meta_key        Limit to users with a meta_key. Default: false.
- *     @type string       $meta_value      Limit to users with a meta_value (with meta_key). Default: false.
- *     @type array|string $member_type     Array or comma-separated string of member types.
- *     @type mixed        $include         Limit results by user IDs. Default: false.
- *     @type int          $per_page        Results per page. Default: 20.
- *     @type int          $page            Page of results. Default: 1.
- *     @type bool         $populate_extras Fetch optional extras. Default: true.
- *     @type string|bool  $count_total     How to do total user count. Default: 'count_query'.
+ *     @type string       $type                Sort order. Default: 'active'.
+ *     @type int          $user_id             Limit results to friends of a user. Default: false.
+ *     @type mixed        $exclude             IDs to exclude from results. Default: false.
+ *     @type string       $search_terms        Limit to users matching search terms. Default: false.
+ *     @type string       $meta_key            Limit to users with a meta_key. Default: false.
+ *     @type string       $meta_value          Limit to users with a meta_value (with meta_key). Default: false.
+ *     @type array|string $member_type         Array or comma-separated string of member types.
+ *     @type array|string $member_type__in     Array or comma-separated string of member types.
+ *                                             `$member_type` takes precedence over this parameter.
+ *     @type array|string $member_type__not_in Array or comma-separated string of member types to be excluded.
+ *     @type mixed        $include             Limit results by user IDs. Default: false.
+ *     @type int          $per_page            Results per page. Default: 20.
+ *     @type int          $page                Page of results. Default: 1.
+ *     @type bool         $populate_extras     Fetch optional extras. Default: true.
+ *     @type string|bool  $count_total         How to do total user count. Default: 'count_query'.
  * }
  * @return array
  */
@@ -97,18 +100,20 @@ function bp_core_get_users( $args = '' ) {
 
 	// Parse the user query arguments
 	$r = bp_parse_args( $args, array(
-		'type'            => 'active',     // active, newest, alphabetical, random or popular
-		'user_id'         => false,        // Pass a user_id to limit to only friend connections for this user
-		'exclude'         => false,        // Users to exclude from results
-		'search_terms'    => false,        // Limit to users that match these search terms
-		'meta_key'        => false,        // Limit to users who have this piece of usermeta
-		'meta_value'      => false,        // With meta_key, limit to users where usermeta matches this value
-		'member_type'     => '',
-		'include'         => false,        // Pass comma separated list of user_ids to limit to only these users
-		'per_page'        => 20,           // The number of results to return per page
-		'page'            => 1,            // The page to return if limiting per page
-		'populate_extras' => true,         // Fetch the last active, where the user is a friend, total friend count, latest update
-		'count_total'     => 'count_query' // What kind of total user count to do, if any. 'count_query', 'sql_calc_found_rows', or false
+		'type'                => 'active',     // active, newest, alphabetical, random or popular
+		'user_id'             => false,        // Pass a user_id to limit to only friend connections for this user
+		'exclude'             => false,        // Users to exclude from results
+		'search_terms'        => false,        // Limit to users that match these search terms
+		'meta_key'            => false,        // Limit to users who have this piece of usermeta
+		'meta_value'          => false,        // With meta_key, limit to users where usermeta matches this value
+		'member_type'         => '',
+		'member_type__in'     => '',
+		'member_type__not_in' => '',
+		'include'             => false,        // Pass comma separated list of user_ids to limit to only these users
+		'per_page'            => 20,           // The number of results to return per page
+		'page'                => 1,            // The page to return if limiting per page
+		'populate_extras'     => true,         // Fetch the last active, where the user is a friend, total friend count, latest update
+		'count_total'         => 'count_query' // What kind of total user count to do, if any. 'count_query', 'sql_calc_found_rows', or false
 	), 'core_get_users' );
 
 	// For legacy users. Use of BP_Core_User::get_users() is deprecated.
@@ -2517,6 +2522,22 @@ function bp_register_member_type( $member_type, $args = array() ) {
 	), 'register_member_type' );
 
 	$member_type = sanitize_key( $member_type );
+
+	/**
+	 * Filters the list of illegal member type names.
+	 *
+	 * - 'any' is a special pseudo-type, representing items unassociated with any member type.
+	 * - 'null' is a special pseudo-type, representing users without any type.
+	 * - '_none' is used internally to denote an item that should not apply to any member types.
+	 *
+	 * @since BuddyPress (2.4.0)
+	 *
+	 * @param array $illegal_names Array of illegal names.
+	 */
+	$illegal_names = apply_filters( 'bp_member_type_illegal_names', array( 'any', 'null', '_none' ) );
+	if ( in_array( $member_type, $illegal_names, true ) ) {
+		return new WP_Error( 'bp_member_type_illegal_name', __( 'You may not register a member type with this name.', 'buddypress' ), $member_type );
+	}
 
 	// Store the post type name as data in the object (not just as the array key).
 	$r['name'] = $member_type;

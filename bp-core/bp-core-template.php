@@ -1,6 +1,6 @@
 <?php
 /**
- * Core component template tag functions
+ * Core component template tag functions.
  *
  * @package BuddyPress
  * @subpackage TemplateFunctions
@@ -25,6 +25,10 @@ defined( 'ABSPATH' ) || exit;
  *
  * @uses bp_get_user_nav() Renders the navigation for a profile of a currently
  *       viewed user.
+ *
+ * @param string $parent_slug
+ *
+ * @return string
  */
 function bp_get_options_nav( $parent_slug = '' ) {
 	$bp = buddypress();
@@ -110,6 +114,8 @@ function bp_get_options_title() {
  *
  * @since BuddyPress (2.0.0)
  *
+ * @param string $component
+ *
  * @return string
  */
 function bp_get_directory_title( $component = '' ) {
@@ -145,7 +151,7 @@ function bp_get_directory_title( $component = '' ) {
  *
  * Not currently used in BuddyPress.
  *
- * @return bool Returns true if an options avatar has been set, otherwise false.
+ * @return bool $value Returns true if an options avatar has been set, otherwise false.
  */
 function bp_has_options_avatar() {
 	return (bool) buddypress()->bp_options_avatar;
@@ -319,7 +325,7 @@ function bp_site_name() {
 	}
 
 /**
- * Format a date based on a UNIX timestamp
+ * Format a date based on a UNIX timestamp.
  *
  * This function can be used to turn a UNIX timestamp into a properly formatted
  * (and possibly localized) string, userful for ouputting the date & time an
@@ -334,16 +340,16 @@ function bp_site_name() {
  *
  * @since BuddyPress (1.1.0)
  *
- * @param int  $time         The UNIX timestamp to be formatted.
- * @param bool $exclude_time Optional. True to return only the month + day, false
- *                           to return month, day, and time. Default: false.
- * @param bool $gmt          Optional. True to display in local time, false to
- *                           leave in GMT. Default: true.
+ * @param int|string  $time         The UNIX timestamp to be formatted.
+ * @param bool        $exclude_time Optional. True to return only the month + day, false
+ *                                  to return month, day, and time. Default: false.
+ * @param bool        $gmt          Optional. True to display in local time, false to
+ *                                  leave in GMT. Default: true.
  *
- * @return mixed             A string representation of $time, in the format
- *                           "March 18, 2014 at 2:00 pm" (or whatever your
- *                           'date_format' and 'time_format' settings are
- *                           on your root blog). False on failure.
+ * @return mixed A string representation of $time, in the format
+ *               "March 18, 2014 at 2:00 pm" (or whatever your
+ *               'date_format' and 'time_format' settings are
+ *               on your root blog). False on failure.
  */
 function bp_format_time( $time = '', $exclude_time = false, $gmt = true ) {
 
@@ -408,14 +414,15 @@ function bp_format_time( $time = '', $exclude_time = false, $gmt = true ) {
  * of the phrase, and bp_word_or_name() will detect which is appropriate, and
  * do the necessary argument swapping for dynamic phrases.
  *
- * @param string $youtext The "you" version of the phrase (eg "Your Friends").
+ * @param string $youtext  The "you" version of the phrase (eg "Your Friends").
  * @param string $nametext The other-user version of the phrase. Should be in
- *        a format appropriate for sprintf() - use %s in place of the displayed
- *        user's name (eg "%'s Friends").
+ *                         a format appropriate for sprintf() - use %s in place of the displayed
+ *                         user's name (eg "%'s Friends").
  * @param bool $capitalize Optional. Force into title case. Default: true.
- * @param bool $echo Optional. True to echo the results, false to return them.
- *        Default: true.
- * @return string|null If ! $echo, returns the appropriate string.
+ * @param bool $echo       Optional. True to echo the results, false to return them.
+ *                         Default: true.
+ *
+ * @return string|null $nametext If ! $echo, returns the appropriate string.
  */
 function bp_word_or_name( $youtext, $nametext, $capitalize = true, $echo = true ) {
 
@@ -561,6 +568,7 @@ function bp_search_default_text( $component = '' ) {
 	 * @since BuddyPress (1.5.0)
 	 *
 	 * @param string $component Component name. Default: current component.
+	 *
 	 * @return string Placeholder text for search field.
 	 */
 	function bp_get_search_default_text( $component = '' ) {
@@ -684,8 +692,8 @@ function bp_form_field_attributes( $name = '', $attributes = array() ) {
 		 *
 		 * @since BuddyPress (2.2.0)
 		 *
-		 * @param array  $attributes The field attributes
-		 * @param string $name       The field name
+		 * @param array  $attributes The field attributes.
+		 * @param string $name       The field name.
 		 */
 		$attributes = (array) apply_filters( 'bp_get_form_field_attributes', $attributes, $name );
 
@@ -701,7 +709,7 @@ function bp_form_field_attributes( $name = '', $attributes = array() ) {
  *
  * @see bp_get_button()
  *
- * @param array $args See {@link BP_Button}.
+ * @param array|string $args See {@link BP_Button}.
  */
 function bp_button( $args = '' ) {
 	echo bp_get_button( $args );
@@ -711,7 +719,7 @@ function bp_button( $args = '' ) {
 	 *
 	 * @see BP_Button for a description of arguments and return value.
 	 *
-	 * @param array $args See {@link BP_Button}.
+	 * @param array|string $args See {@link BP_Button}.
 	 * @return string HTML markup for the button.
 	 */
 	function bp_get_button( $args = '' ) {
@@ -740,24 +748,24 @@ function bp_button( $args = '' ) {
  *
  * ### Options:
  *
- * - `ending` Will be used as Ending and appended to the trimmed string
- * - `exact` If false, $text will not be cut mid-word
- * - `html` If true, HTML tags would be handled correctly
- * - `filter_shortcodes` If true, shortcodes will be stripped before truncating
+ * - `ending` Will be used as Ending and appended to the trimmed string.
+ * - `exact` If false, $text will not be cut mid-word.
+ * - `html` If true, HTML tags would be handled correctly.
+ * - `filter_shortcodes` If true, shortcodes will be stripped before truncating.
  *
- * @param string $text String to truncate.
- * @param int $length Optional. Length of returned string, including ellipsis.
- *        Default: 225.
+ * @param string $text   String to truncate.
+ * @param int    $length Optional. Length of returned string, including ellipsis.
+ *                       Default: 225.
  * @param array $options {
  *     An array of HTML attributes and options. Each item is optional.
- *     @type string $ending The string used after truncation.
- *           Default: ' [&hellip;]'.
- *     @type bool $exact If true, $text will be trimmed to exactly $length.
- *           If false, $text will not be cut mid-word. Default: false.
- *     @type bool $html If true, don't include HTML tags when calculating
- *           excerpt length. Default: true.
- *     @type bool $filter_shortcodes If true, shortcodes will be stripped.
- *           Default: true.
+ *     @type string $ending            The string used after truncation.
+ *                                     Default: ' [&hellip;]'.
+ *     @type bool   $exact             If true, $text will be trimmed to exactly $length.
+ *                                     If false, $text will not be cut mid-word. Default: false.
+ *     @type bool   $html              If true, don't include HTML tags when calculating
+ *                                     excerpt length. Default: true.
+ *     @type bool   $filter_shortcodes If true, shortcodes will be stripped.
+ *                                     Default: true.
  * }
  * @return string Trimmed string.
  */
@@ -813,7 +821,7 @@ function bp_create_excerpt( $text, $length = 225, $options = array() ) {
 		$truncate    = '';
 
 		// Find all the tags and HTML comments and put them in a stack for later use
-		preg_match_all( '/(<\/?([\w!].+?)[^>]*>)?([^<>]*)/', $text, $tags, PREG_SET_ORDER );
+		preg_match_all( '/(<\/?([\w+!]+)[^>]*>)?([^<>]*)/', $text, $tags, PREG_SET_ORDER );
 
 		foreach ( $tags as $tag ) {
 			// Process tags that need to be closed
@@ -865,21 +873,70 @@ function bp_create_excerpt( $text, $length = 225, $options = array() ) {
 
 	// If $exact is false, we can't break on words
 	if ( empty( $r['exact'] ) ) {
-		$spacepos = mb_strrpos( $truncate, ' ' );
-		if ( false !== $spacepos ) {
-			if ( $r['html'] ) {
-				$bits = mb_substr( $truncate, $spacepos );
-				preg_match_all( '/<\/([a-z]+)>/', $bits, $droppedTags, PREG_SET_ORDER );
-				if ( !empty( $droppedTags ) ) {
-					foreach ( $droppedTags as $closingTag ) {
-						if ( !in_array( $closingTag[1], $openTags ) ) {
-							array_unshift( $openTags, $closingTag[1] );
-						}
+		// Find the position of the last space character not part of a tag.
+		preg_match_all( '/<[a-z\!\/][^>]*>/', $truncate, $_truncate_tags, PREG_OFFSET_CAPTURE );
+
+		// Rekey tags by the string index of their last character.
+		$truncate_tags = array();
+		if ( ! empty( $_truncate_tags[0] ) ) {
+			foreach ( $_truncate_tags[0] as $_tt ) {
+				$_tt['start'] = $_tt[1];
+				$_tt['end']   = $_tt[1] + strlen( $_tt[0] );
+				$truncate_tags[ $_tt['end'] ] = $_tt;
+			}
+		}
+
+		$truncate_length = mb_strlen( $truncate );
+		$spacepos = $truncate_length + 1;
+		for ( $pos = $truncate_length - 1; $pos >= 0; $pos-- ) {
+			// Word boundaries are spaces and the close of HTML tags, when the tag is preceded by a space.
+			$is_word_boundary = ' ' === $truncate[ $pos ];
+			if ( ! $is_word_boundary && isset( $truncate_tags[ $pos - 1 ] ) ) {
+				$preceding_tag    = $truncate_tags[ $pos - 1 ];
+				if ( ' ' === $truncate[ $preceding_tag['start'] - 1 ] ) {
+					$is_word_boundary = true;
+					break;
+				}
+			}
+
+			if ( ! $is_word_boundary ) {
+				continue;
+			}
+
+			// If there are no tags in the string, the first space found is the right one.
+			if ( empty( $truncate_tags ) ) {
+				$spacepos = $pos;
+				break;
+			}
+
+			// Look at each tag to see if the space is inside of it.
+			$intag = false;
+			foreach ( $truncate_tags as $tt ) {
+				if ( $pos > $tt['start'] && $pos < $tt['end'] ) {
+					$intag = true;
+					break;
+				}
+			}
+
+			if ( ! $intag ) {
+				$spacepos = $pos;
+				break;
+			}
+		}
+
+		if ( $r['html'] ) {
+			$bits = mb_substr( $truncate, $spacepos );
+			preg_match_all( '/<\/([a-z]+)>/', $bits, $droppedTags, PREG_SET_ORDER );
+			if ( !empty( $droppedTags ) ) {
+				foreach ( $droppedTags as $closingTag ) {
+					if ( !in_array( $closingTag[1], $openTags ) ) {
+						array_unshift( $openTags, $closingTag[1] );
 					}
 				}
 			}
-			$truncate = mb_substr( $truncate, 0, $spacepos );
 		}
+
+		$truncate = rtrim( mb_substr( $truncate, 0, $spacepos ) );
 	}
 	$truncate .= $ending;
 
@@ -971,7 +1028,7 @@ function bp_blog_signup_allowed() {
  * Check whether an activation has just been completed.
  *
  * @return bool True if the activation_complete global flag has been set,
- *         otherwise false.
+ *              otherwise false.
  */
 function bp_account_was_activated() {
 	$bp                  = buddypress();
@@ -1015,14 +1072,14 @@ function bp_registration_needs_activation() {
  *
  * @param array $args {
  *     Array of optional parameters.
- *     @type string $before String to appear before the site name in the
- *           email subject. Default: '['.
- *     @type string $after String to appear after the site name in the
- *           email subject. Default: ']'.
+ *     @type string $before  String to appear before the site name in the
+ *                           email subject. Default: '['.
+ *     @type string $after   String to appear after the site name in the
+ *                           email subject. Default: ']'.
  *     @type string $default The default site name, to be used when none is
- *           found in the database. Default: 'Community'.
- *     @type string $text Text to append to the site name (ie, the main text of
- *           the email subject).
+ *                           found in the database. Default: 'Community'.
+ *     @type string $text    Text to append to the site name (ie, the main text of
+ *                           the email subject).
  * }
  * @return string Sanitized email subject.
  */
@@ -1058,7 +1115,8 @@ function bp_get_email_subject( $args = array() ) {
  * errors if someone copies the templates from the default theme into another
  * WordPress theme without coping the functions from functions.php.
  *
- * @param string $object
+ * @param string|bool $object
+ *
  * @return string The AJAX querystring.
  */
 function bp_ajax_querystring( $object = false ) {
@@ -1128,7 +1186,7 @@ function bp_current_action() {
 /**
  * Return the name of the current item.
  *
- * @return unknown
+ * @return string|bool
  */
 function bp_current_item() {
 	$bp           = buddypress();
@@ -1150,7 +1208,7 @@ function bp_current_item() {
  * Return the value of $bp->action_variables.
  *
  * @return array|bool $action_variables The action variables array, or false
- *         if the array is empty.
+ *                                      if the array is empty.
  */
 function bp_action_variables() {
 	$bp               = buddypress();
@@ -1174,8 +1232,9 @@ function bp_action_variables() {
  * @since BuddyPress (1.5.0)
  *
  * @param int $position The key of the action_variables array that you want.
+ *
  * @return string|bool $action_variable The value of that position in the
- *         array, or false if not found.
+ *                                      array, or false if not found.
  */
 function bp_action_variable( $position = 0 ) {
 	$action_variables = bp_action_variables();
@@ -1248,11 +1307,11 @@ function bp_root_slug( $component = '' ) {
 	 * In order to maintain backward compatibility, the following procedure
 	 * is used:
 	 * 1) Use the short slug to get the canonical component name from the
-	 *    active component array
+	 *    active component array.
 	 * 2) Use the component name to get the root slug out of the
-	 *    appropriate part of the $bp global
+	 *    appropriate part of the $bp global.
 	 * 3) If nothing turns up, it probably means that $component is itself
-	 *    a root slug
+	 *    a root slug.
 	 *
 	 * Example: If your groups directory is at /community/companies, this
 	 * function first uses the short slug 'companies' (ie the current
@@ -1263,6 +1322,7 @@ function bp_root_slug( $component = '' ) {
 	 * @since BuddyPress (1.5.0)
 	 *
 	 * @param string $component Optional. Defaults to the current component.
+	 *
 	 * @return string $root_slug The root slug.
 	 */
 	function bp_get_root_slug( $component = '' ) {
@@ -1311,6 +1371,7 @@ function bp_root_slug( $component = '' ) {
  * @since BuddyPress (1.5.0)
  *
  * @param string $root_slug Needle to our active component haystack.
+ *
  * @return mixed False if none found, component name if found.
  */
 function bp_get_name_from_root_slug( $root_slug = '' ) {
@@ -1337,9 +1398,7 @@ function bp_get_name_from_root_slug( $root_slug = '' ) {
 }
 
 function bp_user_has_access() {
-	$has_access = ( bp_current_user_can( 'bp_moderate' ) || bp_is_my_profile() )
-		? true
-		: false;
+	$has_access = bp_current_user_can( 'bp_moderate' ) || bp_is_my_profile();
 
 	/**
 	 * Filters whether or not a user has access.
@@ -1375,7 +1434,7 @@ function bp_search_slug() {
 		 *
 		 * @since BuddyPress (1.5.0)
 		 *
-		 * @param string BP_SEARCH_SLUG The search slug. Default "search".
+		 * @const string BP_SEARCH_SLUG The search slug. Default "search".
 		 */
 		return apply_filters( 'bp_get_search_slug', BP_SEARCH_SLUG );
 	}
@@ -1385,7 +1444,7 @@ function bp_search_slug() {
  *
  * @uses apply_filters() Filter 'bp_displayed_user_id' to change this value.
  *
- * @return int ID of the currently displayed user.
+ * @return int $id ID of the currently displayed user.
  */
 function bp_displayed_user_id() {
 	$bp = buddypress();
@@ -1433,13 +1492,14 @@ function bp_loggedin_user_id() {
  *
  * This function is designed to be generous, accepting several different kinds
  * of value for the $component parameter. It checks $component_name against:
- * - the component's root_slug, which matches the page slug in $bp->pages
- * - the component's regular slug
- * - the component's id, or 'canonical' name
+ * - the component's root_slug, which matches the page slug in $bp->pages.
+ * - the component's regular slug.
+ * - the component's id, or 'canonical' name.
  *
  * @since BuddyPress (1.5.0)
  *
  * @param string $component Name of the component being checked.
+ *
  * @return bool Returns true if the component matches, or else false.
  */
 function bp_is_current_component( $component = '' ) {
@@ -1528,6 +1588,7 @@ function bp_is_current_component( $component = '' ) {
  * @since BuddyPress (1.5.0)
  *
  * @param string $action The action being tested against.
+ *
  * @return bool True if the current action matches $action.
  */
 function bp_is_current_action( $action = '' ) {
@@ -1548,10 +1609,11 @@ function bp_is_current_action( $action = '' ) {
  *
  * @since BuddyPress (1.5.0)
  *
- * @param string $action_variable The action_variable being tested against.
- * @param int $position Optional. The array key you're testing against. If you
- *        don't provide a $position, the function will return true if the
- *        $action_variable is found *anywhere* in the action variables array.
+ * @param string   $action_variable The action_variable being tested against.
+ * @param int|bool $position        Optional. The array key you're testing against. If you
+ *                                  don't provide a $position, the function will return true if the
+ *                                  $action_variable is found *anywhere* in the action variables array.
+ *
  * @return bool True if $action_variable matches at the $position provided.
  */
 function bp_is_action_variable( $action_variable = '', $position = false ) {
@@ -1587,6 +1649,7 @@ function bp_is_action_variable( $action_variable = '', $position = false ) {
  * Check against the current_item.
  *
  * @param string $item The item being checked.
+ *
  * @return bool True if $item is the current item.
  */
 function bp_is_current_item( $item = '' ) {
@@ -1630,7 +1693,7 @@ function bp_is_single_item() {
  * Is the logged-in user an admin for the current item?
  *
  * @return bool True if the current user is an admin for the current item,
- *         otherwise false.
+ *              otherwise false.
  */
 function bp_is_item_admin() {
 	$bp     = buddypress();
@@ -1654,7 +1717,7 @@ function bp_is_item_admin() {
  * Is the logged-in user a mod for the current item?
  *
  * @return bool True if the current user is a mod for the current item,
- *         otherwise false.
+ *              otherwise false.
  */
 function bp_is_item_mod() {
 	$bp     = buddypress();
@@ -1677,8 +1740,7 @@ function bp_is_item_mod() {
 /**
  * Is this a component directory page?
  *
- * @return bool True if the current page is a component directory, otherwise
- *         false.
+ * @return bool True if the current page is a component directory, otherwise false.
  */
 function bp_is_directory() {
 	$bp     = buddypress();
@@ -1706,6 +1768,8 @@ function bp_is_directory() {
  *
  * This function is on the chopping block. It's currently only used by a few
  * already deprecated functions.
+ *
+ * @param string $component_name
  *
  * @return bool True if root component, else false.
  */
@@ -1745,10 +1809,11 @@ function bp_is_root_component( $component_name = '' ) {
  *
  * @since BuddyPress (1.5.0)
  *
- * @global $current_blog WordPress global for the current blog.
+ * @global int $current_blog WordPress global for the current blog.
  *
  * @param string $component Optional. Name of the component to check for.
  *                          Default: current component.
+ *
  * @return bool True if the specified component is set to be the site's front
  *              page, otherwise false.
  */
@@ -1852,6 +1917,7 @@ function is_buddypress() {
  *
  * @param string $component The component name.
  * @param string $feature   The feature name.
+ *
  * @return bool
  */
 function bp_is_active( $component = '', $feature = '' ) {
@@ -1874,6 +1940,9 @@ function bp_is_active( $component = '', $feature = '' ) {
 
 			/**
 			 * Filters whether or not a given feature for a component is active.
+			 *
+			 * This is a variable filter that is based on the component and feature
+			 * that you are checking of active status of.
 			 *
 			 * @since BuddyPress (2.3.0)
 			 *
@@ -1996,7 +2065,7 @@ function bp_is_settings_component() {
  * BuddyPress core, it will return true.
  *
  * @return bool True if the current component is active and is one of BP's
- *         packaged components.
+ *              packaged components.
  */
 function bp_is_current_component_core() {
 	$retval = false;
@@ -2014,7 +2083,7 @@ function bp_is_current_component_core() {
 /** Activity ******************************************************************/
 
 /**
- * Is the current page the activity directory ?
+ * Is the current page the activity directory?
  *
  * @since BuddyPress (2.0.0)
  *
@@ -2040,7 +2109,7 @@ function bp_is_single_activity() {
 /** User **********************************************************************/
 
 /**
- * Is the current page the members directory ?
+ * Is the current page the members directory?
  *
  * @since BuddyPress (2.0.0)
  *
@@ -2644,6 +2713,9 @@ function bp_is_messages_conversation() {
 /**
  * Not currently used by BuddyPress.
  *
+ * @param string $component Current component to check for.
+ * @param string $callback  Callback to invoke.
+ *
  * @return bool
  */
 function bp_is_single( $component, $callback ) {
@@ -2676,16 +2748,20 @@ function bp_is_register_page() {
 
 /**
  * Customize the body class, according to the currently displayed BP content.
- *
- * Uses the above is_() functions to output a body class for each scenario.
- *
- * @param array $wp_classes The body classes coming from WP.
- * @param array $custom_classes Classes that were passed to get_body_class().
- * @return array $classes The BP-adjusted body classes.
  */
 function bp_the_body_class() {
 	echo bp_get_the_body_class();
 }
+	/**
+	 * Customize the body class, according to the currently displayed BP content.
+	 *
+	 * Uses the above is_() functions to output a body class for each scenario.
+	 *
+	 * @param array      $wp_classes     The body classes coming from WP.
+	 * @param array|bool $custom_classes Classes that were passed to get_body_class().
+	 *
+	 * @return array $classes The BP-adjusted body classes.
+	 */
 	function bp_get_the_body_class( $wp_classes = array(), $custom_classes = false ) {
 
 		$bp_classes = array();
@@ -2919,6 +2995,7 @@ function bp_the_body_class() {
  * @since BuddyPress (2.1.0)
  *
  * @param array $wp_classes The post classes coming from WordPress.
+ *
  * @return array
  */
 function bp_get_the_post_class( $wp_classes = array() ) {
@@ -2983,8 +3060,10 @@ add_filter( 'post_class', 'bp_get_the_post_class' );
  *
  * @param array $a First item.
  * @param array $b Second item.
+ *
  * @return int Returns an integer less than, equal to, or greater than zero if
- *         the first argument is considered to be respectively less than, equal to, or greater than the second.
+ *             the first argument is considered to be respectively less than,
+ *             equal to, or greater than the second.
  */
 function _bp_nav_menu_sort( $a, $b ) {
 	if ( $a['position'] == $b['position'] ) {
@@ -3092,34 +3171,36 @@ function bp_get_nav_menu_items() {
  *
  * @param string|array $args {
  *     An array of optional arguments.
- *     @type string $after Text after the link text. Default: ''.
- *     @type string $before Text before the link text. Default: ''.
- *     @type string $container The name of the element to wrap the navigation
- *           with. 'div' or 'nav'. Default: 'div'.
+ *
+ *     @type string $after           Text after the link text. Default: ''.
+ *     @type string $before          Text before the link text. Default: ''.
+ *     @type string $container       The name of the element to wrap the navigation
+ *                                   with. 'div' or 'nav'. Default: 'div'.
  *     @type string $container_class The class that is applied to the container.
- *           Default: 'menu-bp-container'.
- *     @type string $container_id The ID that is applied to the container.
- *           Default: ''.
- *     @type int depth How many levels of the hierarchy are to be included. 0
- *           means all. Default: 0.
- *     @type bool $echo True to echo the menu, false to return it.
- *           Default: true.
- *     @type bool $fallback_cb If the menu doesn't exist, should a callback
- *           function be fired? Default: false (no fallback).
- *     @type string $items_wrap How the list items should be wrapped. Should be
- *           in the form of a printf()-friendly string, using numbered
- *           placeholders. Default: '<ul id="%1$s" class="%2$s">%3$s</ul>'.
- *     @type string $link_after Text after the link. Default: ''.
- *     @type string $link_before Text before the link. Default: ''.
- *     @type string $menu_class CSS class to use for the <ul> element which
- *           forms the menu. Default: 'menu'.
- *     @type string $menu_id The ID that is applied to the <ul> element which
- *           forms the menu. Default: 'menu-bp', incremented.
- *     @type string $walker Allows a custom walker class to be specified.
- *           Default: 'BP_Walker_Nav_Menu'.
+ *                                   Default: 'menu-bp-container'.
+ *     @type string $container_id    The ID that is applied to the container.
+ *                                   Default: ''.
+ *     @type int    $depth           How many levels of the hierarchy are to be included.
+ *                                   0 means all. Default: 0.
+ *     @type bool   $echo            True to echo the menu, false to return it.
+ *                                   Default: true.
+ *     @type bool   $fallback_cb     If the menu doesn't exist, should a callback
+ *                                   function be fired? Default: false (no fallback).
+ *     @type string $items_wrap      How the list items should be wrapped. Should be
+ *                                   in the form of a printf()-friendly string, using numbered
+ *                                   placeholders. Default: '<ul id="%1$s" class="%2$s">%3$s</ul>'.
+ *     @type string $link_after      Text after the link. Default: ''.
+ *     @type string $link_before     Text before the link. Default: ''.
+ *     @type string $menu_class      CSS class to use for the <ul> element which
+ *                                   forms the menu. Default: 'menu'.
+ *     @type string $menu_id         The ID that is applied to the <ul> element which
+ *                                   forms the menu. Default: 'menu-bp', incremented.
+ *     @type string $walker          Allows a custom walker class to be specified.
+ *                                   Default: 'BP_Walker_Nav_Menu'.
  * }
+ *
  * @return string|null If $echo is false, returns a string containing the nav
- *         menu markup.
+ *                     menu markup.
  */
 function bp_nav_menu( $args = array() ) {
 	static $menu_id_slugs = array();

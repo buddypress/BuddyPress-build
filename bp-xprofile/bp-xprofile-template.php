@@ -19,112 +19,117 @@ defined( 'ABSPATH' ) || exit;
  */
 class BP_XProfile_Data_Template {
 
-    /**
-     * The loop iterator.
-     *
-     * @since BuddyPress (1.5.0)
-     * @access public
-     * @var int
-     */
+	/**
+	 * The loop iterator.
+	 *
+	 * @since BuddyPress (1.5.0)
+	 * @access public
+	 * @var int
+	 */
 	public $current_group = -1;
 
-    /**
-     * The number of groups returned by the paged query.
-     *
-     * @since BuddyPress (1.5.0)
-     * @access public
-     * @var int
-     */
+	/**
+	 * The number of groups returned by the paged query.
+	 *
+	 * @since BuddyPress (1.5.0)
+	 * @access public
+	 * @var int
+	 */
 	public $group_count;
 
-    /**
-     * Array of groups located by the query.
-     *
-     * @since BuddyPress (1.5.0)
-     * @access public
-     * @var array
-     */
+	/**
+	 * Array of groups located by the query.
+	 *
+	 * @since BuddyPress (1.5.0)
+	 * @access public
+	 * @var array
+	 */
 	public $groups;
 
-    /**
-     * The group object currently being iterated on.
-     *
-     * @since BuddyPress (1.5.0)
-     * @access public
-     * @var object
-     */
+	/**
+	 * The group object currently being iterated on.
+	 *
+	 * @since BuddyPress (1.5.0)
+	 * @access public
+	 * @var object
+	 */
 	public $group;
 
-    /**
-     * The current field.
-     *
-     * @since BuddyPress (1.5.0)
-     * @access public
-     * @var int
-     */
+	/**
+	 * The current field.
+	 *
+	 * @since BuddyPress (1.5.0)
+	 * @access public
+	 * @var int
+	 */
 	public $current_field = -1;
 
-    /**
-     * The field count.
-     *
-     * @since BuddyPress (1.5.0)
-     * @access public
-     * @var int
-     */
+	/**
+	 * The field count.
+	 *
+	 * @since BuddyPress (1.5.0)
+	 * @access public
+	 * @var int
+	 */
 	public $field_count;
 
-    /**
-     * Field has data.
-     *
-     * @since BuddyPress (1.5.0)
-     * @access public
-     * @var bool
-     */
+	/**
+	 * Field has data.
+	 *
+	 * @since BuddyPress (1.5.0)
+	 * @access public
+	 * @var bool
+	 */
 	public $field_has_data;
 
-    /**
-     * The field.
-     *
-     * @since BuddyPress (1.5.0)
-     * @access public
-     * @var int
-     */
+	/**
+	 * The field.
+	 *
+	 * @since BuddyPress (1.5.0)
+	 * @access public
+	 * @var int
+	 */
 	public $field;
 
-    /**
-     * A flag for whether the loop is currently being iterated.
-     *
-     * @since BuddyPress (1.5.0)
-     * @access public
-     * @var bool
-     */
+	/**
+	 * A flag for whether the loop is currently being iterated.
+	 *
+	 * @since BuddyPress (1.5.0)
+	 * @access public
+	 * @var bool
+	 */
 	public $in_the_loop;
 
-    /**
-     * The user ID.
-     *
-     * @since BuddyPress (1.5.0)
-     * @access public
-     * @var int
-     */
+	/**
+	 * The user ID.
+	 *
+	 * @since BuddyPress (1.5.0)
+	 * @access public
+	 * @var int
+	 */
 	public $user_id;
 
 	/**
-	 * Get activity items, as specified by parameters
+	 * Get activity items, as specified by parameters.
+	 *
+	 * @see BP_XProfile_Group::get() for more details about parameters.
+	 *
+	 * @since BuddyPress (2.4.0) Introduced `$member_type` argument.
 	 *
 	 * @param array $args {
 	 *     An array of arguments. All items are optional.
 	 *
-	 *     @type int       $user_id                 Fetch field data for this user ID
-	 *     @type int       $profile_group_id        Field group to fetch fields & data for
-	 *     @type int|bool  $hide_empty_groups       Should empty field groups be skipped
-	 *     @type int|bool  $fetch_fields            Fetch fields for field group
-	 *     @type int|bool  $fetch_field_data        Fetch field data for fields in group
-	 *     @type array     $exclude_groups          Exclude these field groups
-	 *     @type array     $exclude_fields          Exclude these fields
-	 *     @type int|bool  $hide_empty_fields       Should empty fields be skipped
-	 *     @type int|bool  $fetch_visibility_level  Fetch visibility levels
-	 *     @type int|bool  $update_meta_cache       Should metadata cache be updated
+	 *     @type int          $user_id                 Fetch field data for this user ID.
+	 *     @type string|array $member_type             Limit results to those matching member type(s).
+	 *     @type int          $profile_group_id        Field group to fetch fields & data for.
+	 *     @type int|bool     $hide_empty_groups       Should empty field groups be skipped.
+	 *     @type int|bool     $fetch_fields            Fetch fields for field group.
+	 *     @type int|bool     $fetch_field_data        Fetch field data for fields in group.
+	 *     @type array        $exclude_groups          Exclude these field groups.
+	 *     @type array        $exclude_fields          Exclude these fields.
+	 *     @type int|bool     $hide_empty_fields       Should empty fields be skipped.
+	 *     @type int|bool     $fetch_visibility_level  Fetch visibility levels.
+	 *     @type int|bool     $update_meta_cache       Should metadata cache be updated.
 	 * }
 	 */
 	public function __construct( $args = '' ) {
@@ -153,6 +158,7 @@ class BP_XProfile_Data_Template {
 		$r = wp_parse_args( $args, array(
 			'profile_group_id'       => false,
 			'user_id'                => false,
+			'member_type'            => 'any',
 			'hide_empty_groups'      => false,
 			'hide_empty_fields'      => false,
 			'fetch_fields'           => false,
@@ -312,7 +318,20 @@ class BP_XProfile_Data_Template {
  * @since BuddyPress (1.0.0)
  *
  * @global object $profile_template
- * @param  array  $args
+ * @see BP_XProfile_Group::get() for full description of `$args` array.
+ *
+ * @param array $args {
+ *     Array of arguments. See BP_XProfile_Group::get() for full description. Those arguments whose defaults differ
+ *     from that method are described here:
+ *     @type string|array $member_type            Default: 'any'.
+ *     @type bool         $hide_empty_groups      Default: true.
+ *     @type bool         $hide_empty_fields      Defaults to true on the Dashboard, on a user's Edit Profile page,
+ *                                                or during registration. Otherwise false.
+ *     @type bool         $fetch_visibility_level Defaults to true when an admin is viewing a profile, or when a user is
+ *                                                viewing her own profile, or during registration. Otherwise false.
+ *     @type bool         $fetch_fields           Default: true.
+ *     @type bool         $fetch_field_data       Default: true.
+ * }
  *
  * @return bool
  */
@@ -333,6 +352,7 @@ function bp_has_profile( $args = '' ) {
 	// Parse arguments
 	$r = bp_parse_args( $args, array(
 		'user_id'                => bp_displayed_user_id(),
+		'member_type'            => 'any',
 		'profile_group_id'       => false,
 		'hide_empty_groups'      => true,
 		'hide_empty_fields'      => $hide_empty_fields_default,
@@ -511,7 +531,8 @@ function bp_the_profile_group_edit_form_action() {
 	function bp_get_the_profile_group_edit_form_action() {
 		global $group;
 
-		$bp = buddypress();
+		// Build the form action URL
+		$form_action = trailingslashit( bp_displayed_user_domain() . bp_get_profile_slug() . '/edit/group/' . $group->id );
 
 		/**
 		 * Filters the action for the profile group edit form.
@@ -521,7 +542,7 @@ function bp_the_profile_group_edit_form_action() {
 		 * @param string $value URL for the action attribute on the
 		 *                      profile group edit form.
 		 */
-		return apply_filters( 'bp_get_the_profile_group_edit_form_action', trailingslashit( bp_displayed_user_domain() . $bp->profile->slug . '/edit/group/' . $group->id ) );
+		return apply_filters( 'bp_get_the_profile_group_edit_form_action', $form_action );
 	}
 
 function bp_the_profile_group_field_ids() {
@@ -1028,7 +1049,7 @@ function bp_get_profile_group_tabs() {
 		}
 
 		// Build the profile field group link
-		$link   = trailingslashit( bp_displayed_user_domain() . buddypress()->profile->slug . '/edit/group/' . $groups[ $i ]->id );
+		$link   = trailingslashit( bp_displayed_user_domain() . bp_get_profile_slug() . '/edit/group/' . $groups[ $i ]->id );
 
 		// Add tab to end of tabs array
 		$tabs[] = sprintf(
@@ -1135,7 +1156,6 @@ function bp_avatar_delete_link() {
 	echo bp_get_avatar_delete_link();
 }
 	function bp_get_avatar_delete_link() {
-		$bp = buddypress();
 
 		/**
 		 * Filters the link used for deleting an avatar.
@@ -1144,18 +1164,16 @@ function bp_avatar_delete_link() {
 		 *
 		 * @param string $value Nonced URL used for deleting an avatar.
 		 */
-		return apply_filters( 'bp_get_avatar_delete_link', wp_nonce_url( bp_displayed_user_domain() . $bp->profile->slug . '/change-avatar/delete-avatar/', 'bp_delete_avatar_link' ) );
+		return apply_filters( 'bp_get_avatar_delete_link', wp_nonce_url( bp_displayed_user_domain() . bp_get_profile_slug() . '/change-avatar/delete-avatar/', 'bp_delete_avatar_link' ) );
 	}
 
 function bp_edit_profile_button() {
-	$bp = buddypress();
-
 	bp_button( array(
 		'id'                => 'edit_profile',
 		'component'         => 'xprofile',
 		'must_be_logged_in' => true,
 		'block_self'        => true,
-		'link_href'         => trailingslashit( bp_displayed_user_domain() . $bp->profile->slug . '/edit' ),
+		'link_href'         => trailingslashit( bp_displayed_user_domain() . bp_get_profile_slug() . '/edit' ),
 		'link_class'        => 'edit',
 		'link_text'         => __( 'Edit Profile', 'buddypress' ),
 		'link_title'        => __( 'Edit Profile', 'buddypress' ),

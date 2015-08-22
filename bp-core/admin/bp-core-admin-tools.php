@@ -1,7 +1,7 @@
 <?php
 
 /**
- * BuddyPress Tools panel
+ * BuddyPress Tools panel.
  *
  * @since BuddyPress (2.0.0)
  */
@@ -260,7 +260,7 @@ function bp_admin_repair_group_count() {
 }
 
 /**
- * Recalculate user-to-blog relationships and useful blog meta data
+ * Recalculate user-to-blog relationships and useful blog meta data.
  *
  * @since BuddyPress (2.1.0)
  *
@@ -321,8 +321,10 @@ function bp_admin_repair_last_activity() {
  *
  * @since BuddyPress (2.0.0)
  *
- * @param string $message Feedback message.
- * @param unknown $class Unused.
+ * @param string      $message Feedback message.
+ * @param string|bool $class   Unused.
+ *
+ * @return bool
  */
 function bp_admin_tools_feedback( $message, $class = false ) {
 	if ( is_string( $message ) ) {
@@ -397,8 +399,8 @@ function bp_core_admin_available_tools_intro() {
 	$page = bp_core_do_network_admin() ? 'admin.php' : 'tools.php' ;
 	$url  = add_query_arg( $query_arg, bp_get_admin_url( $page ) );
 	?>
-	<div class="tool-box">
-		<h3 class="title"><?php esc_html_e( 'BuddyPress Tools', 'buddypress' ) ?></h3>
+	<div class="card tool-box">
+		<h3><?php esc_html_e( 'BuddyPress Tools', 'buddypress' ) ?></h3>
 		<p>
 			<?php esc_html_e( 'BuddyPress keeps track of various relationships between users, groups, and activity items. Occasionally these relationships become out of sync, most often after an import, update, or migration.', 'buddypress' ); ?>
 			<?php printf( esc_html_x( 'Use the %s to repair these relationships.', 'buddypress tools intro', 'buddypress' ), '<a href="' . esc_url( $url ) . '">' . esc_html__( 'BuddyPress Tools', 'buddypress' ) . '</a>' ); ?>

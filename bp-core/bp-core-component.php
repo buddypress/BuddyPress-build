@@ -6,10 +6,11 @@
  * @subpackage Core
  */
 
-// Exit if accessed directly
+// Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
 if ( !class_exists( 'BP_Component' ) ) :
+
 /**
  * BuddyPress Component Class.
  *
@@ -108,7 +109,7 @@ class BP_Component {
 	public $root_slug = '';
 
 	/**
-	 * Metadata tables for the component (if applicable)
+	 * Metadata tables for the component (if applicable).
 	 *
 	 * @since BuddyPress (2.0.0)
 	 *
@@ -117,7 +118,7 @@ class BP_Component {
 	public $meta_tables = array();
 
 	/**
-	 * Global tables for the component (if applicable)
+	 * Global tables for the component (if applicable).
 	 *
 	 * @since BuddyPress (2.0.0)
 	 *
@@ -140,7 +141,7 @@ class BP_Component {
 	 * @param string $path The file path for the component's files. Used by {@link BP_Component::includes()}.
 	 * @param array  $params {
 	 *     Additional parameters used by the component.
-	 *     @type int   $adminbar_myaccount_order Set the position for our menu under the WP Toolbar's "My Account menu"
+	 *     @type int   $adminbar_myaccount_order Set the position for our menu under the WP Toolbar's "My Account menu".
 	 *     @type array $features                 An array of feature names. This is used to load additional files from your
 	 *                                           component directory and for feature active checks. eg. array( 'awesome' )
 	 *                                           would look for a file called "bp-{$this->id}-awesome.php" and you could use
@@ -330,7 +331,7 @@ class BP_Component {
 	 * @uses do_action() Calls 'bp_{@link bp_Component::name}includes'.
 	 *
 	 * @param array $includes An array of file names, or file name chunks,
-	 *        to be parsed and then included.
+	 *                        to be parsed and then included.
 	 */
 	public function includes( $includes = array() ) {
 
@@ -454,11 +455,11 @@ class BP_Component {
 	 * @see bp_core_new_subnav_item() For a description of how each item
 	 *      in the $sub_nav parameter array should be formatted.
 	 *
-	 * @param array $main_nav Optional. Passed directly to
-	 *        bp_core_new_nav_item(). See that function for a description.
-	 * @param array $sub_nav Optional. Multidimensional array, each item in
-	 *        which is passed to bp_core_new_subnav_item(). See that
-	 *        function for a description.
+	 * @param array $main_nav Optional. Passed directly to bp_core_new_nav_item().
+	 *                        See that function for a description.
+	 * @param array $sub_nav  Optional. Multidimensional array, each item in
+	 *                        which is passed to bp_core_new_subnav_item(). See that
+	 *                        function for a description.
 	 */
 	public function setup_nav( $main_nav = array(), $sub_nav = array() ) {
 
@@ -489,12 +490,12 @@ class BP_Component {
 	 *
 	 * @see WP_Admin_Bar::add_menu() for a description of the syntax
 	 *      required by each item in the $wp_admin_nav parameter array.
-	 * @global obj $wp_admin_bar
+	 * @global object $wp_admin_bar
 	 *
-	 * @param array $wp_admin_nav An array of nav item arguments. Each item
-	 *        in this parameter array is passed to {@link WP_Admin_Bar::add_menu()}.
-	 *        See that method for a description of the required syntax for
-	 *        each item.
+	 * @param array $wp_admin_nav An array of nav item arguments. Each item in this parameter
+	 *                            array is passed to {@link WP_Admin_Bar::add_menu()}.
+	 *                            See that method for a description of the required syntax for
+	 *                            each item.
 	 */
 	public function setup_admin_bar( $wp_admin_nav = array() ) {
 
@@ -587,7 +588,7 @@ class BP_Component {
 	 *
 	 * @since BuddyPress (2.0.0)
 	 *
-	 * @param array $tables
+	 * @param array $tables Table names to register.
 	 */
 	public function register_global_tables( $tables = array() ) {
 
@@ -630,7 +631,7 @@ class BP_Component {
 	 *
 	 * @since BuddyPress (2.0.0)
 	 *
-	 * @param array $tables
+	 * @param array $tables Table names to register.
 	 */
 	public function register_meta_tables( $tables = array() ) {
 		global $wpdb;
@@ -746,11 +747,11 @@ class BP_Component {
 	}
 
 	/**
-	 * Add any permalink structures
+	 * Add any permalink structures.
 	 *
 	 * @since BuddyPress (1.9)
 	 *
-	 * @uses do_action() Calls 'bp_{@link bp_Component::name}_add_permastruct'
+	 * @uses do_action() Calls 'bp_{@link bp_Component::name}_add_permastruct'.
 	 */
 	public function add_permastructs() {
 
@@ -765,12 +766,13 @@ class BP_Component {
 	}
 
 	/**
-	 * Allow components to parse the main query
+	 * Allow components to parse the main query.
 	 *
 	 * @since BuddyPress (1.9)
 	 *
-	 * @uses do_action() Calls 'bp_{@link bp_Component::name}_parse_query'
-	 * @param object The main WP_Query
+	 * @uses do_action() Calls 'bp_{@link bp_Component::name}_parse_query'.
+	 *
+	 * @param object $query The main WP_Query.
 	 */
 	public function parse_query( $query ) {
 
@@ -787,11 +789,11 @@ class BP_Component {
 	}
 
 	/**
-	 * Generate any additional rewrite rules
+	 * Generate any additional rewrite rules.
 	 *
 	 * @since BuddyPress (1.5)
 	 *
-	 * @uses do_action() Calls 'bp_{@link bp_Component::name}_generate_rewrite_rules'
+	 * @uses do_action() Calls 'bp_{@link bp_Component::name}_generate_rewrite_rules'.
 	 */
 	public function generate_rewrite_rules() {
 
@@ -805,4 +807,4 @@ class BP_Component {
 		do_action( 'bp_' . $this->id . '_generate_rewrite_rules' );
 	}
 }
-endif; // BP_Component
+endif; // BP_Component.
