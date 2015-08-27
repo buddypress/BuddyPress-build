@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: BuddyPress 2.4.0-alpha\n"
 "Report-Msgid-Bugs-To: https://buddypress.trac.wordpress.org\n"
-"POT-Creation-Date: 2015-08-22 16:31:15+00:00\n"
+"POT-Creation-Date: 2015-08-27 17:44:21+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -294,7 +294,7 @@ msgstr ""
 msgid "Approved"
 msgstr ""
 
-#: bp-activity/bp-activity-admin.php:726 bp-activity/bp-activity-admin.php:1525
+#: bp-activity/bp-activity-admin.php:726 bp-activity/bp-activity-admin.php:1556
 #: bp-activity/bp-activity-akismet.php:206
 #: bp-activity/bp-activity-akismet.php:235
 #: bp-core/admin/bp-core-admin-functions.php:877
@@ -311,8 +311,8 @@ msgstr ""
 msgid "Submitted on: <strong>%1$s</strong>"
 msgstr ""
 
-#: bp-activity/bp-activity-admin.php:735 bp-activity/bp-activity-admin.php:1518
-#: bp-forums/bp-forums-template.php:2554 bp-groups/bp-groups-admin.php:1561
+#: bp-activity/bp-activity-admin.php:735 bp-activity/bp-activity-admin.php:1549
+#: bp-forums/bp-forums-template.php:2554 bp-groups/bp-groups-admin.php:1592
 #: bp-xprofile/bp-xprofile-admin.php:555
 msgid "Edit"
 msgstr ""
@@ -419,7 +419,7 @@ msgid "Cancel"
 msgstr ""
 
 #: bp-activity/bp-activity-admin.php:1005
-#: bp-activity/bp-activity-admin.php:1512
+#: bp-activity/bp-activity-admin.php:1543
 #: bp-templates/bp-legacy/buddypress/activity/comment.php:44
 #: bp-templates/bp-legacy/buddypress/groups/single/forum/edit.php:17
 msgid "Reply"
@@ -442,13 +442,13 @@ msgid "Mark as Spam"
 msgstr ""
 
 #: bp-activity/bp-activity-admin.php:1323
-#: bp-activity/bp-activity-admin.php:1523
+#: bp-activity/bp-activity-admin.php:1554
 #: bp-core/admin/bp-core-admin-functions.php:871
 msgid "Not Spam"
 msgstr ""
 
 #: bp-activity/bp-activity-admin.php:1324
-#: bp-activity/bp-activity-admin.php:1528 bp-groups/bp-groups-admin.php:677
+#: bp-activity/bp-activity-admin.php:1559 bp-groups/bp-groups-admin.php:677
 msgid "Delete Permanently"
 msgstr ""
 
@@ -460,38 +460,38 @@ msgstr ""
 msgid "Filter"
 msgstr ""
 
-#: bp-activity/bp-activity-admin.php:1437
+#: bp-activity/bp-activity-admin.php:1468
 msgid "Select activity item %1$d"
 msgstr ""
 
-#: bp-activity/bp-activity-admin.php:1468
+#: bp-activity/bp-activity-admin.php:1499
 msgid "Unregistered action - %s"
 msgstr ""
 
-#: bp-activity/bp-activity-admin.php:1514
+#: bp-activity/bp-activity-admin.php:1545
 msgid "Replies are disabled for this activity item"
 msgstr ""
 
-#: bp-activity/bp-activity-admin.php:1514
+#: bp-activity/bp-activity-admin.php:1545
 msgid "Replies disabled"
 msgstr ""
 
-#: bp-activity/bp-activity-admin.php:1528 bp-core/bp-core-cssjs.php:115
+#: bp-activity/bp-activity-admin.php:1559 bp-core/bp-core-cssjs.php:115
 msgid "Are you sure?"
 msgstr ""
 
-#: bp-activity/bp-activity-admin.php:1544
+#: bp-activity/bp-activity-admin.php:1575
 #. translators: 2: activity admin ui date/time
 msgid "Submitted on <a href=\"%1$s\">%2$s at %3$s</a>"
 msgstr ""
 
-#: bp-activity/bp-activity-admin.php:1600
+#: bp-activity/bp-activity-admin.php:1631
 msgid "%s related activity"
 msgid_plural "%s related activities"
 msgstr[0] ""
 msgstr[1] ""
 
-#: bp-activity/bp-activity-admin.php:1611
+#: bp-activity/bp-activity-admin.php:1642
 msgid "<a href=\"%1$s\">View Activity</a>"
 msgstr ""
 
@@ -768,7 +768,7 @@ msgstr ""
 msgid "Group logo"
 msgstr ""
 
-#: bp-activity/bp-activity-template.php:1633 bp-groups/bp-groups-admin.php:1588
+#: bp-activity/bp-activity-template.php:1633 bp-groups/bp-groups-admin.php:1619
 #: bp-groups/bp-groups-template.php:910
 msgid "Group logo of %s"
 msgstr ""
@@ -789,7 +789,7 @@ msgstr ""
 
 #: bp-activity/bp-activity-template.php:3148
 #: bp-core/bp-core-attachments.php:223 bp-forums/bp-forums-template.php:2555
-#: bp-groups/bp-groups-admin.php:1436 bp-groups/bp-groups-admin.php:1564
+#: bp-groups/bp-groups-admin.php:1436 bp-groups/bp-groups-admin.php:1595
 #: bp-groups/bp-groups-loader.php:609
 #: bp-members/admin/bp-members-admin-classes.php:156
 #: bp-members/admin/bp-members-admin-classes.php:302
@@ -809,7 +809,7 @@ msgstr ""
 #: bp-activity/bp-activity-template.php:3270
 #: bp-core/admin/bp-core-admin-functions.php:883
 #: bp-core/admin/bp-core-admin-slugs.php:113
-#: bp-core/admin/bp-core-admin-slugs.php:189 bp-groups/bp-groups-admin.php:1567
+#: bp-core/admin/bp-core-admin-slugs.php:189 bp-groups/bp-groups-admin.php:1598
 #: bp-members/bp-members-template.php:1182
 #: bp-templates/bp-legacy/buddypress-functions.php:311
 msgid "View"
@@ -3466,17 +3466,17 @@ msgstr ""
 msgid "Privacy"
 msgstr ""
 
-#: bp-groups/bp-groups-admin.php:777 bp-groups/bp-groups-admin.php:1635
+#: bp-groups/bp-groups-admin.php:777 bp-groups/bp-groups-admin.php:1666
 #: bp-groups/bp-groups-template.php:1290
 msgid "Public"
 msgstr ""
 
-#: bp-groups/bp-groups-admin.php:778 bp-groups/bp-groups-admin.php:1638
+#: bp-groups/bp-groups-admin.php:778 bp-groups/bp-groups-admin.php:1669
 #: bp-groups/bp-groups-template.php:1292
 msgid "Private"
 msgstr ""
 
-#: bp-groups/bp-groups-admin.php:779 bp-groups/bp-groups-admin.php:1641
+#: bp-groups/bp-groups-admin.php:779 bp-groups/bp-groups-admin.php:1672
 msgid "Hidden"
 msgstr ""
 
@@ -3623,7 +3623,7 @@ msgid_plural "Hidden <span class=\"count\">(%s)</span>"
 msgstr[0] ""
 msgstr[1] ""
 
-#: bp-groups/bp-groups-admin.php:1503
+#: bp-groups/bp-groups-admin.php:1534
 msgid "Select group %1$d"
 msgstr ""
 
