@@ -1,152 +1,185 @@
 <?php
 /**
- * BuddyPress XProfile Classes
+ * BuddyPress XProfile Classes.
  *
  * @package BuddyPress
  * @subpackage XProfileClasses
  */
 
-// Exit if accessed directly
+// Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
 class BP_XProfile_Field {
 
 	/**
-	 * @since BuddyPress (1.0.0)
+	 * Field ID.
 	 *
-	 * @var int ID of field
+	 * @since 1.0.0
+	 *
+	 * @var int ID of field.
 	 */
 	public $id;
 
 	/**
-	 * @since BuddyPress (1.0.0)
+	 * Field group ID.
 	 *
-	 * @var int Field group ID for field
+	 * @since 1.0.0
+	 *
+	 * @var int Field group ID for field.
 	 */
 	public $group_id;
 
 	/**
-	 * @since BuddyPress (1.0.0)
+	 * Field parent ID.
 	 *
-	 * @var int Parent ID of field
+	 * @since 1.0.0
+	 *
+	 * @var int Parent ID of field.
 	 */
 	public $parent_id;
 
 	/**
-	 * @since BuddyPress (1.0.0)
+	 * Field type.
 	 *
-	 * @var string Field type
+	 * @since 1.0.0
+	 *
+	 * @var string Field type.
 	 */
 	public $type;
 
 	/**
-	 * @since BuddyPress (1.0.0)
+	 * Field name.
 	 *
-	 * @var string Field name
+	 * @since 1.0.0
+	 *
+	 * @var string Field name.
 	 */
 	public $name;
 
 	/**
-	 * @since BuddyPress (1.0.0)
+	 * Field description.
 	 *
-	 * @var string Field description
+	 * @since 1.0.0
+	 *
+	 * @var string Field description.
 	 */
 	public $description;
 
 	/**
-	 * @since BuddyPress (1.0.0)
+	 * Required field?
+	 *
+	 * @since 1.0.0
 	 *
 	 * @var bool Is field required to be filled out?
 	 */
 	public $is_required;
 
 	/**
-	 * @since BuddyPress (1.0.0)
+	 * Deletable field?
+	 *
+	 * @since 1.0.0
 	 *
 	 * @var int Can field be deleted?
 	 */
 	public $can_delete = '1';
 
 	/**
-	 * @since BuddyPress (1.0.0)
+	 * Field position.
 	 *
-	 * @var int Field position
+	 * @since 1.0.0
+	 *
+	 * @var int Field position.
 	 */
 	public $field_order;
 
 	/**
-	 * @since BuddyPress (1.0.0)
+	 * Option order.
 	 *
-	 * @var int Option order
+	 * @since 1.0.0
+	 *
+	 * @var int Option order.
 	 */
 	public $option_order;
 
 	/**
-	 * @since BuddyPress (1.0.0)
+	 * Order child fields.
 	 *
-	 * @var string Order child fields by
+	 * @since 1.0.0
+	 *
+	 * @var string Order child fields by.
 	 */
 	public $order_by;
 
 	/**
-	 * @since BuddyPress (1.0.0)
+	 * Is this the default option?
+	 *
+	 * @since 1.0.0
 	 *
 	 * @var bool Is this the default option for this field?
 	 */
 	public $is_default_option;
 
 	/**
-	 * @since BuddyPress (1.9.0)
+	 * Field data visibility.
 	 *
-	 * @var string Default field data visibility
+	 * @since 1.9.0
+	 * @since 2.4.0 Property marked protected. Now accessible by magic method or by `get_default_visibility()`.
+	 *
+	 * @var string Default field data visibility.
 	 */
-	public $default_visibility = 'public';
+	protected $default_visibility;
 
 	/**
-	 * @since BuddyPress (2.3.0)
+	 * Is the visibility able to be modified?
 	 *
-	 * @var string Members are allowed/disallowed to modify data visibility
+	 * @since 2.3.0
+	 * @since 2.4.0 Property marked protected. Now accessible by magic method or by `get_allow_custom_visibility()`.
+	 *
+	 * @var string Members are allowed/disallowed to modify data visibility.
 	 */
-	public $allow_custom_visibility = 'allowed';
+	protected $allow_custom_visibility;
 
 	/**
-	 * @since BuddyPress (2.0.0)
+	 * Field type option.
 	 *
-	 * @var BP_XProfile_Field_Type Field type object used for validation
+	 * @since 2.0.0
+	 *
+	 * @var BP_XProfile_Field_Type Field type object used for validation.
 	 */
 	public $type_obj = null;
 
 	/**
-	 * @since BuddyPress (2.0.0)
+	 * Field data for user ID.
 	 *
-	 * @var BP_XProfile_ProfileData Field data for user ID
+	 * @since 2.0.0
+	 *
+	 * @var BP_XProfile_ProfileData Field data for user ID.
 	 */
 	public $data;
 
 	/**
 	 * Member types to which the profile field should be applied.
 	 *
-	 * @since BuddyPress (2.4.0)
-	 * @access protected
+	 * @since 2.4.0
 	 * @var array Array of member types.
 	 */
 	protected $member_types;
 
 	/**
-	 * Initialize and/or populate profile field
+	 * Initialize and/or populate profile field.
 	 *
-	 * @since BuddyPress (1.1.0)
+	 * @since 1.1.0
 	 *
-	 * @param int  $id
-	 * @param int  $user_id
-	 * @param bool $get_data
+	 * @param int|null $id Field ID.
+	 * @param int|null $user_id User ID.
+	 * @param bool     $get_data Get data.
 	 */
 	public function __construct( $id = null, $user_id = null, $get_data = true ) {
 
 		if ( ! empty( $id ) ) {
 			$this->populate( $id, $user_id, $get_data );
 
-		// Initialise the type obj to prevent fatals when creating new profile fields
+		// Initialise the type obj to prevent fatals when creating new profile fields.
 		} else {
 			$this->type_obj            = bp_xprofile_create_field_type( 'textbox' );
 			$this->type_obj->field_obj = $this;
@@ -154,16 +187,16 @@ class BP_XProfile_Field {
 	}
 
 	/**
-	 * Populate a profile field object
+	 * Populate a profile field object.
 	 *
-	 * @since BuddyPress (1.1.0)
+	 * @since 1.1.0
 	 *
 	 * @global object $wpdb
 	 * @global object $userdata
 	 *
-	 * @param  int    $id
-	 * @param  int    $user_id
-	 * @param  bool   $get_data
+	 * @param int  $id Field ID.
+	 * @param int  $user_id User ID.
+	 * @param bool $get_data Get data.
 	 */
 	public function populate( $id, $user_id = null, $get_data = true ) {
 		global $wpdb, $userdata;
@@ -175,57 +208,126 @@ class BP_XProfile_Field {
 		$bp    = buddypress();
 		$field = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$bp->profile->table_name_fields} WHERE id = %d", $id ) );
 
-		if ( ! empty( $field ) ) {
-			$this->id                = $field->id;
-			$this->group_id          = $field->group_id;
-			$this->parent_id         = $field->parent_id;
-			$this->type              = $field->type;
-			$this->name              = stripslashes( $field->name );
-			$this->description       = stripslashes( $field->description );
-			$this->is_required       = $field->is_required;
-			$this->can_delete        = $field->can_delete;
-			$this->field_order       = $field->field_order;
-			$this->option_order      = $field->option_order;
-			$this->order_by          = $field->order_by;
-			$this->is_default_option = $field->is_default_option;
+		$this->fill_data( $field );
 
-			// Create the field type and store a reference back to this object.
-			$this->type_obj            = bp_xprofile_create_field_type( $field->type );
-			$this->type_obj->field_obj = $this;
-
-			if ( ! empty( $get_data ) && ! empty( $user_id ) ) {
-				$this->data = $this->get_field_data( $user_id );
-			}
-
-			// Get metadata for field
-			$default_visibility       = bp_xprofile_get_meta( $id, 'field', 'default_visibility'      );
-			$allow_custom_visibility  = bp_xprofile_get_meta( $id, 'field', 'allow_custom_visibility' );
-
-			// Setup default visibility
-			$this->default_visibility = ! empty( $default_visibility )
-				? $default_visibility
-				: 'public';
-
-			// Allow members to customize visibilty
-			$this->allow_custom_visibility = ( 'disabled' === $allow_custom_visibility )
-				? 'disabled'
-				: 'allowed';
+		if ( ! empty( $get_data ) && ! empty( $user_id ) ) {
+			$this->data = $this->get_field_data( $user_id );
 		}
 	}
 
 	/**
-	 * Delete a profile field
+	 * Retrieve a `BP_XProfile_Field` instance.
 	 *
-	 * @since BuddyPress (1.1.0)
+	 * @static
 	 *
-	 * @global object  $wpdb
-	 * @param  boolean $delete_data
+	 * @param int $field_id ID of the field.
+	 * @return BP_XProfile_Field|false Field object if found, otherwise false.
+	 */
+	public static function get_instance( $field_id ) {
+		global $wpdb;
+
+		$field_id = (int) $field_id;
+		if ( ! $field_id ) {
+			return false;
+		}
+
+		$field = wp_cache_get( $field_id, 'bp_xprofile_fields' );
+		if ( false === $field ) {
+			$bp = buddypress();
+
+			$field = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$bp->profile->table_name_fields} WHERE id = %d", $field_id ) );
+
+			wp_cache_add( $field->id, $field, 'bp_xprofile_fields' );
+
+			if ( ! $field ) {
+				return false;
+			}
+		}
+
+		$_field = new BP_XProfile_Field();
+		$_field->fill_data( $field );
+
+		return $_field;
+	}
+
+	/**
+	 * Fill object vars based on data passed to the method.
+	 *
+	 * @since 2.4.0
+	 *
+	 * @param array|object $args Array or object representing the `BP_XProfile_Field` properties.
+	 *                           Generally, this is a row from the fields database table.
+	 */
+	public function fill_data( $args ) {
+		if ( is_object( $args ) ) {
+			$args = (array) $args;
+		}
+
+		foreach ( $args as $k => $v ) {
+			if ( 'name' === $k || 'description' === $k ) {
+				$v = stripslashes( $v );
+			}
+			$this->{$k} = $v;
+		}
+
+		// Create the field type and store a reference back to this object.
+		$this->type_obj            = bp_xprofile_create_field_type( $this->type );
+		$this->type_obj->field_obj = $this;;
+	}
+
+	/**
+	 * Magic getter.
+	 *
+	 * @since 2.4.0
+	 *
+	 * @param string $key Property name.
+	 * @return mixed
+	 */
+	public function __get( $key ) {
+		switch ( $key ) {
+			case 'default_visibility' :
+				return $this->get_default_visibility();
+				break;
+
+			case 'allow_custom_visibility' :
+				return $this->get_allow_custom_visibility();
+				break;
+		}
+	}
+
+	/**
+	 * Magic issetter.
+	 *
+	 * @since 2.4.0
+	 *
+	 * @param string $key Property name.
+	 * @return bool
+	 */
+	public function __isset( $key ) {
+		switch ( $key ) {
+			// Backward compatibility for when these were public methods.
+			case 'allow_custom_visibility' :
+			case 'default_visibility' :
+				return true;
+				break;
+		}
+	}
+
+	/**
+	 * Delete a profile field.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @global object $wpdb
+	 *
+	 * @param boolean $delete_data Whether or not to delete data.
+	 *
 	 * @return boolean
 	 */
 	public function delete( $delete_data = false ) {
 		global $wpdb;
 
-		// Prevent deletion if no ID is present
+		// Prevent deletion if no ID is present.
 		// Prevent deletion by url when can_delete is false.
 		// Prevent deletion of option 1 since this invalidates fields with options.
 		if ( empty( $this->id ) || empty( $this->can_delete ) || ( $this->parent_id && $this->option_order == 1 ) ) {
@@ -239,7 +341,7 @@ class BP_XProfile_Field {
 			return false;
 		}
 
-		// delete the data in the DB for this field
+		// Delete the data in the DB for this field.
 		if ( true === $delete_data ) {
 			BP_XProfile_ProfileData::delete_for_field( $this->id );
 		}
@@ -248,9 +350,9 @@ class BP_XProfile_Field {
 	}
 
 	/**
-	 * Save a profile field
+	 * Save a profile field.
 	 *
-	 * @since BuddyPress (1.1.0)
+	 * @since 1.1.0
 	 *
 	 * @global object $wpdb
 	 *
@@ -278,9 +380,9 @@ class BP_XProfile_Field {
 		 *
 		 * Please use this hook to filter the properties above. Each part will be passed in.
 		 *
-		 * @since BuddyPress (1.0.0)
+		 * @since 1.0.0
 		 *
-		 * @param BP_XProfile_Field Current instance of the field being saved.
+		 * @param BP_XProfile_Field $this Current instance of the field being saved.
 		 */
 		do_action_ref_array( 'xprofile_field_before_save', array( $this ) );
 
@@ -302,7 +404,7 @@ class BP_XProfile_Field {
 				$this->id = $wpdb->insert_id;
 			}
 
-			// Only do this if we are editing an existing field
+			// Only do this if we are editing an existing field.
 			if ( ! $is_new_field ) {
 
 				/**
@@ -329,7 +431,7 @@ class BP_XProfile_Field {
 				/**
 				 * Filters the submitted field option value before saved.
 				 *
-				 * @since BuddyPress (1.5.0)
+				 * @since 1.5.0
 				 *
 				 * @param string            $post_option Submitted option value.
 				 * @param BP_XProfile_Field $type        Current field type being saved for.
@@ -339,7 +441,7 @@ class BP_XProfile_Field {
 				/**
 				 * Filters the default field option value before saved.
 				 *
-				 * @since BuddyPress (1.5.0)
+				 * @since 1.5.0
 				 *
 				 * @param string            $post_default Default option value.
 				 * @param BP_XProfile_Field $type         Current field type being saved for.
@@ -376,15 +478,15 @@ class BP_XProfile_Field {
 			/**
 			 * Fires after the current field instance gets saved.
 			 *
-			 * @since BuddyPress (1.0.0)
+			 * @since 1.0.0
 			 *
-			 * @param BP_XProfile_Field Current instance of the field being saved.
+			 * @param BP_XProfile_Field $this Current instance of the field being saved.
 			 */
 			do_action_ref_array( 'xprofile_field_after_save', array( $this ) );
 
 			// Recreate type_obj in case someone changed $this->type via a filter
-	 		$this->type_obj            = bp_xprofile_create_field_type( $this->type );
-	 		$this->type_obj->field_obj = $this;
+			$this->type_obj            = bp_xprofile_create_field_type( $this->type );
+			$this->type_obj->field_obj = $this;
 
 			return $this->id;
 		} else {
@@ -393,11 +495,12 @@ class BP_XProfile_Field {
 	}
 
 	/**
-	 * Get field data for a user ID
+	 * Get field data for a user ID.
 	 *
-	 * @since BuddyPress (1.2.0)
+	 * @since 1.2.0
 	 *
-	 * @param  int $user_id
+	 * @param int $user_id ID of the user to get field data for.
+	 *
 	 * @return object
 	 */
 	public function get_field_data( $user_id = 0 ) {
@@ -405,19 +508,20 @@ class BP_XProfile_Field {
 	}
 
 	/**
-	 * Get all child fields for this field ID
+	 * Get all child fields for this field ID.
 	 *
-	 * @since BuddyPress (1.2.0)
+	 * @since 1.2.0
 	 *
 	 * @global object $wpdb
 	 *
-	 * @param  bool  $for_editing
+	 * @param bool $for_editing Whether or not the field is for editing.
+	 *
 	 * @return array
 	 */
 	public function get_children( $for_editing = false ) {
 		global $wpdb;
 
-		// This is done here so we don't have problems with sql injection
+		// This is done here so we don't have problems with sql injection.
 		if ( empty( $for_editing ) && ( 'asc' === $this->order_by ) ) {
 			$sort_sql = 'ORDER BY name ASC';
 		} elseif ( empty( $for_editing ) && ( 'desc' === $this->order_by ) ) {
@@ -427,7 +531,7 @@ class BP_XProfile_Field {
 		}
 
 		// This eliminates a problem with getting all fields when there is no
-		// id for the object
+		// id for the object.
 		if ( empty( $this->id ) ) {
 			$parent_id = -1;
 		} else {
@@ -442,7 +546,7 @@ class BP_XProfile_Field {
 		/**
 		 * Filters the found children for a field.
 		 *
-		 * @since BuddyPress (1.2.5)
+		 * @since 1.2.5
 		 *
 		 * @param object $children    Found children for a field.
 		 * @param bool   $for_editing Whether or not the field is for editing.
@@ -451,9 +555,9 @@ class BP_XProfile_Field {
 	}
 
 	/**
-	 * Delete all field children for this field
+	 * Delete all field children for this field.
 	 *
-	 * @since BuddyPress (1.2.0)
+	 * @since 1.2.0
 	 *
 	 * @global object $wpdb
 	 */
@@ -473,7 +577,7 @@ class BP_XProfile_Field {
 	 *
 	 * 'null' is a special pseudo-type, which represents users that do not have a member type.
 	 *
-	 * @since BuddyPress (2.4.0)
+	 * @since 2.4.0
 	 *
 	 * @return array Array of member type names.
 	 */
@@ -514,7 +618,7 @@ class BP_XProfile_Field {
 		/**
 		 * Filters the member types to which an XProfile object should be applied.
 		 *
-		 * @since BuddyPress (2.4.0)
+		 * @since 2.4.0
 		 *
 		 * @param array             $types Member types.
 		 * @param BP_XProfile_Field $field Field object.
@@ -527,12 +631,13 @@ class BP_XProfile_Field {
 	/**
 	 * Sets the member types for this field.
 	 *
-	 * @since BuddyPress (2.4.0)
+	 * @since 2.4.0
 	 *
 	 * @param array $member_types Array of member types. Can include 'null' (users with no type) in addition to any
 	 *                            registered types.
 	 * @param bool  $append       Whether to append to existing member types. If false, all existing member type
 	 *                            associations will be deleted before adding your `$member_types`. Default false.
+	 *
 	 * @return array Member types for the current field, after being saved.
 	 */
 	public function set_member_types( $member_types, $append = false ) {
@@ -585,9 +690,9 @@ class BP_XProfile_Field {
 		/**
 		 * Fires after a field's member types have been updated.
 		 *
-		 * @since BuddyPress (2.4.0)
+		 * @since 2.4.0
 		 *
-		 * @param BP_XProfile_Field $field Field object.
+		 * @param BP_XProfile_Field $this Field object.
 		 */
 		do_action( 'bp_xprofile_field_set_member_type', $this );
 
@@ -600,7 +705,7 @@ class BP_XProfile_Field {
 	 *
 	 * This label is displayed alongside the field's name on the Profile Fields Dashboard panel.
 	 *
-	 * @since BuddyPress (2.4.0)
+	 * @since 2.4.0
 	 *
 	 * @return string
 	 */
@@ -655,12 +760,60 @@ class BP_XProfile_Field {
 		return $label;
 	}
 
+	/**
+	 * Get the field's default visibility setting.
+	 *
+	 * Lazy-loaded to reduce overhead.
+	 *
+	 * Defaults to 'public' if no visibility setting is found in the database.
+	 *
+	 * @since 2.4.0
+	 *
+	 * @return string
+	 */
+	public function get_default_visibility() {
+		if ( ! isset( $this->default_visibility ) ) {
+			$this->default_visibility = bp_xprofile_get_meta( $this->id, 'field', 'default_visibility' );
+
+			if ( ! $this->default_visibility ) {
+				$this->default_visibility = 'public';
+			}
+		}
+
+		return $this->default_visibility;
+	}
+
+	/**
+	 * Get whether the field's default visibility can be overridden by users.
+	 *
+	 * Lazy-loaded to reduce overhead.
+	 *
+	 * Defaults to 'allowed'.
+	 *
+	 * @since 4.4.0
+	 *
+	 * @return string 'disabled' or 'allowed'.
+	 */
+	public function get_allow_custom_visibility() {
+		if ( ! isset( $this->allow_custom_visibility ) ) {
+			$allow_custom_visibility = bp_xprofile_get_meta( $this->id, 'field', 'allow_custom_visibility' );
+
+			if ( 'disabled' === $allow_custom_visibility ) {
+				$this->allow_custom_visibility = 'disabled';
+			} else {
+				$this->allow_custom_visibility = 'allowed';
+			}
+		}
+
+		return $this->allow_custom_visibility;
+	}
+
 	/** Static Methods ********************************************************/
 
 	public static function get_type( $field_id = 0 ) {
 		global $wpdb;
 
-		// Bail if no field ID
+		// Bail if no field ID.
 		if ( empty( $field_id ) ) {
 			return false;
 		}
@@ -669,7 +822,7 @@ class BP_XProfile_Field {
 		$sql  = $wpdb->prepare( "SELECT type FROM {$bp->profile->table_name_fields} WHERE id = %d", $field_id );
 		$type = $wpdb->get_var( $sql );
 
-		// Return field type
+		// Return field type.
 		if ( ! empty( $type ) ) {
 			return $type;
 		}
@@ -678,20 +831,20 @@ class BP_XProfile_Field {
 	}
 
 	/**
-	 * Delete all fields in a field group
+	 * Delete all fields in a field group.
 	 *
-	 * @since BuddyPress (1.2.0)
+	 * @since 1.2.0
 	 *
 	 * @global object $wpdb
 	 *
-	 * @param  int    $group_id
+	 * @param int $group_id ID of the field group to delete fields from.
 	 *
 	 * @return boolean
 	 */
 	public static function delete_for_group( $group_id = 0 ) {
 		global $wpdb;
 
-		// Bail if no group ID
+		// Bail if no group ID.
 		if ( empty( $group_id ) ) {
 			return false;
 		}
@@ -700,7 +853,7 @@ class BP_XProfile_Field {
 		$sql     = $wpdb->prepare( "DELETE FROM {$bp->profile->table_name_fields} WHERE group_id = %d", $group_id );
 		$deleted = $wpdb->get_var( $sql );
 
-		// Return true if fields were deleted
+		// Return true if fields were deleted.
 		if ( false !== $deleted ) {
 			return true;
 		}
@@ -709,12 +862,13 @@ class BP_XProfile_Field {
 	}
 
 	/**
-	 * Get field ID from field name
+	 * Get field ID from field name.
 	 *
-	 * @since BuddyPress (1.5.0)
+	 * @since 1.5.0
 	 *
 	 * @global object $wpdb
-	 * @param  string $field_name
+	 *
+	 * @param string $field_name Name of the field to query the ID for.
 	 *
 	 * @return boolean
 	 */
@@ -733,35 +887,35 @@ class BP_XProfile_Field {
 	}
 
 	/**
-	 * Update field position and/or field group when relocating
+	 * Update field position and/or field group when relocating.
 	 *
-	 * @since BuddyPress (1.5.0)
+	 * @since 1.5.0
 	 *
 	 * @global object $wpdb
 	 *
-	 * @param  int $field_id
-	 * @param  int $position
-	 * @param  int $field_group_id
+	 * @param int      $field_id       ID of the field to update.
+	 * @param int|null $position       Field position to update.
+	 * @param int|null $field_group_id ID of the field group.
 	 *
 	 * @return boolean
 	 */
 	public static function update_position( $field_id, $position = null, $field_group_id = null ) {
 		global $wpdb;
 
-		// Bail if invalid position or field group
+		// Bail if invalid position or field group.
 		if ( ! is_numeric( $position ) || ! is_numeric( $field_group_id ) ) {
 			return false;
 		}
 
-		// Get table name and field parent
+		// Get table name and field parent.
 		$table_name = buddypress()->profile->table_name_fields;
 		$sql        = $wpdb->prepare( "UPDATE {$table_name} SET field_order = %d, group_id = %d WHERE id = %d", $position, $field_group_id, $field_id );
 		$parent     = $wpdb->query( $sql );
 
-		// Update $field_id with new $position and $field_group_id
+		// Update $field_id with new $position and $field_group_id.
 		if ( ! empty( $parent ) && ! is_wp_error( $parent ) ) {
 
-			// Update any children of this $field_id
+			// Update any children of this $field_id.
 			$sql = $wpdb->prepare( "UPDATE {$table_name} SET group_id = %d WHERE parent_id = %d", $field_group_id, $field_id );
 			$wpdb->query( $sql );
 
@@ -774,10 +928,11 @@ class BP_XProfile_Field {
 	/**
 	 * Gets the IDs of fields applicable for a given member type or array of member types.
 	 *
-	 * @since BuddyPress (2.4.0)
+	 * @since 2.4.0
 	 *
 	 * @param string|array $member_types Member type or array of member types. Use 'any' to return unrestricted
 	 *                                   fields (those available for anyone, regardless of member type).
+	 *
 	 * @return array Multi-dimensional array, with field IDs as top-level keys, and arrays of member types
 	 *               associated with each field as values.
 	 */
@@ -846,67 +1001,68 @@ class BP_XProfile_Field {
 	}
 
 	/**
-	 * Validate form field data on sumbission
+	 * Validate form field data on sumbission.
 	 *
-	 * @since BuddyPress (2.2.0)
+	 * @since 2.2.0
 	 *
-	 * @global type $message
+	 * @global $message
+	 *
 	 * @return boolean
 	 */
 	public static function admin_validate() {
 		global $message;
 
-		// Check field name
+		// Check field name.
 		if ( ! isset( $_POST['title'] ) || ( '' === $_POST['title'] ) ) {
 			$message = esc_html__( 'Profile fields must have a name.', 'buddypress' );
 			return false;
 		}
 
-		// Check field requirement
+		// Check field requirement.
 		if ( ! isset( $_POST['required'] ) ) {
 			$message = esc_html__( 'Profile field requirement is missing.', 'buddypress' );
 			return false;
 		}
 
-		// Check field type
+		// Check field type.
 		if ( empty( $_POST['fieldtype'] ) ) {
 			$message = esc_html__( 'Profile field type is missing.', 'buddypress' );
 			return false;
 		}
 
-		// Check that field is of valid type
+		// Check that field is of valid type.
 		if ( ! in_array( $_POST['fieldtype'], array_keys( bp_xprofile_get_field_types() ), true ) ) {
 			$message = sprintf( esc_html__( 'The profile field type %s is not registered.', 'buddypress' ), '<code>' . esc_attr( $_POST['fieldtype'] ) . '</code>' );
 			return false;
 		}
 
-		// Get field type so we can check for and lavidate any field options
+		// Get field type so we can check for and lavidate any field options.
 		$field_type = bp_xprofile_create_field_type( $_POST['fieldtype'] );
 
-		// Field type requires options
+		// Field type requires options.
 		if ( true === $field_type->supports_options ) {
 
-			// Build the field option key
+			// Build the field option key.
 			$option_name = sanitize_key( $_POST['fieldtype'] ) . '_option';
 
-			// Check for missing or malformed options
+			// Check for missing or malformed options.
 			if ( empty( $_POST[ $option_name ] ) || ! is_array( $_POST[ $option_name ] ) ) {
 				$message = esc_html__( 'These field options are invalid.', 'buddypress' );
 				return false;
 			}
 
-			// Trim out empty field options
+			// Trim out empty field options.
 			$field_values  = array_values( $_POST[ $option_name ] );
 			$field_options = array_map( 'sanitize_text_field', $field_values );
 			$field_count   = count( $field_options );
 
-			// Check for missing or malformed options
+			// Check for missing or malformed options.
 			if ( 0 === $field_count ) {
 				$message = sprintf( esc_html__( '%s require at least one option.', 'buddypress' ), $field_type->name );
 				return false;
 			}
 
-			// If only one option exists, it cannot be an empty string
+			// If only one option exists, it cannot be an empty string.
 			if ( ( 1 === $field_count ) && ( '' === $field_options[0] ) ) {
 				$message = sprintf( esc_html__( '%s require at least one option.', 'buddypress' ), $field_type->name );
 				return false;
@@ -928,11 +1084,11 @@ class BP_XProfile_Field {
 	}
 
 	/**
-	 * Oupput the admin form for this field
+	 * Oupput the admin form for this field.
 	 *
-	 * @since BuddyPress (1.9.0)
+	 * @since 1.9.0
 	 *
-	 * @param type $message
+	 * @param string $message Message to display.
 	 */
 	public function render_admin_form( $message = '' ) {
 		if ( empty( $this->id ) ) {
@@ -945,8 +1101,11 @@ class BP_XProfile_Field {
 				$this->description = $_POST['description'];
 				$this->is_required = $_POST['required'];
 				$this->type        = $_POST['fieldtype'];
-				$this->order_by    = $_POST["sort_order_{$this->type}"];
 				$this->field_order = $_POST['field_order'];
+
+				if ( ! empty( $_POST["sort_order_{$this->type}"] ) ) {
+					$this->order_by = $_POST["sort_order_{$this->type}"];
+				}
 			}
 		} else {
 			$title  = __( 'Edit Field', 'buddypress' );
@@ -955,8 +1114,6 @@ class BP_XProfile_Field {
 		} ?>
 
 		<div class="wrap">
-
-			<?php screen_icon( 'users' ); ?>
 
 			<h2><?php echo esc_html( $title ); ?></h2>
 
@@ -975,7 +1132,7 @@ class BP_XProfile_Field {
 
 							<?php
 
-							// Output the name & description fields
+							// Output the name & description fields.
 							$this->name_and_description(); ?>
 
 						</div><!-- #post-body-content -->
@@ -984,22 +1141,22 @@ class BP_XProfile_Field {
 
 							<?php
 
-							// Output the sumbit metabox
+							// Output the sumbit metabox.
 							$this->submit_metabox( $button );
 
-							// Output the required metabox
+							// Output the required metabox.
 							$this->required_metabox();
 
 							// Output the Member Types metabox.
 							$this->member_type_metabox();
 
-							// Output the field visibility metaboxes
+							// Output the field visibility metaboxes.
 							$this->visibility_metabox();
 
 							/**
 							 * Fires after XProfile Field sidebar metabox.
 							 *
-							 * @since BuddyPress (2.2.0)
+							 * @since 2.2.0
 							 *
 							 * @param BP_XProfile_Field $this Current XProfile field.
 							 */
@@ -1014,22 +1171,22 @@ class BP_XProfile_Field {
 							/**
 							 * Fires before XProfile Field content metabox.
 							 *
-							 * @since BuddyPress (2.3.0)
+							 * @since 2.3.0
 							 *
 							 * @param BP_XProfile_Field $this Current XProfile field.
 							 */
 							do_action( 'xprofile_field_before_contentbox', $this );
 
-							// Output the field attributes metabox
+							// Output the field attributes metabox.
 							$this->type_metabox();
 
-							// Output hidden inputs for default field
+							// Output hidden inputs for default field.
 							$this->default_field_hidden_inputs();
 
 							/**
 							 * Fires after XProfile Field content metabox.
 							 *
-							 * @since BuddyPress (2.2.0)
+							 * @since 2.2.0
 							 *
 							 * @param BP_XProfile_Field $this Current XProfile field.
 							 */
@@ -1045,18 +1202,18 @@ class BP_XProfile_Field {
 	}
 
 	/**
-	 * Private method used to display the submit metabox
+	 * Private method used to display the submit metabox.
 	 *
-	 * @since BuddyPress (2.3.0)
+	 * @since 2.3.0
 	 *
-	 * @param string $button_text
+	 * @param string $button_text Text to put on button.
 	 */
 	private function submit_metabox( $button_text = '' ) {
 
 		/**
 		 * Fires before XProfile Field submit metabox.
 		 *
-		 * @since BuddyPress (2.1.0)
+		 * @since 2.1.0
 		 *
 		 * @param BP_XProfile_Field $this Current XProfile field.
 		 */
@@ -1073,7 +1230,7 @@ class BP_XProfile_Field {
 						/**
 						 * Fires at the beginning of the XProfile Field publishing actions section.
 						 *
-						 * @since BuddyPress (2.1.0)
+						 * @since 2.1.0
 						 *
 						 * @param BP_XProfile_Field $this Current XProfile field.
 						 */
@@ -1106,7 +1263,7 @@ class BP_XProfile_Field {
 		/**
 		 * Fires after XProfile Field submit metabox.
 		 *
-		 * @since BuddyPress (2.1.0)
+		 * @since 2.1.0
 		 *
 		 * @param BP_XProfile_Field $this Current XProfile field.
 		 */
@@ -1114,9 +1271,9 @@ class BP_XProfile_Field {
 	}
 
 	/**
-	 * Private method used to output field name and description fields
+	 * Private method used to output field name and description fields.
 	 *
-	 * @since BuddyPress (2.3.0)
+	 * @since 2.3.0
 	 */
 	private function name_and_description() {
 	?>
@@ -1131,6 +1288,7 @@ class BP_XProfile_Field {
 		<div class="postbox">
 			<h3><?php echo esc_html_x( 'Description', 'XProfile admin edit field', 'buddypress' ); ?></h3>
 			<div class="inside">
+				<label for="description" class="bp-screen-reader-text"><?php _e( 'Add description', 'buddypress' ); ?></label>
 				<textarea name="description" id="description" rows="8" cols="60"><?php echo esc_textarea( $this->description ); ?></textarea>
 			</div>
 		</div>
@@ -1141,7 +1299,7 @@ class BP_XProfile_Field {
 	/**
 	 * Private method used to output field Member Type metabox.
 	 *
-	 * @since BuddyPress (2.4.0)
+	 * @since 2.4.0
 	 */
 	private function member_type_metabox() {
 
@@ -1192,15 +1350,15 @@ class BP_XProfile_Field {
 	}
 
 	/**
-	 * Private method used to output field visibility metaboxes
+	 * Private method used to output field visibility metaboxes.
 	 *
-	 * @since BuddyPress (2.3.0)
+	 * @since 2.3.0
 	 *
-	 * @return if default field id 1
+	 * @return void If default field id 1.
 	 */
 	private function visibility_metabox() {
 
-		// Default field cannot have custom visibility
+		// Default field cannot have custom visibility.
 		if ( true === $this->is_default_field() ) {
 			return;
 		} ?>
@@ -1213,7 +1371,7 @@ class BP_XProfile_Field {
 
 						<?php foreach( bp_xprofile_get_visibility_levels() as $level ) : ?>
 
-							<option value="<?php echo esc_attr( $level['id'] ); ?>" <?php selected( $this->default_visibility, $level['id'] ); ?>>
+							<option value="<?php echo esc_attr( $level['id'] ); ?>" <?php selected( $this->get_default_visibility(), $level['id'] ); ?>>
 								<?php echo esc_html( $level['label'] ); ?>
 							</option>
 
@@ -1225,11 +1383,11 @@ class BP_XProfile_Field {
 				<div>
 					<ul>
 						<li>
-							<input type="radio" id="allow-custom-visibility-allowed" name="allow-custom-visibility" value="allowed" <?php checked( $this->allow_custom_visibility, 'allowed' ); ?> />
+							<input type="radio" id="allow-custom-visibility-allowed" name="allow-custom-visibility" value="allowed" <?php checked( $this->get_allow_custom_visibility(), 'allowed' ); ?> />
 							<label for="allow-custom-visibility-allowed"><?php esc_html_e( 'Allow members to override', 'buddypress' ); ?></label>
 						</li>
 						<li>
-							<input type="radio" id="allow-custom-visibility-disabled" name="allow-custom-visibility" value="disabled" <?php checked( $this->allow_custom_visibility, 'disabled' ); ?> />
+							<input type="radio" id="allow-custom-visibility-disabled" name="allow-custom-visibility" value="disabled" <?php checked( $this->get_allow_custom_visibility(), 'disabled' ); ?> />
 							<label for="allow-custom-visibility-disabled"><?php esc_html_e( 'Enforce field visibility', 'buddypress' ); ?></label>
 						</li>
 					</ul>
@@ -1241,15 +1399,15 @@ class BP_XProfile_Field {
 	}
 
 	/**
-	 * Output the metabox for setting if field is required or not
+	 * Output the metabox for setting if field is required or not.
 	 *
-	 * @since BuddyPress (2.3.0)
+	 * @since 2.3.0
 	 *
-	 * @return if default field
+	 * @return void If default field.
 	 */
 	private function required_metabox() {
 
-		// Default field is always required
+		// Default field is always required.
 		if ( true === $this->is_default_field() ) {
 			return;
 		} ?>
@@ -1268,15 +1426,15 @@ class BP_XProfile_Field {
 	}
 
 	/**
-	 * Output the metabox for setting what type of field this is
+	 * Output the metabox for setting what type of field this is.
 	 *
-	 * @since BuddyPress (2.3.0)
+	 * @since 2.3.0
 	 *
-	 * @return if default field
+	 * @return void If default field.
 	 */
 	private function type_metabox() {
 
-		// Default field cannot change type
+		// Default field cannot change type.
 		if ( true === $this->is_default_field() ) {
 			return;
 		} ?>
@@ -1304,15 +1462,15 @@ class BP_XProfile_Field {
 	}
 
 	/**
-	 * Output hidden fields used by default field
+	 * Output hidden fields used by default field.
 	 *
-	 * @since BuddyPress (2.3.0)
+	 * @since 2.3.0
 	 *
-	 * @return if not default field
+	 * @return void If not default field.
 	 */
 	private function default_field_hidden_inputs() {
 
-		// Field 1 is the fullname field, which cannot have custom visibility
+		// Field 1 is the fullname field, which cannot have custom visibility.
 		if ( false === $this->is_default_field() ) {
 			return;
 		} ?>
@@ -1324,21 +1482,22 @@ class BP_XProfile_Field {
 	}
 
 	/**
-	 * Return if a field ID is the default field
+	 * Return if a field ID is the default field.
 	 *
-	 * @since BuddyPress (2.3.0)
+	 * @since 2.3.0
 	 *
-	 * @param  int $field_id ID of field to check
+	 * @param int $field_id ID of field to check.
+	 *
 	 * @return bool
 	 */
 	private function is_default_field( $field_id = 0 ) {
 
-		// Fallback to current field ID if none passed
+		// Fallback to current field ID if none passed.
 		if ( empty( $field_id ) ) {
 			$field_id = $this->id;
 		}
 
-		// Compare & return
+		// Compare & return.
 		return (bool) ( 1 === (int) $field_id );
 	}
 }

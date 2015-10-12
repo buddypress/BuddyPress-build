@@ -6,7 +6,7 @@
  * @subpackage Core
  */
 
-// Exit if accessed directly
+// Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -14,14 +14,14 @@ defined( 'ABSPATH' ) || exit;
  *
  * Extends BP Attachment to manage the avatar uploads.
  *
- * @since BuddyPress (2.3.0)
+ * @since 2.3.0
  */
 class BP_Attachment_Avatar extends BP_Attachment {
 
 	/**
 	 * Construct Upload parameters.
 	 *
-	 * @since BuddyPress (2.3.0)
+	 * @since 2.3.0
 	 *
 	 * @see  BP_Attachment::__construct() for list of parameters
 	 * @uses bp_core_avatar_original_max_filesize()
@@ -47,7 +47,7 @@ class BP_Attachment_Avatar extends BP_Attachment {
 	/**
 	 * Gets the available avatar types.
 	 *
-	 * @since BuddyPress (2.3.0)
+	 * @since 2.3.0
 	 *
 	 * @param array $allowed_types Array of allowed avatar types.
 	 *
@@ -62,7 +62,7 @@ class BP_Attachment_Avatar extends BP_Attachment {
 	/**
 	 * Set Upload Dir data for avatars.
 	 *
-	 * @since BuddyPress (2.3.0)
+	 * @since 2.3.0
 	 *
 	 * @uses bp_core_avatar_upload_path()
 	 * @uses bp_core_avatar_url()
@@ -85,7 +85,7 @@ class BP_Attachment_Avatar extends BP_Attachment {
 	 * Adds an error if the avatar size or type don't match BuddyPress needs.
 	 * The error code is the index of $upload_error_strings.
 	 *
-	 * @since BuddyPress (2.3.0)
+	 * @since 2.3.0
 	 *
 	 * @uses   bp_core_check_avatar_size()
 	 * @uses   bp_core_check_avatar_type()
@@ -116,56 +116,74 @@ class BP_Attachment_Avatar extends BP_Attachment {
 	/**
 	 * Maybe shrink the attachment to fit maximum allowed width.
 	 *
-	 * @since BuddyPress (2.3.0)
+	 * @since 2.3.0
+	 * @since 2.4.0 Add the $ui_available_width parameter, to inform about the Avatar UI width.
 	 *
 	 * @uses  bp_core_avatar_original_max_width()
-	 * @uses  wp_get_image_editor()
 	 *
 	 * @param string $file the absolute path to the file.
 	 *
 	 * @return mixed
 	 */
-	public static function shrink( $file = '' ) {
+	public static function shrink( $file = '', $ui_available_width = 0 ) {
 		// Get image size
-		$size   = @getimagesize( $file );
-		$retval = false;
+		$avatar_data = parent::get_image_data( $file );
 
-		// Check image size and shrink if too large
-		if ( $size[0] > bp_core_avatar_original_max_width() ) {
-			$editor = wp_get_image_editor( $file );
+		// Init the edit args
+		$edit_args = array();
 
-			if ( ! is_wp_error( $editor ) ) {
-				$editor->set_quality( 100 );
+		// Defaults to the Avatar original max width constant.
+		$original_max_width = bp_core_avatar_original_max_width();
 
-				$resized = $editor->resize( bp_core_avatar_original_max_width(), bp_core_avatar_original_max_width(), false );
-				if ( ! is_wp_error( $resized ) ) {
-					$thumb = $editor->save( $editor->generate_filename() );
-				} else {
-					$retval = $resized;
-				}
+		// The ui_available_width is defined and it's smaller than the Avatar original max width
+		if ( ! empty( $ui_available_width ) && $ui_available_width < $original_max_width ) {
+			/**
+			 * In this case, to make sure the content of the image will be fully displayed
+			 * during the cropping step, let's use the Avatar UI Available width.
+			 */
+			$original_max_width = $ui_available_width;
 
-				// Check for thumbnail creation errors
-				if ( ( false === $retval ) && is_wp_error( $thumb ) ) {
-					$retval = $thumb;
-				}
-
-				// Thumbnail is good so proceed
-				if ( false === $retval ) {
-					$retval = $thumb;
-				}
-
-			} else {
-				$retval = $editor;
+			// $original_max_width has to be larger than the avatar's full width
+			if ( $original_max_width < bp_core_avatar_full_width() ) {
+				$original_max_width = bp_core_avatar_full_width();
 			}
 		}
 
-		return $retval;
+		// Do we need to resize the image ?
+		if ( isset( $avatar_data['width'] ) && $avatar_data['width'] > $original_max_width ) {
+			$edit_args = array(
+				'max_w' => $original_max_width,
+				'max_h' => $original_max_width,
+			);
+		}
+
+		// Do we need to rotate the image ?
+		$angles = array(
+			3 => 180,
+			6 => -90,
+			8 =>  90,
+		);
+
+		if ( isset( $avatar_data['meta']['orientation'] ) && isset( $angles[ $avatar_data['meta']['orientation'] ] ) ) {
+			$edit_args['rotate'] = $angles[ $avatar_data['meta']['orientation'] ];
+		}
+
+		// No need to edit the avatar, original file will be used
+		if ( empty( $edit_args ) ) {
+			return false;
+
+		// Add the file to the edit arguments
+		} else {
+			$edit_args['file'] = $file;
+		}
+
+		return parent::edit_image( 'avatar', $edit_args );
 	}
 
 	/**
 	 * Check if the image dimensions are smaller than full avatar dimensions.
 	 *
-	 * @since BuddyPress (2.3.0)
+	 * @since 2.3.0
 	 *
 	 * @uses  bp_core_avatar_full_width()
 	 * @uses  bp_core_avatar_full_height()
@@ -189,7 +207,7 @@ class BP_Attachment_Avatar extends BP_Attachment {
 	/**
 	 * Crop the avatar.
 	 *
-	 * @since BuddyPress (2.3.0)
+	 * @since 2.3.0
 	 *
 	 * @see  BP_Attachment::crop for the list of parameters
 	 * @uses bp_core_fetch_avatar()
@@ -269,8 +287,14 @@ class BP_Attachment_Avatar extends BP_Attachment {
 		$avatar_types = array( 'full' => '', 'thumb' => '' );
 
 		foreach ( $avatar_types as $key_type => $type ) {
-			$args['dst_w']    = bp_core_avatar_full_width();
-			$args['dst_h']    = bp_core_avatar_full_height();
+			if ( 'thumb' === $key_type ) {
+				$args['dst_w'] = bp_core_avatar_thumb_width();
+				$args['dst_h'] = bp_core_avatar_thumb_height();
+			} else {
+				$args['dst_w'] = bp_core_avatar_full_width();
+				$args['dst_h'] = bp_core_avatar_full_height();
+			}
+
 			$args['dst_file'] = $avatar_folder_dir . '/' . wp_hash( $absolute_path . time() ) . '-bp' . $key_type . '.' . $ext;
 
 			$avatar_types[ $key_type ] = parent::crop( $args );
@@ -286,7 +310,7 @@ class BP_Attachment_Avatar extends BP_Attachment {
 	/**
 	 * Get the user id to set its avatar.
 	 *
-	 * @since BuddyPress (2.3.0)
+	 * @since 2.3.0
 	 *
 	 * @return integer The user ID.
 	 */
@@ -308,7 +332,7 @@ class BP_Attachment_Avatar extends BP_Attachment {
 	/**
 	 * Get the group id to set its avatar.
 	 *
-	 * @since BuddyPress (2.3.0)
+	 * @since 2.3.0
 	 *
 	 * @return integer The group ID.
 	 */
@@ -325,7 +349,7 @@ class BP_Attachment_Avatar extends BP_Attachment {
 	/**
 	 * Build script datas for the Uploader UI.
 	 *
-	 * @since BuddyPress (2.3.0)
+	 * @since 2.3.0
 	 *
 	 * @return array The javascript localization data.
 	 */
@@ -390,7 +414,7 @@ class BP_Attachment_Avatar extends BP_Attachment {
 			 * Use this filter to include specific BuddyPress params for your object.
 			 * e.g. Blavatar.
 			 *
-			 * @since BuddyPress (2.3.0)
+			 * @since 2.3.0
 			 *
 			 * @param array $value The avatar specific BuddyPress parameters.
 			 */
@@ -411,7 +435,7 @@ class BP_Attachment_Avatar extends BP_Attachment {
 		/**
 		 * Use this filter to override/extend the avatar script data.
 		 *
-		 * @since BuddyPress (2.3.0)
+		 * @since 2.3.0
 		 *
 		 * @param array  $script_data The avatar script data.
 		 * @param string $object      The object the avatar belongs to (eg: user or group).

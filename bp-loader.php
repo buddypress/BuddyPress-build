@@ -14,7 +14,7 @@
  * Description: BuddyPress helps you run any kind of social network on your WordPress, with member profiles, activity streams, user groups, messaging, and more.
  * Author:      The BuddyPress Community
  * Author URI:  https://buddypress.org/
- * Version:     2.4.0-alpha
+ * Version:     2.4.0-beta1
  * Text Domain: buddypress
  * Domain Path: /bp-languages/
  * License:     GPLv2 or later (license.txt)
@@ -31,7 +31,7 @@ if ( !class_exists( 'BuddyPress' ) ) :
  *
  * Tap tap tap... Is this thing on?
  *
- * @since BuddyPress (1.6.0)
+ * @since 1.6.0
  */
 class BuddyPress {
 
@@ -119,7 +119,7 @@ class BuddyPress {
 	 * Insures that only one instance of BuddyPress exists in memory at any
 	 * one time. Also prevents needing to define globals all over the place.
 	 *
-	 * @since BuddyPress (1.7.0)
+	 * @since 1.7.0
 	 *
 	 * @static object $instance
 	 * @uses BuddyPress::constants() Setup the constants (mostly deprecated).
@@ -157,7 +157,7 @@ class BuddyPress {
 	/**
 	 * A dummy constructor to prevent BuddyPress from being loaded more than once.
 	 *
-	 * @since BuddyPress (1.7.0)
+	 * @since 1.7.0
 	 * @see BuddyPress::instance()
 	 * @see buddypress()
 	 */
@@ -166,21 +166,21 @@ class BuddyPress {
 	/**
 	 * A dummy magic method to prevent BuddyPress from being cloned.
 	 *
-	 * @since BuddyPress (1.7.0)
+	 * @since 1.7.0
 	 */
 	public function __clone() { _doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?', 'buddypress' ), '1.7' ); }
 
 	/**
 	 * A dummy magic method to prevent BuddyPress from being unserialized.
 	 *
-	 * @since BuddyPress (1.7.0)
+	 * @since 1.7.0
 	 */
 	public function __wakeup() { _doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?', 'buddypress' ), '1.7' ); }
 
 	/**
 	 * Magic method for checking the existence of a certain custom field.
 	 *
-	 * @since BuddyPress (1.7.0)
+	 * @since 1.7.0
 	 *
 	 * @param string $key Key to check the set status for.
 	 *
@@ -191,7 +191,7 @@ class BuddyPress {
 	/**
 	 * Magic method for getting BuddyPress variables.
 	 *
-	 * @since BuddyPress (1.7.0)
+	 * @since 1.7.0
 	 *
 	 * @param string $key Key to return the value for.
 	 *
@@ -202,7 +202,7 @@ class BuddyPress {
 	/**
 	 * Magic method for setting BuddyPress variables.
 	 *
-	 * @since BuddyPress (1.7.0)
+	 * @since 1.7.0
 	 *
 	 * @param string $key   Key to set a value for.
 	 * @param mixed  $value Value to set.
@@ -212,7 +212,7 @@ class BuddyPress {
 	/**
 	 * Magic method for unsetting BuddyPress variables.
 	 *
-	 * @since BuddyPress (1.7.0)
+	 * @since 1.7.0
 	 *
 	 * @param string $key Key to unset a value for.
 	 */
@@ -221,7 +221,7 @@ class BuddyPress {
 	/**
 	 * Magic method to prevent notices and errors from invalid method calls.
 	 *
-	 * @since BuddyPress (1.7.0)
+	 * @since 1.7.0
 	 *
 	 * @param string $name
 	 * @param array  $args
@@ -235,7 +235,7 @@ class BuddyPress {
 	/**
 	 * Bootstrap constants.
 	 *
-	 * @since BuddyPress (1.6.0)
+	 * @since 1.6.0
 	 *
 	 * @uses is_multisite()
 	 * @uses get_current_site()
@@ -316,8 +316,7 @@ class BuddyPress {
 	/**
 	 * Component global variables.
 	 *
-	 * @since BuddyPress (1.6.0)
-	 * @access private
+	 * @since 1.6.0
 	 *
 	 * @uses plugin_dir_path() To generate BuddyPress plugin path.
 	 * @uses plugin_dir_url() To generate BuddyPress plugin url.
@@ -327,7 +326,7 @@ class BuddyPress {
 
 		/** Versions **********************************************************/
 
-		$this->version    = '2.4.0-alpha';
+		$this->version    = '2.4.0-beta1';
 		$this->db_version = 10000;
 
 		/** Loading ***********************************************************/
@@ -335,7 +334,7 @@ class BuddyPress {
 		/**
 		 * Filters the load_deprecated property value.
 		 *
-		 * @since BuddyPress (2.0.0)
+		 * @since 2.0.0
 		 *
 		 * @const constant BP_IGNORE_DEPRECATED Whether or not to ignore deprecated functionality.
 		 */
@@ -388,7 +387,7 @@ class BuddyPress {
 		/**
 		 * Filters the BuddyPress Root blog ID.
 		 *
-		 * @since BuddyPress (1.5.0)
+		 * @since 1.5.0
 		 *
 		 * @const constant BP_ROOT_BLOG BuddyPress Root blog ID.
 		 */
@@ -430,7 +429,7 @@ class BuddyPress {
 	 * Try to avoid using these. Their values have been moved into variables
 	 * in the instance, and have matching functions to get/set their values.
 	 *
-	 * @since BuddyPress (1.7.0)
+	 * @since 1.7.0
 	 */
 	private function legacy_constants() {
 
@@ -448,8 +447,7 @@ class BuddyPress {
 	/**
 	 * Include required files.
 	 *
-	 * @since BuddyPress (1.6.0)
-	 * @access private
+	 * @since 1.6.0
 	 *
 	 * @uses is_admin() If in WordPress admin, load additional file.
 	 */
@@ -501,14 +499,14 @@ class BuddyPress {
 			require( $this->plugin_dir . 'bp-core/deprecated/2.1.php' );
 			require( $this->plugin_dir . 'bp-core/deprecated/2.2.php' );
 			require( $this->plugin_dir . 'bp-core/deprecated/2.3.php' );
+			require( $this->plugin_dir . 'bp-core/deprecated/2.4.php' );
 		}
 	}
 
 	/**
 	 * Set up the default hooks and actions.
 	 *
-	 * @since BuddyPress (1.6.0)
-	 * @access private
+	 * @since 1.6.0
 	 *
 	 * @uses register_activation_hook() To register the activation hook.
 	 * @uses register_deactivation_hook() To register the deactivation hook.
@@ -552,7 +550,7 @@ class BuddyPress {
 		 *
 		 * Includes bbp-core-hooks.php.
 		 *
-		 * @since BuddyPress (1.7.0)
+		 * @since 1.7.0
 		 *
 		 * @param BuddyPress $this. Current BuddyPress instance. Passed by reference.
 		 */
@@ -562,7 +560,7 @@ class BuddyPress {
 	/**
 	 * Private method to align the active and database versions.
 	 *
-	 * @since BuddyPress (1.7.0)
+	 * @since 1.7.0
 	 */
 	private function versions() {
 
@@ -599,7 +597,7 @@ class BuddyPress {
 	 * Sites using bp-default (or a child theme of bp-default) will
 	 * continue to have bp-themes registered as before.
 	 *
-	 * @since BuddyPress (1.5.0)
+	 * @since 1.5.0
 	 *
 	 * @todo Move bp-default to wordpress.org/extend/themes and remove this.
 	 */
@@ -618,7 +616,7 @@ class BuddyPress {
 	 * the bp-legacy folders, it's fine to hardcode these here. If at a
 	 * later date we need to automate this, an API will need to be built.
 	 *
-	 * @since BuddyPress (1.7.0)
+	 * @since 1.7.0
 	 */
 	public function register_theme_packages() {
 
@@ -640,7 +638,7 @@ class BuddyPress {
 	/**
 	 * Set up the default BuddyPress theme compatibility location.
 	 *
-	 * @since BuddyPress (1.7.0)
+	 * @since 1.7.0
 	 */
 	public function setup_theme() {
 

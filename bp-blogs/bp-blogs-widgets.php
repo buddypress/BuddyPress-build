@@ -1,5 +1,4 @@
 <?php
-
 /**
  * BuddyPress Blogs Widgets.
  *
@@ -59,8 +58,8 @@ class BP_Blogs_Recent_Posts_Widget extends WP_Widget {
 		/**
 		 * Filters the Blogs Recent Posts widget title.
 		 *
-		 * @since BuddyPress (2.2.0)
-		 * @since BuddyPress (2.3.0) Added 'instance' and 'id_base' to arguments passed to filter.
+		 * @since 2.2.0
+		 * @since 2.3.0 Added 'instance' and 'id_base' to arguments passed to filter.
 		 *
 		 * @param string $title    The widget title.
 		 * @param array  $instance The settings for the particular instance of the widget.
@@ -74,6 +73,8 @@ class BP_Blogs_Recent_Posts_Widget extends WP_Widget {
 		if ( empty( $instance['max_posts'] ) || empty( $instance['max_posts'] ) ) {
 			$instance['max_posts'] = 10;
 		}
+
+		$after_widget = $args['after_widget'];
 
 		// Override some of the contextually set parameters for bp_has_activities()
 		$args = array(
@@ -117,7 +118,7 @@ class BP_Blogs_Recent_Posts_Widget extends WP_Widget {
 
 		<?php endif; ?>
 
-		<?php echo $args['after_widget']; ?>
+		<?php echo $after_widget; ?>
 	<?php
 	}
 

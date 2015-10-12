@@ -1,5 +1,4 @@
 <?php
-
 /**
  * BuddyPress Members List Classes
  *
@@ -7,7 +6,7 @@
  * @subpackage MembersAdminClasses
  */
 
-// Exit if accessed directly
+// Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
 if ( class_exists( 'WP_Users_List_Table') ) :
@@ -15,16 +14,15 @@ if ( class_exists( 'WP_Users_List_Table') ) :
 /**
  * List table class for signups admin page.
  *
- * @since BuddyPress (2.0.0)
+ * @since 2.0.0
  */
 class BP_Members_List_Table extends WP_Users_List_Table {
 
 	/**
 	 * Signup counts.
 	 *
-	 * @since BuddyPress (2.0.0)
+	 * @since 2.0.0
 	 *
-	 * @access public
 	 * @var int
 	 */
 	public $signup_counts = 0;
@@ -32,7 +30,7 @@ class BP_Members_List_Table extends WP_Users_List_Table {
 	/**
 	 * Constructor.
 	 *
-	 * @since BuddyPress (2.0.0)
+	 * @since 2.0.0
 	 */
 	public function __construct() {
 		// Define singular and plural labels, as well as whether we support AJAX.
@@ -49,7 +47,7 @@ class BP_Members_List_Table extends WP_Users_List_Table {
 	 * Handles filtering of data, sorting, pagination, and any other data
 	 * manipulation required prior to rendering.
 	 *
-	 * @since BuddyPress (2.0.0)
+	 * @since 2.0.0
 	 */
 	public function prepare_items() {
 		global $usersearch;
@@ -88,7 +86,7 @@ class BP_Members_List_Table extends WP_Users_List_Table {
 	/**
 	 * Get the views (the links above the WP List Table).
 	 *
-	 * @since BuddyPress (2.0.0)
+	 * @since 2.0.0
 	 *
 	 * @uses WP_Users_List_Table::get_views() to get the users views
 	 */
@@ -108,7 +106,7 @@ class BP_Members_List_Table extends WP_Users_List_Table {
 	 * WP_Users_List_Table will add an extra nav to change user's role.
 	 * As we're dealing with signups, we don't need this.
 	 *
-	 * @since BuddyPress (2.0.0)
+	 * @since 2.0.0
 	 *
 	 * @param array $which
 	 */
@@ -119,14 +117,14 @@ class BP_Members_List_Table extends WP_Users_List_Table {
 	/**
 	 * Specific signups columns.
 	 *
-	 * @since BuddyPress (2.0.0)
+	 * @since 2.0.0
 	 */
 	public function get_columns() {
 
 		/**
 		 * Filters the single site Members signup columns.
 		 *
-		 * @since BuddyPress (2.0.0)
+		 * @since 2.0.0
 		 *
 		 * @param array $value Array of columns to display.
 		 */
@@ -144,7 +142,7 @@ class BP_Members_List_Table extends WP_Users_List_Table {
 	/**
 	 * Specific bulk actions for signups.
 	 *
-	 * @since BuddyPress (2.0.0)
+	 * @since 2.0.0
 	 */
 	public function get_bulk_actions() {
 		$actions = array(
@@ -164,7 +162,7 @@ class BP_Members_List_Table extends WP_Users_List_Table {
 	 *
 	 * Nice job, clean sheet!
 	 *
-	 * @since BuddyPress (2.0.0)
+	 * @since 2.0.0
 	 */
 	public function no_items() {
 
@@ -188,7 +186,7 @@ class BP_Members_List_Table extends WP_Users_List_Table {
 	/**
 	 * The columns signups can be reordered with.
 	 *
-	 * @since BuddyPress (2.0.0)
+	 * @since 2.0.0
 	 */
 	public function get_sortable_columns() {
 		return array(
@@ -201,7 +199,7 @@ class BP_Members_List_Table extends WP_Users_List_Table {
 	/**
 	 * Display signups rows.
 	 *
-	 * @since BuddyPress (2.0.0)
+	 * @since 2.0.0
 	 */
 	public function display_rows() {
 		$style = '';
@@ -220,7 +218,7 @@ class BP_Members_List_Table extends WP_Users_List_Table {
 	/**
 	 * Display a signup row.
 	 *
-	 * @since BuddyPress (2.0.0)
+	 * @since 2.0.0
 	 *
 	 * @see WP_List_Table::single_row() for explanation of params.
 	 *
@@ -240,7 +238,7 @@ class BP_Members_List_Table extends WP_Users_List_Table {
 	/**
 	 * Markup for the checkbox used to select items for bulk actions.
 	 *
-	 * @since BuddyPress (2.0.0)
+	 * @since 2.0.0
 	 *
 	 * @param object $signup_object The signup data object.
 	 */
@@ -254,7 +252,7 @@ class BP_Members_List_Table extends WP_Users_List_Table {
 	/**
 	 * The row actions (delete/activate/email).
 	 *
-	 * @since BuddyPress (2.0.0)
+	 * @since 2.0.0
 	 *
 	 * @param object $signup_object The signup data object.
 	 */
@@ -305,7 +303,7 @@ class BP_Members_List_Table extends WP_Users_List_Table {
 		/**
 		 * Filters the multisite row actions for each user in list.
 		 *
-		 * @since BuddyPress (2.0.0)
+		 * @since 2.0.0
 		 *
 		 * @param array  $actions       Array of actions and corresponding links.
 		 * @param object $signup_object The signup data object.
@@ -318,7 +316,7 @@ class BP_Members_List_Table extends WP_Users_List_Table {
 	/**
 	 * Display user name, if any.
 	 *
-	 * @since BuddyPress (2.0.0)
+	 * @since 2.0.0
 	 *
 	 * @param object $signup_object The signup data object.
 	 */
@@ -329,7 +327,7 @@ class BP_Members_List_Table extends WP_Users_List_Table {
 	/**
 	 * Display user email.
 	 *
-	 * @since BuddyPress (2.0.0)
+	 * @since 2.0.0
 	 *
 	 * @param object $signup_object The signup data object.
 	 */
@@ -340,7 +338,7 @@ class BP_Members_List_Table extends WP_Users_List_Table {
 	/**
 	 * Display registration date.
 	 *
-	 * @since BuddyPress (2.0.0)
+	 * @since 2.0.0
 	 *
 	 * @param object $signup_object The signup data object.
 	 */
@@ -351,7 +349,7 @@ class BP_Members_List_Table extends WP_Users_List_Table {
 	/**
 	 * Display the last time an activation email has been sent.
 	 *
-	 * @since BuddyPress (2.0.0)
+	 * @since 2.0.0
 	 *
 	 * @param object $signup_object The signup data object.
 	 */
@@ -362,7 +360,7 @@ class BP_Members_List_Table extends WP_Users_List_Table {
 	/**
 	 * Display number of time an activation email has been sent.
 	 *
-	 * @since BuddyPress (2.0.0)
+	 * @since 2.0.0
 	 *
 	 * @param object $signup_object Signup object instance.
 	 *
@@ -375,7 +373,7 @@ class BP_Members_List_Table extends WP_Users_List_Table {
 	/**
 	 * Allow plugins to add their custom column.
 	 *
-	 * @since BuddyPress (2.1.0)
+	 * @since 2.1.0
 	 *
 	 * @param object|null $signup_object The signup data object.
 	 * @param string      $column_name   The column name.
@@ -387,7 +385,7 @@ class BP_Members_List_Table extends WP_Users_List_Table {
 		/**
 		 * Filters the single site custom columns for plugins.
 		 *
-		 * @since BuddyPress (2.1.0)
+		 * @since 2.1.0
 		 *
 		 * @param string $column_name   The column name.
 		 * @param object $signup_object The signup data object.
@@ -402,16 +400,15 @@ if ( class_exists( 'WP_MS_Users_List_Table' ) ) :
 /**
  * List table class for signups network admin page.
  *
- * @since BuddyPress (2.0.0)
+ * @since 2.0.0
  */
 class BP_Members_MS_List_Table extends WP_MS_Users_List_Table {
 
 	/**
 	 * Signup counts.
 	 *
-	 * @since BuddyPress (2.0.0)
+	 * @since 2.0.0
 	 *
-	 * @access public
 	 * @var int
 	 */
 	public $signup_counts = 0;
@@ -419,7 +416,7 @@ class BP_Members_MS_List_Table extends WP_MS_Users_List_Table {
 	/**
 	 * Constructor
 	 *
-	 * @since BuddyPress (2.0.0)
+	 * @since 2.0.0
 	 */
 	public function __construct() {
 		// Define singular and plural labels, as well as whether we support AJAX.
@@ -436,7 +433,7 @@ class BP_Members_MS_List_Table extends WP_MS_Users_List_Table {
 	 * Handles filtering of data, sorting, pagination, and any other data
 	 * manipulation required prior to rendering.
 	 *
-	 * @since BuddyPress (2.0.0)
+	 * @since 2.0.0
 	 */
 	public function prepare_items() {
 		global $usersearch, $mode;
@@ -476,7 +473,7 @@ class BP_Members_MS_List_Table extends WP_MS_Users_List_Table {
 	/**
 	 * Get the views : the links above the WP List Table.
 	 *
-	 * @since BuddyPress (2.0.0)
+	 * @since 2.0.0
 	 *
 	 * @uses WP_MS_Users_List_Table::get_views() to get the users views.
 	 */
@@ -493,14 +490,14 @@ class BP_Members_MS_List_Table extends WP_MS_Users_List_Table {
 	/**
 	 * Specific signups columns.
 	 *
-	 * @since BuddyPress (2.0.0)
+	 * @since 2.0.0
 	 */
 	public function get_columns() {
 
 		/**
 		 * Filters the multisite Members signup columns.
 		 *
-		 * @since BuddyPress (2.0.0)
+		 * @since 2.0.0
 		 *
 		 * @param array $value Array of columns to display.
 		 */
@@ -518,7 +515,7 @@ class BP_Members_MS_List_Table extends WP_MS_Users_List_Table {
 	/**
 	 * Specific bulk actions for signups.
 	 *
-	 * @since BuddyPress (2.0.0)
+	 * @since 2.0.0
 	 */
 	public function get_bulk_actions() {
 		$actions = array(
@@ -538,7 +535,7 @@ class BP_Members_MS_List_Table extends WP_MS_Users_List_Table {
 	 *
 	 * Nice job, clean sheet!
 	 *
-	 * @since BuddyPress (2.0.0)
+	 * @since 2.0.0
 	 */
 	public function no_items() {
 		if ( bp_get_signup_allowed() ) {
@@ -557,7 +554,7 @@ class BP_Members_MS_List_Table extends WP_MS_Users_List_Table {
 	/**
 	 * The columns signups can be reordered with.
 	 *
-	 * @since BuddyPress (2.0.0)
+	 * @since 2.0.0
 	 */
 	public function get_sortable_columns() {
 		return array(
@@ -570,7 +567,7 @@ class BP_Members_MS_List_Table extends WP_MS_Users_List_Table {
 	/**
 	 * Display signups rows.
 	 *
-	 * @since BuddyPress (2.0.0)
+	 * @since 2.0.0
 	 */
 	public function display_rows() {
 		$style = '';
@@ -589,7 +586,7 @@ class BP_Members_MS_List_Table extends WP_MS_Users_List_Table {
 	/**
 	 * Display a signup row.
 	 *
-	 * @since BuddyPress (2.0.0)
+	 * @since 2.0.0
 	 *
 	 * @see WP_List_Table::single_row() for explanation of params.
 	 *
@@ -603,14 +600,15 @@ class BP_Members_MS_List_Table extends WP_MS_Users_List_Table {
 	}
 
 	/**
-	 * Prevents regular users row actions to be output
+	 * Prevents regular users row actions to be output.
 	 *
-	 * @since BuddyPress (2.4.0)
-	 * @access protected
+	 * @since 2.4.0
 	 *
 	 * @param object $signup_object Signup being acted upon.
 	 * @param string $column_name   Current column name.
 	 * @param string $primary       Primary column name.
+	 *
+	 * @return string
 	 */
 	protected function handle_row_actions( $signup_object = null, $column_name = '', $primary = '' ) {
 		return '';
@@ -619,7 +617,7 @@ class BP_Members_MS_List_Table extends WP_MS_Users_List_Table {
 	/**
 	 * Markup for the checkbox used to select items for bulk actions.
 	 *
-	 * @since BuddyPress (2.0.0)
+	 * @since 2.0.0
 	 *
 	 * @param object|null $signup_object The signup data object.
 	 */
@@ -633,7 +631,7 @@ class BP_Members_MS_List_Table extends WP_MS_Users_List_Table {
 	/**
 	 * The row actions (delete/activate/email).
 	 *
-	 * @since BuddyPress (2.0.0)
+	 * @since 2.0.0
 	 *
 	 * @param object $signup_object The signup data object.
 	 */
@@ -690,7 +688,7 @@ class BP_Members_MS_List_Table extends WP_MS_Users_List_Table {
 	/**
 	 * Display user name, if any.
 	 *
-	 * @since BuddyPress (2.0.0)
+	 * @since 2.0.0
 	 *
 	 * @param object $signup_object The signup data object.
 	 */
@@ -701,7 +699,7 @@ class BP_Members_MS_List_Table extends WP_MS_Users_List_Table {
 	/**
 	 * Display user email.
 	 *
-	 * @since BuddyPress (2.0.0)
+	 * @since 2.0.0
 	 *
 	 * @param object $signup_object The signup data object.
 	 */
@@ -712,7 +710,7 @@ class BP_Members_MS_List_Table extends WP_MS_Users_List_Table {
 	/**
 	 * Display registration date.
 	 *
-	 * @since BuddyPress (2.0.0)
+	 * @since 2.0.0
 	 *
 	 * @param object $signup_object The signup data object.
 	 */
@@ -731,7 +729,7 @@ class BP_Members_MS_List_Table extends WP_MS_Users_List_Table {
 	/**
 	 * Display the last time an activation email has been sent.
 	 *
-	 * @since BuddyPress (2.0.0)
+	 * @since 2.0.0
 	 *
 	 * @param object|null $signup_object Signup object instance.
 	 */
@@ -750,7 +748,7 @@ class BP_Members_MS_List_Table extends WP_MS_Users_List_Table {
 	/**
 	 * Display number of time an activation email has been sent.
 	 *
-	 * @since BuddyPress (2.0.0)
+	 * @since 2.0.0
 	 *
 	 * @param object|null $signup_object Signup object instance.
 	 */
@@ -761,7 +759,7 @@ class BP_Members_MS_List_Table extends WP_MS_Users_List_Table {
 	/**
 	 * Allow plugins to add their custom column.
 	 *
-	 * @since BuddyPress 2.1.0
+	 * @since 2.1.0
 	 *
 	 * @param object|null $signup_object The signup data object.
 	 * @param string      $column_name   The column name.
@@ -773,7 +771,7 @@ class BP_Members_MS_List_Table extends WP_MS_Users_List_Table {
 		/**
 		 * Filters the multisite custom columns for plugins.
 		 *
-		 * @since BuddyPress (2.1.0)
+		 * @since 2.1.0
 		 *
 		 * @param string $column_name   The column name.
 		 * @param object $signup_object The signup data object.

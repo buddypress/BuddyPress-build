@@ -5,7 +5,7 @@
  * @package BuddyPress
  */
 
-// Exit if accessed directly
+// Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -13,7 +13,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * Previously, these widgets were registered in bp-core.
  *
- * @since BuddyPress (2.2.0)
+ * @since 2.2.0
  */
 function bp_members_register_widgets() {
 	add_action( 'widgets_init', create_function( '', 'return register_widget("BP_Core_Members_Widget");'         ) );
@@ -25,7 +25,7 @@ add_action( 'bp_register_widgets', 'bp_members_register_widgets' );
 /**
  * Members Widget.
  *
- * @since BuddyPress (1.0.3)
+ * @since 1.0.3
  */
 class BP_Core_Members_Widget extends WP_Widget {
 
@@ -66,8 +66,8 @@ class BP_Core_Members_Widget extends WP_Widget {
 		/**
 		 * Filters the title of the Members widget.
 		 *
-		 * @since BuddyPress (1.8.0)
-		 * @since BuddyPress (2.3.0) Added 'instance' and 'id_base' to arguments passed to filter.
+		 * @since 1.8.0
+		 * @since 2.3.0 Added 'instance' and 'id_base' to arguments passed to filter.
 		 *
 		 * @param string $title    The widget title.
 		 * @param array  $settings The settings for the particular instance of the widget.
@@ -79,7 +79,7 @@ class BP_Core_Members_Widget extends WP_Widget {
 		/**
 		 * Filters the separator of the member widget links.
 		 *
-		 * @since BuddyPress (2.4.0)
+		 * @since 2.4.0
 		 *
 		 * @param string $separator Separator string. Default '|'.
 		 */
@@ -195,34 +195,33 @@ class BP_Core_Members_Widget extends WP_Widget {
 		$link_title     = (bool) $settings['link_title']; ?>
 
 		<p>
-			<label for="bp-core-widget-title">
+			<label for="<?php echo $this->get_field_id( 'title' ); ?>">
 				<?php esc_html_e( 'Title:', 'buddypress' ); ?>
 				<input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>" style="width: 100%" />
 			</label>
 		</p>
 
 		<p>
-			<label for="<?php echo $this->get_field_name( 'link_title' ) ?>">
-				<input type="checkbox" name="<?php echo $this->get_field_name( 'link_title' ) ?>" value="1" <?php checked( $link_title ) ?> />
+			<label for="<?php echo $this->get_field_id( 'link_title' ) ?>">
+				<input type="checkbox" name="<?php echo $this->get_field_name( 'link_title' ) ?>" id="<?php echo $this->get_field_id( 'link_title' ) ?>" value="1" <?php checked( $link_title ) ?> />
 				<?php esc_html_e( 'Link widget title to Members directory', 'buddypress' ); ?>
 			</label>
 		</p>
 
 		<p>
-			<label for="bp-core-widget-members-max">
+			<label for="<?php echo $this->get_field_id( 'max_members' ); ?>">
 				<?php esc_html_e( 'Max members to show:', 'buddypress' ); ?>
 				<input class="widefat" id="<?php echo $this->get_field_id( 'max_members' ); ?>" name="<?php echo $this->get_field_name( 'max_members' ); ?>" type="text" value="<?php echo esc_attr( $max_members ); ?>" style="width: 30%" />
 			</label>
 		</p>
 
 		<p>
-			<label for="bp-core-widget-groups-default"><?php esc_html_e( 'Default members to show:', 'buddypress' ); ?>
-				<select name="<?php echo $this->get_field_name( 'member_default' ) ?>">
-					<option value="newest"  <?php if ( 'newest'  === $member_default ) : ?>selected="selected"<?php endif; ?>><?php esc_html_e( 'Newest',  'buddypress' ); ?></option>
-					<option value="active"  <?php if ( 'active'  === $member_default ) : ?>selected="selected"<?php endif; ?>><?php esc_html_e( 'Active',  'buddypress' ); ?></option>
-					<option value="popular" <?php if ( 'popular' === $member_default ) : ?>selected="selected"<?php endif; ?>><?php esc_html_e( 'Popular', 'buddypress' ); ?></option>
-				</select>
-			</label>
+			<label for="<?php echo $this->get_field_id( 'member_default' ) ?>"><?php esc_html_e( 'Default members to show:', 'buddypress' ); ?></label>
+			<select name="<?php echo $this->get_field_name( 'member_default' ) ?>" id="<?php echo $this->get_field_id( 'member_default' ) ?>">
+				<option value="newest"  <?php if ( 'newest'  === $member_default ) : ?>selected="selected"<?php endif; ?>><?php esc_html_e( 'Newest',  'buddypress' ); ?></option>
+				<option value="active"  <?php if ( 'active'  === $member_default ) : ?>selected="selected"<?php endif; ?>><?php esc_html_e( 'Active',  'buddypress' ); ?></option>
+				<option value="popular" <?php if ( 'popular' === $member_default ) : ?>selected="selected"<?php endif; ?>><?php esc_html_e( 'Popular', 'buddypress' ); ?></option>
+			</select>
 		</p>
 
 	<?php
@@ -231,7 +230,7 @@ class BP_Core_Members_Widget extends WP_Widget {
 	/**
 	 * Merge the widget settings into defaults array.
 	 *
-	 * @since BuddyPress (2.3.0)
+	 * @since 2.3.0
 	 *
 	 * @param array $instance Widget instance settings.
 	 *
@@ -252,7 +251,7 @@ class BP_Core_Members_Widget extends WP_Widget {
 /**
  * Who's Online Widget.
  *
- * @since BuddyPress (1.0.3)
+ * @since 1.0.3
  */
 class BP_Core_Whos_Online_Widget extends WP_Widget {
 
@@ -284,8 +283,8 @@ class BP_Core_Whos_Online_Widget extends WP_Widget {
 		/**
 		 * Filters the title of the Who's Online widget.
 		 *
-		 * @since BuddyPress (1.8.0)
-		 * @since BuddyPress (2.3.0) Added 'instance' and 'id_base' to arguments passed to filter.
+		 * @since 1.8.0
+		 * @since 2.3.0 Added 'instance' and 'id_base' to arguments passed to filter.
 		 *
 		 * @param string $title    The widget title.
 		 * @param array  $settings The settings for the particular instance of the widget.
@@ -364,14 +363,14 @@ class BP_Core_Whos_Online_Widget extends WP_Widget {
 		$max_members = strip_tags( $settings['max_members'] ); ?>
 
 		<p>
-			<label for="bp-core-widget-title">
+			<label for="<?php echo $this->get_field_id( 'title' ); ?>">
 				<?php esc_html_e( 'Title:', 'buddypress' ); ?>
 				<input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>" style="width: 100%" />
 			</label>
 		</p>
 
 		<p>
-			<label for="bp-core-widget-members-max">
+			<label for="<?php echo $this->get_field_id( 'max_members' ); ?>">
 				<?php esc_html_e( 'Max Members to show:', 'buddypress' ); ?>
 				<input class="widefat" id="<?php echo $this->get_field_id( 'max_members' ); ?>" name="<?php echo $this->get_field_name( 'max_members' ); ?>" type="text" value="<?php echo esc_attr( $max_members ); ?>" style="width: 30%" />
 			</label>
@@ -383,7 +382,7 @@ class BP_Core_Whos_Online_Widget extends WP_Widget {
 	/**
 	 * Merge the widget settings into defaults array.
 	 *
-	 * @since BuddyPress (2.3.0)
+	 * @since 2.3.0
 	 *
 	 * @param array $instance Widget instance settings.
 	 *
@@ -402,7 +401,7 @@ class BP_Core_Whos_Online_Widget extends WP_Widget {
 /**
  * Recently Active Members Widget.
  *
- * @since BuddyPress (1.0.3)
+ * @since 1.0.3
  */
 class BP_Core_Recently_Active_Widget extends WP_Widget {
 
@@ -434,8 +433,8 @@ class BP_Core_Recently_Active_Widget extends WP_Widget {
 		/**
 		 * Filters the title of the Recently Active widget.
 		 *
-		 * @since BuddyPress (1.8.0)
-		 * @since BuddyPress (2.3.0) Added 'instance' and 'id_base' to arguments passed to filter.
+		 * @since 1.8.0
+		 * @since 2.3.0 Added 'instance' and 'id_base' to arguments passed to filter.
 		 *
 		 * @param string $title    The widget title.
 		 * @param array  $settings The settings for the particular instance of the widget.
@@ -514,14 +513,14 @@ class BP_Core_Recently_Active_Widget extends WP_Widget {
 		$max_members = strip_tags( $settings['max_members'] ); ?>
 
 		<p>
-			<label for="bp-core-widget-members-title">
+			<label for="<?php echo $this->get_field_id( 'title' ); ?>">
 				<?php esc_html_e( 'Title:', 'buddypress' ); ?>
 				<input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>" style="width: 100%" />
 			</label>
 		</p>
 
 		<p>
-			<label for="bp-core-widget-members-max">
+			<label for="<?php echo $this->get_field_id( 'max_members' ); ?>">
 				<?php esc_html_e( 'Max Members to show:', 'buddypress' ); ?>
 				<input class="widefat" id="<?php echo $this->get_field_id( 'max_members' ); ?>" name="<?php echo $this->get_field_name( 'max_members' ); ?>" type="text" value="<?php echo esc_attr( $max_members ); ?>" style="width: 30%" />
 			</label>
@@ -533,7 +532,7 @@ class BP_Core_Recently_Active_Widget extends WP_Widget {
 	/**
 	 * Merge the widget settings into defaults array.
 	 *
-	 * @since BuddyPress (2.3.0)
+	 * @since 2.3.0
 	 *
 	 * @param array $instance Widget instance settings.
 	 *
@@ -552,7 +551,7 @@ class BP_Core_Recently_Active_Widget extends WP_Widget {
 /**
  * AJAX request handler for Members widgets.
  *
- * @since BuddyPress (1.0.0)
+ * @since 1.0.0
  *
  * @see BP_Core_Members_Widget
  */

@@ -41,6 +41,7 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 		6.2.1 - item-body: Groups
 			6.2.1.1 - Management settings screens
 			6.2.1.2 - Group members list
+			6.2.1.3 - Group send Invites
 		6.2.2 - item-body: User Accounts
 			6.2.2.1 - classes, pag, filters
 			6.2.2.2 - Extended Profiles
@@ -94,7 +95,7 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 *----------------------------------------------------------
 */
 #buddypress {
-	/*__ Horizontal menus __*/
+	/*__ Horizontal menus & small screen __*/
 }
 
 #buddypress div.item-list-tabs ul li.selected a {
@@ -121,6 +122,19 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 
 #buddypress #object-nav ul li {
 	float: none;
+}
+
+@media screen and (max-width: 38.75em) {
+	#buddypress #object-nav ul li:focus,
+	#buddypress #object-nav ul li:hover {
+		background: #f4f2df;
+	}
+}
+
+@media screen and (max-width: 38.75em) {
+	#buddypress #object-nav ul li:not(:last-child) {
+		border-bottom: 1px solid #eaeaea;
+	}
 }
 
 #buddypress #object-nav ul li:not(.selected) a {
@@ -237,7 +251,7 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 		border: 0;
 		border-bottom: 1px solid #ddd;
 		overflow: visible;
-		padding-bottom: 0;
+		padding: 0;
 	}
 	#main #buddypress #group-create-tabs.item-list-tabs ul li {
 		float: left;
@@ -772,6 +786,27 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 * @subsection 6.1 - Item Header Global
 *-----------------------------------------------------------
 */
+.bp-user .entry-header,
+.single-item.groups .entry-header {
+	margin-bottom: 0;
+}
+
+.bp-user .entry-header .entry-title,
+.single-item.groups .entry-header .entry-title {
+	color: #8c8c7f;
+	font-size: 32px;
+	font-size: 2rem;
+	margin-bottom: 10px;
+	text-align: center;
+}
+
+@media screen and (min-width: 46.25em) {
+	.bp-user .entry-header .entry-title,
+	.single-item.groups .entry-header .entry-title {
+		text-align: left;
+	}
+}
+
 .bp-user #buddypress #item-header-content #item-meta,
 .single-item.groups #buddypress #item-header-content #item-meta {
 	font-size: 14px;
@@ -920,8 +955,42 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 		width: 40%;
 	}
 	.single-item.groups #buddypress div#item-header div#item-actions {
+		clear: both;
 		float: right;
 		width: 28%;
+	}
+	.single-item.groups #buddypress div#item-header div#item-actions h3 {
+		font-size: 14px;
+		font-size: 0.875rem;
+	}
+}
+
+.single-item.groups #buddypress div#item-header #item-header-cover-image #item-actions {
+	border: 0;
+	float: none;
+	width: auto;
+}
+
+@media screen and (max-width: 46.25em) {
+	.single-item.groups #buddypress div#item-header #item-header-cover-image #item-actions {
+		clear: both !important;
+	}
+}
+
+@media screen and (min-width: 46.25em) {
+	.single-item.groups #buddypress div#item-header #item-header-cover-image #item-header-content {
+		padding-left: 10px;
+	}
+	.single-item.groups #buddypress div#item-header #item-header-cover-image #item-header-content #item-buttons {
+		margin-top: 0;
+	}
+	.single-item.groups #buddypress div#item-header #item-header-cover-image #item-actions {
+		border-left: 1px solid #eaeaea;
+		clear: none;
+		float: right;
+		margin-top: 230px !important;
+		padding-top: 0 !important;
+		width: 20%;
 	}
 }
 
@@ -948,20 +1017,39 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 	float: none;
 }
 
+.bp-user #buddypress #item-header #item-header-content .user-nicename,
+.bp-user #buddypress #item-header #item-header-content span.activity {
+	display: block;
+	text-align: center;
+}
+
 @media screen and (min-width: 46.25em) {
 	.bp-user #buddypress #item-header #item-header-avatar {
 		float: left;
-		width: 20%;
+		width: auto;
 	}
-	.bp-user #buddypress #item-header #item-header-avatar img.avatar,
 	.bp-user #buddypress #item-header #item-header-avatar a {
 		float: left;
-		width: 100%;
 	}
 	.bp-user #buddypress #item-header #item-header-content {
-		float: right;
-		margin-right: 5%;
-		width: 69%;
+		float: none;
+		overflow: hidden;
+	}
+	.bp-user #buddypress #item-header #item-header-content .user-nicename,
+	.bp-user #buddypress #item-header #item-header-content span.activity {
+		text-align: left;
+	}
+	.bp-user #buddypress #item-header #item-header-content #item-meta {
+		margin-top: 0;
+	}
+}
+
+@media screen and (min-width: 46.25em) {
+	.bp-user #buddypress #item-header-cover-image #item-header-content .user-nicename {
+		margin-bottom: 20px;
+	}
+	.bp-user #buddypress #item-header-cover-image #item-header-content #item-buttons {
+		margin: 0;
 	}
 }
 
@@ -1088,6 +1176,49 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 	}
 	.groups.group-members #subnav li #search-members-form label input[type="text"] {
 		width: 100%;
+	}
+}
+
+/**
+*-----------------------------------------
+* @subsection 6.2.1.3 - Group send Invites
+*-----------------------------------------
+*/
+#buddypress div.invite .left-menu {
+	float: none;
+}
+
+@media screen and (min-width: 46.25em) {
+	#buddypress div.invite .left-menu {
+		float: left;
+	}
+}
+
+#buddypress div.invite #invite-list {
+	border: 1px solid #eaeaea;
+	height: auto;
+	min-height: 3.125em;
+	padding: 0 0.3em 0.5em;
+	width: auto;
+}
+
+@media screen and (min-width: 46.25em) {
+	#buddypress div.invite #invite-list {
+		width: 220px;
+	}
+}
+
+#buddypress div.invite #invite-list ul {
+	padding-left: 0;
+}
+
+#buddypress div.invite .main-column {
+	margin-left: 0;
+}
+
+@media screen and (min-width: 46.25em) {
+	#buddypress div.invite .main-column {
+		margin-left: 235px;
 	}
 }
 
@@ -1230,6 +1361,7 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 .bp-user #buddypress .profile #profile-edit-form ul.button-nav {
 	border-bottom: 1px solid #eaeaea;
 	margin-left: 0;
+	padding: 0;
 }
 
 .bp-user #buddypress .profile #profile-edit-form ul.button-nav li {
@@ -1355,9 +1487,13 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 	}
 }
 
+.bp-user #buddypress #message-threads tr .thread-checkbox {
+	padding: 0 0 0 0.3em;
+}
+
 .bp-user #buddypress #message-threads tr td.bulk-select-check,
 .bp-user #buddypress #message-threads tr td.thread-from {
-	height: 2.6em;
+	height: 3em;
 }
 
 @media screen and (max-width: 38.75em) {
@@ -1387,6 +1523,11 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 	font-size: 0.75rem;
 }
 
+.bp-user #buddypress #message-threads tr td.thread-info .thread-excerpt {
+	font-size: 14px;
+	font-size: 0.875rem;
+}
+
 .bp-user #buddypress #message-threads tr td.thread-options {
 	text-align: right;
 }
@@ -1410,8 +1551,8 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 @media screen and (max-width: 38.75em) {
 	.bp-user #buddypress #message-threads tr span.activity {
 		clear: both;
-		font-size: 11px;
-		font-size: 0.6875rem;
+		font-size: 12px;
+		font-size: 0.75rem;
 		width: 100%;
 	}
 }
@@ -1621,9 +1762,6 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 	#buddypress li.groups-members-search form input[type='submit'] {
 		width: auto;
 	}
-	#buddypress div.message-search {
-		margin-right: 10px;
-	}
 }
 
 @media screen and (min-width: 77.5em) {
@@ -1654,6 +1792,11 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 	background: #6e6e6e;
 	border-color: #b7b7b7;
 	color: #fff;
+}
+
+#buddypress table th,
+#buddypress table td {
+	padding: 0.3em;
 }
 
 #buddypress table p {

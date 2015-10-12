@@ -1,5 +1,4 @@
 <?php
-
 /**
  * BuddyPress Members Toolbar.
  *
@@ -9,13 +8,13 @@
  * @subpackage MembersAdminBar
  */
 
-// Exit if accessed directly
+// Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
 /**
  * Add the "My Account" menu and all submenus.
  *
- * @since BuddyPress (1.6.0)
+ * @since 1.6.0
  *
  * @todo Deprecate WP 3.2 Toolbar compatibility when we drop 3.2 support
  */
@@ -71,7 +70,7 @@ add_action( 'bp_setup_admin_bar', 'bp_members_admin_bar_my_account_menu', 4 );
 /**
  * Add the User Admin top-level menu to user pages.
  *
- * @since BuddyPress (1.5.0)
+ * @since 1.5.0
  */
 function bp_members_admin_bar_user_admin_menu() {
 	global $wp_admin_bar;
@@ -115,6 +114,16 @@ function bp_members_admin_bar_user_admin_menu() {
 			) );
 		}
 
+		// User Admin > Edit this user's cover image
+		if ( bp_displayed_user_use_cover_image_header() ) {
+			$wp_admin_bar->add_menu( array(
+				'parent' => $bp->user_admin_menu_id,
+				'id'     => $bp->user_admin_menu_id . '-change-cover-image',
+				'title'  => __( 'Edit Cover Image', 'buddypress' ),
+				'href'   => bp_get_members_component_link( 'profile', 'change-cover-image' )
+			) );
+		}
+
 	}
 
 	if ( bp_is_active( 'settings' ) ) {
@@ -142,7 +151,7 @@ add_action( 'admin_bar_menu', 'bp_members_admin_bar_user_admin_menu', 99 );
 /**
  * Build the "Notifications" dropdown.
  *
- * @since BuddyPress (1.5.0)
+ * @since 1.5.0
  */
 function bp_members_admin_bar_notifications_menu() {
 
@@ -158,7 +167,7 @@ add_action( 'admin_bar_menu', 'bp_members_admin_bar_notifications_menu', 90 );
 /**
  * Remove rogue WP core Edit menu when viewing a single user.
  *
- * @since BuddyPress (1.6.0)
+ * @since 1.6.0
  */
 function bp_members_remove_edit_page_menu() {
 	if ( bp_is_user() ) {

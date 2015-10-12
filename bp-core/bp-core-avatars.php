@@ -3,6 +3,7 @@
  * BuddyPress Avatars.
  *
  * @package BuddyPress
+ * @subpackage Core
  */
 
 // Exit if accessed directly.
@@ -31,13 +32,7 @@ function bp_core_set_avatar_constants() {
 		define( 'BP_AVATAR_ORIGINAL_MAX_WIDTH', 450 );
 
 	if ( !defined( 'BP_AVATAR_ORIGINAL_MAX_FILESIZE' ) ) {
-
-		$fileupload_maxk = bp_core_get_root_option( 'fileupload_maxk' );
-		if ( '' === $fileupload_maxk ) {
-			define( 'BP_AVATAR_ORIGINAL_MAX_FILESIZE', 5120000 ); // 5mb
-		} else {
-			define( 'BP_AVATAR_ORIGINAL_MAX_FILESIZE', $fileupload_maxk * 1024 );
-		}
+		define( 'BP_AVATAR_ORIGINAL_MAX_FILESIZE', bp_attachments_get_max_upload_file_size( 'avatar' ) );
 	}
 
 	if ( ! defined( 'BP_SHOW_AVATARS' ) ) {
@@ -49,7 +44,7 @@ add_action( 'bp_init', 'bp_core_set_avatar_constants', 3 );
 /**
  * Set up global variables related to avatars.
  *
- * @since BuddyPress (1.5.0)
+ * @since 1.5.0
  */
 function bp_core_set_avatar_globals() {
 	$bp = buddypress();
@@ -91,7 +86,7 @@ function bp_core_set_avatar_globals() {
 	/**
 	 * Fires at the end of the core avatar globals setup.
 	 *
-	 * @since BuddyPress (1.5.0)
+	 * @since 1.5.0
 	 */
 	do_action( 'bp_core_set_avatar_globals' );
 }
@@ -236,7 +231,7 @@ function bp_core_fetch_avatar( $args = '' ) {
 		/**
 		 * Filters the ID of the item being requested.
 		 *
-		 * @since BuddyPress (1.1.0)
+		 * @since 1.1.0
 		 *
 		 * @param string $value  ID of avatar item being requested.
 		 * @param string $value  Avatar type being requested.
@@ -277,7 +272,7 @@ function bp_core_fetch_avatar( $args = '' ) {
 		/**
 		 * Filters the avatar directory to use.
 		 *
-		 * @since BuddyPress (1.1.0)
+		 * @since 1.1.0
 		 *
 		 * @param string $value  Name of the subdirectory where the requested avatar should be found.
 		 * @param string $value  Avatar type being requested.
@@ -313,7 +308,7 @@ function bp_core_fetch_avatar( $args = '' ) {
 		/**
 		 * Filters the alt attribute value to be applied to avatar.
 		 *
-		 * @since BuddyPress (1.5.0)
+		 * @since 1.5.0
 		 *
 		 * @param string $value  alt to be applied to avatar.
 		 * @param string $value  ID of avatar item being requested.
@@ -338,7 +333,7 @@ function bp_core_fetch_avatar( $args = '' ) {
 	/**
 	 * Filters the title attribute value to be applied to avatar.
 	 *
-	 * @since BuddyPress (1.5.0)
+	 * @since 1.5.0
 	 *
 	 * @param string $value  Title to be applied to avatar.
 	 * @param string $value  ID of avatar item being requested.
@@ -357,7 +352,7 @@ function bp_core_fetch_avatar( $args = '' ) {
 	/**
 	 * Filters the ID attribute to be applied to avatar.
 	 *
-	 * @since BuddyPress (2.2.0)
+	 * @since 2.2.0
 	 *
 	 * @param string $value  ID to be applied to avatar.
 	 * @param string $value  ID of avatar item being requested.
@@ -393,7 +388,7 @@ function bp_core_fetch_avatar( $args = '' ) {
 	/**
 	 * Filters the classes to be applied to the avatar.
 	 *
-	 * @since BuddyPress (1.6.0)
+	 * @since 1.6.0
 	 *
 	 * @param array|string $value  Class(es) to be applied to the avatar.
 	 * @param string       $value  ID of the avatar item being requested.
@@ -430,7 +425,7 @@ function bp_core_fetch_avatar( $args = '' ) {
 	/**
 	 * Filters the avatar folder directory URL.
 	 *
-	 * @since BuddyPress (1.1.0)
+	 * @since 1.1.0
 	 *
 	 * @param string $value Path to the avatar folder URL.
 	 * @param int    $value ID of the avatar item being requested.
@@ -442,7 +437,7 @@ function bp_core_fetch_avatar( $args = '' ) {
 	/**
 	 * Filters the avatar folder directory path.
 	 *
-	 * @since BuddyPress (1.1.0)
+	 * @since 1.1.0
 	 *
 	 * @param string $value Path to the avatar folder directory.
 	 * @param int    $value ID of the avatar item being requested.
@@ -517,7 +512,7 @@ function bp_core_fetch_avatar( $args = '' ) {
 				/**
 				 * Filters an avatar URL wrapped in an <img> element.
 				 *
-				 * @since BuddyPress (1.1.0)
+				 * @since 1.1.0
 				 *
 				 * @param string $value             Full <img> element for an avatar.
 				 * @param array  $params            Array of parameters for the request.
@@ -537,7 +532,7 @@ function bp_core_fetch_avatar( $args = '' ) {
 				/**
 				 * Filters a locally uploaded avatar URL.
 				 *
-				 * @since BuddyPress (1.2.5)
+				 * @since 1.2.5
 				 *
 				 * @param string $avatar_url URL for a locally uploaded avatar.
 				 * @param array  $params     Array of parameters for the request.
@@ -550,7 +545,7 @@ function bp_core_fetch_avatar( $args = '' ) {
 	/**
 	 * Filters whether or not to skip Gravatar check.
 	 *
-	 * @since BuddyPress (1.5.0)
+	 * @since 1.5.0
 	 *
 	 * @param bool  $value  Whether or not to skip Gravatar.
 	 * @param array $params Array of parameters for the avatar request.
@@ -565,7 +560,7 @@ function bp_core_fetch_avatar( $args = '' ) {
 			/**
 			 * Filters the Mystery person avatar src value.
 			 *
-			 * @since BuddyPress (1.2.0)
+			 * @since 1.2.0
 			 *
 			 * @param string $value Avatar value.
 			 * @param string $value Width to display avatar at.
@@ -589,7 +584,7 @@ function bp_core_fetch_avatar( $args = '' ) {
 		/**
 		 * Filters the Gravatar email to use.
 		 *
-		 * @since BuddyPress (1.1.0)
+		 * @since 1.1.0
 		 *
 		 * @param string $value Email to use in Gravatar request.
 		 * @param string $value ID of the item being requested.
@@ -600,7 +595,7 @@ function bp_core_fetch_avatar( $args = '' ) {
 		/**
 		 * Filters the Gravatar URL path.
 		 *
-		 * @since BuddyPress (1.0.2)
+		 * @since 1.0.2
 		 *
 		 * @param string $value Gravatar URL path.
 		 */
@@ -620,7 +615,7 @@ function bp_core_fetch_avatar( $args = '' ) {
 		 *
 		 * This is a variable filter dependent on the avatar type being requested.
 		 *
-		 * @since BuddyPress (1.5.0)
+		 * @since 1.5.0
 		 *
 		 * @param string $value  Default avatar for non-gravatar requests.
 		 * @param array  $params Array of parameters for the avatar request.
@@ -713,7 +708,7 @@ function bp_core_delete_existing_avatar( $args = '' ) {
 	/**
 	 * Fires after deleting an existing avatar.
 	 *
-	 * @since BuddyPress (1.1.0)
+	 * @since 1.1.0
 	 *
 	 * @param array $args Array of arguments used for avatar deletion.
 	 */
@@ -725,7 +720,7 @@ function bp_core_delete_existing_avatar( $args = '' ) {
 /**
  * Ajax delete an avatar for a given object and item id.
  *
- * @since BuddyPress (2.3.0)
+ * @since 2.3.0
  *
  * @return string|null A json object containing success data if the avatar was deleted
  *                     error message otherwise.
@@ -801,7 +796,7 @@ function bp_core_avatar_handle_upload( $file, $upload_dir_filter ) {
 	 *
 	 * If you want to override this function, make sure you return false.
 	 *
-	 * @since BuddyPress (1.2.4)
+	 * @since 1.2.4
 	 *
 	 * @param bool   $value             Whether or not to crop.
 	 * @param array  $file              Appropriate entry from $_FILES superglobal.
@@ -825,8 +820,16 @@ function bp_core_avatar_handle_upload( $file, $upload_dir_filter ) {
 		return false;
 	}
 
+	// The Avatar UI available width
+	$ui_available_width = 0;
+
+	// Try to set the ui_available_width using the avatar_admin global
+	if ( isset( $bp->avatar_admin->ui_available_width ) ) {
+		$ui_available_width = $bp->avatar_admin->ui_available_width;
+	}
+
 	// Maybe resize.
-	$bp->avatar_admin->resized = $avatar_attachment->shrink( $bp->avatar_admin->original['file'] );
+	$bp->avatar_admin->resized = $avatar_attachment->shrink( $bp->avatar_admin->original['file'], $ui_available_width );
 	$bp->avatar_admin->image   = new stdClass();
 
 	// We only want to handle one image after resize.
@@ -859,7 +862,7 @@ function bp_core_avatar_handle_upload( $file, $upload_dir_filter ) {
 /**
  * Ajax upload an avatar.
  *
- * @since BuddyPress (2.3.0)
+ * @since 2.3.0
  *
  * @return  string|null A json object containing success data if the upload succeeded
  *                      error message otherwise.
@@ -927,7 +930,7 @@ function bp_avatar_ajax_upload() {
 		/**
 		 * Filter here to deal with other components.
 		 *
-		 * @since BuddyPress (2.3.0)
+		 * @since 2.3.0
 		 *
 		 * @var array $bp_params the BuddyPress Ajax parameters.
 		 */
@@ -936,6 +939,14 @@ function bp_avatar_ajax_upload() {
 
 	if ( ! isset( $bp->avatar_admin ) ) {
 		$bp->avatar_admin = new stdClass();
+	}
+
+	/**
+	 * The BuddyPress upload parameters is including the Avatar UI Available width,
+	 * add it to the avatar_admin global for a later use.
+	 */
+	if ( isset( $bp_params['ui_available_width'] ) ) {
+		$bp->avatar_admin->ui_available_width =  (int) $bp_params['ui_available_width'];
 	}
 
 	// Upload the avatar
@@ -990,10 +1001,6 @@ function bp_avatar_ajax_upload() {
 	$name_parts = pathinfo( $name );
 	$name = trim( substr( $name, 0, - ( 1 + strlen( $name_parts['extension'] ) ) ) );
 
-	if ( 'user' === $bp_params['object'] ) {
-		do_action( 'xprofile_avatar_uploaded' );
-	}
-
 	// Finally return the avatar to the editor
 	bp_attachments_json_response( true, $is_html4, array(
 		'name'      => $name,
@@ -1008,7 +1015,7 @@ add_action( 'wp_ajax_bp_avatar_upload', 'bp_avatar_ajax_upload' );
  /**
   * Handle avatar webcam capture.
   *
-  * @since BuddyPress (2.3.0)
+  * @since 2.3.0
   *
   * @param string $data    Base64 encoded image.
   * @param int    $item_id Item to associate.
@@ -1032,7 +1039,7 @@ function bp_avatar_handle_capture( $data = '', $item_id = 0 ) {
 	/**
 	 * Filters the Avatar folder directory.
 	 *
-	 * @since BuddyPress (2.3.0)
+	 * @since 2.3.0
 	 *
 	 * @param string $avatar_dir Directory for storing avatars.
 	 * @param int    $item_id    ID of the item being acted on.
@@ -1055,13 +1062,6 @@ function bp_avatar_handle_capture( $data = '', $item_id = 0 ) {
 
 		// Crop to default values
 		$crop_args = array( 'item_id' => $item_id, 'original_file' => $avatar_to_crop, 'crop_x' => 0, 'crop_y' => 0 );
-
-		/**
-		 * Fires if the new avatar was successfully captured.
-		 *
-		 * @since BuddyPress (2.3.0)
-		 */
-		do_action( 'xprofile_avatar_uploaded' );
 
 		return bp_core_avatar_handle_crop( $crop_args );
 	} else {
@@ -1120,7 +1120,7 @@ function bp_core_avatar_handle_crop( $args = '' ) {
 	 *
 	 * If you want to override this function, make sure you return false.
 	 *
-	 * @since BuddyPress (1.2.4)
+	 * @since 1.2.4
 	 *
 	 * @param bool  $value Whether or not to crop.
 	 * @param array $r     Array of parsed arguments for function.
@@ -1144,7 +1144,7 @@ function bp_core_avatar_handle_crop( $args = '' ) {
 /**
  * Ajax set an avatar for a given object and item id.
  *
- * @since BuddyPress (2.3.0)
+ * @since 2.3.0
  *
  * @return  string|null A json object containing success data if the crop/capture succeeded
  *                      error message otherwise.
@@ -1199,7 +1199,18 @@ function bp_avatar_ajax_set() {
 				'item_id'       => $avatar_data['item_id'],
 			);
 
-			do_action( 'xprofile_screen_change_avatar' );
+			/**
+			 * Fires if the new avatar was successfully captured.
+			 *
+			 * @since 1.1.0 Used to inform the avatar was successfully cropped
+			 * @since 2.3.4 Add two new parameters to inform about the user id and
+			 *              about the way the avatar was set (eg: 'crop' or 'camera')
+			 *              Move the action at the right place, once the avatar is set
+			 *
+			 * @param string $item_id Inform about the user id the avatar was set for
+			 * @param string $type    Inform about the way the avatar was set ('camera')
+			 */
+			do_action( 'xprofile_avatar_uploaded', (int) $avatar_data['item_id'], $avatar_data['type'] );
 
 			wp_send_json_success( $return );
 		}
@@ -1244,7 +1255,18 @@ function bp_avatar_ajax_set() {
 		);
 
 		if ( 'user' === $avatar_data['object'] ) {
-			do_action( 'xprofile_screen_change_avatar' );
+			/**
+			 * Fires if the new avatar was successfully cropped.
+			 *
+			 * @since 1.1.0 Used to inform the avatar was successfully cropped
+			 * @since 2.3.4 Add two new parameters to inform about the user id and
+			 *              about the way the avatar was set (eg: 'crop' or 'camera')
+			 *              Move the action at the right place, once the avatar is set
+			 *
+			 * @param string $item_id Inform about the user id the avatar was set for
+			 * @param string $type Inform about the way the avatar was set ('crop')
+			 */
+			do_action( 'xprofile_avatar_uploaded', (int) $avatar_data['item_id'], $avatar_data['type'] );
 		}
 
 		wp_send_json_success( $return );
@@ -1355,15 +1377,15 @@ function bp_core_check_avatar_size( $file ) {
 /**
  * Get allowed avatar types.
  *
- * @since BuddyPress (2.3.0)
+ * @since 2.3.0
  */
 function bp_core_get_allowed_avatar_types() {
-	$allowed_types = array( 'jpeg', 'gif', 'png' );
+	$allowed_types = bp_attachments_get_allowed_types( 'avatar' );
 
 	/**
  	 * Filters the list of allowed image types.
  	 *
- 	 * @since BuddyPress (2.3.0)
+ 	 * @since 2.3.0
  	 *
  	 * @param array $allowed_types List of image types.
  	 */
@@ -1381,22 +1403,12 @@ function bp_core_get_allowed_avatar_types() {
 /**
  * Get allowed avatar mime types.
  *
- * @since BuddyPress (2.3.0)
+ * @since 2.3.0
  */
 function bp_core_get_allowed_avatar_mimes() {
 	$allowed_types  = bp_core_get_allowed_avatar_types();
-	$validate_mimes = wp_match_mime_types( join( ',', $allowed_types ), wp_get_mime_types() );
-	$allowed_mimes  = array_map( 'implode', $validate_mimes );
 
-	/**
-	 * Include jpg type if needed so that bp_core_check_avatar_type()
-	 * will check for jpeg and jpg extensions.
-	 */
-	if ( isset( $allowed_mimes['jpeg'] ) ) {
-		$allowed_mimes['jpg'] = $allowed_mimes['jpeg'];
-	}
-
-	return $allowed_mimes;
+	return bp_attachments_get_allowed_mimes( 'avatar', $allowed_types );
 }
 
 /**
@@ -1409,19 +1421,13 @@ function bp_core_get_allowed_avatar_mimes() {
  * @return bool True if the file extension is permitted, otherwise false.
  */
 function bp_core_check_avatar_type( $file ) {
-	$avatar_filetype = wp_check_filetype_and_ext( $file['file']['tmp_name'], $file['file']['name'], bp_core_get_allowed_avatar_mimes() );
-
-	if ( ! empty( $avatar_filetype['ext'] ) && ! empty( $avatar_filetype['type'] ) ) {
-		return true;
-	}
-
-	return false;
+	return bp_attachments_check_filetype( $file['file']['tmp_name'], $file['file']['name'], bp_core_get_allowed_avatar_mimes() );
 }
 
 /**
  * Fetch data from the BP root blog's upload directory.
  *
- * @since BuddyPress (1.8.0)
+ * @since 1.8.0
  *
  * @param string $type The variable we want to return from the $bp->avatars object.
  *                     Only 'upload_path' and 'url' are supported. Default: 'upload_path'.
@@ -1508,7 +1514,7 @@ function bp_core_avatar_upload_path() {
 	/**
 	 * Filters the absolute upload path for the WP installation.
 	 *
-	 * @since BuddyPress (1.2.0)
+	 * @since 1.2.0
 	 *
 	 * @param string $value Absolute upload path for the WP installation.
 	 */
@@ -1527,7 +1533,7 @@ function bp_core_avatar_url() {
 	/**
 	 * Filters the raw base URL for root site upload location.
 	 *
-	 * @since BuddyPress (1.2.0)
+	 * @since 1.2.0
 	 *
 	 * @param string $value Raw base URL for the root site upload location.
 	 */
@@ -1537,7 +1543,7 @@ function bp_core_avatar_url() {
 /**
  * Check if a given user ID has an uploaded avatar.
  *
- * @since BuddyPress (1.0.0)
+ * @since 1.0.0
  *
  * @param int $user_id ID of the user whose avatar is being checked.
  *
@@ -1555,7 +1561,7 @@ function bp_get_user_has_avatar( $user_id = 0 ) {
 	/**
 	 * Filters whether or not a user has an uploaded avatar.
 	 *
-	 * @since BuddyPress (1.6.0)
+	 * @since 1.6.0
 	 *
 	 * @param bool $retval  Whether or not a user has an uploaded avatar.
 	 * @param int  $user_id ID of the user being checked.
@@ -1566,7 +1572,7 @@ function bp_get_user_has_avatar( $user_id = 0 ) {
 /**
  * Utility function for fetching an avatar dimension setting.
  *
- * @since BuddyPress (1.5.0)
+ * @since 1.5.0
  *
  * @param string $type   Dimension type you're fetching dimensions for. 'thumb'
  *                       or 'full'. Default: 'thumb'.
@@ -1582,7 +1588,7 @@ function bp_core_avatar_dimension( $type = 'thumb', $h_or_w = 'height' ) {
 	/**
 	 * Filters the avatar dimension setting.
 	 *
-	 * @since BuddyPress (1.5.0)
+	 * @since 1.5.0
 	 *
 	 * @param int|bool $dim    Dimension setting for the type.
 	 * @param string   $type   The type of avatar whose dimensions are requested. Default 'thumb'.
@@ -1594,7 +1600,7 @@ function bp_core_avatar_dimension( $type = 'thumb', $h_or_w = 'height' ) {
 /**
  * Get the 'thumb' avatar width setting.
  *
- * @since BuddyPress (1.5.0)
+ * @since 1.5.0
  *
  * @return int The 'thumb' width.
  */
@@ -1603,7 +1609,7 @@ function bp_core_avatar_thumb_width() {
 	/**
 	 * Filters the 'thumb' avatar width setting.
 	 *
-	 * @since BuddyPress (1.5.0)
+	 * @since 1.5.0
 	 *
 	 * @param int $value Value for the 'thumb' avatar width setting.
 	 */
@@ -1613,7 +1619,7 @@ function bp_core_avatar_thumb_width() {
 /**
  * Get the 'thumb' avatar height setting.
  *
- * @since BuddyPress (1.5.0)
+ * @since 1.5.0
  *
  * @return int The 'thumb' height.
  */
@@ -1622,7 +1628,7 @@ function bp_core_avatar_thumb_height() {
 	/**
 	 * Filters the 'thumb' avatar height setting.
 	 *
-	 * @since BuddyPress (1.5.0)
+	 * @since 1.5.0
 	 *
 	 * @param int $value Value for the 'thumb' avatar height setting.
 	 */
@@ -1632,7 +1638,7 @@ function bp_core_avatar_thumb_height() {
 /**
  * Get the 'full' avatar width setting.
  *
- * @since BuddyPress (1.5.0)
+ * @since 1.5.0
  *
  * @return int The 'full' width.
  */
@@ -1641,7 +1647,7 @@ function bp_core_avatar_full_width() {
 	/**
 	 * Filters the 'full' avatar width setting.
 	 *
-	 * @since BuddyPress (1.5.0)
+	 * @since 1.5.0
 	 *
 	 * @param int $value Value for the 'full' avatar width setting.
 	 */
@@ -1651,7 +1657,7 @@ function bp_core_avatar_full_width() {
 /**
  * Get the 'full' avatar height setting.
  *
- * @since BuddyPress (1.5.0)
+ * @since 1.5.0
  *
  * @return int The 'full' height.
  */
@@ -1660,7 +1666,7 @@ function bp_core_avatar_full_height() {
 	/**
 	 * Filters the 'full' avatar height setting.
 	 *
-	 * @since BuddyPress (1.5.0)
+	 * @since 1.5.0
 	 *
 	 * @param int $value Value for the 'full' avatar height setting.
 	 */
@@ -1670,7 +1676,7 @@ function bp_core_avatar_full_height() {
 /**
  * Get the max width for original avatar uploads.
  *
- * @since BuddyPress (1.5.0)
+ * @since 1.5.0
  *
  * @return int The max width for original avatar uploads.
  */
@@ -1679,7 +1685,7 @@ function bp_core_avatar_original_max_width() {
 	/**
 	 * Filters the max width for original avatar uploads.
 	 *
-	 * @since BuddyPress (1.5.0)
+	 * @since 1.5.0
 	 *
 	 * @param int $value Value for the max width.
 	 */
@@ -1689,7 +1695,7 @@ function bp_core_avatar_original_max_width() {
 /**
  * Get the max filesize for original avatar uploads.
  *
- * @since BuddyPress (1.5.0)
+ * @since 1.5.0
  *
  * @return int The max filesize for original avatar uploads.
  */
@@ -1698,7 +1704,7 @@ function bp_core_avatar_original_max_filesize() {
 	/**
 	 * Filters the max filesize for original avatar uploads.
 	 *
-	 * @since BuddyPress (1.5.0)
+	 * @since 1.5.0
 	 *
 	 * @param int $value Value for the max filesize.
 	 */
@@ -1708,7 +1714,7 @@ function bp_core_avatar_original_max_filesize() {
 /**
  * Get the URL of the 'full' default avatar.
  *
- * @since BuddyPress (1.5.0)
+ * @since 1.5.0
  *
  * @param string $type 'local' if the fallback should be the locally-hosted version
  *                     of the mystery-person, 'gravatar' if the fallback should be
@@ -1733,7 +1739,7 @@ function bp_core_avatar_default( $type = 'gravatar' ) {
 	/**
 	 * Filters the URL of the 'full' default avatar.
 	 *
-	 * @since BuddyPress (1.5.0)
+	 * @since 1.5.0
 	 *
 	 * @param string $avatar URL of the default avatar.
 	 */
@@ -1746,7 +1752,7 @@ function bp_core_avatar_default( $type = 'gravatar' ) {
  * Uses Gravatar's mystery-person avatar, unless BP_AVATAR_DEFAULT_THUMB has been
  * defined.
  *
- * @since BuddyPress (1.5.0)
+ * @since 1.5.0
  *
  * @param string $type 'local' if the fallback should be the locally-hosted version
  *                     of the mystery-person, 'gravatar' if the fallback should be
@@ -1771,7 +1777,7 @@ function bp_core_avatar_default_thumb( $type = 'gravatar' ) {
 	/**
 	 * Filters the URL of the 'thumb' default avatar.
 	 *
-	 * @since BuddyPress (1.5.0)
+	 * @since 1.5.0
 	 *
 	 * @param string $avatar URL of the default avatar.
 	 */
@@ -1785,7 +1791,7 @@ function bp_core_avatar_default_thumb( $type = 'gravatar' ) {
  * parameter of the WordPress main query to this posted var. To avoid
  * notices, we need to make sure this 'week' query var is reset to 0.
  *
- * @since  BuddyPress (2.2.0)
+ * @since  2.2.0
  *
  * @param  WP_Query|null $posts_query the main query object.
  *
@@ -1825,7 +1831,7 @@ add_action( 'bp_parse_query', 'bp_core_avatar_reset_query', 10, 1 );
 /**
  * Checks whether Avatar UI should be loaded.
  *
- * @since  BuddyPress (2.3.0)
+ * @since  2.3.0
  *
  * @return bool True if Avatar UI should load, false otherwise.
  */
@@ -1857,7 +1863,7 @@ function bp_avatar_is_front_edit() {
 	 * - Load the avatar UI for a component that is !groups or !user (return true regarding your conditions)
 	 * - Completely disable the avatar UI introduced in 2.3 (eg: __return_false())
 	 *
-	 * @since  BuddyPress (2.3.0)
+	 * @since  2.3.0
 	 *
 	 * @param bool whether to load the Avatar UI.
 	 */
@@ -1867,7 +1873,7 @@ function bp_avatar_is_front_edit() {
 /**
  * Checks whether the Webcam Avatar UI part should be loaded.
  *
- * @since  BuddyPress (2.3.0)
+ * @since  2.3.0
  *
  * @global $is_safari
  * @global $is_IE
@@ -1897,7 +1903,7 @@ function bp_avatar_use_webcam() {
 	 * Use this filter if you need to disable the webcam capture feature
 	 * by returning false.
 	 *
-	 * @since BuddyPress (2.3.0)
+	 * @since 2.3.0
 	 *
 	 * @param bool whether to load Webcam Avatar UI part.
 	 */
@@ -1907,7 +1913,7 @@ function bp_avatar_use_webcam() {
 /**
  * Template function to load the Avatar UI javascript templates.
  *
- * @since  BuddyPress (2.3.0)
+ * @since  2.3.0
  */
 function bp_avatar_get_templates() {
 	if ( ! bp_avatar_is_front_edit() ) {
@@ -1923,7 +1929,7 @@ function bp_avatar_get_templates() {
  * If the "avatar templates" are not including the new template tag, this will
  * help users to get the avatar UI.
  *
- * @since  BuddyPress (2.3.0)
+ * @since  2.3.0
  */
 function bp_avatar_template_check() {
 	if ( ! bp_avatar_is_front_edit() ) {

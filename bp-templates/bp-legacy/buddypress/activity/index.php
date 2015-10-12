@@ -1,9 +1,17 @@
 <?php
+/**
+ * BuddyPress Activity templates
+ *
+ * @since 2.3.0
+ *
+ * @package BuddyPress
+ * @subpackage bp-legacy
+ */
 
 /**
  * Fires before the activity directory listing.
  *
- * @since BuddyPress (1.5.0)
+ * @since 1.5.0
  */
 do_action( 'bp_before_directory_activity' ); ?>
 
@@ -14,7 +22,7 @@ do_action( 'bp_before_directory_activity' ); ?>
 	/**
 	 * Fires before the activity directory display content.
 	 *
-	 * @since BuddyPress (1.2.0)
+	 * @since 1.2.0
 	 */
 	do_action( 'bp_before_directory_activity_content' ); ?>
 
@@ -29,7 +37,7 @@ do_action( 'bp_before_directory_activity' ); ?>
 	/**
 	 * Fires towards the top of template pages for notice display.
 	 *
-	 * @since BuddyPress (1.0.0)
+	 * @since 1.0.0
 	 */
 	do_action( 'template_notices' ); ?>
 
@@ -40,7 +48,7 @@ do_action( 'bp_before_directory_activity' ); ?>
 			/**
 			 * Fires before the listing of activity type tabs.
 			 *
-			 * @since BuddyPress (1.2.0)
+			 * @since 1.2.0
 			 */
 			do_action( 'bp_before_activity_type_tab_all' ); ?>
 
@@ -53,7 +61,7 @@ do_action( 'bp_before_directory_activity' ); ?>
 				/**
 				 * Fires before the listing of friends activity type tab.
 				 *
-				 * @since BuddyPress (1.2.0)
+				 * @since 1.2.0
 				 */
 				do_action( 'bp_before_activity_type_tab_friends' ); ?>
 
@@ -72,7 +80,7 @@ do_action( 'bp_before_directory_activity' ); ?>
 				/**
 				 * Fires before the listing of groups activity type tab.
 				 *
-				 * @since BuddyPress (1.2.0)
+				 * @since 1.2.0
 				 */
 				do_action( 'bp_before_activity_type_tab_groups' ); ?>
 
@@ -91,7 +99,7 @@ do_action( 'bp_before_directory_activity' ); ?>
 				/**
 				 * Fires before the listing of favorites activity type tab.
 				 *
-				 * @since BuddyPress (1.2.0)
+				 * @since 1.2.0
 				 */
 				do_action( 'bp_before_activity_type_tab_favorites' ); ?>
 
@@ -108,7 +116,7 @@ do_action( 'bp_before_directory_activity' ); ?>
 					/**
 					 * Fires before the listing of mentions activity type tab.
 					 *
-					 * @since BuddyPress (1.2.0)
+					 * @since 1.2.0
 					 */
 					do_action( 'bp_before_activity_type_tab_mentions' ); ?>
 
@@ -123,7 +131,7 @@ do_action( 'bp_before_directory_activity' ); ?>
 			/**
 			 * Fires after the listing of activity type tabs.
 			 *
-			 * @since BuddyPress (1.2.0)
+			 * @since 1.2.0
 			 */
 			do_action( 'bp_activity_type_tabs' ); ?>
 		</ul>
@@ -138,7 +146,7 @@ do_action( 'bp_before_directory_activity' ); ?>
 			/**
 			 * Fires before the display of the activity syndication options.
 			 *
-			 * @since BuddyPress (1.2.0)
+			 * @since 1.2.0
 			 */
 			do_action( 'bp_activity_syndication_options' ); ?>
 
@@ -154,7 +162,7 @@ do_action( 'bp_before_directory_activity' ); ?>
 					/**
 					 * Fires inside the select input for activity filter by options.
 					 *
-					 * @since BuddyPress (1.2.0)
+					 * @since 1.2.0
 					 */
 					do_action( 'bp_activity_filter_options' ); ?>
 
@@ -168,7 +176,7 @@ do_action( 'bp_before_directory_activity' ); ?>
 	/**
 	 * Fires before the display of the activity list.
 	 *
-	 * @since BuddyPress (1.5.0)
+	 * @since 1.5.0
 	 */
 	do_action( 'bp_before_directory_activity_list' ); ?>
 
@@ -183,7 +191,7 @@ do_action( 'bp_before_directory_activity' ); ?>
 	/**
 	 * Fires after the display of the activity list.
 	 *
-	 * @since BuddyPress (1.5.0)
+	 * @since 1.5.0
 	 */
 	do_action( 'bp_after_directory_activity_list' ); ?>
 
@@ -199,7 +207,7 @@ do_action( 'bp_before_directory_activity' ); ?>
 	/**
 	 * Fires after the activity directory display content.
 	 *
-	 * @since BuddyPress (1.2.0)
+	 * @since 1.2.0
 	 */
 	do_action( 'bp_after_directory_activity_content' ); ?>
 
@@ -208,7 +216,7 @@ do_action( 'bp_before_directory_activity' ); ?>
 	/**
 	 * Fires after the activity directory listing.
 	 *
-	 * @since BuddyPress (1.5.0)
+	 * @since 1.5.0
 	 */
 	do_action( 'bp_after_directory_activity' ); ?>
 
