@@ -699,7 +699,10 @@ function bp_activity_admin_edit() {
 			</form>
 
 		<?php else : ?>
-			<p><?php printf( __( 'No activity found with this ID. <a href="%s">Go back and try again</a>.', 'buddypress' ), esc_url( bp_get_admin_url( 'admin.php?page=bp-activity' ) ) ); ?></p>
+			<p>
+				<?php _e( 'No activity found with this ID.', 'buddypress' ); ?>
+				<a href="<?php echo esc_url( bp_get_admin_url( 'admin.php?page=bp-activity' ) ); ?>"><?php _e( 'Go back and try again.', 'buddypress' ); ?></a>
+			</p>
 		<?php endif; ?>
 
 	</div><!-- .wrap -->
@@ -740,7 +743,7 @@ function bp_activity_admin_edit_metabox_status( $item ) {
 					$datef = __( 'M j, Y @ G:i', 'buddypress' );
 					$date  = date_i18n( $datef, strtotime( $item->date_recorded ) );
 					?>
-					<span id="timestamp"><?php printf( __( 'Submitted on: <strong>%1$s</strong>', 'buddypress' ), $date ); ?></span>&nbsp;<a href="#edit_timestamp" class="edit-timestamp hide-if-no-js" tabindex='4'><?php _e( 'Edit', 'buddypress' ); ?></a>
+					<span id="timestamp"><?php printf( __( 'Submitted on: %s', 'buddypress' ), '<strong>' . $date . '</strong>' ); ?></span>&nbsp;<a href="#edit_timestamp" class="edit-timestamp hide-if-no-js" tabindex='4'><?php _e( 'Edit', 'buddypress' ); ?></a>
 
 					<div id='timestampdiv' class='hide-if-js'>
 						<?php touch_time( 1, 0, 5 ); ?>
@@ -1649,7 +1652,7 @@ class BP_Activity_List_Table extends WP_List_Table {
 		// Activity permalink
 		$activity_permalink = '';
 		if ( ! $item['is_spam'] ) {
-			$activity_permalink = sprintf( __( '<a href="%1$s" class="comments-view-item-link">View Activity</a>', 'buddypress' ), bp_activity_get_permalink( $item['id'], (object) $item ) );
+			$activity_permalink = '<a href="' . bp_activity_get_permalink( $item['id'], (object) $item ) . '" class="comments-view-item-link">' . __( 'View Activity', 'buddypress' ) . '</a>';
 		}
 
 		/**
