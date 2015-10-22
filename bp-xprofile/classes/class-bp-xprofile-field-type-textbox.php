@@ -93,6 +93,7 @@ class BP_XProfile_Field_Type_Textbox extends BP_XProfile_Field_Type {
 			'type' => 'text'
 		) ); ?>
 
+		<label for="<?php bp_the_profile_field_input_name(); ?>" class="screen-reader-text"><?php esc_html_e( 'Textbox', 'buddypress' ); ?></label>
 		<input <?php echo $this->get_edit_field_html_elements( $r ); ?>>
 
 		<?php
