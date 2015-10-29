@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later (license.txt).
 msgid ""
 msgstr ""
-"Project-Id-Version: BuddyPress 2.4.0-beta2\n"
+"Project-Id-Version: BuddyPress 2.4.0-rc1\n"
 "Report-Msgid-Bugs-To: https://buddypress.trac.wordpress.org\n"
-"POT-Creation-Date: 2015-10-22 13:39:23+00:00\n"
+"POT-Creation-Date: 2015-10-29 16:00:56+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -145,7 +145,7 @@ msgstr ""
 #: bp-core/admin/bp-core-admin-functions.php:513
 #: bp-core/admin/bp-core-admin-functions.php:532
 #: bp-groups/bp-groups-admin.php:119 bp-groups/bp-groups-admin.php:159
-#: bp-members/bp-members-admin.php:709 bp-members/bp-members-admin.php:1414
+#: bp-members/bp-members-admin.php:709 bp-members/bp-members-admin.php:1415
 msgid "Overview"
 msgstr ""
 
@@ -209,7 +209,7 @@ msgstr ""
 #: bp-core/admin/bp-core-admin-functions.php:519
 #: bp-core/admin/bp-core-admin-functions.php:538
 #: bp-groups/bp-groups-admin.php:127 bp-groups/bp-groups-admin.php:175
-#: bp-members/bp-members-admin.php:718 bp-members/bp-members-admin.php:1435
+#: bp-members/bp-members-admin.php:718 bp-members/bp-members-admin.php:1436
 msgid "For more information:"
 msgstr ""
 
@@ -226,7 +226,7 @@ msgstr ""
 #: bp-core/admin/bp-core-admin-functions.php:521
 #: bp-core/admin/bp-core-admin-functions.php:540
 #: bp-groups/bp-groups-admin.php:176 bp-members/bp-members-admin.php:720
-#: bp-members/bp-members-admin.php:1436
+#: bp-members/bp-members-admin.php:1437
 msgid "<a href=\"https://buddypress.org/support/\">Support Forums</a>"
 msgstr ""
 
@@ -290,7 +290,7 @@ msgstr ""
 msgid "Go back and try again."
 msgstr ""
 
-#: bp-activity/bp-activity-admin.php:728 bp-activity/bp-activity-admin.php:1655
+#: bp-activity/bp-activity-admin.php:728 bp-activity/bp-activity-admin.php:1656
 msgid "View Activity"
 msgstr ""
 
@@ -298,7 +298,7 @@ msgstr ""
 msgid "Approved"
 msgstr ""
 
-#: bp-activity/bp-activity-admin.php:737 bp-activity/bp-activity-admin.php:1573
+#: bp-activity/bp-activity-admin.php:737 bp-activity/bp-activity-admin.php:1574
 #: bp-activity/bp-activity-akismet.php:206
 #: bp-activity/bp-activity-akismet.php:235
 #: bp-core/admin/bp-core-admin-functions.php:875
@@ -316,7 +316,7 @@ msgstr ""
 msgid "Submitted on: %s"
 msgstr ""
 
-#: bp-activity/bp-activity-admin.php:746 bp-activity/bp-activity-admin.php:1566
+#: bp-activity/bp-activity-admin.php:746 bp-activity/bp-activity-admin.php:1567
 #: bp-forums/bp-forums-template.php:2530 bp-groups/bp-groups-admin.php:1590
 #: bp-xprofile/bp-xprofile-admin.php:584
 msgid "Edit"
@@ -348,74 +348,78 @@ msgid ""
 "bp_activity_set_action(), so no label is available."
 msgstr ""
 
-#: bp-activity/bp-activity-admin.php:890
+#: bp-activity/bp-activity-admin.php:871
+msgid "Select activity type"
+msgstr ""
+
+#: bp-activity/bp-activity-admin.php:891
 msgid "Primary Item ID"
 msgstr ""
 
-#: bp-activity/bp-activity-admin.php:894
+#: bp-activity/bp-activity-admin.php:895
 msgid "Secondary Item ID"
 msgstr ""
 
-#: bp-activity/bp-activity-admin.php:897
+#: bp-activity/bp-activity-admin.php:898
 msgid ""
 "These identify the object that created this activity. For example, the "
 "fields could reference a pair of site and comment IDs."
 msgstr ""
 
-#: bp-activity/bp-activity-admin.php:936
+#: bp-activity/bp-activity-admin.php:937
 msgid "%s activity item has been permanently deleted."
 msgid_plural "%s activity items have been permanently deleted."
 msgstr[0] ""
 msgstr[1] ""
 
-#: bp-activity/bp-activity-admin.php:940
+#: bp-activity/bp-activity-admin.php:941
 msgid "An error occurred when trying to update activity ID #%s."
 msgstr ""
 
-#: bp-activity/bp-activity-admin.php:943
+#: bp-activity/bp-activity-admin.php:944
 msgid "Errors occurred when trying to update these activity items:"
 msgstr ""
 
-#: bp-activity/bp-activity-admin.php:949
+#: bp-activity/bp-activity-admin.php:950
 #. Translators: This is a bulleted list of item IDs.
 msgid "#%s"
 msgstr ""
 
-#: bp-activity/bp-activity-admin.php:958
+#: bp-activity/bp-activity-admin.php:959
 msgid "%s activity item has been successfully spammed."
 msgid_plural "%s activity items have been successfully spammed."
 msgstr[0] ""
 msgstr[1] ""
 
-#: bp-activity/bp-activity-admin.php:961
+#: bp-activity/bp-activity-admin.php:962
 msgid "%s activity item has been successfully unspammed."
 msgid_plural "%s activity items have been successfully unspammed."
 msgstr[0] ""
 msgstr[1] ""
 
-#: bp-activity/bp-activity-admin.php:964
+#: bp-activity/bp-activity-admin.php:965
 msgid "The activity item has been updated successfully."
 msgstr ""
 
-#: bp-activity/bp-activity-admin.php:982
+#: bp-activity/bp-activity-admin.php:983
 msgid "Activity related to ID #%s"
 msgstr ""
 
-#: bp-activity/bp-activity-admin.php:988 bp-groups/bp-groups-admin.php:731
-#: bp-members/bp-members-admin.php:1838
+#: bp-activity/bp-activity-admin.php:989 bp-groups/bp-groups-admin.php:731
+#: bp-members/bp-members-admin.php:1839
 msgid "Search results for &#8220;%s&#8221;"
 msgstr ""
 
-#: bp-activity/bp-activity-admin.php:1001
+#: bp-activity/bp-activity-admin.php:1002
 msgid "Search all Activity"
 msgstr ""
 
-#: bp-activity/bp-activity-admin.php:1012
+#: bp-activity/bp-activity-admin.php:1013
 msgid "Reply to Activity"
 msgstr ""
 
-#: bp-activity/bp-activity-admin.php:1016 bp-groups/bp-groups-admin.php:678
-#: bp-members/bp-members-admin.php:1982
+#: bp-activity/bp-activity-admin.php:1017 bp-groups/bp-groups-admin.php:678
+#: bp-members/bp-members-admin.php:1983
 #: bp-templates/bp-legacy/buddypress/activity/entry.php:126
 #: bp-templates/bp-legacy/buddypress/forums/index.php:205
 #: bp-xprofile/classes/class-bp-xprofile-field.php:1250
@@ -423,79 +427,79 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-#: bp-activity/bp-activity-admin.php:1017
-#: bp-activity/bp-activity-admin.php:1560
+#: bp-activity/bp-activity-admin.php:1018
+#: bp-activity/bp-activity-admin.php:1561
 #: bp-templates/bp-legacy/buddypress/activity/comment.php:39
 #: bp-templates/bp-legacy/buddypress/groups/single/forum/edit.php:23
 #: bp-templates/bp-legacy/buddypress/groups/single/forum/topic.php:189
 msgid "Reply"
 msgstr ""
 
-#: bp-activity/bp-activity-admin.php:1234
+#: bp-activity/bp-activity-admin.php:1235
 msgid "No activities found."
 msgstr ""
 
-#: bp-activity/bp-activity-admin.php:1305 bp-groups/bp-groups-admin.php:1397
+#: bp-activity/bp-activity-admin.php:1306 bp-groups/bp-groups-admin.php:1397
 msgid "All"
 msgstr ""
 
-#: bp-activity/bp-activity-admin.php:1306
+#: bp-activity/bp-activity-admin.php:1307
 msgid "Spam <span class=\"count\">(%s)</span>"
 msgstr ""
 
-#: bp-activity/bp-activity-admin.php:1332
+#: bp-activity/bp-activity-admin.php:1333
 msgid "Mark as Spam"
 msgstr ""
 
-#: bp-activity/bp-activity-admin.php:1333
-#: bp-activity/bp-activity-admin.php:1571
+#: bp-activity/bp-activity-admin.php:1334
+#: bp-activity/bp-activity-admin.php:1572
 #: bp-core/admin/bp-core-admin-functions.php:869
 msgid "Not Spam"
 msgstr ""
 
-#: bp-activity/bp-activity-admin.php:1334
-#: bp-activity/bp-activity-admin.php:1576 bp-groups/bp-groups-admin.php:677
+#: bp-activity/bp-activity-admin.php:1335
+#: bp-activity/bp-activity-admin.php:1577 bp-groups/bp-groups-admin.php:677
 msgid "Delete Permanently"
 msgstr ""
 
-#: bp-activity/bp-activity-admin.php:1412
+#: bp-activity/bp-activity-admin.php:1413
 msgid "Filter by activity type"
 msgstr ""
 
-#: bp-activity/bp-activity-admin.php:1414
+#: bp-activity/bp-activity-admin.php:1415
 msgid "View all actions"
 msgstr ""
 
-#: bp-activity/bp-activity-admin.php:1439
+#: bp-activity/bp-activity-admin.php:1440
 msgid "Filter"
 msgstr ""
 
-#: bp-activity/bp-activity-admin.php:1486
+#: bp-activity/bp-activity-admin.php:1487
 msgid "Select activity item %1$d"
 msgstr ""
 
-#: bp-activity/bp-activity-admin.php:1517
+#: bp-activity/bp-activity-admin.php:1518
 msgid "Unregistered action - %s"
 msgstr ""
 
-#: bp-activity/bp-activity-admin.php:1562
+#: bp-activity/bp-activity-admin.php:1563
 msgid "Replies are disabled for this activity item"
 msgstr ""
 
-#: bp-activity/bp-activity-admin.php:1562
+#: bp-activity/bp-activity-admin.php:1563
 msgid "Replies disabled"
 msgstr ""
 
-#: bp-activity/bp-activity-admin.php:1576 bp-core/bp-core-cssjs.php:118
+#: bp-activity/bp-activity-admin.php:1577 bp-core/bp-core-cssjs.php:118
 msgid "Are you sure?"
 msgstr ""
 
-#: bp-activity/bp-activity-admin.php:1593
+#: bp-activity/bp-activity-admin.php:1594
 #. translators: 2: activity admin ui date/time
 msgid "Submitted on <a href=\"%1$s\">%2$s at %3$s</a>"
 msgstr ""
 
-#: bp-activity/bp-activity-admin.php:1674
+#: bp-activity/bp-activity-admin.php:1675
 msgid "%s related activity"
 msgid_plural "%s related activities"
 msgstr[0] ""
@@ -826,7 +830,7 @@ msgstr ""
 #: bp-templates/bp-legacy/buddypress/members/single/messages/messages-loop.php:133
 #: bp-templates/bp-legacy/buddypress/members/single/messages/single.php:44
 #: bp-xprofile/bp-xprofile-admin.php:589
-#: bp-xprofile/classes/class-bp-xprofile-field-type.php:371
+#: bp-xprofile/classes/class-bp-xprofile-field-type.php:372
 msgid "Delete"
 msgstr ""
 
@@ -1786,216 +1790,219 @@ msgid ""
 msgstr ""
 
 #: bp-core/bp-core-admin.php:563
-msgid "Upload Profile Pictures with Drag and Drop"
+msgid "Cover Images For Members And Groups"
 msgstr ""
 
 #: bp-core/bp-core-admin.php:566
-msgid "Revamped Profile Picture Upload UI"
+msgid "Cover Images for Members and Groups"
 msgstr ""
 
-#: bp-core/bp-core-admin.php:570
+#: bp-core/bp-core-admin.php:569
 msgid ""
-"Built with the Attachments API, the new foundation for BuddyPress media "
-"management."
+"Your community can now upload cover photos for their user profiles and "
+"groups. <a href=\"%s\">Learn more &rarr;</a>"
 msgstr ""
 
-#: bp-core/bp-core-admin.php:571
+#: bp-core/bp-core-admin.php:579
+msgid "Profile Field for Member Type"
+msgstr ""
+
+#: bp-core/bp-core-admin.php:580
+msgid "Profile Fields For Specific Member Types"
+msgstr ""
+
+#: bp-core/bp-core-admin.php:581
 msgid ""
-"You can drag and drop any image you choose to upload as your profile photo. "
-"The interface is mobile-ready and now includes integration with phone and "
-"laptop cameras. This is an example of what can be developed using the new "
-"Attachments API, the long-awaited foundation for media-related BuddyPress "
-"components and features."
-msgstr ""
-
-#: bp-core/bp-core-admin.php:571
-msgid "Learn more &rarr;"
-msgstr ""
-
-#: bp-core/bp-core-admin.php:578
-msgid "The Finer Points"
-msgstr ""
-
-#: bp-core/bp-core-admin.php:583
-msgid "Member Type Directories"
+"You can create profile fields which are available to one or more <a "
+"href=\"%s\">custom member types</a>."
 msgstr ""
 
 #: bp-core/bp-core-admin.php:584
-msgid "Create directories of member types in your site using the Member Type API."
+msgid "BuddyPress Companion Stylesheets"
 msgstr ""
 
-#: bp-core/bp-core-admin.php:589
-msgid "Companion Stylesheets For Themes"
+#: bp-core/bp-core-admin.php:585
+msgid "More Companion Stylesheets For Themes"
 msgstr ""
 
-#: bp-core/bp-core-admin.php:590
+#: bp-core/bp-core-admin.php:586
 msgid ""
-"Improved styling and integration of BuddyPress components with bundled "
-"WordPress themes, Twenty Fifteen and Twenty Fourteen."
+"BuddyPress looks and works better than ever with WordPress theme Twenty "
+"Thirteen, and the upcoming Twenty Sixteen."
 msgstr ""
 
-#: bp-core/bp-core-admin.php:595
-msgid "Blog Post Activity"
+#: bp-core/bp-core-admin.php:592
+msgid "Customize your group home page"
 msgstr ""
 
-#: bp-core/bp-core-admin.php:596
+#: bp-core/bp-core-admin.php:593
+msgid "Customizable Group Home Page"
+msgstr ""
+
+#: bp-core/bp-core-admin.php:594
 msgid ""
-"BuddyPress now generates better excerpts in the activity streams for posts "
-"containing images or other embedded media content."
+"You can customize each and every Group's home page by using the new front "
+"page template hierarchy."
 msgstr ""
 
-#: bp-core/bp-core-admin.php:601
-msgid "Star Private Messages "
+#: bp-core/bp-core-admin.php:594
+msgid "Learn how &rarr;"
 msgstr ""
 
-#: bp-core/bp-core-admin.php:602
-msgid "Mark important messages in your inbox from your friends with a star."
+#: bp-core/bp-core-admin.php:597 bp-core/bp-core-admin.php:598
+msgid "Accessibility Upgrades"
 msgstr ""
 
-#: bp-core/bp-core-admin.php:608
-msgid "Under the Hood"
+#: bp-core/bp-core-admin.php:599
+msgid ""
+"We're making BuddyPress more usable and accessible for everyone, from the "
+"frontend templates to the backend admin screens."
+msgstr ""
+
+#: bp-core/bp-core-admin.php:605
+msgid "Under The Hood"
+msgstr ""
+
+#: bp-core/bp-core-admin.php:609
+msgid "User Experience"
+msgstr ""
+
+#: bp-core/bp-core-admin.php:610
+msgid ""
+"Enhancements to the What's New form bring better user experience for your "
+"community, and make it easier for developers to add new features."
 msgstr ""
 
 #: bp-core/bp-core-admin.php:612
-msgid "Components can register new features"
+msgid "Cache Improvements"
 msgstr ""
 
 #: bp-core/bp-core-admin.php:613
 msgid ""
-"Plugin developers can register new features or check if a component feature "
-"is registered using the <code>BP_Component</code> class."
-msgstr ""
-
-#: bp-core/bp-core-admin.php:615
-msgid "Cache Improvements"
+"Continued object and query cache enhancements have been implemented across "
+"different components to improve performance."
 msgstr ""
 
 #: bp-core/bp-core-admin.php:616
+msgid "Developer Reference"
+msgstr ""
+
+#: bp-core/bp-core-admin.php:617
 msgid ""
-"Improved caching for the following components: Messages, Profiles, Members "
-"&amp; Member Types, and Friends."
+"Regular updates to inline code documentation make it easier for developers "
+"to understand how BuddyPress works."
 msgstr ""
 
 #: bp-core/bp-core-admin.php:619
-msgid "Developer Reference"
+msgid "Constant Refinements"
 msgstr ""
 
 #: bp-core/bp-core-admin.php:620
 msgid ""
-"Continued improvements to inline code documentation make it easier for "
-"developers to understand how BuddyPress works."
+"The BuddyPress codebase is continuously tested and updated with the latest "
+"WordPress enhancements and features."
 msgstr ""
 
-#: bp-core/bp-core-admin.php:622
-msgid "User Documentation"
-msgstr ""
-
-#: bp-core/bp-core-admin.php:623
-msgid ""
-"The BuddyPress Codex is maintained and updated regularly with new articles "
-"and tutorials."
-msgstr ""
-
-#: bp-core/bp-core-admin.php:651
+#: bp-core/bp-core-admin.php:650
 msgid "BuddyPress is created by a worldwide network of friendly folks like these."
 msgstr ""
 
-#: bp-core/bp-core-admin.php:653
+#: bp-core/bp-core-admin.php:652
 msgid "Project Leaders"
 msgstr ""
 
-#: bp-core/bp-core-admin.php:658
+#: bp-core/bp-core-admin.php:657
 msgid "Project Lead"
 msgstr ""
 
-#: bp-core/bp-core-admin.php:663 bp-core/bp-core-admin.php:668
+#: bp-core/bp-core-admin.php:662 bp-core/bp-core-admin.php:667
 msgid "Lead Developer"
 msgstr ""
 
-#: bp-core/bp-core-admin.php:672
+#: bp-core/bp-core-admin.php:671
 msgid "Core Team"
 msgstr ""
 
-#: bp-core/bp-core-admin.php:677 bp-core/bp-core-admin.php:682
-#: bp-core/bp-core-admin.php:692 bp-core/bp-core-admin.php:697
-#: bp-core/bp-core-admin.php:702
+#: bp-core/bp-core-admin.php:676 bp-core/bp-core-admin.php:681
+#: bp-core/bp-core-admin.php:691 bp-core/bp-core-admin.php:696
+#: bp-core/bp-core-admin.php:701
 msgid "Core Developer"
 msgstr ""
 
-#: bp-core/bp-core-admin.php:687
+#: bp-core/bp-core-admin.php:686
 msgid "Navigator"
 msgstr ""
 
-#: bp-core/bp-core-admin.php:706
+#: bp-core/bp-core-admin.php:705
 msgid "Recent Rockstars"
 msgstr ""
 
-#: bp-core/bp-core-admin.php:731
+#: bp-core/bp-core-admin.php:730
 msgid "Contributors to BuddyPress %s"
 msgstr ""
 
-#: bp-core/bp-core-admin.php:781
+#: bp-core/bp-core-admin.php:780
 msgid "External Libraries"
 msgstr ""
 
-#: bp-core/bp-core-admin.php:802
+#: bp-core/bp-core-admin.php:801
 msgid ""
-"Thank you for installing BuddyPress! BuddyPress %s gives you the components "
-"you need to turn your WordPress powered site into a thriving membership "
-"community."
+"Thank you for installing BuddyPress! BuddyPress helps you run any kind of "
+"social network on your WordPress, with member profiles, activity streams, "
+"user groups, messaging, and more."
 msgstr ""
 
-#: bp-core/bp-core-admin.php:803
+#: bp-core/bp-core-admin.php:802
 msgid ""
 "BuddyPress %s comes with a bunch of great improvements we think "
 "you&#8217;re really going to like."
 msgstr ""
 
-#: bp-core/bp-core-admin.php:807
+#: bp-core/bp-core-admin.php:806
 msgid "Welcome to BuddyPress %s"
 msgstr ""
 
-#: bp-core/bp-core-admin.php:828
+#: bp-core/bp-core-admin.php:834
 msgid "What&#8217;s New"
 msgstr ""
 
-#: bp-core/bp-core-admin.php:830
+#: bp-core/bp-core-admin.php:836
 msgid "Credits"
 msgstr ""
 
-#: bp-core/bp-core-admin.php:899
+#: bp-core/bp-core-admin.php:905
 msgid "Maintenance Release"
 msgid_plural "Maintenance Releases"
 msgstr[0] ""
 msgstr[1] ""
 
-#: bp-core/bp-core-admin.php:900
+#: bp-core/bp-core-admin.php:906
 msgid "Security Release"
 msgid_plural "Security Releases"
 msgstr[0] ""
 msgstr[1] ""
 
-#: bp-core/bp-core-admin.php:901
+#: bp-core/bp-core-admin.php:907
 msgid "Maintenance and Security Release"
 msgid_plural "Maintenance and Security Releases"
 msgstr[0] ""
 msgstr[1] ""
 
-#: bp-core/bp-core-admin.php:904
+#: bp-core/bp-core-admin.php:910
 #. translators: 1: WordPress version number.
 msgid "<strong>Version %1$s</strong> addressed a security issue."
 msgid_plural "<strong>Version %1$s</strong> addressed some security issues."
 msgstr[0] ""
 msgstr[1] ""
 
-#: bp-core/bp-core-admin.php:909
+#: bp-core/bp-core-admin.php:915
 #. translators: 1: WordPress version number, 2: plural number of bugs.
 msgid "<strong>Version %1$s</strong> addressed %2$s bug."
 msgid_plural "<strong>Version %1$s</strong> addressed %2$s bugs."
 msgstr[0] ""
 msgstr[1] ""
 
-#: bp-core/bp-core-admin.php:914
+#: bp-core/bp-core-admin.php:920
 #. translators: 1: WordPress version number, 2: plural number of bugs. Singular
 #. security issue.
 msgid "<strong>Version %1$s</strong> addressed a security issue and fixed %2$s bug."
@@ -2005,7 +2012,7 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: bp-core/bp-core-admin.php:919
+#: bp-core/bp-core-admin.php:925
 #. translators: 1: WordPress version number, 2: plural number of bugs. More
 #. than one security issue.
 msgid ""
@@ -2017,7 +2024,7 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: bp-core/bp-core-admin.php:923
+#: bp-core/bp-core-admin.php:929
 msgid "For more information, see <a href=\"%s\">the release notes</a>."
 msgstr ""
 
@@ -3516,7 +3523,7 @@ msgstr ""
 msgid "You are about to delete the following groups:"
 msgstr ""
 
-#: bp-groups/bp-groups-admin.php:675 bp-members/bp-members-admin.php:1977
+#: bp-groups/bp-groups-admin.php:675 bp-members/bp-members-admin.php:1978
 msgid "This action cannot be undone."
 msgstr ""
 
@@ -3636,7 +3643,7 @@ msgstr ""
 msgid "Banned"
 msgstr ""
 
-#: bp-groups/bp-groups-admin.php:910 bp-members/bp-members-admin.php:1424
+#: bp-groups/bp-groups-admin.php:910 bp-members/bp-members-admin.php:1425
 #: bp-templates/bp-legacy/buddypress/members/single/messages/messages-loop.php:74
 #: bp-templates/bp-legacy/buddypress/members/single/notifications/notifications-loop.php:18
 msgid "Actions"
@@ -4626,7 +4633,11 @@ msgstr ""
 msgid "Last active: %1$s"
 msgstr ""
 
-#: bp-members/bp-members-admin.php:1097
+#: bp-members/bp-members-admin.php:1096
+msgid "Select member type"
+msgstr ""
+
+#: bp-members/bp-members-admin.php:1098
 #: bp-templates/bp-legacy/buddypress/forums/index.php:180
 #: bp-xprofile/classes/class-bp-xprofile-field-type-datebox.php:192
 #: bp-xprofile/classes/class-bp-xprofile-field-type-datebox.php:215
@@ -4636,127 +4647,127 @@ msgstr ""
 msgid "----"
 msgstr ""
 
-#: bp-members/bp-members-admin.php:1175
+#: bp-members/bp-members-admin.php:1176
 msgid "Extended"
 msgstr ""
 
-#: bp-members/bp-members-admin.php:1416
+#: bp-members/bp-members-admin.php:1417
 msgid "This is the administration screen for pending accounts on your site."
 msgstr ""
 
-#: bp-members/bp-members-admin.php:1417
+#: bp-members/bp-members-admin.php:1418
 msgid ""
 "From the screen options, you can customize the displayed columns and the "
 "pagination of this screen."
 msgstr ""
 
-#: bp-members/bp-members-admin.php:1418
+#: bp-members/bp-members-admin.php:1419
 msgid ""
 "You can reorder the list of your pending accounts by clicking on the "
 "Username, Email or Registered column headers."
 msgstr ""
 
-#: bp-members/bp-members-admin.php:1419
+#: bp-members/bp-members-admin.php:1420
 msgid ""
 "Using the search form, you can find pending accounts more easily. The "
 "Username and Email fields will be included in the search."
 msgstr ""
 
-#: bp-members/bp-members-admin.php:1426
+#: bp-members/bp-members-admin.php:1427
 msgid ""
 "Hovering over a row in the pending accounts list will display action links "
 "that allow you to manage pending accounts. You can perform the following "
 "actions:"
 msgstr ""
 
-#: bp-members/bp-members-admin.php:1427
+#: bp-members/bp-members-admin.php:1428
 msgid ""
 "\"Email\" takes you to the confirmation screen before being able to send "
 "the activation link to the desired pending account. You can only send the "
 "activation email once per day."
 msgstr ""
 
-#: bp-members/bp-members-admin.php:1428
+#: bp-members/bp-members-admin.php:1429
 msgid ""
 "\"Delete\" allows you to delete a pending account from your site. You will "
 "be asked to confirm this deletion."
 msgstr ""
 
-#: bp-members/bp-members-admin.php:1429
+#: bp-members/bp-members-admin.php:1430
 msgid ""
 "By clicking on a Username you will be able to activate a pending account "
 "from the confirmation screen."
 msgstr ""
 
-#: bp-members/bp-members-admin.php:1430
+#: bp-members/bp-members-admin.php:1431
 msgid "Bulk actions allow you to perform these 3 actions for the selected rows."
 msgstr ""
 
-#: bp-members/bp-members-admin.php:1695
+#: bp-members/bp-members-admin.php:1696
 msgid "There was a problem sending the activation emails. Please try again."
 msgstr ""
 
-#: bp-members/bp-members-admin.php:1702
+#: bp-members/bp-members-admin.php:1703
 msgid "There was a problem activating accounts. Please try again."
 msgstr ""
 
-#: bp-members/bp-members-admin.php:1709
+#: bp-members/bp-members-admin.php:1710
 msgid "There was a problem deleting sign-ups. Please try again."
 msgstr ""
 
-#: bp-members/bp-members-admin.php:1825
+#: bp-members/bp-members-admin.php:1826
 msgid "Users"
 msgstr ""
 
-#: bp-members/bp-members-admin.php:1849
+#: bp-members/bp-members-admin.php:1850
 msgid "Search Pending Users"
 msgstr ""
 
-#: bp-members/bp-members-admin.php:1897
+#: bp-members/bp-members-admin.php:1898
 msgid "Delete Pending Accounts"
 msgstr ""
 
-#: bp-members/bp-members-admin.php:1899
+#: bp-members/bp-members-admin.php:1900
 msgid "You are about to delete the following account:"
 msgstr ""
 
-#: bp-members/bp-members-admin.php:1901
+#: bp-members/bp-members-admin.php:1902
 msgid "You are about to delete the following accounts:"
 msgstr ""
 
-#: bp-members/bp-members-admin.php:1906
+#: bp-members/bp-members-admin.php:1907
 msgid "Activate Pending Accounts"
 msgstr ""
 
-#: bp-members/bp-members-admin.php:1908
+#: bp-members/bp-members-admin.php:1909
 msgid "You are about to activate the following account:"
 msgstr ""
 
-#: bp-members/bp-members-admin.php:1910
+#: bp-members/bp-members-admin.php:1911
 msgid "You are about to activate the following accounts:"
 msgstr ""
 
-#: bp-members/bp-members-admin.php:1915
+#: bp-members/bp-members-admin.php:1916
 msgid "Resend Activation Emails"
 msgstr ""
 
-#: bp-members/bp-members-admin.php:1917
+#: bp-members/bp-members-admin.php:1918
 msgid "You are about to resend an activation email to the following account:"
 msgstr ""
 
-#: bp-members/bp-members-admin.php:1919
+#: bp-members/bp-members-admin.php:1920
 msgid "You are about to resend an activation email to the following accounts:"
 msgstr ""
 
-#: bp-members/bp-members-admin.php:1959
+#: bp-members/bp-members-admin.php:1960
 msgid "Last notified: %s"
 msgstr ""
 
-#: bp-members/bp-members-admin.php:1963
+#: bp-members/bp-members-admin.php:1964
 msgid "(less than 24 hours ago)"
 msgstr ""
 
-#: bp-members/bp-members-admin.php:1981
+#: bp-members/bp-members-admin.php:1982
 msgid "Confirm"
 msgstr ""
 
@@ -6900,6 +6911,18 @@ msgstr ""
 msgid "December"
 msgstr ""
 
+#: bp-xprofile/classes/class-bp-xprofile-field-type-datebox.php:273
+msgid "Select day"
+msgstr ""
+
+#: bp-xprofile/classes/class-bp-xprofile-field-type-datebox.php:278
+msgid "Select month"
+msgstr ""
+
+#: bp-xprofile/classes/class-bp-xprofile-field-type-datebox.php:283
+msgid "Select year"
+msgstr ""
+
 #: bp-xprofile/classes/class-bp-xprofile-field-type-multiselectbox.php:94
 #: bp-xprofile/classes/class-bp-xprofile-field-type-radiobutton.php:84
 #: bp-xprofile/classes/class-bp-xprofile-field-type-radiobutton.php:176
@@ -6938,11 +6961,15 @@ msgstr ""
 msgid "Descending"
 msgstr ""
 
-#: bp-xprofile/classes/class-bp-xprofile-field-type.php:366
+#: bp-xprofile/classes/class-bp-xprofile-field-type.php:363
+msgid "Add an option"
+msgstr ""
+
+#: bp-xprofile/classes/class-bp-xprofile-field-type.php:367
 msgid "Default Value"
 msgstr ""
 
-#: bp-xprofile/classes/class-bp-xprofile-field-type.php:383
+#: bp-xprofile/classes/class-bp-xprofile-field-type.php:384
 msgid "Add Another Option"
 msgstr ""
 
@@ -7104,27 +7131,27 @@ msgctxt "Activity items per page (screen options)"
 msgid "Activity"
 msgstr ""
 
-#: bp-activity/bp-activity-admin.php:984
+#: bp-activity/bp-activity-admin.php:985
 msgctxt "Admin SWA page"
 msgid "Activity"
 msgstr ""
 
-#: bp-activity/bp-activity-admin.php:1365
+#: bp-activity/bp-activity-admin.php:1366
 msgctxt "Admin SWA column header"
 msgid "Author"
 msgstr ""
 
-#: bp-activity/bp-activity-admin.php:1366
+#: bp-activity/bp-activity-admin.php:1367
 msgctxt "Admin SWA column header"
 msgid "Activity"
 msgstr ""
 
-#: bp-activity/bp-activity-admin.php:1367
+#: bp-activity/bp-activity-admin.php:1368
 msgctxt "Admin SWA column header"
 msgid "Action"
 msgstr ""
 
-#: bp-activity/bp-activity-admin.php:1368
+#: bp-activity/bp-activity-admin.php:1369
 msgctxt "Admin SWA column header"
 msgid "In Response To"
 msgstr ""
@@ -7326,47 +7353,47 @@ msgctxt "BuddyPress setting tab"
 msgid "Profile Settings"
 msgstr ""
 
-#: bp-core/bp-core-admin.php:628
+#: bp-core/bp-core-admin.php:625
 msgctxt "About screen, website links"
 msgid "Learn more:"
 msgstr ""
 
-#: bp-core/bp-core-admin.php:628
+#: bp-core/bp-core-admin.php:625
 msgctxt "About screen, link to project blog"
 msgid "News"
 msgstr ""
 
-#: bp-core/bp-core-admin.php:628
+#: bp-core/bp-core-admin.php:625
 msgctxt "About screen, link to support site"
 msgid "Support"
 msgstr ""
 
-#: bp-core/bp-core-admin.php:628
+#: bp-core/bp-core-admin.php:625
 msgctxt "About screen, link to documentation"
 msgid "Documentation"
 msgstr ""
 
-#: bp-core/bp-core-admin.php:628
+#: bp-core/bp-core-admin.php:625
 msgctxt "About screen, link to development blog"
 msgid "Development Blog"
 msgstr ""
 
-#: bp-core/bp-core-admin.php:629
+#: bp-core/bp-core-admin.php:626
 msgctxt "official Twitter accounts:"
 msgid "Twitter:"
 msgstr ""
 
-#: bp-core/bp-core-admin.php:629
+#: bp-core/bp-core-admin.php:626
 msgctxt "@buddypress twitter account name"
 msgid "BuddyPress"
 msgstr ""
 
-#: bp-core/bp-core-admin.php:629
+#: bp-core/bp-core-admin.php:626
 msgctxt "@bptrac twitter account name"
 msgid "Trac"
 msgstr ""
 
-#: bp-core/bp-core-admin.php:629
+#: bp-core/bp-core-admin.php:626
 msgctxt "@buddypressdev twitter account name"
 msgid "Development"
 msgstr ""
@@ -7808,7 +7835,7 @@ msgstr ""
 
 #: bp-members/admin/bp-members-admin-classes.php:98
 #: bp-members/admin/bp-members-admin-classes.php:485
-#: bp-members/bp-members-admin.php:1333
+#: bp-members/bp-members-admin.php:1334
 msgctxt "signup users"
 msgid "Pending %s"
 msgstr ""
@@ -7840,57 +7867,57 @@ msgctxt "members user-admin edit screen"
 msgid "Member Type"
 msgstr ""
 
-#: bp-members/bp-members-admin.php:888 bp-members/bp-members-admin.php:1829
+#: bp-members/bp-members-admin.php:888 bp-members/bp-members-admin.php:1830
 msgctxt "user"
 msgid "Add New"
 msgstr ""
 
-#: bp-members/bp-members-admin.php:892 bp-members/bp-members-admin.php:1833
+#: bp-members/bp-members-admin.php:892 bp-members/bp-members-admin.php:1834
 msgctxt "user"
 msgid "Add Existing"
 msgstr ""
 
-#: bp-members/bp-members-admin.php:1410
+#: bp-members/bp-members-admin.php:1411
 msgctxt "Pending Accounts per page (screen options)"
 msgid "Pending Accounts"
 msgstr ""
 
-#: bp-members/bp-members-admin.php:1593
+#: bp-members/bp-members-admin.php:1594
 msgctxt "signup resent"
 msgid "%s activation email successfully sent! "
 msgid_plural "%s activation emails successfully sent! "
 msgstr[0] ""
 msgstr[1] ""
 
-#: bp-members/bp-members-admin.php:1627
+#: bp-members/bp-members-admin.php:1628
 msgctxt "signup resent"
 msgid "%s account successfully activated! "
 msgid_plural "%s accounts successfully activated! "
 msgstr[0] ""
 msgstr[1] ""
 
-#: bp-members/bp-members-admin.php:1604
+#: bp-members/bp-members-admin.php:1605
 msgctxt "signup notsent"
 msgid "%s activation email was not sent."
 msgid_plural "%s activation emails were not sent."
 msgstr[0] ""
 msgstr[1] ""
 
-#: bp-members/bp-members-admin.php:1638
+#: bp-members/bp-members-admin.php:1639
 msgctxt "signup notsent"
 msgid "%s account was not activated."
 msgid_plural "%s accounts were not activated."
 msgstr[0] ""
 msgstr[1] ""
 
-#: bp-members/bp-members-admin.php:1661
+#: bp-members/bp-members-admin.php:1662
 msgctxt "signup deleted"
 msgid "%s sign-up successfully deleted!"
 msgid_plural "%s sign-ups successfully deleted!"
 msgstr[0] ""
 msgstr[1] ""
 
-#: bp-members/bp-members-admin.php:1672
+#: bp-members/bp-members-admin.php:1673
 msgctxt "signup notdeleted"
 msgid "%s sign-up was not deleted."
 msgid_plural "%s sign-ups were not deleted."
