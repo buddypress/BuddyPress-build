@@ -2313,6 +2313,24 @@ function _bp_strip_spans_from_title( $title_part = '' ) {
 	return trim( $title );
 }
 
+/**
+ * Get the correct filename suffix for minified assets.
+ *
+ * @since 2.5.0
+ *
+ * @return string
+ */
+function bp_core_get_minified_asset_suffix() {
+	$ext = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min';
+
+	// Ensure the assets can be located when running from /src/.
+	if ( defined( 'BP_SOURCE_SUBDIRECTORY' ) && BP_SOURCE_SUBDIRECTORY === 'src' ) {
+		$ext = str_replace( '.min', '', $ext );
+	}
+
+	return $ext;
+}
+
 /** Nav Menu ******************************************************************/
 
 /**
@@ -2659,7 +2677,8 @@ function bp_get_email_post_type_labels() {
 		'filter_items_list'     => _x( 'Filter email list', 'email post type label', 'buddypress' ),
 		'items_list'            => _x( 'Email list', 'email post type label', 'buddypress' ),
 		'items_list_navigation' => _x( 'Email list navigation', 'email post type label', 'buddypress' ),
-		'name'                  => _x( 'Emails', 'email post type name', 'buddypress' ),
+		'menu_name'             => _x( 'Emails', 'email post type name', 'buddypress' ),
+		'name'                  => _x( 'BuddyPress Emails', 'email post type label', 'buddypress' ),
 		'new_item'              => _x( 'New Email', 'email post type label', 'buddypress' ),
 		'not_found'             => _x( 'No emails found', 'email post type label', 'buddypress' ),
 		'not_found_in_trash'    => _x( 'No emails found in Trash', 'email post type label', 'buddypress' ),
@@ -2931,7 +2950,7 @@ function bp_send_email( $email_type, $to, $args = array() ) {
 	 *
 	 * @param bool $use_wp_mail Whether to fallback to the regular wp_mail() function or not.
 	 */
-	$must_use_wpmail = apply_filters( 'bp_mail_use_wp_mail', $wp_html_emails || ! $is_default_wpmail );
+	$must_use_wpmail = apply_filters( 'bp_email_use_wp_mail', $wp_html_emails || ! $is_default_wpmail );
 
 	if ( $must_use_wpmail ) {
 		$to = $email->get( 'to' );

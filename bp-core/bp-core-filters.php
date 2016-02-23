@@ -464,7 +464,7 @@ function bp_core_activation_signup_blog_notification( $domain, $path, $title, $u
 			'user.email'        => $user_email,
 		),
 	);
-	bp_send_email( 'core-user-registration-with-blog', $user_email, $args );
+	bp_send_email( 'core-user-registration-with-blog', array( array( $user_email => $user ) ), $args );
 
 	// Return false to stop the original WPMU function from continuing.
 	return false;
@@ -512,14 +512,21 @@ function bp_core_activation_signup_user_notification( $user, $user_email, $key, 
 		}
 	}
 
+	$user_id = 0;
+	$user_object = get_user_by( 'login', $user );
+	if ( $user_object ) {
+		$user_id = $user_object->ID;
+	}
+
 	$args = array(
 		'tokens' => array(
 			'activate.url' => esc_url( trailingslashit( bp_get_activation_page() ) . "{$key}/" ),
 			'key'          => $key,
 			'user.email'   => $user_email,
+			'user.id'      => $user_id,
 		),
 	);
-	bp_send_email( 'core-user-registration', $user_email, $args );
+	bp_send_email( 'core-user-registration', array( array( $user_email => $user ) ), $args );
 
 	// Return false to stop the original WPMU function from continuing.
 	return false;
@@ -1013,10 +1020,11 @@ function bp_email_set_default_tokens( $tokens, $property_name, $transform, $emai
 	$tokens['site.name']        = wp_specialchars_decode( bp_get_option( 'blogname' ), ENT_QUOTES );
 
 	// Default values for tokens set conditionally below.
-	$tokens['email.preheader'] = '';
-	$tokens['recipient.email'] = '';
-	$tokens['recipient.name']  = '';
-	$tokens['unsubscribe']     = '';
+	$tokens['email.preheader']     = '';
+	$tokens['recipient.email']     = '';
+	$tokens['recipient.name']      = '';
+	$tokens['recipient.username']  = '';
+	$tokens['unsubscribe']         = site_url( 'wp-login.php' );
 
 
 	// Who is the email going to?
@@ -1025,8 +1033,12 @@ function bp_email_set_default_tokens( $tokens, $property_name, $transform, $emai
 		$recipient = array_shift( $recipient );
 		$user_obj  = $recipient->get_user( 'search-email' );
 
-		$tokens['recipient.address'] = $recipient->get_address();
-		$tokens['recipient.name']    = $recipient->get_name();
+		$tokens['recipient.email'] = $recipient->get_address();
+		$tokens['recipient.name']  = $recipient->get_name();
+
+		if ( ! $user_obj && $tokens['recipient.email'] ) {
+			$user_obj = get_user_by( 'email', $tokens['recipient.email'] );
+		}
 
 		if ( $user_obj ) {
 			// Unsubscribe link.
@@ -1035,6 +1047,7 @@ function bp_email_set_default_tokens( $tokens, $property_name, $transform, $emai
 				bp_core_get_user_domain( $user_obj->ID ),
 				function_exists( 'bp_get_settings_slug' ) ? bp_get_settings_slug() : 'settings'
 			) );
+			$tokens['recipient.username'] = $user_obj->user_login;
 		}
 	}
 
@@ -1088,6 +1101,8 @@ function bp_core_render_email_template( $template ) {
 	$template = ob_get_contents();
 	ob_end_clean();
 
+	// Make sure we add a <title> tag so WP Customizer picks it up.
+	$template = str_replace( '<head>', '<head><title>' . esc_html_x( 'BuddyPress Emails', 'screen heading', 'buddypress' ) . '</title>', $template );
 	echo str_replace( '{{{content}}}', nl2br( get_post()->post_content ), $template );
 
 	/*

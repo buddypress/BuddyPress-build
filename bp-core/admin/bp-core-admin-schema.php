@@ -567,9 +567,9 @@ function bp_core_install_emails() {
 			/* translators: do not remove {} brackets or translate its contents. */
 			'post_title'   => __( '[{{{site.name}}}] {{poster.name}} mentioned you in an update', 'buddypress' ),
 			/* translators: do not remove {} brackets or translate its contents. */
-			'post_content' => __( "{{poster.name}} mentioned you in the group \"{{group.name}}\":\n\n<blockquote>&quot;{{usermessage}}&quot;</blockquote>\n\n<a href=\"{{{group-mentioned.url}}}\">Go to the discussion</a> to reply or catch up on the conversation.", 'buddypress' ),
+			'post_content' => __( "{{poster.name}} mentioned you in the group \"{{group.name}}\":\n\n<blockquote>&quot;{{usermessage}}&quot;</blockquote>\n\n<a href=\"{{{mentioned.url}}}\">Go to the discussion</a> to reply or catch up on the conversation.", 'buddypress' ),
 			/* translators: do not remove {} brackets or translate its contents. */
-			'post_excerpt' => __( "{{poster.name}} mentioned you in the group \"{{group.name}}\":\n\n\"{{usermessage}}\"\n\nGo to the discussion to reply or catch up on the conversation: {{{group-mentioned.url}}}", 'buddypress' ),
+			'post_excerpt' => __( "{{poster.name}} mentioned you in the group \"{{group.name}}\":\n\n\"{{usermessage}}\"\n\nGo to the discussion to reply or catch up on the conversation: {{{mentioned.url}}}", 'buddypress' ),
 		),
 		'core-user-registration' => array(
 			/* translators: do not remove {} brackets or translate its contents. */
@@ -680,7 +680,7 @@ function bp_core_install_emails() {
 		'friends-request-accepted'           => __( 'Recipient has had a friend request accepted by a member.', 'buddypress' ),
 		'groups-details-updated'             => __( "A group's details were updated.", 'buddypress' ),
 		'groups-invitation'                  => __( 'A member has sent a group invitation to the recipient.', 'buddypress' ),
-		'groups-member-promoted'             => __( "Recipient's status within a group have changed.", 'buddypress' ),
+		'groups-member-promoted'             => __( "Recipient's status within a group has changed.", 'buddypress' ),
 		'groups-membership-request'          => __( 'A member has requested permission to join a group.', 'buddypress' ),
 		'messages-unread'                    => __( 'Recipient has received a private message.', 'buddypress' ),
 		'settings-verify-email-change'       => __( 'Recipient has changed their email address.', 'buddypress' ),

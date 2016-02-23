@@ -31,7 +31,7 @@ function bp_email_init_customizer( WP_Customize_Manager $wp_customize ) {
 
 	$wp_customize->add_panel( 'bp_mailtpl', array(
 		'description' => __( 'Customize the appearance of emails sent by BuddyPress.', 'buddypress' ),
-		'title'       => _x( 'Emails', 'screen heading', 'buddypress' ),
+		'title'       => _x( 'BuddyPress Emails', 'screen heading', 'buddypress' ),
 	) );
 
 	$sections = bp_email_get_customizer_sections();
@@ -78,7 +78,7 @@ function bp_email_init_customizer( WP_Customize_Manager $wp_customize ) {
 		 * the Customizer loads very, very early.
 		 */
 		$bp  = buddypress();
-		$min = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+		$min = bp_core_get_minified_asset_suffix();
 
 		wp_enqueue_script(
 			'bp-customizer-receiver-emails',
@@ -87,6 +87,9 @@ function bp_email_init_customizer( WP_Customize_Manager $wp_customize ) {
 			bp_get_version(),
 			true
 		);
+
+		// Include the preview loading style
+		add_action( 'wp_footer', array( $wp_customize, 'customize_preview_loading_style' ) );
 	}
 }
 add_action( 'bp_customize_register', 'bp_email_init_customizer' );
