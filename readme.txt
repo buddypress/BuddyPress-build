@@ -30,7 +30,7 @@ Visit the <a href="https://buddypress.org/">BuddyPress website</a> for documenta
 = From your WordPress dashboard =
 
 1. Visit 'Plugins > Add New'
-2. Search for 'BuddyPress'
+2. Search for 'BuddyPress' 
 3. Activate BuddyPress from your Plugins page. (You will be greeted with a Welcome page.)
 
 = From WordPress.org =
