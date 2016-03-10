@@ -3,7 +3,7 @@ Contributors: johnjamesjacoby, DJPaul, boonebgorges, r-a-y, imath, mercime, tw21
 Tags: social networking, activity, profiles, messaging, friends, groups, forums, notifications, settings, social, community, networks, networking
 Requires at least: 3.9
 Tested up to: 4.4.2
-Stable tag: 2.5.0
+Stable tag: 2.5.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -30,7 +30,7 @@ Visit the <a href="https://buddypress.org/">BuddyPress website</a> for documenta
 = From your WordPress dashboard =
 
 1. Visit 'Plugins > Add New'
-2. Search for 'BuddyPress' 
+2. Search for 'BuddyPress'
 3. Activate BuddyPress from your Plugins page. (You will be greeted with a Welcome page.)
 
 = From WordPress.org =
@@ -118,11 +118,11 @@ Please consider helping translate BuddyPress at our <a href="https://translate.w
 
 == Upgrade Notice ==
 
+= 2.5.1 =
+See: https://codex.buddypress.org/releases/version-2-5-1/
+
 = 2.5 =
 See: https://codex.buddypress.org/releases/version-2-5-0/
-
-= 2.4.3 =
-See: https://codex.buddypress.org/releases/version-2-4-2/
 
 = 2.4.3 =
 See: https://codex.buddypress.org/releases/version-2-4-3/
@@ -246,11 +246,11 @@ Fixes over 10 bugs.
 
 == Changelog ==
 
+= 2.5.1 =
+See: https://codex.buddypress.org/releases/version-2-5-1/
+
 = 2.5 =
 See: https://codex.buddypress.org/releases/version-2-5-0/
-
-= 2.4.3 =
-See: https://codex.buddypress.org/releases/version-2-4-2/
 
 = 2.4.3 =
 See: https://codex.buddypress.org/releases/version-2-4-3/
