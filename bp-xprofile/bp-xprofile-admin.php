@@ -10,7 +10,9 @@
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
-require dirname( __FILE__ ) . '/classes/class-bp-xprofile-user-admin.php';
+if ( ! buddypress()->do_autoload ) {
+	require dirname( __FILE__ ) . '/classes/class-bp-xprofile-user-admin.php';
+}
 
 /**
  * Creates the administration interface menus and checks to see if the DB
@@ -416,12 +418,10 @@ function xprofile_admin_manage_field( $group_id, $field_id = null ) {
 				}
 
 				// Save autolink settings.
-				if ( 1 != $field_id ) {
-					if ( isset( $_POST['do_autolink'] ) && 'on' === wp_unslash( $_POST['do_autolink'] ) ) {
-						bp_xprofile_update_field_meta( $field_id, 'do_autolink', 'on' );
-					} else {
-						bp_xprofile_update_field_meta( $field_id, 'do_autolink', 'off' );
-					}
+				if ( isset( $_POST['do_autolink'] ) && 'on' === wp_unslash( $_POST['do_autolink'] ) ) {
+					bp_xprofile_update_field_meta( $field_id, 'do_autolink', 'on' );
+				} else {
+					bp_xprofile_update_field_meta( $field_id, 'do_autolink', 'off' );
 				}
 
 				/**

@@ -16,7 +16,9 @@ defined( 'ABSPATH' ) || exit;
 // Include WP's list table class.
 if ( !class_exists( 'WP_List_Table' ) ) require( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 
-require dirname( __FILE__ ) . '/classes/class-bp-groups-list-table.php';
+if ( ! buddypress()->do_autoload ) {
+	require dirname( __FILE__ ) . '/classes/class-bp-groups-list-table.php';
+}
 
 // The per_page screen option. Has to be hooked in extremely early.
 if ( is_admin() && ! empty( $_REQUEST['page'] ) && 'bp-groups' == $_REQUEST['page'] )
@@ -584,7 +586,7 @@ function bp_groups_admin_edit() {
 			<div id="moderated" class="<?php echo ( $is_error ) ? 'error' : 'updated'; ?>"><p><?php echo implode( "</p><p>", $messages ); ?></p></div>
 		<?php endif; ?>
 
-		<?php if ( ! empty( $group ) ) : ?>
+		<?php if ( $group->id ) : ?>
 
 			<form action="<?php echo esc_url( $form_url ); ?>" id="bp-groups-edit-form" method="post">
 				<div id="poststuff">
@@ -625,7 +627,16 @@ function bp_groups_admin_edit() {
 			</form>
 
 		<?php else : ?>
-			<p><?php printf( __( 'No group found with this ID. <a href="%s">Go back and try again</a>.', 'buddypress' ), esc_url( bp_get_admin_url( 'admin.php?page=bp-groups' ) ) ); ?></p>
+
+			<p><?php
+				printf(
+					'%1$s <a href="%2$s">%3$s</a>',
+					__( 'No group found with this ID.', 'buddypress' ),
+					esc_url( bp_get_admin_url( 'admin.php?page=bp-groups' ) ),
+					__( 'Go back and try again.', 'buddypress' )
+				);
+			?></p>
+
 		<?php endif; ?>
 
 	</div><!-- .wrap -->

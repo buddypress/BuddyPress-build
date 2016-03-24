@@ -16,7 +16,9 @@ defined( 'ABSPATH' ) || exit;
 // Include WP's list table class.
 if ( !class_exists( 'WP_List_Table' ) ) require( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 
-require dirname( __FILE__ ) . '/classes/class-bp-activity-list-table.php';
+if ( ! buddypress()->do_autoload ) {
+	require dirname( __FILE__ ) . '/classes/class-bp-activity-list-table.php';
+}
 
 // Per_page screen option. Has to be hooked in extremely early.
 if ( is_admin() && ! empty( $_REQUEST['page'] ) && 'bp-activity' == $_REQUEST['page'] )
@@ -704,10 +706,16 @@ function bp_activity_admin_edit() {
 			</form>
 
 		<?php else : ?>
-			<p>
-				<?php _e( 'No activity found with this ID.', 'buddypress' ); ?>
-				<a href="<?php echo esc_url( bp_get_admin_url( 'admin.php?page=bp-activity' ) ); ?>"><?php _e( 'Go back and try again.', 'buddypress' ); ?></a>
-			</p>
+
+			<p><?php
+				printf(
+					'%1$s <a href="%2$s">%3$s</a>',
+					__( 'No activity found with this ID.', 'buddypress' ),
+					esc_url( bp_get_admin_url( 'admin.php?page=bp-activity' ) ),
+					__( 'Go back and try again.', 'buddypress' )
+				);
+			?></p>
+
 		<?php endif; ?>
 
 	</div><!-- .wrap -->
