@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: BuddyPress 2.6.0-alpha\n"
 "Report-Msgid-Bugs-To: https://buddypress.trac.wordpress.org\n"
-"POT-Creation-Date: 2016-03-24 03:47:02+00:00\n"
+"POT-Creation-Date: 2016-04-05 18:37:46+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -582,9 +582,9 @@ msgstr[1] ""
 #: bp-groups/bp-groups-template.php:3710 bp-groups/bp-groups-template.php:3749
 #: bp-groups/bp-groups-template.php:3790 bp-groups/bp-groups-template.php:5293
 #: bp-groups/classes/class-bp-groups-component.php:793
-#: bp-members/bp-members-template.php:771
-#: bp-members/bp-members-template.php:1334
-#: bp-members/bp-members-template.php:1383
+#: bp-members/bp-members-template.php:778
+#: bp-members/bp-members-template.php:1341
+#: bp-members/bp-members-template.php:1390
 #: bp-members/classes/class-bp-members-component.php:296
 #: bp-messages/bp-messages-template.php:666
 #: bp-messages/classes/class-bp-messages-component.php:340
@@ -647,7 +647,7 @@ msgstr ""
 #: bp-core/admin/bp-core-admin-slugs.php:150
 #: bp-core/admin/bp-core-admin-slugs.php:213
 #: bp-groups/classes/class-bp-groups-list-table.php:488
-#: bp-members/bp-members-template.php:984
+#: bp-members/bp-members-template.php:991
 #: bp-templates/bp-legacy/buddypress-functions.php:308
 msgid "View"
 msgstr ""
@@ -906,15 +906,15 @@ msgstr ""
 #: bp-groups/bp-groups-widgets.php:73
 #: bp-groups/classes/class-bp-groups-invite-template.php:240
 #: bp-groups/classes/class-bp-groups-widget.php:133
-#: bp-members/bp-members-template.php:910
-#: bp-members/bp-members-template.php:1455
+#: bp-members/bp-members-template.php:917
+#: bp-members/bp-members-template.php:1462
 #: bp-templates/bp-legacy/buddypress/groups/groups-loop.php:62
 #: bp-templates/bp-legacy/buddypress/groups/single/cover-image-header.php:62
 #: bp-templates/bp-legacy/buddypress/groups/single/group-header.php:71
 msgid "active %s"
 msgstr ""
 
-#: bp-blogs/bp-blogs-template.php:570 bp-members/bp-members-template.php:923
+#: bp-blogs/bp-blogs-template.php:570 bp-members/bp-members-template.php:930
 msgid "Never active"
 msgstr ""
 
@@ -1019,7 +1019,7 @@ msgstr ""
 
 #: bp-blogs/bp-blogs-template.php:1246 bp-core/deprecated/1.5.php:426
 #: bp-forums/bp-forums-template.php:2659 bp-groups/bp-groups-template.php:4980
-#: bp-members/bp-members-template.php:1154
+#: bp-members/bp-members-template.php:1161
 #: bp-messages/bp-messages-template.php:784
 msgid "Search"
 msgstr ""
@@ -1788,7 +1788,7 @@ msgstr ""
 msgid "HTTP error."
 msgstr ""
 
-#: bp-core/bp-core-attachments.php:603 bp-core/bp-core-avatars.php:1048
+#: bp-core/bp-core-attachments.php:603 bp-core/bp-core-avatars.php:1059
 msgid "Upload failed."
 msgstr ""
 
@@ -1888,7 +1888,7 @@ msgid ""
 "wide, and %2$spx tall."
 msgstr ""
 
-#: bp-core/bp-core-attachments.php:1294 bp-core/bp-core-avatars.php:887
+#: bp-core/bp-core-attachments.php:1294 bp-core/bp-core-avatars.php:898
 msgid "Upload Failed! Error was: %s"
 msgstr ""
 
@@ -1900,17 +1900,17 @@ msgstr ""
 msgid "Profile Photo"
 msgstr ""
 
-#: bp-core/bp-core-avatars.php:915
+#: bp-core/bp-core-avatars.php:926
 msgid "Upload failed! Error was: %s"
 msgstr ""
 
-#: bp-core/bp-core-avatars.php:921
+#: bp-core/bp-core-avatars.php:932
 msgid ""
 "You have selected an image that is smaller than recommended. For best "
 "results, upload a picture larger than %d x %d pixels."
 msgstr ""
 
-#: bp-core/bp-core-avatars.php:1412 bp-core/bp-core-template.php:185
+#: bp-core/bp-core-avatars.php:1423 bp-core/bp-core-template.php:185
 #: bp-core/bp-core-template.php:204 bp-core/classes/class-bp-core-user.php:186
 #: bp-core/classes/class-bp-core-user.php:187
 #: bp-core/classes/class-bp-core-user.php:188
@@ -2058,7 +2058,7 @@ msgstr ""
 #: bp-core/bp-core-functions.php:2370
 #: bp-core/classes/class-bp-core-login-widget.php:83
 #: bp-core/deprecated/1.5.php:313 bp-core/deprecated/2.1.php:258
-#: bp-members/bp-members-template.php:1241
+#: bp-members/bp-members-template.php:1248
 msgid "Log Out"
 msgstr ""
 
@@ -4917,7 +4917,7 @@ msgstr ""
 msgid "Cheatin&#8217; huh?"
 msgstr ""
 
-#: bp-loader.php:741
+#: bp-loader.php:742
 msgid "BuddyPress Default"
 msgstr ""
 
@@ -5137,15 +5137,15 @@ msgid_plural "Viewing %1$s - %2$s of %3$s online members"
 msgstr[0] ""
 msgstr[1] ""
 
-#: bp-members/bp-members-template.php:1731
+#: bp-members/bp-members-template.php:1738
 msgid "Viewing members of the type: %s"
 msgstr ""
 
-#: bp-members/bp-members-template.php:2112
+#: bp-members/bp-members-template.php:2119
 msgid "Your Profile Photo"
 msgstr ""
 
-#: bp-members/bp-members-template.php:2215
+#: bp-members/bp-members-template.php:2222
 msgid "Activity RSS Feed"
 msgstr ""
 
@@ -6028,9 +6028,13 @@ msgid "You have successfully dismissed your pending email change."
 msgstr ""
 
 #: bp-settings/bp-settings-template.php:91
+msgid "There is a pending change of your email address to %s."
+msgstr ""
+
+#: bp-settings/bp-settings-template.php:96
 msgid ""
-"There is a pending change of your email address to %1$s.<br />Check your "
-"email (%2$s) for the verification link. <a href=\"%3$s\">Cancel</a>"
+"Check your email (%1$s) for the verification link, or <a href=\"%s\">cancel "
+"the pending change</a>."
 msgstr ""
 
 #: bp-settings/classes/class-bp-settings-component.php:111
@@ -8562,12 +8566,12 @@ msgctxt "member type URL base"
 msgid "type"
 msgstr ""
 
-#: bp-members/bp-members-template.php:979
+#: bp-members/bp-members-template.php:986
 msgctxt "member latest update in member directory"
 msgid "- &quot;%s&quot;"
 msgstr ""
 
-#: bp-members/bp-members-template.php:1095
+#: bp-members/bp-members-template.php:1102
 msgctxt "Records the timestamp that the user registered into the activity stream"
 msgid "registered %s"
 msgstr ""
