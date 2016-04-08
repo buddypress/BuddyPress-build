@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: BuddyPress 2.6.0-alpha\n"
 "Report-Msgid-Bugs-To: https://buddypress.trac.wordpress.org\n"
-"POT-Creation-Date: 2016-04-05 18:37:46+00:00\n"
+"POT-Creation-Date: 2016-04-08 19:43:48+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -8140,7 +8140,7 @@ msgctxt "search form"
 msgid "Search these:"
 msgstr ""
 
-#: bp-core/bp-core-template.php:3717
+#: bp-core/bp-core-template.php:3723
 msgctxt "recipient salutation"
 msgid "Hi %s,"
 msgstr ""
