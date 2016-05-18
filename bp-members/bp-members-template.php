@@ -1290,12 +1290,12 @@ function bp_get_loggedin_user_nav() {
 	$bp = buddypress();
 
 	// Loop through each navigation item.
-	foreach( (array) $bp->bp_nav as $nav_item ) {
+	foreach ( (array) $bp->members->nav->get_primary() as $nav_item ) {
 
 		$selected = '';
 
 		// If the current component matches the nav item id, then add a highlight CSS class.
-		if ( !bp_is_directory() && !empty( $bp->active_components[bp_current_component()] ) && $bp->active_components[bp_current_component()] == $nav_item['css_id'] ) {
+		if ( ! bp_is_directory() && ! empty( $bp->active_components[ bp_current_component() ] ) && $bp->active_components[ bp_current_component() ] == $nav_item->css_id ) {
 			$selected = ' class="current selected"';
 		}
 
@@ -1307,7 +1307,7 @@ function bp_get_loggedin_user_nav() {
 			$selected = '';
 
 			if ( bp_is_active( 'friends' ) ) {
-				if ( $nav_item['css_id'] == $bp->friends->id ) {
+				if ( $nav_item->css_id == $bp->friends->id ) {
 					if ( friends_check_friendship( bp_loggedin_user_id(), bp_displayed_user_id() ) ) {
 						$selected = ' class="current selected"';
 					}
@@ -1316,13 +1316,105 @@ function bp_get_loggedin_user_nav() {
 		}
 
 		// Echo out the final list item.
-		echo apply_filters_ref_array( 'bp_get_loggedin_user_nav_' . $nav_item['css_id'], array( '<li id="li-nav-' . $nav_item['css_id'] . '" ' . $selected . '><a id="my-' . $nav_item['css_id'] . '" href="' . $nav_item['link'] . '">' . $nav_item['name'] . '</a></li>', &$nav_item ) );
+		echo apply_filters_ref_array( 'bp_get_loggedin_user_nav_' . $nav_item->css_id, array( '<li id="li-nav-' . $nav_item->css_id . '" ' . $selected . '><a id="my-' . $nav_item->css_id . '" href="' . $nav_item->link . '">' . $nav_item->name . '</a></li>', &$nav_item ) );
 	}
 
 	// Always add a log out list item to the end of the navigation.
 	$logout_link = '<li><a id="wp-logout" href="' .  wp_logout_url( bp_get_root_domain() ) . '">' . __( 'Log Out', 'buddypress' ) . '</a></li>';
 
 	echo apply_filters( 'bp_logout_nav_link', $logout_link );
+}
+
+/**
+ * Output the contents of the current user's home page.
+ *
+ * @since 2.6.0
+ */
+function bp_displayed_user_front_template_part() {
+	$located = bp_displayed_user_get_front_template();
+
+	if ( false !== $located ) {
+		$slug = str_replace( '.php', '', $located );
+		$name = null;
+
+		/**
+		 * Let plugins adding an action to bp_get_template_part get it from here
+		 *
+		 * @param string $slug Template part slug requested.
+		 * @param string $name Template part name requested.
+		 */
+		do_action( 'get_template_part_' . $slug, $slug, $name );
+
+		load_template( $located, true );
+	}
+
+	return $located;
+}
+
+/**
+ * Locate a custom user front template if it exists.
+ *
+ * @since 2.6.0
+ *
+ * @param  object|null $displayed_user Optional. Falls back to current user if not passed.
+ * @return string|bool                 Path to front template on success; boolean false on failure.
+ */
+function bp_displayed_user_get_front_template( $displayed_user = null ) {
+	if ( ! is_object( $displayed_user ) || empty( $displayed_user->id ) ) {
+		$displayed_user = bp_get_displayed_user();
+	}
+
+	if ( ! isset( $displayed_user->id ) ) {
+		return false;
+	}
+
+	if ( isset( $displayed_user->front_template ) ) {
+		return $displayed_user->front_template;
+	}
+
+	// Init the hierarchy
+	$template_names = array(
+		'members/single/front-id-' . sanitize_file_name( $displayed_user->id ) . '.php',
+		'members/single/front-nicename-' . sanitize_file_name( $displayed_user->userdata->user_nicename ) . '.php',
+	);
+
+	/**
+	 * Check for member types and add it to the hierarchy
+	 *
+	 * Make sure to register your member
+	 * type using the hook 'bp_register_member_types'
+	 */
+	if ( bp_get_member_types() ) {
+		$displayed_user_member_type = bp_get_member_type( $displayed_user->id );
+		if ( ! $displayed_user_member_type ) {
+			$displayed_user_member_type = 'none';
+		}
+
+		$template_names[] = 'members/single/front-member-type-' . sanitize_file_name( $displayed_user_member_type )   . '.php';
+	}
+
+	// Add The generic template to the end of the hierarchy
+	$template_names[] = 'members/single/front.php';
+
+	/**
+	 * Filters the hierarchy of user front templates corresponding to a specific user.
+	 *
+	 * @since 2.6.0
+	 *
+	 * @param array  $template_names Array of template paths.
+	 */
+	return bp_locate_template( apply_filters( 'bp_displayed_user_get_front_template', $template_names ), false, true );
+}
+
+/**
+ * Check if the displayed user has a custom front template.
+ *
+ * @since 2.6.0
+ */
+function bp_displayed_user_has_front_template() {
+	$displayed_user = bp_get_displayed_user();
+
+	return ! empty( $displayed_user->front_template );
 }
 
 /**
@@ -1333,19 +1425,20 @@ function bp_get_loggedin_user_nav() {
 function bp_get_displayed_user_nav() {
 	$bp = buddypress();
 
-	foreach ( (array) $bp->bp_nav as $user_nav_item ) {
-		if ( empty( $user_nav_item['show_for_displayed_user'] ) && !bp_is_my_profile() )
+	foreach ( $bp->members->nav->get_primary() as $user_nav_item ) {
+		if ( empty( $user_nav_item->show_for_displayed_user ) && ! bp_is_my_profile() ) {
 			continue;
+		}
 
 		$selected = '';
-		if ( bp_is_current_component( $user_nav_item['slug'] ) ) {
+		if ( bp_is_current_component( $user_nav_item->slug ) ) {
 			$selected = ' class="current selected"';
 		}
 
 		if ( bp_loggedin_user_domain() ) {
-			$link = str_replace( bp_loggedin_user_domain(), bp_displayed_user_domain(), $user_nav_item['link'] );
+			$link = str_replace( bp_loggedin_user_domain(), bp_displayed_user_domain(), $user_nav_item->link );
 		} else {
-			$link = trailingslashit( bp_displayed_user_domain() . $user_nav_item['link'] );
+			$link = trailingslashit( bp_displayed_user_domain() . $user_nav_item->link );
 		}
 
 		/**
@@ -1359,7 +1452,7 @@ function bp_get_displayed_user_nav() {
 		 * @param array  $user_nav_item Array holding parts used to construct tab list item.
 		 *                              Passed by reference.
 		 */
-		echo apply_filters_ref_array( 'bp_get_displayed_user_nav_' . $user_nav_item['css_id'], array( '<li id="' . $user_nav_item['css_id'] . '-personal-li" ' . $selected . '><a id="user-' . $user_nav_item['css_id'] . '" href="' . $link . '">' . $user_nav_item['name'] . '</a></li>', &$user_nav_item ) );
+		echo apply_filters_ref_array( 'bp_get_displayed_user_nav_' . $user_nav_item->css_id, array( '<li id="' . $user_nav_item->css_id . '-personal-li" ' . $selected . '><a id="user-' . $user_nav_item->css_id . '" href="' . $link . '">' . $user_nav_item->name . '</a></li>', &$user_nav_item ) );
 	}
 }
 

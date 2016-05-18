@@ -493,6 +493,29 @@ function bp_core_get_directory_page_ids( $status = 'active' ) {
 }
 
 /**
+ * Get the page ID corresponding to a component directory.
+ *
+ * @since 2.6.0
+ *
+ * @param string $component The slug representing the component. Defaults to the current component.
+ * @return int|bool The ID of the directory page associated with the component. False if none is found.
+ */
+function bp_core_get_directory_page_id( $component = null ) {
+	if ( ! $component ) {
+		$component = bp_current_component();
+	}
+
+	$bp_pages = bp_core_get_directory_page_ids( 'all' );
+
+	$page_id = false;
+	if ( $component && isset( $bp_pages[ $component ] ) ) {
+		$page_id = (int) $bp_pages[ $component ];
+	}
+
+	return $page_id;
+}
+
+/**
  * Store the list of BP directory pages in the appropriate meta table.
  *
  * The bp-pages data is stored in site_options (falls back to options on non-MS),
@@ -2443,11 +2466,8 @@ function bp_nav_menu_get_loggedin_pages() {
 		return buddypress()->wp_nav_menu_items->loggedin;
 	}
 
-	// Pull up a list of items registered in BP's top-level nav array.
-	$bp_menu_items = buddypress()->bp_nav;
-
-	// Alphabetize.
-	$bp_menu_items = bp_alpha_sort_by_key( $bp_menu_items, 'name' );
+	// Pull up a list of items registered in BP's primary nav for the member.
+	$bp_menu_items = buddypress()->members->nav->get_primary();
 
 	// Some BP nav menu items will not be represented in bp_nav, because
 	// they are not real BP components. We add them manually here.
@@ -2575,7 +2595,7 @@ function bp_nav_menu_get_loggedout_pages() {
  * @since 1.9.0
  *
  * @param string $slug The slug of the nav item: login, register, or one of the
- *                     slugs from buddypress()->bp_nav.
+ *                     slugs from the members navigation.
  * @return string $nav_item_url The URL generated for the current user.
  */
 function bp_nav_menu_get_item_url( $slug ) {
@@ -3135,7 +3155,7 @@ function bp_email_get_appearance_settings() {
 	);
 
 	return bp_parse_args(
-		get_option( 'bp_email_options', array() ),
+		bp_get_option( 'bp_email_options', array() ),
 		$default_args,
 		'email_appearance_settings'
 	);
