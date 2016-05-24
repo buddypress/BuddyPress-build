@@ -67,11 +67,11 @@ class BP_XProfile_Field_Type_Checkbox extends BP_XProfile_Field_Type {
 			$user_id = bp_displayed_user_id();
 		} ?>
 
-		<fieldset class="checkbox">
-			<legend>
+		<div class="checkbox">
+			<label for="<?php bp_the_profile_field_input_name(); ?>">
 				<?php bp_the_profile_field_name(); ?>
 				<?php bp_the_profile_field_required_label(); ?>
-			</legend>
+			</label>
 
 			<?php
 
@@ -82,7 +82,7 @@ class BP_XProfile_Field_Type_Checkbox extends BP_XProfile_Field_Type {
 				'user_id' => $user_id
 			) ); ?>
 
-		</fieldset>
+		</div>
 
 		<?php
 	}
@@ -154,7 +154,7 @@ class BP_XProfile_Field_Type_Checkbox extends BP_XProfile_Field_Type {
 				$selected = ' checked="checked"';
 			}
 
-			$new_html = sprintf( '<label for="%3$s" class="option-label"><input %1$s type="checkbox" name="%2$s" id="%3$s" value="%4$s">%5$s</label>',
+			$new_html = sprintf( '<label for="%3$s"><input %1$s type="checkbox" name="%2$s" id="%3$s" value="%4$s">%5$s</label>',
 				$selected,
 				esc_attr( "field_{$this->field_obj->id}[]" ),
 				esc_attr( "field_{$options[$k]->id}_{$k}" ),

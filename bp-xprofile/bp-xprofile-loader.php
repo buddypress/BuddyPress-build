@@ -13,14 +13,10 @@
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
-if ( ! buddypress()->do_autoload ) {
-	require dirname( __FILE__ ) . '/classes/class-bp-xprofile-component.php';
-}
+require dirname( __FILE__ ) . '/classes/class-bp-xprofile-component.php';
 
 /**
  * Bootstrap the XProfile component.
- *
- * @since 1.6.0
  */
 function bp_setup_xprofile() {
 	$bp = buddypress();

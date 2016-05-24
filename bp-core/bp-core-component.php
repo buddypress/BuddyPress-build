@@ -10,6 +10,4 @@
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
-if ( ! class_exists( 'BP_Component' ) ) {
-	require dirname( __FILE__ ) . '/classes/class-bp-component.php';
-}
+require dirname( __FILE__ ) . '/classes/class-bp-component.php';

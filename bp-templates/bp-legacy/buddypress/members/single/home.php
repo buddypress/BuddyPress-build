@@ -64,10 +64,7 @@
 		 */
 		do_action( 'bp_before_member_body' );
 
-		if ( bp_is_user_front() ) :
-			bp_displayed_user_front_template_part();
-
-		elseif ( bp_is_user_activity() ) :
+		if ( bp_is_user_activity() || !bp_current_component() ) :
 			bp_get_template_part( 'members/single/activity' );
 
 		elseif ( bp_is_user_blogs() ) :

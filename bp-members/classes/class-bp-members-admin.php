@@ -934,14 +934,7 @@ class BP_Members_Admin {
 
 			<?php else : ?>
 
-				<p><?php
-					printf(
-						'%1$s <a href="%2$s">%3$s</a>',
-						__( 'No user found with this ID.', 'buddypress' ),
-						esc_url( bp_get_admin_url( 'users.php' ) ),
-						__( 'Go back and try again.', 'buddypress' )
-					);
-				?></p>
+				<p><?php printf( __( 'No user found with this ID. <a href="%s">Go back and try again</a>.', 'buddypress' ), esc_url( bp_get_admin_url( 'users.php' ) ) ); ?></p>
 
 			<?php endif; ?>
 
@@ -1373,10 +1366,7 @@ class BP_Members_Admin {
 
 		if ( ! empty( $required ) ) {
 			require_once( ABSPATH . 'wp-admin/includes/class-wp-' . $required . '-list-table.php' );
-
-			if ( ! buddypress()->do_autoload ) {
-				require_once( buddypress()->members->admin->admin_dir . 'bp-members-admin-classes.php' );
-			}
+			require_once( buddypress()->members->admin->admin_dir . 'bp-members-admin-classes.php' );
 		}
 
 		return new $class();
@@ -1461,11 +1451,8 @@ class BP_Members_Admin {
 			// Add accessible hidden headings and text for the Pending Users screen.
 			if ( bp_get_major_wp_version() >= 4.4 ) {
 				get_current_screen()->set_screen_reader_content( array(
-					/* translators: accessibility text */
 					'heading_views'      => __( 'Filter users list', 'buddypress' ),
-					/* translators: accessibility text */
 					'heading_pagination' => __( 'Pending users list navigation', 'buddypress' ),
-					/* translators: accessibility text */
 					'heading_list'       => __( 'Pending users list', 'buddypress' ),
 				) );
 			}

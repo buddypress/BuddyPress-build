@@ -53,16 +53,12 @@ class BP_Activity_Component extends BP_Component {
 			'actions',
 			'screens',
 			'filters',
-			'adminbar',
+			'classes',
 			'template',
 			'functions',
 			'notifications',
 			'cache'
 		);
-
-		if ( ! buddypress()->do_autoload ) {
-			$includes[] = 'classes';
-		}
 
 		// Load Akismet support if Akismet is configured.
 		$akismet_key = bp_get_option( 'wordpress_api_key' );
@@ -264,11 +260,7 @@ class BP_Activity_Component extends BP_Component {
 			if ( bp_activity_do_mentions() ) {
 				$count = bp_get_total_mention_count_for_user( bp_loggedin_user_id() );
 				if ( !empty( $count ) ) {
-					$title = sprintf(
-						/* translators: %s: Unread mention count for the current user */
-						_x( 'Mentions %s', 'Toolbar Mention logged in user', 'buddypress' ),
-						'<span class="count">' . bp_core_number_format( $count ) . '</span>'
-					);
+					$title = sprintf( _x( 'Mentions <span class="count">%s</span>', 'Toolbar Mention logged in user', 'buddypress' ), bp_core_number_format( $count ) );
 				} else {
 					$title = _x( 'Mentions', 'Toolbar Mention logged in user', 'buddypress' );
 				}

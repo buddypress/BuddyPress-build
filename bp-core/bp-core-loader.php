@@ -12,10 +12,7 @@
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
-if ( ! buddypress()->do_autoload ) {
-	require dirname( __FILE__ ) . '/classes/class-bp-component.php';
-	require dirname( __FILE__ ) . '/classes/class-bp-core.php';
-}
+require dirname( __FILE__ ) . '/classes/class-bp-core.php';
 
 /**
  * Set up the BuddyPress Core component.

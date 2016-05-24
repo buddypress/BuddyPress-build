@@ -86,6 +86,7 @@ class BP_Legacy extends BP_Theme_Compat {
 		add_action( 'bp_enqueue_scripts', array( $this, 'enqueue_styles'   ) ); // Enqueue theme CSS
 		add_action( 'bp_enqueue_scripts', array( $this, 'enqueue_scripts'  ) ); // Enqueue theme JS
 		add_filter( 'bp_enqueue_scripts', array( $this, 'localize_scripts' ) ); // Enqueue theme script localization
+		add_action( 'bp_head',            array( $this, 'head_scripts'     ) ); // Output some extra JS in the <head>.
 
 		/** Body no-js Class **************************************************/
 
@@ -426,6 +427,23 @@ class BP_Legacy extends BP_Theme_Compat {
 		}
 
 		return $retval;
+	}
+
+	/**
+	 * Put some scripts in the header, like AJAX url for wp-lists.
+	 *
+	 * @since 1.7.0
+	 */
+	public function head_scripts() {
+	?>
+
+		<script type="text/javascript">
+			/* <![CDATA[ */
+			var ajaxurl = '<?php echo bp_core_ajax_url(); ?>';
+			/* ]]> */
+		</script>
+
+	<?php
 	}
 
 	/**
@@ -1755,7 +1773,7 @@ function bp_legacy_theme_cover_image( $params = array() ) {
 	$top_offset  = bp_core_avatar_full_height() - 10;
 	$left_offset = bp_core_avatar_full_width() + 20;
 
-	$cover_image = ( !empty( $params['cover_image'] ) ) ? 'background-image: url(' . $params['cover_image'] . ');' : '';
+	$cover_image = isset( $params['cover_image'] ) ? 'background-image: url(' . $params['cover_image'] . ');' : '';
 
 	$hide_avatar_style = '';
 
@@ -1776,7 +1794,7 @@ function bp_legacy_theme_cover_image( $params = array() ) {
 				}
 
 				#buddypress div#item-header #item-header-cover-image #item-header-content {
-					margin-left: auto;
+					margin-left:auto;
 				}
 			';
 		}
@@ -1790,8 +1808,8 @@ function bp_legacy_theme_cover_image( $params = array() ) {
 		}
 
 		#buddypress #create-group-form #header-cover-image {
-			margin: 1em 0;
 			position: relative;
+			margin: 1em 0;
 		}
 
 		.bp-user #buddypress #item-header {
@@ -1802,7 +1820,7 @@ function bp_legacy_theme_cover_image( $params = array() ) {
 			margin-top: '. $avatar_offset .'px;
 			float: left;
 			overflow: visible;
-			width: auto;
+			width:auto;
 		}
 
 		#buddypress div#item-header #item-header-cover-image #item-header-content {
@@ -1810,40 +1828,40 @@ function bp_legacy_theme_cover_image( $params = array() ) {
 			float: left;
 			margin-left: ' . $left_offset . 'px;
 			margin-top: -' . $top_offset . 'px;
-			width: auto;
+			width:auto;
 		}
 
 		body.single-item.groups #buddypress div#item-header #item-header-cover-image #item-header-content,
 		body.single-item.groups #buddypress div#item-header #item-header-cover-image #item-actions {
-			clear: none;
 			margin-top: ' . $params["height"] . 'px;
 			margin-left: 0;
+			clear: none;
 			max-width: 50%;
 		}
 
 		body.single-item.groups #buddypress div#item-header #item-header-cover-image #item-actions {
-			max-width: 20%;
 			padding-top: 20px;
+			max-width: 20%;
 		}
 
 		' . $hide_avatar_style . '
 
-		#buddypress div#item-header-cover-image .user-nicename a,
-		#buddypress div#item-header-cover-image .user-nicename {
-			font-size: 200%;
-			color: #fff;
-			margin: 0 0 0.6em;
+		#buddypress div#item-header-cover-image h2 a,
+		#buddypress div#item-header-cover-image h2 {
+			color: #FFF;
 			text-rendering: optimizelegibility;
-			text-shadow: 0 0 3px rgba( 0, 0, 0, 0.8 );
+			text-shadow: 0px 0px 3px rgba( 0, 0, 0, 0.8 );
+			margin: 0 0 .6em;
+			font-size:200%;
 		}
 
 		#buddypress #item-header-cover-image #item-header-avatar img.avatar {
+			border: solid 2px #FFF;
 			background: rgba( 255, 255, 255, 0.8 );
-			border: solid 2px #fff;
 		}
 
 		#buddypress #item-header-cover-image #item-header-avatar a {
-			border: 0;
+			border: none;
 			text-decoration: none;
 		}
 
@@ -1862,22 +1880,22 @@ function bp_legacy_theme_cover_image( $params = array() ) {
 			#buddypress #item-header-cover-image #item-header-avatar,
 			.bp-user #buddypress #item-header #item-header-cover-image #item-header-avatar,
 			#buddypress div#item-header #item-header-cover-image #item-header-content {
-				width: 100%;
-				text-align: center;
+				width:100%;
+				text-align:center;
 			}
 
 			#buddypress #item-header-cover-image #item-header-avatar a {
-				display: inline-block;
+				display:inline-block;
 			}
 
 			#buddypress #item-header-cover-image #item-header-avatar img {
-				margin: 0;
+				margin:0;
 			}
 
 			#buddypress div#item-header #item-header-cover-image #item-header-content,
 			body.single-item.groups #buddypress div#item-header #item-header-cover-image #item-header-content,
 			body.single-item.groups #buddypress div#item-header #item-header-cover-image #item-actions {
-				margin: 0;
+				margin:0;
 			}
 
 			body.single-item.groups #buddypress div#item-header #item-header-cover-image #item-header-content,
@@ -1889,17 +1907,17 @@ function bp_legacy_theme_cover_image( $params = array() ) {
 			#buddypress div#item-header-cover-image h2 {
 				color: inherit;
 				text-shadow: none;
-				margin: 25px 0 0;
-				font-size: 200%;
+				margin:25px 0 0;
+				font-size:200%;
 			}
 
 			#buddypress #item-header-cover-image #item-buttons div {
-				float: none;
-				display: inline-block;
+				float:none;
+				display:inline-block;
 			}
 
 			#buddypress #item-header-cover-image #item-buttons:before {
-				content: "";
+				content:"";
 			}
 
 			#buddypress #item-header-cover-image #item-buttons {

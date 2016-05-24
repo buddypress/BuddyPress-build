@@ -16,9 +16,7 @@ defined( 'ABSPATH' ) || exit;
 // Include WP's list table class.
 if ( !class_exists( 'WP_List_Table' ) ) require( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 
-if ( ! buddypress()->do_autoload ) {
-	require dirname( __FILE__ ) . '/classes/class-bp-groups-list-table.php';
-}
+require dirname( __FILE__ ) . '/classes/class-bp-groups-list-table.php';
 
 // The per_page screen option. Has to be hooked in extremely early.
 if ( is_admin() && ! empty( $_REQUEST['page'] ) && 'bp-groups' == $_REQUEST['page'] )
@@ -134,19 +132,6 @@ function bp_groups_admin_load() {
 		add_meta_box( 'bp_group_add_members', _x( 'Add New Members', 'group admin edit screen', 'buddypress' ), 'bp_groups_admin_edit_metabox_add_new_members', get_current_screen()->id, 'normal', 'core' );
 		add_meta_box( 'bp_group_members', _x( 'Manage Members', 'group admin edit screen', 'buddypress' ), 'bp_groups_admin_edit_metabox_members', get_current_screen()->id, 'normal', 'core' );
 
-		// Group Type metabox. Only added if group types have been registered.
-		$group_types = bp_groups_get_group_types();
-		if ( ! empty( $group_types ) ) {
-			add_meta_box(
-				'bp_groups_admin_group_type',
-				_x( 'Group Type', 'groups admin edit screen', 'buddypress' ),
-				'bp_groups_admin_edit_metabox_group_type',
-				get_current_screen()->id,
-				'side',
-				'core'
-			);
-		}
-
 		/**
 		 * Fires after the registration of all of the default group meta boxes.
 		 *
@@ -192,7 +177,6 @@ function bp_groups_admin_load() {
 		// Add accessible hidden heading and text for Groups screen pagination.
 		if ( bp_get_major_wp_version() >= 4.4 ) {
 			get_current_screen()->set_screen_reader_content( array(
-				/* translators: accessibility text */
 				'heading_pagination' => __( 'Groups list navigation', 'buddypress' ),
 			) );
 		}
@@ -568,7 +552,8 @@ function bp_groups_admin_edit() {
 	// Get the group from the database.
 	$group      = groups_get_group( 'group_id=' . (int) $_GET['gid'] );
 
-	$group_name = isset( $group->name ) ? bp_get_group_name( $group ) : '';
+	/** This filter is documented in bp-groups/bp-groups-template.php */
+	$group_name = isset( $group->name ) ? apply_filters( 'bp_get_group_name', $group->name ) : '';
 
 	// Construct URL for form.
 	$form_url = remove_query_arg( array( 'action', 'deleted', 'no_admins', 'error', 'error_new', 'success_new', 'error_modified', 'success_modified' ), $_SERVER['REQUEST_URI'] );
@@ -599,7 +584,7 @@ function bp_groups_admin_edit() {
 			<div id="moderated" class="<?php echo ( $is_error ) ? 'error' : 'updated'; ?>"><p><?php echo implode( "</p><p>", $messages ); ?></p></div>
 		<?php endif; ?>
 
-		<?php if ( $group->id ) : ?>
+		<?php if ( ! empty( $group ) ) : ?>
 
 			<form action="<?php echo esc_url( $form_url ); ?>" id="bp-groups-edit-form" method="post">
 				<div id="poststuff">
@@ -640,16 +625,7 @@ function bp_groups_admin_edit() {
 			</form>
 
 		<?php else : ?>
-
-			<p><?php
-				printf(
-					'%1$s <a href="%2$s">%3$s</a>',
-					__( 'No group found with this ID.', 'buddypress' ),
-					esc_url( bp_get_admin_url( 'admin.php?page=bp-groups' ) ),
-					__( 'Go back and try again.', 'buddypress' )
-				);
-			?></p>
-
+			<p><?php printf( __( 'No group found with this ID. <a href="%s">Go back and try again</a>.', 'buddypress' ), esc_url( bp_get_admin_url( 'admin.php?page=bp-groups' ) ) ); ?></p>
 		<?php endif; ?>
 
 	</div><!-- .wrap -->
@@ -696,7 +672,7 @@ function bp_groups_admin_delete() {
 
 		<ul class="bp-group-delete-list">
 		<?php foreach ( $groups['groups'] as $group ) : ?>
-			<li><?php echo esc_html( bp_get_group_name( $group ) ); ?></li>
+			<li><?php echo apply_filters( 'bp_get_group_name', $group->name, $group ); ?></li>
 		<?php endforeach; ?>
 		</ul>
 
@@ -1023,70 +999,6 @@ function bp_groups_admin_edit_metabox_status( $item ) {
 
 <?php
 }
-
-/**
- * Render the Group Type metabox.
- *
- * @since 2.6.0
- *
- * @param BP_Groups_Group|null $user The BP_Groups_Group object corresponding to the group being edited.
- */
-function bp_groups_admin_edit_metabox_group_type( BP_Groups_Group $group = null ) {
-
-	// Bail if no group ID.
-	if ( empty( $group->id ) ) {
-		return;
-	}
-
-	$types = bp_groups_get_group_types( array(), 'objects' );
-	$current_type = bp_groups_get_group_type( $group->id );
-	?>
-
-	<label for="bp-groups-group-type" class="screen-reader-text"><?php esc_html_e( 'Select group type', 'buddypress' ); ?></label>
-	<select name="bp-groups-group-type" id="bp-groups-group-type">
-		<option value="" <?php selected( '', $current_type ); ?>><?php /* translators: no option picked in select box */ esc_attr_e( '----', 'buddypress' ) ?></option>
-		<?php foreach ( $types as $type ) : ?>
-			<option value="<?php echo esc_attr( $type->name ) ?>" <?php selected( $type->name, $current_type ) ?>><?php echo esc_html( $type->labels['singular_name'] ) ?></option>
-		<?php endforeach; ?>
-	</select>
-
-	<?php
-
-	wp_nonce_field( 'bp-group-type-change-' . $group->id, 'bp-group-type-nonce' );
-}
-
-/**
- * Process changes from the Group Type metabox.
- *
- * @since 2.6.0
- */
-function bp_groups_process_group_type_update( $group_id ) {
-	if ( ! isset( $_POST['bp-group-type-nonce'] ) || ! isset( $_POST['bp-groups-group-type'] ) ) {
-		return;
-	}
-
-	check_admin_referer( 'bp-group-type-change-' . $group_id, 'bp-group-type-nonce' );
-
-	// Permission check.
-	if ( ! current_user_can( 'bp_moderate' ) ) {
-		return;
-	}
-
-	// Group type string must either reference a valid group type, or be empty.
-	$group_type = wp_unslash( $_POST['bp-groups-group-type'] );
-	if ( $group_type && ! bp_groups_get_group_type_object( $group_type ) ) {
-		return;
-	}
-
-	/*
-	 * If an invalid group type is passed, someone's doing something
-	 * fishy with the POST request, so we can fail silently.
-	 */
-	if ( bp_groups_set_group_type( $group_id, $group_type ) ) {
-		// @todo Success messages can't be posted because other stuff happens on the page load.
-	}
-}
-add_action( 'bp_group_admin_edit_after', 'bp_groups_process_group_type_update' );
 
 /**
  * Create pagination links out of a BP_Group_Member_Query.

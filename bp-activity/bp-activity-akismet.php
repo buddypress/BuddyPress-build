@@ -10,9 +10,7 @@
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
-if ( ! buddypress()->do_autoload ) {
-	require dirname( __FILE__ ) . '/classes/class-bp-akismet.php';
-}
+require dirname( __FILE__ ) . '/classes/class-bp-akismet.php';
 
 /**
  * Delete old spam activity meta data.

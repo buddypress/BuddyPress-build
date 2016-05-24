@@ -13,15 +13,12 @@ defined( 'ABSPATH' ) || exit;
  * The main member template loop class.
  *
  * Responsible for loading a group of members into a loop for display.
- *
- * @since 1.0.0
  */
 class BP_Core_Members_Template {
 
 	/**
 	 * The loop iterator.
 	 *
-	 * @since 1.0.0
 	 * @var int
 	 */
 	public $current_member = -1;
@@ -29,7 +26,6 @@ class BP_Core_Members_Template {
 	/**
 	 * The number of members returned by the paged query.
 	 *
-	 * @since 1.0.0
 	 * @var int
 	 */
 	public $member_count;
@@ -37,7 +33,6 @@ class BP_Core_Members_Template {
 	/**
 	 * Array of members located by the query.
 	 *
-	 * @since 1.0.0
 	 * @var array
 	 */
 	public $members;
@@ -45,7 +40,6 @@ class BP_Core_Members_Template {
 	/**
 	 * The member object currently being iterated on.
 	 *
-	 * @since 1.0.0
 	 * @var object
 	 */
 	public $member;
@@ -53,7 +47,6 @@ class BP_Core_Members_Template {
 	/**
 	 * A flag for whether the loop is currently being iterated.
 	 *
-	 * @since 1.0.0
 	 * @var bool
 	 */
 	public $in_the_loop;
@@ -61,7 +54,6 @@ class BP_Core_Members_Template {
 	/**
 	 * The type of member being requested. Used for ordering results.
 	 *
-	 * @since 2.3.0
 	 * @var string
 	 */
 	public $type;
@@ -69,7 +61,6 @@ class BP_Core_Members_Template {
 	/**
 	 * The unique string used for pagination queries.
 	 *
-	 * @since 2.2.0
 	 * @var string
 	 */
 	public $pag_arg;
@@ -77,7 +68,6 @@ class BP_Core_Members_Template {
 	/**
 	 * The page number being requested.
 	 *
-	 * @since 1.0.0
 	 * @var string
 	 */
 	public $pag_page;
@@ -85,7 +75,6 @@ class BP_Core_Members_Template {
 	/**
 	 * The number of items being requested per page.
 	 *
-	 * @since 1.0.0
 	 * @var string
 	 */
 	public $pag_num;
@@ -93,7 +82,6 @@ class BP_Core_Members_Template {
 	/**
 	 * An HTML string containing pagination links.
 	 *
-	 * @since 1.0.0
 	 * @var string
 	 */
 	public $pag_links;
@@ -101,15 +89,12 @@ class BP_Core_Members_Template {
 	/**
 	 * The total number of members matching the query parameters.
 	 *
-	 * @since 1.0.0
 	 * @var int
 	 */
 	public $total_member_count;
 
 	/**
 	 * Constructor method.
-	 *
-	 * @since 1.5.0
 	 *
 	 * @see BP_User_Query for an in-depth description of parameters.
 	 *
@@ -199,8 +184,6 @@ class BP_Core_Members_Template {
 	/**
 	 * Whether there are members available in the loop.
 	 *
-	 * @since 1.0.0
-	 *
 	 * @see bp_has_members()
 	 *
 	 * @return bool True if there are items in the loop, otherwise false.
@@ -215,8 +198,6 @@ class BP_Core_Members_Template {
 	/**
 	 * Set up the next member and iterate index.
 	 *
-	 * @since 1.0.0
-	 *
 	 * @return object The next member to iterate over.
 	 */
 	function next_member() {
@@ -228,8 +209,6 @@ class BP_Core_Members_Template {
 
 	/**
 	 * Rewind the members and reset member index.
-	 *
-	 * @since 1.0.0
 	 */
 	function rewind_members() {
 		$this->current_member = -1;
@@ -244,8 +223,6 @@ class BP_Core_Members_Template {
 	 * This method is used by {@link bp_members()} as part of the while loop
 	 * that controls iteration inside the members loop, eg:
 	 *     while ( bp_members() ) { ...
-	 *
-	 * @since 1.2.0
 	 *
 	 * @see bp_members()
 	 *
@@ -276,8 +253,6 @@ class BP_Core_Members_Template {
 	 * Used by {@link bp_the_member()} to set up the current member data
 	 * while looping, so that template tags used during that iteration make
 	 * reference to the current member.
-	 *
-	 * @since 1.0.0
 	 *
 	 * @see bp_the_member()
 	 */

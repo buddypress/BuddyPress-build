@@ -9,15 +9,12 @@
 
 /**
  * Class used to handle Signups.
- *
- * @since 2.0.0
  */
 class BP_Signup {
 
 	/**
 	 * ID of the signup which the object relates to.
 	 *
-	 * @since 2.0.0
 	 * @var integer
 	 */
 	public $id;
@@ -25,7 +22,6 @@ class BP_Signup {
 	/**
 	 * The URL to the full size of the avatar for the user.
 	 *
-	 * @since 2.0.0
 	 * @var string
 	 */
 	public $avatar;
@@ -33,7 +29,6 @@ class BP_Signup {
 	/**
 	 * The username for the user.
 	 *
-	 * @since 2.0.0
 	 * @var string
 	 */
 	public $user_login;
@@ -41,7 +36,6 @@ class BP_Signup {
 	/**
 	 * The email for the user.
 	 *
-	 * @since 2.0.0
 	 * @var string
 	 */
 	public $user_email;
@@ -49,7 +43,6 @@ class BP_Signup {
 	/**
 	 * The full name of the user.
 	 *
-	 * @since 2.0.0
 	 * @var string
 	 */
 	public $user_name;
@@ -57,7 +50,6 @@ class BP_Signup {
 	/**
 	 * Metadata associated with the signup.
 	 *
-	 * @since 2.0.0
 	 * @var array
 	 */
 	public $meta;
@@ -65,7 +57,6 @@ class BP_Signup {
 	/**
 	 * The registered date for the user.
 	 *
-	 * @since 2.0.0
 	 * @var string
 	 */
 	public $registered;
@@ -73,7 +64,6 @@ class BP_Signup {
 	/**
 	 * The activation key for the user.
 	 *
-	 * @since 2.0.0
 	 * @var string
 	 */
 	public $activation_key;
@@ -746,7 +736,7 @@ class BP_Signup {
 		foreach ( $signups as $signup ) {
 			$user_id = username_exists( $signup->user_login );
 
-			if ( ! empty( $user_id ) && $signup->activation_key == wp_hash( $user_id ) ) {
+			if ( ! empty( $user_id ) && $signup->activation_key === bp_get_user_meta( $user_id, 'activation_key', true ) ) {
 
 				if ( 2 != self::check_user_status( $user_id ) ) {
 

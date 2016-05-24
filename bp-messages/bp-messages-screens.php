@@ -132,10 +132,7 @@ function messages_screen_conversation() {
 	$class    = ( 0 === $count ) ? 'no-count' : 'count';
 	$nav_name = sprintf( __( 'Messages <span class="%s">%s</span>', 'buddypress' ), esc_attr( $class ), bp_core_number_format( $count ) );
 
-	// Edit the Navigation name.
-	$bp->members->nav->edit_nav( array(
-		'name' => $nav_name,
-	), $bp->messages->slug );
+	$bp->bp_nav[ $bp->messages->slug ]['name'] = $nav_name;
 
 	/**
 	 * Fires right before the loading of the Messages view screen template file.

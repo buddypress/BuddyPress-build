@@ -24,9 +24,7 @@ defined( 'ABSPATH' ) || exit;
 
 /** Base Class ****************************************************************/
 
-if ( ! buddypress()->do_autoload ) {
-	require dirname( __FILE__ ) . '/classes/class-bp-theme-compat.php';
-}
+require dirname( __FILE__ ) . '/classes/class-bp-theme-compat.php';
 
 /** Functions *****************************************************************/
 
