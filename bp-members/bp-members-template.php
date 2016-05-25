@@ -430,11 +430,13 @@ function bp_has_members( $args = '' ) {
 	 * Filters whether or not BuddyPress has members to iterate over.
 	 *
 	 * @since 1.2.4
+	 * @since 2.6.0 Added the `$r` parameter
 	 *
 	 * @param bool  $value            Whether or not there are members to iterate over.
 	 * @param array $members_template Populated $members_template global.
+	 * @param array $r                Array of arguments passed into the BP_Core_Members_Template class.
 	 */
-	return apply_filters( 'bp_has_members', $members_template->has_members(), $members_template );
+	return apply_filters( 'bp_has_members', $members_template->has_members(), $members_template, $r );
 }
 
 /**
@@ -772,10 +774,12 @@ function bp_member_avatar( $args = '' ) {
 	 * Filters a members avatar.
 	 *
 	 * @since 1.2.0
+	 * @since 2.6.0 Added the `$args` parameter.
 	 *
-	 * @param string $value Formatted HTML <img> element, or raw avatar URL based on $html arg.
+	 * @param string       $value Formatted HTML <img> element, or raw avatar URL based on $html arg.
+	 * @param array|string $args  See {@link bp_get_member_avatar()}.
 	 */
-	echo apply_filters( 'bp_member_avatar', bp_get_member_avatar( $args ) );
+	echo apply_filters( 'bp_member_avatar', bp_get_member_avatar( $args ), $args );
 }
 	/**
 	 * Get a member's avatar.
@@ -820,10 +824,12 @@ function bp_member_avatar( $args = '' ) {
 		 * Filters a members avatar.
 		 *
 		 * @since 1.2.0
+		 * @since 2.6.0 Added the `$r` parameter.
 		 *
 		 * @param string $value Formatted HTML <img> element, or raw avatar URL based on $html arg.
+		 * @param array  $r     Array of parsed arguments. See {@link bp_get_member_avatar()}.
 		 */
-		return apply_filters( 'bp_get_member_avatar', bp_core_fetch_avatar( array( 'item_id' => $members_template->member->id, 'type' => $type, 'alt' => $alt, 'css_id' => $id, 'class' => $class, 'width' => $width, 'height' => $height, 'email' => $members_template->member->user_email ) ) );
+		return apply_filters( 'bp_get_member_avatar', bp_core_fetch_avatar( array( 'item_id' => $members_template->member->id, 'type' => $type, 'alt' => $alt, 'css_id' => $id, 'class' => $class, 'width' => $width, 'height' => $height, 'email' => $members_template->member->user_email ) ), $r );
 	}
 
 /**
@@ -1033,10 +1039,12 @@ function bp_member_latest_update( $args = '' ) {
 		 * Filters the excerpt of the latest update for current member in the loop.
 		 *
 		 * @since 1.2.5
+		 * @since 2.6.0 Added the `$r` parameter.
 		 *
 		 * @param string $value Excerpt of the latest update for current member in the loop.
+		 * @param array  $r     Array of parsed arguments.
 		 */
-		$update_content = apply_filters( 'bp_get_activity_latest_update_excerpt', trim( strip_tags( bp_create_excerpt( $update['content'], $length ) ) ) );
+		$update_content = apply_filters( 'bp_get_activity_latest_update_excerpt', trim( strip_tags( bp_create_excerpt( $update['content'], $length ) ) ), $r );
 
 		$update_content = sprintf( _x( '- &quot;%s&quot;', 'member latest update in member directory', 'buddypress' ), $update_content );
 
@@ -1052,10 +1060,12 @@ function bp_member_latest_update( $args = '' ) {
 		 * Filters the latest update from the current member in the loop.
 		 *
 		 * @since 1.2.0
+		 * @since 2.6.0 Added the `$r` parameter.
 		 *
 		 * @param string $update_content Formatted latest update for current member.
+		 * @param array  $r              Array of parsed arguments.
 		 */
-		return apply_filters( 'bp_get_member_latest_update', $update_content );
+		return apply_filters( 'bp_get_member_latest_update', $update_content, $r );
 	}
 
 /**
@@ -1138,10 +1148,12 @@ function bp_member_profile_data( $args = '' ) {
 		 * Filters resulting piece of member profile data.
 		 *
 		 * @since 1.2.0
+		 * @since 2.6.0 Added the `$r` parameter.
 		 *
 		 * @param string|bool $data Profile data if found, otherwise false.
+		 * @param array       $r    Array of parsed arguments.
 		 */
-		return apply_filters( 'bp_get_member_profile_data', $data );
+		return apply_filters( 'bp_get_member_profile_data', $data, $r );
 	}
 
 /**
@@ -1521,6 +1533,8 @@ function bp_loggedin_user_avatar( $args = '' ) {
 		 * @since 1.1.0
 		 *
 		 * @param string $value User avatar string.
+		 * @param array  $r     Array of parsed arguments.
+		 * @param array  $args  Array of initial arguments.
 		 */
 		return apply_filters( 'bp_get_loggedin_user_avatar', bp_core_fetch_avatar( $r ), $r, $args );
 	}
@@ -1574,6 +1588,8 @@ function bp_displayed_user_avatar( $args = '' ) {
 		 * @since 1.1.0
 		 *
 		 * @param string $value User avatar string.
+		 * @param array  $r     Array of parsed arguments.
+		 * @param array  $args  Array of initial arguments.
 		 */
 		return apply_filters( 'bp_get_displayed_user_avatar', bp_core_fetch_avatar( $r ), $r, $args );
 	}
@@ -1651,10 +1667,12 @@ function bp_last_activity( $user_id = 0 ) {
 		 * Filters the 'active [x days ago]' string for a user.
 		 *
 		 * @since 1.5.0
+		 * @since 2.6.0 Added the `$user_id` parameter.
 		 *
-		 * @param string $value Formatted 'active [x days ago]' string.
+		 * @param string $value   Formatted 'active [x days ago]' string.
+		 * @param int    $user_id ID of the user.
 		 */
-		return apply_filters( 'bp_get_last_activity', $last_activity );
+		return apply_filters( 'bp_get_last_activity', $last_activity, $user_id );
 	}
 
 /**

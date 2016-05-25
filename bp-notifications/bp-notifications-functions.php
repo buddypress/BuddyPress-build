@@ -233,7 +233,8 @@ function bp_notifications_get_notifications_for_user( $user_id, $format = 'strin
 						$component_action_items[0]->item_id,
 						$component_action_items[0]->secondary_item_id,
 						$action_item_count,
-						'array'
+						'array',
+						$component_action_items[0]->id
 					);
 
 					// Create the object to be returned.
@@ -253,7 +254,7 @@ function bp_notifications_get_notifications_for_user( $user_id, $format = 'strin
 
 				// Return an array of content strings.
 				} else {
-					$content      = call_user_func( $bp->{$component_name}->notification_callback, $component_action_name, $component_action_items[0]->item_id, $component_action_items[0]->secondary_item_id, $action_item_count );
+					$content      = call_user_func( $bp->{$component_name}->notification_callback, $component_action_name, $component_action_items[0]->item_id, $component_action_items[0]->secondary_item_id, $action_item_count, $component_action_items[0]->id );
 					$renderable[] = $content;
 				}
 
@@ -272,7 +273,8 @@ function bp_notifications_get_notifications_for_user( $user_id, $format = 'strin
 					$action_item_count,
 					$format,
 					$component_action_name, // Duplicated so plugins can check the canonical action name.
-					$component_name
+					$component_name,
+					$component_action_items[0]->id
 				);
 
 				// Function should return an object.
@@ -286,7 +288,7 @@ function bp_notifications_get_notifications_for_user( $user_id, $format = 'strin
 					 * {@link BP_Component::setup_globals()} method instead.
 					 *
 					 * @since 1.9.0
-					 * @since 2.6.0 Added $component_action_name and $component_name as parameters.
+					 * @since 2.6.0 Added $component_action_name, $component_name, $id as parameters.
 					 *
 					 * @param string $content               Component action. Deprecated. Do not do checks against this! Use
 					 *                                      the 6th parameter instead - $component_action_name.
@@ -296,6 +298,7 @@ function bp_notifications_get_notifications_for_user( $user_id, $format = 'strin
 					 * @param string $format                Format of return. Either 'string' or 'object'.
 					 * @param string $component_action_name Canonical notification action.
 					 * @param string $component_name        Notification component ID.
+					 * @param int    $id                    Notification ID.
 					 *
 					 * @return string|array If $format is 'string', return a string of the notification content.
 					 *                      If $format is 'object', return an array formatted like:
@@ -701,7 +704,7 @@ function bp_notifications_delete_meta( $notification_id, $meta_key = '', $meta_v
 
 	add_filter( 'query', 'bp_filter_metaid_column_name' );
 	foreach ( $keys as $key ) {
-		$retval = delete_metadata( 'notifications', $notification_id, $key, $meta_value, $delete_all );
+		$retval = delete_metadata( 'notification', $notification_id, $key, $meta_value, $delete_all );
 	}
 	remove_filter( 'query', 'bp_filter_metaid_column_name' );
 
@@ -726,7 +729,7 @@ function bp_notifications_delete_meta( $notification_id, $meta_key = '', $meta_v
  */
 function bp_notifications_get_meta( $notification_id = 0, $meta_key = '', $single = true ) {
 	add_filter( 'query', 'bp_filter_metaid_column_name' );
-	$retval = get_metadata( 'notifications', $notification_id, $meta_key, $single );
+	$retval = get_metadata( 'notification', $notification_id, $meta_key, $single );
 	remove_filter( 'query', 'bp_filter_metaid_column_name' );
 
 	/**
@@ -761,7 +764,7 @@ function bp_notifications_get_meta( $notification_id = 0, $meta_key = '', $singl
  */
 function bp_notifications_update_meta( $notification_id, $meta_key, $meta_value, $prev_value = '' ) {
 	add_filter( 'query', 'bp_filter_metaid_column_name' );
-	$retval = update_metadata( 'notifications', $notification_id, $meta_key, $meta_value, $prev_value );
+	$retval = update_metadata( 'notification', $notification_id, $meta_key, $meta_value, $prev_value );
 	remove_filter( 'query', 'bp_filter_metaid_column_name' );
 
 	return $retval;
@@ -782,7 +785,7 @@ function bp_notifications_update_meta( $notification_id, $meta_key, $meta_value,
  */
 function bp_notifications_add_meta( $notification_id, $meta_key, $meta_value, $unique = false ) {
 	add_filter( 'query', 'bp_filter_metaid_column_name' );
-	$retval = add_metadata( 'notifications', $notification_id, $meta_key, $meta_value, $unique );
+	$retval = add_metadata( 'notification', $notification_id, $meta_key, $meta_value, $unique );
 	remove_filter( 'query', 'bp_filter_metaid_column_name' );
 
 	return $retval;
