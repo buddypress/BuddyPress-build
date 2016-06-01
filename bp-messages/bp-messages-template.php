@@ -785,7 +785,10 @@ function bp_message_search_form() {
 	ob_start(); ?>
 
 	<form action="" method="get" id="search-message-form">
-		<label for="messages_search" class="bp-screen-reader-text"><?php esc_html_e( 'Search Messages', 'buddypress' ); ?></label>
+		<label for="messages_search" class="bp-screen-reader-text"><?php
+			/* translators: accessibility text */
+			esc_html_e( 'Search Messages', 'buddypress' );
+		?></label>
 		<input type="text" name="s" id="messages_search"<?php echo $search_placeholder . $search_value; ?> />
 		<input type="submit" class="button" id="messages_search_submit" name="messages_search_submit" value="<?php esc_html_e( 'Search', 'buddypress' ); ?>" />
 	</form>
@@ -927,10 +930,10 @@ function bp_messages_content_value() {
 function bp_messages_options() {
 ?>
 
-	<label for="message-type-select" class="bp-screen-reader-text">
-		<?php _e( 'Select:', 'buddypress' ) ?>
-	 </label>
-
+	<label for="message-type-select" class="bp-screen-reader-text"><?php
+		/* translators: accessibility text */
+		_e( 'Select:', 'buddypress' );
+	?></label>
 	<select name="message-type-select" id="message-type-select">
 		<option value=""><?php _e( 'Select', 'buddypress' ); ?></option>
 		<option value="read"><?php _ex('Read', 'Message dropdown filter', 'buddypress') ?></option>
@@ -957,7 +960,9 @@ function bp_messages_options() {
  */
 function bp_messages_bulk_management_dropdown() {
 	?>
-	<label class="bp-screen-reader-text" for="messages-select"><?php _e( 'Select Bulk Action', 'buddypress' ); ?></label>
+	<label class="bp-screen-reader-text" for="messages-select"><?php
+		_e( 'Select Bulk Action', 'buddypress' );
+	?></label>
 	<select name="messages_bulk_action" id="messages-select">
 		<option value="" selected="selected"><?php _e( 'Bulk Actions', 'buddypress' ); ?></option>
 		<option value="read"><?php _e( 'Mark read', 'buddypress' ); ?></option>
@@ -1007,7 +1012,6 @@ function bp_messages_is_active_notice() {
  *
  * @since 1.0.0
  * @deprecated 1.6.0
- * @uses bp_get_message_is_active_notice()
  * @return bool
  */
 function bp_message_is_active_notice() {
@@ -1021,7 +1025,6 @@ function bp_message_is_active_notice() {
 	 *
 	 * @since 1.0.0
 	 * @deprecated 1.6.0
-	 * @uses bp_messages_is_active_notice()
 	 */
 	function bp_get_message_is_active_notice() {
 
@@ -1218,7 +1221,6 @@ function bp_message_activate_deactivate_text() {
  *
  * @since 1.5.0
  *
- * @uses bp_get_messages_slug()
  */
 function bp_messages_slug() {
 	echo bp_get_messages_slug();
@@ -1307,7 +1309,6 @@ function bp_send_private_message_link() {
  *
  * @since 1.2.6
  *
- * @uses bp_get_send_message_button()
  */
 function bp_send_private_message_button() {
 	echo bp_get_send_message_button();
@@ -1954,7 +1955,6 @@ function bp_the_thread_message_date_sent() {
 	 *
 	 * @since 2.1.0
 	 *
-	 * @uses strtotime() To convert the message string into a usable timestamp.
 	 *
 	 * @return int
 	 */

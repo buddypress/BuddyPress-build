@@ -720,8 +720,6 @@ function bp_get_the_profile_field_errors_action() {
  *
  * @since 1.1.0
  *
- * @uses bp_get_the_profile_field_options()
- *
  * @param array $args Specify type for datebox. Allowed 'day', 'month', 'year'.
  */
 function bp_the_profile_field_options( $args = array() ) {
@@ -732,8 +730,6 @@ function bp_the_profile_field_options( $args = array() ) {
 	 *
 	 * @since 1.1.0
 	 *
-	 * @uses BP_XProfile_Field::get_children()
-	 * @uses BP_XProfile_ProfileData::get_value_byid()
 	 *
 	 * @param array $args {
 	 *     Array of optional arguments.
@@ -932,7 +928,7 @@ function bp_profile_field_data( $args = '' ) {
 	 *    @type string|int|bool $field   Field identifier.
 	 *    @type int             $user_id ID of the user to get field data for.
 	 * }
-     * @return mixed|void
+	 * @return mixed|void
 	 */
 	function bp_get_profile_field_data( $args = '' ) {
 
@@ -1264,7 +1260,7 @@ function bp_profile_visibility_radio_buttons( $args = '' ) {
 	 *    @type string $after_radio  Markup to render after the radio button.
 	 *    @type string $class        Class to apply to the field markup.
 	 * }
-     * @return string $retval
+	 * @return string $retval
 	 */
 	function bp_profile_get_visibility_radio_buttons( $args = '' ) {
 
@@ -1375,7 +1371,10 @@ function bp_profile_settings_visibility_select( $args = '' ) {
 
 			<?php if ( bp_current_user_can( 'bp_xprofile_change_field_visibility' ) ) : ?>
 
-				<label for="<?php echo esc_attr( 'field_' . $r['field_id'] ) ; ?>_visibility" class="bp-screen-reader-text"><?php _e( 'Select visibility', 'buddypress' ); ?></label>
+				<label for="<?php echo esc_attr( 'field_' . $r['field_id'] ) ; ?>_visibility" class="bp-screen-reader-text"><?php
+					/* translators: accessibility text */
+					_e( 'Select visibility', 'buddypress' );
+				?></label>
 				<select class="<?php echo esc_attr( $r['class'] ); ?>" name="<?php echo esc_attr( 'field_' . $r['field_id'] ) ; ?>_visibility" id="<?php echo esc_attr( 'field_' . $r['field_id'] ) ; ?>_visibility">
 
 					<?php foreach ( bp_xprofile_get_visibility_levels() as $level ) : ?>

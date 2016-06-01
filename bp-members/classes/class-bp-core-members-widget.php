@@ -35,10 +35,18 @@ class BP_Core_Members_Widget extends WP_Widget {
 			'customize_selective_refresh' => true,
 		) );
 
-		// Maybe enqueue JS for widget.
-		if ( is_customize_preview() || is_active_widget( false, false, $this->id_base ) && ! is_admin() && ! is_network_admin() ) {
-			wp_enqueue_script( 'bp-widget-members' );
+		if ( is_customize_preview() || is_active_widget( false, false, $this->id_base ) ) {
+			add_action( 'bp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 		}
+	}
+
+	/**
+	 * Enqueue scripts.
+	 *
+	 * @since 2.6.0
+	 */
+	public function enqueue_scripts() {
+		wp_enqueue_script( 'bp-widget-members' );
 	}
 
 	/**
@@ -236,7 +244,6 @@ class BP_Core_Members_Widget extends WP_Widget {
 	 *
 	 * @since 2.3.0
 	 *
-	 * @uses bp_parse_args() To merge widget settings into defaults.
 	 *
 	 * @param array $instance Widget instance settings.
 	 * @return array

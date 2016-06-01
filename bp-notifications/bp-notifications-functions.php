@@ -43,7 +43,7 @@ function bp_notifications_add_notification( $args = array() ) {
 		'date_notified'     => bp_core_current_time(),
 		'is_new'            => 1,
 		'allow_duplicate'   => false,
-	), 'notifications_add_notification' );;
+	), 'notifications_add_notification' );
 
 	// Check for existing duplicate notifications.
 	if ( ! $r['allow_duplicate'] ) {
@@ -98,7 +98,7 @@ function bp_notifications_get_notification( $id ) {
  * @return bool True on success, false on failure.
  */
 function bp_notifications_delete_notification( $id ) {
-	if ( ! bp_notifications_check_notification_access( bp_loggedin_user_id(), $id ) ) {
+	if ( ! bp_notifications_check_notification_access( bp_displayed_user_id(), $id ) ) {
 		return false;
 	}
 
@@ -117,7 +117,7 @@ function bp_notifications_delete_notification( $id ) {
  * @return bool True on success, false on failure.
  */
 function bp_notifications_mark_notification( $id, $is_new = false ) {
-	if ( ! bp_notifications_check_notification_access( bp_loggedin_user_id(), $id ) ) {
+	if ( ! bp_notifications_check_notification_access( bp_displayed_user_id(), $id ) ) {
 		return false;
 	}
 
@@ -715,8 +715,6 @@ function bp_notifications_delete_meta( $notification_id, $meta_key = '', $meta_v
  * Get metadata for a given notification item.
  *
  * @since 2.3.0
- *
- * @uses apply_filters() To call the 'bp_notifications_get_meta' hook.
  *
  * @param int    $notification_id ID of the notification item whose metadata is being requested.
  * @param string $meta_key        Optional. If present, only the metadata matching

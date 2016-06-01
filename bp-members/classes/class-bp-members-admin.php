@@ -65,7 +65,6 @@ class BP_Members_Admin {
 	 *
 	 * @since 2.0.0
 	 *
-	 * @uses buddypress() to get BuddyPress main instance.
 	 */
 	public static function register_members_admin() {
 		if ( ! is_admin() ) {
@@ -368,7 +367,6 @@ class BP_Members_Admin {
 	 *
 	 * @since 2.1.0
 	 *
-	 * @uses add_submenu_page() To add the Edit Profile page in Profile section.
 	 */
 	public function user_profile_menu() {
 
@@ -406,7 +404,6 @@ class BP_Members_Admin {
 	 *
 	 * @since 2.0.0
 	 *
-	 * @uses add_submenu_page() To add the Edit Profile page in Users/Profile section.
 	 */
 	public function admin_menus() {
 
@@ -1109,9 +1106,15 @@ class BP_Members_Admin {
 		$current_type = bp_get_member_type( $user->ID );
 		?>
 
-		<label for="bp-members-profile-member-type" class="screen-reader-text"><?php esc_html_e( 'Select member type', 'buddypress' ); ?></label>
+		<label for="bp-members-profile-member-type" class="screen-reader-text"><?php
+			/* translators: accessibility text */
+			esc_html_e( 'Select member type', 'buddypress' );
+		?></label>
 		<select name="bp-members-profile-member-type" id="bp-members-profile-member-type">
-			<option value="" <?php selected( '', $current_type ); ?>><?php /* translators: no option picked in select box */ esc_attr_e( '----', 'buddypress' ) ?></option>
+			<option value="" <?php selected( '', $current_type ); ?>><?php
+				/* translators: no option picked in select box */
+				esc_attr_e( '----', 'buddypress' );
+			?></option>
 			<?php foreach ( $types as $type ) : ?>
 				<option value="<?php echo esc_attr( $type->name ) ?>" <?php selected( $type->name, $current_type ) ?>><?php echo esc_html( $type->labels['singular_name'] ) ?></option>
 			<?php endforeach; ?>
@@ -1228,7 +1231,6 @@ class BP_Members_Admin {
 	 *
 	 * @since 2.1.0
 	 *
-	 * @uses  user_admin_url()
 	 *
 	 * @param string $profile_link Profile Link for admin bar.
 	 * @param string $url          Profile URL.
