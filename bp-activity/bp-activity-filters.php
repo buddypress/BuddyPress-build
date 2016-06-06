@@ -43,6 +43,7 @@ add_filter( 'bp_get_activity_content',               'wptexturize' );
 add_filter( 'bp_get_activity_parent_content',        'wptexturize' );
 add_filter( 'bp_get_activity_latest_update',         'wptexturize' );
 add_filter( 'bp_get_activity_latest_update_excerpt', 'wptexturize' );
+add_filter( 'bp_activity_get_embed_excerpt',         'wptexturize' );
 
 add_filter( 'bp_get_activity_action',                'convert_smilies' );
 add_filter( 'bp_get_activity_content_body',          'convert_smilies' );
@@ -50,6 +51,7 @@ add_filter( 'bp_get_activity_content',               'convert_smilies' );
 add_filter( 'bp_get_activity_parent_content',        'convert_smilies' );
 add_filter( 'bp_get_activity_latest_update',         'convert_smilies' );
 add_filter( 'bp_get_activity_latest_update_excerpt', 'convert_smilies' );
+add_filter( 'bp_activity_get_embed_excerpt',         'convert_smilies' );
 
 add_filter( 'bp_get_activity_action',                'convert_chars' );
 add_filter( 'bp_get_activity_content_body',          'convert_chars' );
@@ -57,11 +59,13 @@ add_filter( 'bp_get_activity_content',               'convert_chars' );
 add_filter( 'bp_get_activity_parent_content',        'convert_chars' );
 add_filter( 'bp_get_activity_latest_update',         'convert_chars' );
 add_filter( 'bp_get_activity_latest_update_excerpt', 'convert_chars' );
+add_filter( 'bp_activity_get_embed_excerpt',         'convert_chars' );
 
 add_filter( 'bp_get_activity_action',                'wpautop' );
 add_filter( 'bp_get_activity_content_body',          'wpautop' );
 add_filter( 'bp_get_activity_content',               'wpautop' );
 add_filter( 'bp_get_activity_feed_item_description', 'wpautop' );
+add_filter( 'bp_activity_get_embed_excerpt',         'wpautop' );
 
 add_filter( 'bp_get_activity_action',                'make_clickable', 9 );
 add_filter( 'bp_get_activity_content_body',          'make_clickable', 9 );
@@ -70,6 +74,7 @@ add_filter( 'bp_get_activity_parent_content',        'make_clickable', 9 );
 add_filter( 'bp_get_activity_latest_update',         'make_clickable', 9 );
 add_filter( 'bp_get_activity_latest_update_excerpt', 'make_clickable', 9 );
 add_filter( 'bp_get_activity_feed_item_description', 'make_clickable', 9 );
+add_filter( 'bp_activity_get_embed_excerpt',         'make_clickable', 9 );
 
 add_filter( 'bp_acomment_name',                      'stripslashes_deep', 5 );
 add_filter( 'bp_get_activity_action',                'stripslashes_deep', 5 );
@@ -94,6 +99,7 @@ add_filter( 'pre_comment_content',                   'bp_activity_at_name_filter
 add_filter( 'group_forum_topic_text_before_save',    'bp_activity_at_name_filter' );
 add_filter( 'group_forum_post_text_before_save',     'bp_activity_at_name_filter' );
 add_filter( 'the_content',                           'bp_activity_at_name_filter' );
+add_filter( 'bp_activity_get_embed_excerpt',         'bp_activity_at_name_filter' );
 
 add_filter( 'bp_get_activity_parent_content',        'bp_create_excerpt' );
 
@@ -102,6 +108,8 @@ add_filter( 'bp_get_activity_content',      'bp_activity_truncate_entry', 5 );
 
 add_filter( 'bp_get_total_favorite_count_for_user', 'bp_core_number_format' );
 add_filter( 'bp_get_total_mention_count_for_user',  'bp_core_number_format' );
+
+add_filter( 'bp_activity_get_embed_excerpt', 'bp_activity_embed_excerpt_onclick_location_filter', 9 );
 
 /* Actions *******************************************************************/
 
@@ -147,13 +155,19 @@ function bp_activity_get_moderated_activity_types() {
 function bp_activity_check_moderation_keys( $activity ) {
 
 	// Only check specific types of activity updates.
-	if ( !in_array( $activity->type, bp_activity_get_moderated_activity_types() ) )
+	if ( ! in_array( $activity->type, bp_activity_get_moderated_activity_types() ) ) {
 		return;
+	}
 
-	// Unset the activity component so activity stream update fails
+	// Send back the error so activity update fails.
 	// @todo This is temporary until some kind of moderation is built.
-	if ( !bp_core_check_for_moderation( $activity->user_id, '', $activity->content ) )
+	$moderate = bp_core_check_for_moderation( $activity->user_id, '', $activity->content, 'wp_error' );
+	if ( is_wp_error( $moderate ) ) {
+		$activity->errors = $moderate;
+
+		// Backpat.
 		$activity->component = false;
+	}
 }
 
 /**
@@ -166,12 +180,19 @@ function bp_activity_check_moderation_keys( $activity ) {
 function bp_activity_check_blacklist_keys( $activity ) {
 
 	// Only check specific types of activity updates.
-	if ( ! in_array( $activity->type, bp_activity_get_moderated_activity_types() ) )
+	if ( ! in_array( $activity->type, bp_activity_get_moderated_activity_types() ) ) {
 		return;
+	}
 
-	// Mark as spam.
-	if ( ! bp_core_check_for_blacklist( $activity->user_id, '', $activity->content ) )
-		bp_activity_mark_as_spam( $activity, 'by_blacklist' );
+	// Send back the error so activity update fails.
+	// @todo This is temporary until some kind of trash status is built.
+	$blacklist = bp_core_check_for_blacklist( $activity->user_id, '', $activity->content, 'wp_error' );
+	if ( is_wp_error( $blacklist ) ) {
+		$activity->errors = $blacklist;
+
+		// Backpat.
+		$activity->component = false;
+	}
 }
 
 /**
@@ -444,7 +465,7 @@ function bp_activity_truncate_entry( $text, $args = array() ) {
 	 * been truncated), add the "Read More" link. Note that bp_create_excerpt() is stripping
 	 * shortcodes, so we have strip them from the $text before the comparison.
 	 */
-	if ( strlen( $excerpt ) > strlen( strip_shortcodes( $text ) ) ) {
+	if ( strlen( $excerpt ) < strlen( strip_shortcodes( $text ) ) ) {
 		$id = !empty( $activities_template->activity->current_comment->id ) ? 'acomment-read-more-' . $activities_template->activity->current_comment->id : 'activity-read-more-' . bp_get_activity_id();
 
 		$excerpt = sprintf( '%1$s<span class="activity-read-more" id="%2$s"><a href="%3$s" rel="nofollow">%4$s</a></span>', $excerpt, $id, bp_get_activity_thread_permalink(), $append_text );
