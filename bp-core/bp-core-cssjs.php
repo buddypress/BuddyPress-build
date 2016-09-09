@@ -29,24 +29,27 @@ function bp_core_register_common_scripts() {
 	$scripts = apply_filters( 'bp_core_register_common_scripts', array(
 
 		// Legacy.
-		'bp-confirm'        => array( 'file' => "{$url}confirm{$min}.js",        'dependencies' => array( 'jquery' ), 'footer' => false ),
+		'bp-confirm'        => array( 'file' => "{$url}confirm{$min}.js", 'dependencies' => array( 'jquery' ), 'footer' => false ),
 		'bp-widget-members' => array( 'file' => "{$url}widget-members{$min}.js", 'dependencies' => array( 'jquery' ), 'footer' => false ),
-		'bp-jquery-query'   => array( 'file' => "{$url}jquery-query{$min}.js",   'dependencies' => array( 'jquery' ), 'footer' => false ),
-		'bp-jquery-cookie'  => array( 'file' => "{$url}jquery-cookie{$min}.js",  'dependencies' => array( 'jquery' ), 'footer' => false ),
-		'bp-jquery-scroll-to' => array( 'file' => "{$url}jquery-scroll-to{$min}.js", 'dependencies' => array( 'jquery' ), 'footer' => false ),
+		'bp-jquery-query'   => array( 'file' => "{$url}jquery-query{$min}.js", 'dependencies' => array( 'jquery' ), 'footer' => false ),
+		'bp-jquery-cookie'  => array( 'file' => "{$url}vendor/jquery-cookie{$min}.js", 'dependencies' => array( 'jquery' ), 'footer' => false ),
+		'bp-jquery-scroll-to' => array( 'file' => "{$url}vendor/jquery-scroll-to{$min}.js", 'dependencies' => array( 'jquery' ), 'footer' => false ),
 
-		// 2.1
-		'jquery-caret' => array( 'file' => "{$url}jquery.caret{$min}.js", 'dependencies' => array( 'jquery' ), 'footer' => true ),
-		'jquery-atwho' => array( 'file' => "{$url}jquery.atwho{$min}.js", 'dependencies' => array( 'jquery', 'jquery-caret' ), 'footer' => true ),
+		// Version 2.1.
+		'jquery-caret' => array( 'file' => "{$url}vendor/jquery.caret{$min}.js", 'dependencies' => array( 'jquery' ), 'footer' => true ),
+		'jquery-atwho' => array( 'file' => "{$url}vendor/jquery.atwho{$min}.js", 'dependencies' => array( 'jquery', 'jquery-caret' ), 'footer' => true ),
 
-		// 2.3
+		// Version 2.3.
 		'bp-plupload' => array( 'file' => "{$url}bp-plupload{$min}.js", 'dependencies' => array( 'plupload', 'jquery', 'json2', 'wp-backbone' ), 'footer' => true ),
 		'bp-avatar'   => array( 'file' => "{$url}avatar{$min}.js", 'dependencies' => array( 'jcrop' ), 'footer' => true ),
 		'bp-webcam'   => array( 'file' => "{$url}webcam{$min}.js", 'dependencies' => array( 'bp-avatar' ), 'footer' => true ),
 
-		// 2.4
+		// Version 2.4.
 		'bp-cover-image' => array( 'file' => "{$url}cover-image{$min}.js", 'dependencies' => array(), 'footer' => true ),
 
+		// Version 2.7.
+		'bp-moment'    => array( 'file' => "{$url}vendor/moment{$min}.js", 'dependencies' => array(), 'footer' => true ),
+		'bp-livestamp' => array( 'file' => "{$url}vendor/livestamp{$min}.js", 'dependencies' => array( 'jquery', 'bp-moment' ), 'footer' => true ),
 	) );
 
 	$version = bp_get_version();
@@ -106,7 +109,7 @@ add_action( 'bp_enqueue_scripts',       'bp_core_register_common_styles', 1 );
 add_action( 'bp_admin_enqueue_scripts', 'bp_core_register_common_styles', 1 );
 
 /**
- * Load the JS for "Are you sure?" .confirm links.
+ * Load the JS for "Are you sure?" confirm links.
  *
  * @since 1.1.0
  */
@@ -128,7 +131,7 @@ add_action( 'bp_admin_enqueue_scripts', 'bp_core_confirmation_js' );
 /**
  * Enqueues the css and js required by the Avatar UI.
  *
- * @since  2.3.0
+ * @since 2.3.0
  */
 function bp_core_avatar_scripts() {
 	if ( ! bp_avatar_is_front_edit() ) {
@@ -148,7 +151,7 @@ add_action( 'bp_enqueue_scripts', 'bp_core_avatar_scripts' );
 /**
  * Enqueues the css and js required by the Cover Image UI.
  *
- * @since  2.4.0
+ * @since 2.4.0
  */
 function bp_core_cover_image_scripts() {
 	if ( ! bp_attachments_cover_image_is_edit() ) {
@@ -361,11 +364,11 @@ function bp_core_get_js_dependencies() {
 }
 
 /**
- * Add inline css to display the component's single item cover image
+ * Add inline css to display the component's single item cover image.
  *
  * @since 2.4.0
  *
- * @param  bool $return True to get the inline css.
+ * @param bool $return True to get the inline css.
  * @return string|array the inline css or an associative array containing
  *                      the css rules and the style handle
  */
@@ -460,3 +463,90 @@ function bp_add_cover_image_inline_css( $return = false ) {
 	}
 }
 add_action( 'bp_enqueue_scripts', 'bp_add_cover_image_inline_css', 11 );
+
+/**
+ * Enqueues livestamp.js on BuddyPress pages.
+ *
+ * @since 2.7.0
+ */
+function bp_core_add_livestamp() {
+	if ( ! is_buddypress() ) {
+		return;
+	}
+
+	bp_core_enqueue_livestamp();
+}
+add_action( 'bp_enqueue_scripts', 'bp_core_add_livestamp' );
+
+/**
+ * Enqueue and localize livestamp.js script.
+ *
+ * @since 2.7.0
+ */
+function bp_core_enqueue_livestamp() {
+	// If bp-livestamp isn't enqueued, do it now.
+	if ( wp_script_is( 'bp-livestamp' ) ) {
+		return;
+	}
+
+	wp_enqueue_script( 'bp-livestamp' );
+
+	// We're only localizing the relative time strings for moment.js since that's all we need for now.
+	wp_localize_script( 'bp-livestamp', 'BP_Moment_i18n', array(
+		'future' => __( 'in %s',         'buddypress' ),
+		'past'   => __( '%s ago',        'buddypress' ),
+		's'      => __( 'a few seconds', 'buddypress' ),
+		'm'      => __( 'a minute',      'buddypress' ),
+		'mm'     => __( '%d minutes',    'buddypress' ),
+		'h'      => __( 'an hour',       'buddypress' ),
+		'hh'     => __( '%d hours',      'buddypress' ),
+		'd'      => __( 'a day',         'buddypress' ),
+		'dd'     => __( '%d days',       'buddypress' ),
+		'M'      => __( 'a month',       'buddypress' ),
+		'MM'     => __( '%d months',     'buddypress' ),
+		'y'      => __( 'a year',        'buddypress' ),
+		'yy'     => __( '%d years',      'buddypress' ),
+	) );
+
+	if ( function_exists( 'wp_add_inline_script' ) ) {
+		wp_add_inline_script ( 'bp-livestamp', bp_core_moment_js_config() );
+	} else {
+		add_action( 'wp_footer', '_bp_core_moment_js_config_footer', 20 );
+	}
+}
+
+/**
+ * Return moment.js config.
+ *
+ * @since 2.7.0
+ *
+ * @return string
+ */
+function bp_core_moment_js_config() {
+	$inline_js = <<<EOD
+jQuery(function() {
+	moment.locale( 'bp', {
+		relativeTime : BP_Moment_i18n
+	});
+});
+EOD;
+
+	return $inline_js;
+}
+
+/**
+ * Print moment.js config in page footer.
+ *
+ * Will be removed once we set our minimum version of WP 4.5.
+ *
+ * @since 2.7.0
+ *
+ * @access private
+ */
+function _bp_core_moment_js_config_footer() {
+	if ( ! wp_script_is( 'bp-livestamp' ) ) {
+		return;
+	}
+
+	printf( '<script>%s</script>', bp_core_moment_js_config() );
+}

@@ -894,7 +894,7 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 	}
 }
 
-.single-item.groups #buddypress div#item-header div#item-actions h3 {
+.single-item.groups #buddypress div#item-header div#item-actions h2 {
 	background: #555;
 	color: #fff;
 	font-size: 14px;
@@ -903,7 +903,7 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 }
 
 @media screen and (min-width: 46.25em) {
-	.single-item.groups #buddypress div#item-header div#item-actions h3 {
+	.single-item.groups #buddypress div#item-header div#item-actions h2 {
 		font-size: 16px;
 		font-size: 1.6rem;
 	}
@@ -1000,7 +1000,7 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 * @subsection 6.2.1.1 - Group Management
 *-----------------------------------------
 */
-.groups #group-settings-form h4 {
+.groups #group-settings-form h3 {
 	background: #555;
 	color: #fff;
 	padding: 0.2em;
@@ -1320,7 +1320,7 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 	* @subsection 6.2.2.2 - Extended Profiles
 	*-------------------------------------------
 	*/
-.bp-user #buddypress .profile .bp-widget h4 {
+.bp-user #buddypress .profile .bp-widget h2 {
 	background: #6f6f6f;
 	color: #fff;
 	margin-bottom: 0;

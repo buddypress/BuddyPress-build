@@ -52,6 +52,11 @@ function bp_attachments_uploads_dir_get( $data = '' ) {
 		foreach ( $upload_data as $key => $value ) {
 			if ( 'basedir' === $key || 'baseurl' === $key ) {
 				$upload_data[ $key ] = trailingslashit( $value ) . $attachments_dir;
+
+				// Fix for HTTPS.
+				if ( 'baseurl' === $key && is_ssl() ) {
+					$upload_data[ $key ] = str_replace( 'http://', 'https://', $upload_data[ $key ] ); 
+				}
 			} else {
 				unset( $upload_data[ $key ] );
 			}
@@ -963,7 +968,7 @@ function bp_attachments_get_cover_image_settings( $component = 'xprofile' ) {
 	 * Eg: for the user's profile cover image use:
 	 * add_filter( 'bp_before_xprofile_cover_image_settings_parse_args', 'your_filter', 10, 1 );
 	 *
-	 * @since  2.4.0
+	 * @since 2.4.0
 	 *
 	 * @param array $settings The cover image settings
 	 */
@@ -990,7 +995,7 @@ function bp_attachments_get_cover_image_settings( $component = 'xprofile' ) {
 }
 
 /**
- * Get cover image Width and Height
+ * Get cover image Width and Height.
  *
  * @since 2.4.0
  *

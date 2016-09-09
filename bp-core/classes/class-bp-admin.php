@@ -660,7 +660,7 @@ class BP_Admin {
 				<div class="bp-feature">
 					<h4 class="feature-title"><?php esc_html_e( 'New Navigation API', 'buddypress' ); ?></h4>
 					<img src="<?php echo esc_url( buddypress()->plugin_url . 'bp-core/admin/images/new-nav-api.png' ); ?>" alt="<?php esc_attr_e( 'Sample code for using the new navigation API', 'buddypress' ); ?>">
-					<p><?php esc_html_e( 'The member and group navigation system has been totally rewritten, making it easier than ever to customize BuddyPress nav items.', 'buddypress' ); ?> <a href="https://buddypress.trac.wordpress.org/changeset/10745"><?php esc_html_e( 'Read the informative commit message.', 'buddypress' ); ?></a></p>
+					<p><?php esc_html_e( 'The member and group navigation system has been totally rewritten, making it easier than ever to customize BuddyPress nav items.', 'buddypress' ); ?> <a href="https://codex.buddypress.org/developer/navigation-api/"><?php esc_html_e( 'Read the informative commit message.', 'buddypress' ); ?></a></p>
 				</div>
 
 				<div class="bp-feature opposite">
@@ -798,6 +798,22 @@ class BP_Admin {
 					<a class="web" href="https://profiles.wordpress.org/dimensionmedia"><img alt="" class="gravatar" src="//www.gravatar.com/avatar/7735aada1ec39d0c1118bd92ed4551f1?s=60">
 					David Bisset</a>
 				</li>
+				<li class="wp-person" id="wp-person-offereins">
+					<a class="web" href="https://profiles.wordpress.org/Offereins"><img alt="" class="gravatar" src="//www.gravatar.com/avatar/2404ed0a35bb41aedefd42b0a7be61c1?s=60">
+					Laurens Offereins</a>
+				</li>
+				<li class="wp-person" id="wp-person-garrett-eclipse">
+					<a class="web" href="https://profiles.wordpress.org/garrett-eclipse"><img alt="" class="gravatar" src="//www.gravatar.com/avatar/7f68f24441c61514d5d0e1451bb5bc9d?s=60">
+					Garrett Hyder</a>
+				</li>
+				<li class="wp-person" id="wp-person-thebrandonallen">
+					<a class="web" href="https://profiles.wordpress.org/thebrandonallen"><img alt="" class="gravatar" src="//www.gravatar.com/avatar/6d3f77bf3c9ca94c406dea401b566950?s=60">
+					Brandon Allen</a>
+				</li>
+				<li class="wp-person" id="wp-person-ramiy">
+					<a class="web" href="https://profiles.wordpress.org/ramiy"><img alt="" class="gravatar" src="//www.gravatar.com/avatar/ce2a269e424156d79cb0c4e1d4d82db1?s=60">
+					Rami Yushuvaev</a>
+				</li>
 
 			</ul>
 
@@ -852,10 +868,12 @@ class BP_Admin {
 				<a href="https://github.com/ichord/At.js">At.js</a>,
 				<a href="https://bbpress.org">bbPress</a>,
 				<a href="https://github.com/ichord/Caret.js">Caret.js</a>,
-				<a href="http://tedgoas.github.io/Cerberus/">Cerberus</a>,
-				<a href="http://ionicons.com/">Ionicons</a>,
+				<a href="https://tedgoas.github.io/Cerberus/">Cerberus</a>,
+				<a href="https://ionicons.com/">Ionicons</a>,
 				<a href="https://github.com/carhartl/jquery-cookie">jquery.cookie</a>,
+				<a href="https://mattbradley.github.io/livestampjs/">Livestamp.js</a>,
 				<a href="https://www.mediawiki.org/wiki/MediaWiki">MediaWiki</a>,
+				<a href="http://momentjs.com/">Moment.js</a>,
 				<a href="https://wordpress.org">WordPress</a>.
 			</p>
 
@@ -873,7 +891,7 @@ class BP_Admin {
 
 		// Switch welcome text based on whether this is a new installation or not.
 		$welcome_text = ( self::is_new_install() )
-			? __( 'Thank you for installing BuddyPress! BuddyPress helps you build any type of community website using WordPress, with member profiles, activity streams, user groups, messaging, and more.', 'buddypress' )
+			? __( 'Thank you for installing BuddyPress! BuddyPress helps site builders and WordPress developers add community features to their websites, with user profile fields, activity streams, messaging, and notifications.', 'buddypress' )
 			: __( 'Thank you for updating! BuddyPress %s has many new features that you will enjoy.', 'buddypress' );
 
 		?>
@@ -923,7 +941,7 @@ class BP_Admin {
 	 *
 	 * @since 2.6.0
 	 *
-	 * @param  array $columns Current column data.
+	 * @param array $columns Current column data.
 	 * @return array
 	 */
 	public function emails_register_situation_column( $columns = array() ) {

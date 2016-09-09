@@ -12,10 +12,10 @@
 /**
  * Plugin Name: BuddyPress
  * Plugin URI:  https://buddypress.org/
- * Description: BuddyPress helps you build any type of community website using WordPress, with member profiles, activity streams, user groups, messaging, and more.
+ * Description: BuddyPress helps site builders and WordPress developers add community features to their websites, with user profile fields, activity streams, messaging, and notifications.
  * Author:      The BuddyPress Community
  * Author URI:  https://buddypress.org/
- * Version:     2.6.0-rc1
+ * Version:     2.7-alpha
  * Text Domain: buddypress
  * Domain Path: /bp-languages/
  * License:     GPLv2 or later (license.txt)
@@ -330,7 +330,7 @@ class BuddyPress {
 
 		/** Versions **********************************************************/
 
-		$this->version    = '2.6.0-rc1';
+		$this->version    = '2.7-alpha';
 		$this->db_version = 10469;
 
 		/** Loading ***********************************************************/
@@ -522,6 +522,7 @@ class BuddyPress {
 			require( $this->plugin_dir . 'bp-core/deprecated/2.4.php' );
 			require( $this->plugin_dir . 'bp-core/deprecated/2.5.php' );
 			require( $this->plugin_dir . 'bp-core/deprecated/2.6.php' );
+			require( $this->plugin_dir . 'bp-core/deprecated/2.7.php' );
 		}
 	}
 
@@ -614,6 +615,18 @@ class BuddyPress {
 
 		// Sanity check.
 		if ( ! file_exists( $path ) ) {
+			return;
+		}
+
+		/*
+		 * Sanity check 2 - Check if component is active before loading class.
+		 * Skip if PHPUnit is running, or BuddyPress is installing for the first time.
+		 */
+		if (
+			! in_array( $component, array( 'core', 'members' ), true ) &&
+			! bp_is_active( $component ) &&
+			! function_exists( 'tests_add_filter' )
+		) {
 			return;
 		}
 

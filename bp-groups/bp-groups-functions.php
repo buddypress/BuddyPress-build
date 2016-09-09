@@ -114,7 +114,7 @@ function groups_create_group( $args = '' ) {
 
 	// Pass an existing group ID.
 	if ( ! empty( $group_id ) ) {
-		$group = groups_get_group( array( 'group_id' => (int) $group_id ) );
+		$group = groups_get_group( array( 'group_id' => $group_id ) );
 		$name  = ! empty( $name ) ? $name : $group->name;
 		$slug  = ! empty( $slug ) ? $slug : $group->slug;
 		$description = ! empty( $description ) ? $description : $group->description;
@@ -415,10 +415,10 @@ function groups_get_slug( $group_id ) {
  * @since 1.6.0
  *
  * @param string $group_slug The group's slug.
- * @return int The ID.
+ * @return int|null The group ID on success; null on failure.
  */
 function groups_get_id( $group_slug ) {
-	return (int)BP_Groups_Group::group_exists( $group_slug );
+	return BP_Groups_Group::group_exists( $group_slug );
 }
 
 /** User Actions **************************************************************/
@@ -859,34 +859,6 @@ function bp_get_user_groups( $user_id, $args = array() ) {
 		}
 	}
 
-	// Populate group membership array from cache.
-	$groups = array();
-	foreach ( $membership_ids as $membership_id ) {
-		$membership = wp_cache_get( $membership_id, 'bp_groups_memberships' );
-
-		// Sanity check.
-		if ( ! isset( $membership->group_id ) ) {
-			continue;
-		}
-
-		$group_id = (int) $membership->group_id;
-
-		$groups[ $group_id ] = $membership;
-	}
-
-	// Normalize group data.
-	foreach ( $groups as &$group ) {
-		// Integer values.
-		foreach ( array( 'id', 'group_id', 'user_id', 'inviter_id' ) as $index ) {
-			$group->{$index} = intval( $group->{$index} );
-		}
-
-		// Boolean values.
-		foreach ( array( 'is_admin', 'is_mod', 'is_confirmed', 'is_banned', 'invite_sent' ) as $index ) {
-			$group->{$index} = (bool) $group->{$index};
-		}
-	}
-
 	// Assemble filter array for use in `wp_list_filter()`.
 	$filters = wp_array_slice_assoc( $r, array( 'is_confirmed', 'is_banned', 'is_admin', 'is_mod', 'invite_sent' ) );
 	foreach ( $filters as $filter_name => $filter_value ) {
@@ -895,8 +867,37 @@ function bp_get_user_groups( $user_id, $args = array() ) {
 		}
 	}
 
-	if ( ! empty( $filters ) ) {
-		$groups = wp_list_filter( $groups, $filters );
+	// Populate group membership array from cache, and normalize.
+	$groups    = array();
+	$int_keys  = array( 'id', 'group_id', 'user_id', 'inviter_id' );
+	$bool_keys = array( 'is_admin', 'is_mod', 'is_confirmed', 'is_banned', 'invite_sent' );
+	foreach ( $membership_ids as $membership_id ) {
+		$membership = wp_cache_get( $membership_id, 'bp_groups_memberships' );
+
+		// Sanity check.
+		if ( ! isset( $membership->group_id ) ) {
+			continue;
+		}
+
+		// Integer values.
+		foreach ( $int_keys as $index ) {
+			$membership->{$index} = intval( $membership->{$index} );
+		}
+
+		// Boolean values.
+		foreach ( $bool_keys as $index ) {
+			$membership->{$index} = (bool) $membership->{$index};
+		}
+
+		foreach ( $filters as $filter_name => $filter_value ) {
+			if ( ! isset( $membership->{$filter_name} ) || $filter_value != $membership->{$filter_name} ) {
+				continue 2;
+			}
+		}
+
+		$group_id = (int) $membership->group_id;
+
+		$groups[ $group_id ] = $membership;
 	}
 
 	// By default, results are ordered by membership id.
@@ -1735,7 +1736,7 @@ function groups_remove_member( $user_id, $group_id ) {
 
 	if ( ! bp_is_item_admin() ) {
 		return false;
-  	}
+	}
 
 	$member = new BP_Groups_Member( $user_id, $group_id );
 
@@ -2294,10 +2295,18 @@ function bp_groups_get_group_type( $group_id, $single = true ) {
 	$types = wp_cache_get( $group_id, 'bp_groups_group_type' );
 
 	if ( false === $types ) {
-		$types = bp_get_object_terms( $group_id, 'bp_group_type' );
+		$raw_types = bp_get_object_terms( $group_id, 'bp_group_type' );
 
-		if ( ! is_wp_error( $types ) ) {
-			$types = wp_list_pluck( $types, 'name' );
+		if ( ! is_wp_error( $raw_types ) ) {
+			$types = array();
+
+			// Only include currently registered group types.
+			foreach ( $raw_types as $gtype ) {
+				if ( bp_groups_get_group_type_object( $gtype->name ) ) {
+					$types[] = $gtype->name;
+				}
+			}
+
 			wp_cache_set( $group_id, $types, 'bp_groups_group_type' );
 		}
 	}

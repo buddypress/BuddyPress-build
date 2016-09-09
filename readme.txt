@@ -7,7 +7,7 @@ Stable tag: 2.6.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-BuddyPress helps you build any type of community website using WordPress, with member profiles, activity streams, user groups, messaging, and more.
+BuddyPress helps site builders and WordPress developers add community features to their websites, with user profile fields, activity streams, messaging, and notifications.
 
 == Description ==
 
@@ -118,6 +118,9 @@ Please consider helping translate BuddyPress at our <a href="https://translate.w
 
 == Upgrade Notice ==
 
+= 2.6.2 =
+See: https://codex.buddypress.org/releases/version-2-6-2/
+
 = 2.6.1.1 =
 See: https://codex.buddypress.org/releases/version-2-6-1-1/
 
@@ -128,6 +131,9 @@ See: https://codex.buddypress.org/releases/version-2-6-1/
 See: https://codex.buddypress.org/releases/version-2-6-0/
 
 == Changelog ==
+
+= 2.6.2 =
+See: https://codex.buddypress.org/releases/version-2-6-2/
 
 = 2.6.1.1 =
 See: https://codex.buddypress.org/releases/version-2-6-1-1/

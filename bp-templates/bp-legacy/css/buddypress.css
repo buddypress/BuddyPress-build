@@ -624,7 +624,6 @@ body.activity-permalink #buddypress div.activity-comments div.acomment-content {
 
 #buddypress .standard-form textarea,
 #buddypress .standard-form input[type=text],
-#buddypress .standard-form input[type=text],
 #buddypress .standard-form input[type=color],
 #buddypress .standard-form input[type=date],
 #buddypress .standard-form input[type=datetime],
@@ -786,7 +785,7 @@ body.no-js #buddypress #messages-bulk-management #select-all-messages {
 	padding: 5px;
 	width: 160px;
 }
-#buddypress button,
+#buddypress .standard-form button,
 #buddypress a.button,
 #buddypress input[type=submit],
 #buddypress input[type=button],
@@ -805,7 +804,7 @@ a.bp-title-button {
 	text-align: center;
 	text-decoration: none;
 }
-#buddypress button:hover,
+#buddypress .standard-form button:hover,
 #buddypress a.button:hover,
 #buddypress a.button:focus,
 #buddypress input[type=submit]:hover,
@@ -844,6 +843,7 @@ a.bp-title-button {
 	float: left;
 }
 
+#buddypress form.standard-form .main-column ul#friend-list h3,
 #buddypress form.standard-form .main-column ul#friend-list h4 {
 	clear:none;
 }
@@ -1244,6 +1244,7 @@ a.bp-title-button {
 	text-align: right;
 	width: 20%;
 }
+#buddypress div#item-header div#item-actions h2,
 #buddypress div#item-header div#item-actions h3 {
 	margin: 0 0 5px 0;
 }
@@ -1304,6 +1305,7 @@ body.activity-permalink #buddypress ul.item-list li.activity-item {
 	margin: 0 10px 0 0;
 }
 #buddypress ul.item-list li div.item-title,
+#buddypress ul.item-list li h3,
 #buddypress ul.item-list li h4 {
 	font-weight: normal;
 	font-size: 90%;
@@ -1558,7 +1560,7 @@ a.message-action-star:hover {
 3.10 - Extended Profiles
 --------------------------------------------------------------*/
 
-#buddypress div.profile h4 {
+#buddypress div.profile h2 {
 	margin-bottom: auto;
 	margin-top: 15px;
 }
@@ -1742,6 +1744,7 @@ body.register #buddypress div.page ul {
 		position: relative;
 		margin-bottom:1em;
 	}
+	#buddypress form.standard-form .main-column ul#friend-list h3,
 	#buddypress form.standard-form .main-column ul#friend-list h4{
 		width:100%;
 	}

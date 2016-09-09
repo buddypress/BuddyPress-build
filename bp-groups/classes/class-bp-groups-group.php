@@ -175,7 +175,7 @@ class BP_Groups_Group {
 		) );
 
 		if ( !empty( $id ) ) {
-			$this->id = $id;
+			$this->id = (int) $id;
 			$this->populate();
 		}
 	}
@@ -208,13 +208,13 @@ class BP_Groups_Group {
 		}
 
 		// Group found so setup the object variables.
-		$this->id           = $group->id;
-		$this->creator_id   = $group->creator_id;
+		$this->id           = (int) $group->id;
+		$this->creator_id   = (int) $group->creator_id;
 		$this->name         = stripslashes( $group->name );
 		$this->slug         = $group->slug;
 		$this->description  = stripslashes( $group->description );
 		$this->status       = $group->status;
-		$this->enable_forum = $group->enable_forum;
+		$this->enable_forum = (int) $group->enable_forum;
 		$this->date_created = $group->date_created;
 
 		// Are we getting extra group data?
@@ -231,6 +231,10 @@ class BP_Groups_Group {
 
 			// Add admins and moderators to their respective arrays.
 			foreach ( (array) $admin_mods as $user ) {
+				$user->user_id  = (int) $user->user_id;
+				$user->is_admin = (int) $user->is_admin;
+				$user->is_mod   = (int) $user->is_mod;
+
 				if ( !empty( $user->is_admin ) ) {
 					$this->admins[] = $user;
 				} else {
@@ -241,7 +245,7 @@ class BP_Groups_Group {
 			// Set up some specific group vars from meta. Excluded
 			// from the bp_groups cache because it's cached independently.
 			$this->last_activity      = groups_get_groupmeta( $this->id, 'last_activity' );
-			$this->total_member_count = groups_get_groupmeta( $this->id, 'total_member_count' );
+			$this->total_member_count = (int) groups_get_groupmeta( $this->id, 'total_member_count' );
 
 			// Set user-specific data.
 			$user_id          = bp_loggedin_user_id();
@@ -435,7 +439,7 @@ class BP_Groups_Group {
 	 * @param string      $slug       Slug to check.
 	 * @param string|bool $table_name Optional. Name of the table to check
 	 *                                against. Default: $bp->groups->table_name.
-	 * @return string|null ID of the group, if one is found, else null.
+	 * @return int|null Group ID if found; null if not.
 	 */
 	public static function group_exists( $slug, $table_name = false ) {
 		global $wpdb;
@@ -446,7 +450,9 @@ class BP_Groups_Group {
 		if ( empty( $slug ) )
 			return false;
 
-		return $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$table_name} WHERE slug = %s", strtolower( $slug ) ) );
+		$query = $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$table_name} WHERE slug = %s", strtolower( $slug ) ) );
+
+		return is_numeric( $query ) ? (int) $query : $query;
 	}
 
 	/**
@@ -506,7 +512,7 @@ class BP_Groups_Group {
 		if ( empty( $user_id ) )
 			$user_id = bp_displayed_user_id();
 
-		$search_terms_like = bp_esc_like( $filter ) . '%';
+		$search_terms_like = '%' . bp_esc_like( $filter ) . '%';
 
 		$pag_sql = $order_sql = $hidden_sql = '';
 
@@ -971,7 +977,7 @@ class BP_Groups_Group {
 		 * @param array  $r         Array of parsed arguments for the get method.
 		 */
 		$total_groups_sql = apply_filters( 'bp_groups_get_total_groups_sql', $t_sql, $total_sql, $r );
-		$total_groups     = $wpdb->get_var( $total_groups_sql );
+		$total_groups     = (int) $wpdb->get_var( $total_groups_sql );
 
 		$group_ids = array();
 		foreach ( (array) $paged_groups as $group ) {
@@ -986,6 +992,18 @@ class BP_Groups_Group {
 		// Grab all groupmeta.
 		if ( ! empty( $r['update_meta_cache'] ) ) {
 			bp_groups_update_meta_cache( $group_ids );
+		}
+
+		// Set up integer properties needing casting.
+		$int_props = array(
+			'id', 'creator_id', 'enable_forum', 'total_member_count',
+		);
+
+		// Integer casting.
+		foreach ( $paged_groups as $key => $g ) {
+			foreach ( $int_props as $int_prop ) {
+				$paged_groups[ $key ]->{$int_prop} = (int) $paged_groups[ $key ]->{$int_prop};
+			}
 		}
 
 		unset( $sql, $total_sql );
@@ -1425,9 +1443,9 @@ class BP_Groups_Group {
 		$user_id = bp_loggedin_user_id();
 
 		foreach ( $paged_groups as &$group ) {
-			$group->is_member  = groups_is_user_member( $user_id, $group->id ) ? '1' : '0';
-			$group->is_invited = groups_is_user_invited( $user_id, $group->id ) ? '1' : '0';
-			$group->is_pending = groups_is_user_pending( $user_id, $group->id ) ? '1' : '0';
+			$group->is_member  = groups_is_user_member( $user_id, $group->id )  ? 1 : 0;
+			$group->is_invited = groups_is_user_invited( $user_id, $group->id ) ? 1 : 0;
+			$group->is_pending = groups_is_user_pending( $user_id, $group->id ) ? 1 : 0;
 			$group->is_banned  = (bool) groups_is_user_banned( $user_id, $group->id );
 		}
 
@@ -1644,10 +1662,6 @@ class BP_Groups_Group {
 
 		$sql_clauses = $tax_query->get_sql( 'g', 'id' );
 
-		if ( $switched ) {
-			restore_current_blog();
-		}
-
 		$clause = '';
 
 		// The no_results clauses are the same between IN and NOT IN.
@@ -1661,6 +1675,10 @@ class BP_Groups_Group {
 		// IN clauses must be converted to a subquery.
 		} elseif ( preg_match( '/' . $wpdb->term_relationships . '\.term_taxonomy_id IN \([0-9, ]+\)/', $sql_clauses['where'], $matches ) ) {
 			$clause = " AND g.id IN ( SELECT object_id FROM $wpdb->term_relationships WHERE {$matches[0]} )";
+		}
+
+		if ( $switched ) {
+			restore_current_blog();
 		}
 
 		return $clause;

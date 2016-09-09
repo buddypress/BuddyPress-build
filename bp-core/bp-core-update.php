@@ -139,7 +139,6 @@ function bp_is_deactivation( $basename = '' ) {
  * Update the BP version stored in the database to the current version.
  *
  * @since 1.6.0
- *
  */
 function bp_version_bump() {
 	bp_update_option( '_bp_db_version', bp_get_db_version() );
@@ -192,10 +191,11 @@ function bp_version_updater() {
 		'notifications' => 1,
 	) );
 
+	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 	require_once( buddypress()->plugin_dir . '/bp-core/admin/bp-core-admin-schema.php' );
 	$switched_to_root_blog = false;
 
-	// Make sure the current blog is set to the root blog
+	// Make sure the current blog is set to the root blog.
 	if ( ! bp_is_root_blog() ) {
 		switch_to_blog( bp_get_root_blog_id() );
 		bp_register_taxonomies();
@@ -218,50 +218,55 @@ function bp_version_updater() {
 		// Run the schema install to update tables.
 		bp_core_install();
 
-		// 1.5.0
+		// Version 1.5.0.
 		if ( $raw_db_version < 1801 ) {
 			bp_update_to_1_5();
 			bp_core_add_page_mappings( $default_components, 'delete' );
 		}
 
-		// 1.6.0
+		// Version 1.6.0.
 		if ( $raw_db_version < 6067 ) {
 			bp_update_to_1_6();
 		}
 
-		// 1.9.0
+		// Version 1.9.0.
 		if ( $raw_db_version < 7553 ) {
 			bp_update_to_1_9();
 		}
 
-		// 1.9.2
+		// Version 1.9.2.
 		if ( $raw_db_version < 7731 ) {
 			bp_update_to_1_9_2();
 		}
 
-		// 2.0.0
+		// Version 2.0.0.
 		if ( $raw_db_version < 7892 ) {
 			bp_update_to_2_0();
 		}
 
-		// 2.0.1
+		// Version 2.0.1.
 		if ( $raw_db_version < 8311 ) {
 			bp_update_to_2_0_1();
 		}
 
-		// 2.2.0
+		// Version 2.2.0.
 		if ( $raw_db_version < 9181 ) {
 			bp_update_to_2_2();
 		}
 
-		// 2.3.0
+		// Version 2.3.0.
 		if ( $raw_db_version < 9615 ) {
 			bp_update_to_2_3();
 		}
 
-		// 2.5.0
+		// Version 2.5.0.
 		if ( $raw_db_version < 10440 ) {
 			bp_update_to_2_5();
+		}
+
+		// Version 2.7.0.
+		if ( $raw_db_version < 10940 ) {
+			bp_update_to_2_7();
 		}
 	}
 
@@ -331,7 +336,7 @@ function bp_update_to_1_5() {
 }
 
 /**
- * Remove unused metadata from database when upgrading from < 1.6.
+ * Remove unused metadata from database when upgrading from < 1.6.0.
  *
  * Database update methods based on version numbers.
  *
@@ -380,7 +385,7 @@ function bp_update_to_1_9() {
 }
 
 /**
- * Perform database updates for BP 1.9.2
+ * Perform database updates for BP 1.9.2.
  *
  * In 1.9, BuddyPress stopped registering its theme directory when it detected
  * that bp-default (or a child theme) was not currently being used, in effect
@@ -440,8 +445,6 @@ function bp_update_to_2_0() {
  * 2.0.1 database upgrade routine.
  *
  * @since 2.0.1
- *
- * @return void
  */
 function bp_update_to_2_0_1() {
 
@@ -502,6 +505,17 @@ function bp_update_to_2_5() {
 }
 
 /**
+ * 2.7.0 update routine.
+ *
+ * - Add email unsubscribe salt.
+ *
+ * @since 2.7.0
+ */
+function bp_update_to_2_7() {
+	bp_add_option( 'bp-emails-unsubscribe-salt', base64_encode( wp_generate_password( 64, true, true ) ) );
+}
+
+/**
  * Updates the component field for new_members type.
  *
  * @since 2.2.0
@@ -539,7 +553,6 @@ function bp_migrate_new_member_activity_component() {
  * Remove all hidden friendship activities.
  *
  * @since 2.2.0
- *
  */
 function bp_cleanup_friendship_activities() {
 	bp_activity_delete( array(
@@ -555,7 +568,6 @@ function bp_cleanup_friendship_activities() {
  * @since 1.7.0
  *
  * @internal Used internally to redirect BuddyPress to the about page on activation.
- *
  */
 function bp_add_activation_redirect() {
 
@@ -624,7 +636,6 @@ function bp_core_maybe_install_signups() {
  * Runs on BuddyPress activation.
  *
  * @since 1.6.0
- *
  */
 function bp_activation() {
 
@@ -637,13 +648,13 @@ function bp_activation() {
 	/**
 	 * Fires during the activation of BuddyPress.
 	 *
-	 * Use as of (1.6.0)
+	 * Use as of 1.6.0.
 	 *
 	 * @since 1.6.0
 	 */
 	do_action( 'bp_activation' );
 
-	// @deprecated as of (1.6)
+	// @deprecated as of 1.6.0
 	do_action( 'bp_loader_activate' );
 }
 
@@ -653,7 +664,6 @@ function bp_activation() {
  * Runs on BuddyPress deactivation.
  *
  * @since 1.6.0
- *
  */
 function bp_deactivation() {
 
@@ -671,13 +681,13 @@ function bp_deactivation() {
 	/**
 	 * Fires during the deactivation of BuddyPress.
 	 *
-	 * Use as of (1.6.0)
+	 * Use as of 1.6.0.
 	 *
 	 * @since 1.6.0
 	 */
 	do_action( 'bp_deactivation' );
 
-	// @deprecated as of (1.6)
+	// @deprecated as of 1.6.0
 	do_action( 'bp_loader_deactivate' );
 }
 
@@ -687,7 +697,6 @@ function bp_deactivation() {
  * Runs when uninstalling BuddyPress.
  *
  * @since 1.6.0
- *
  */
 function bp_uninstall() {
 
