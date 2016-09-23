@@ -75,7 +75,12 @@ add_action( 'bp_activity_deleted_activities', 'bp_activity_clear_cache_for_delet
  * @return bool True on success, false on failure.
  */
 function bp_activity_reset_cache_incrementor() {
-	return bp_core_reset_incrementor( 'bp_activity' );
+	$without_last_activity = bp_core_reset_incrementor( 'bp_activity' );
+	$with_last_activity    = bp_core_reset_incrementor( 'bp_activity_with_last_activity' );
+	return $without_last_activity && $with_last_activity;
 }
-add_action( 'bp_activity_delete', 'bp_activity_reset_cache_incrementor' );
-add_action( 'bp_activity_add', 'bp_activity_reset_cache_incrementor' );
+add_action( 'bp_activity_delete',    'bp_activity_reset_cache_incrementor' );
+add_action( 'bp_activity_add',       'bp_activity_reset_cache_incrementor' );
+add_action( 'added_activity_meta',   'bp_activity_reset_cache_incrementor' );
+add_action( 'updated_activity_meta', 'bp_activity_reset_cache_incrementor' );
+add_action( 'deleted_activity_meta', 'bp_activity_reset_cache_incrementor' );

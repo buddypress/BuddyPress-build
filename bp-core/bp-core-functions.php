@@ -108,14 +108,23 @@ function bp_core_get_table_prefix() {
  * your own awkward callback function for usort().
  *
  * @since 2.2.0
+ * @since 2.7.0 Added $preserve_keys parameter.
  *
- * @param array      $items The items to be sorted. Its constituent items can be either associative arrays or objects.
- * @param string|int $key   The array index or property name to sort by.
- * @param string     $type  Sort type. 'alpha' for alphabetical, 'num' for numeric. Default: 'alpha'.
+ * @param array      $items         The items to be sorted. Its constituent items
+ *                                  can be either associative arrays or objects.
+ * @param string|int $key           The array index or property name to sort by.
+ * @param string     $type          Sort type. 'alpha' for alphabetical, 'num'
+ *                                  for numeric. Default: 'alpha'.
+ * @param bool       $preserve_keys Whether to keep the keys or not.
+ *
  * @return array $items The sorted array.
  */
-function bp_sort_by_key( $items, $key, $type = 'alpha' ) {
-	usort( $items, array( new BP_Core_Sort_By_Key_Callback( $key, $type ), 'sort_callback' ) );
+function bp_sort_by_key( $items, $key, $type = 'alpha', $preserve_keys = false ) {
+	if ( true === $preserve_keys ) {
+		uasort( $items, array( new BP_Core_Sort_By_Key_Callback( $key, $type ), 'sort_callback' ) );
+	} else {
+		usort( $items, array( new BP_Core_Sort_By_Key_Callback( $key, $type ), 'sort_callback' ) );
+	}
 
 	return $items;
 }
@@ -630,14 +639,7 @@ function bp_core_add_page_mappings( $components, $existing = 'keep' ) {
 		$pages = array();
 	}
 
-	$page_titles = array(
-		'activity' => _x( 'Activity', 'Page title for the Activity directory.',       'buddypress' ),
-		'groups'   => _x( 'Groups',   'Page title for the Groups directory.',         'buddypress' ),
-		'blogs'    => _x( 'Sites',    'Page title for the Sites directory.',          'buddypress' ),
-		'members'  => _x( 'Members',  'Page title for the Members directory.',        'buddypress' ),
-		'activate' => _x( 'Activate', 'Page title for the user activation screen.',   'buddypress' ),
-		'register' => _x( 'Register', 'Page title for the user registration screen.', 'buddypress' ),
-	);
+	$page_titles = bp_core_get_directory_page_default_titles();
 
 	$pages_to_create = array();
 	foreach ( array_keys( $components ) as $component_name ) {
@@ -691,6 +693,33 @@ function bp_core_add_page_mappings( $components, $existing = 'keep' ) {
 	if ( ! bp_is_root_blog() ) {
 		restore_current_blog();
 	}
+}
+
+/**
+ * Get the default page titles for BP directory pages.
+ *
+ * @since 2.7.0
+ *
+ * @return array
+ */
+function bp_core_get_directory_page_default_titles() {
+	$page_default_titles = array(
+		'activity' => _x( 'Activity', 'Page title for the Activity directory.',       'buddypress' ),
+		'groups'   => _x( 'Groups',   'Page title for the Groups directory.',         'buddypress' ),
+		'blogs'    => _x( 'Sites',    'Page title for the Sites directory.',          'buddypress' ),
+		'members'  => _x( 'Members',  'Page title for the Members directory.',        'buddypress' ),
+		'activate' => _x( 'Activate', 'Page title for the user activation screen.',   'buddypress' ),
+		'register' => _x( 'Register', 'Page title for the user registration screen.', 'buddypress' ),
+	);
+
+	/**
+	 * Filters the default page titles array
+	 *
+	 * @since 2.7.0
+	 *
+	 * @param array $page_default_titles the array of default WP (post_title) titles.
+	 */
+	return apply_filters( 'bp_core_get_directory_page_default_titles', $page_default_titles );
 }
 
 /**
@@ -1288,7 +1317,14 @@ function bp_core_time_since( $older_date, $newer_date = false ) {
 			return '';
 		}
 
-		$date = new DateTime( $timestamp, new DateTimeZone( 'UTC' ) );
+		try {
+			$date = new DateTime( $timestamp, new DateTimeZone( 'UTC' ) );
+
+		// Not a valid date, so return blank string.
+		} catch( Exception $e ) {
+			return '';
+		}
+
 		return $date->format( DateTime::ISO8601 );
 	}
 
@@ -2725,7 +2761,7 @@ function bp_core_get_suggestions( $args ) {
  *
  * @since 2.3.0
  *
- * @return string
+ * @return bool|array
  */
 function bp_upload_dir() {
 	$bp = buddypress();

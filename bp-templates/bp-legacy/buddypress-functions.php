@@ -105,11 +105,12 @@ class BP_Legacy extends BP_Theme_Compat {
 
 			// Group buttons.
 			if ( bp_is_active( 'groups' ) ) {
-				add_action( 'bp_group_header_actions',          'bp_group_join_button',               5      );
-				add_action( 'bp_group_header_actions',          'bp_group_new_topic_button',         20      );
-				add_action( 'bp_directory_groups_actions',      'bp_group_join_button'                       );
-				add_action( 'bp_groups_directory_group_filter', 'bp_legacy_theme_group_create_nav', 999      );
-				add_action( 'bp_after_group_admin_content',     'bp_legacy_groups_admin_screen_hidden_input' );
+				add_action( 'bp_group_header_actions',          'bp_group_join_button',               5           );
+				add_action( 'bp_group_header_actions',          'bp_group_new_topic_button',         20           );
+				add_action( 'bp_directory_groups_actions',      'bp_group_join_button'                            );
+				add_action( 'bp_groups_directory_group_filter', 'bp_legacy_theme_group_create_nav', 999           );
+				add_action( 'bp_after_group_admin_content',     'bp_legacy_groups_admin_screen_hidden_input'      );
+				add_action( 'bp_before_group_admin_form',       'bp_legacy_theme_group_manage_members_add_search' );
 			}
 
 			// Blog button.
@@ -1447,7 +1448,7 @@ function bp_legacy_theme_ajax_joinleave_group() {
 	if ( groups_is_user_banned( bp_loggedin_user_id(), $group_id ) )
 		return;
 
-	if ( ! $group = groups_get_group( array( 'group_id' => $group_id ) ) )
+	if ( ! $group = groups_get_group( $group_id ) )
 		return;
 
 	if ( ! groups_is_user_member( bp_loggedin_user_id(), $group->id ) ) {
@@ -1912,4 +1913,21 @@ function bp_legacy_theme_cover_image( $params = array() ) {
 			}
 		}
 	';
+}
+
+/**
+ * Add a search box to a single group's manage members screen.
+ *
+ * @since 2.7.0
+ *
+ * @return string HTML for the search form.
+ */
+function bp_legacy_theme_group_manage_members_add_search() {
+	if ( bp_is_action_variable( 'manage-members' ) ) :
+		?>
+		<div id="members-dir-search" class="dir-search no-ajax" role="search">
+			<?php bp_directory_members_search_form(); ?>
+		</div>
+		<?php
+	endif;
 }

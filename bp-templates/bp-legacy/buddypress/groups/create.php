@@ -35,7 +35,7 @@ do_action( 'bp_before_create_group_page' ); ?>
 		 */
 		do_action( 'bp_before_create_group' ); ?>
 
-		<div class="item-list-tabs no-ajax" id="group-create-tabs" role="navigation">
+		<div class="item-list-tabs no-ajax" id="group-create-tabs">
 			<ul>
 
 				<?php bp_group_creation_tabs(); ?>
@@ -52,6 +52,8 @@ do_action( 'bp_before_create_group_page' ); ?>
 
 			<?php /* Group creation step 1: Basic group details */ ?>
 			<?php if ( bp_is_group_creation_step( 'group-details' ) ) : ?>
+
+				<h2 class="bp-screen-reader-text"><?php _e( 'Group Details', 'buddypress' ); ?></h2>
 
 				<?php
 
@@ -88,6 +90,8 @@ do_action( 'bp_before_create_group_page' ); ?>
 
 			<?php /* Group creation step 2: Group settings */ ?>
 			<?php if ( bp_is_group_creation_step( 'group-settings' ) ) : ?>
+
+				<h2 class="bp-screen-reader-text"><?php _e( 'Group Settings', 'buddypress' ); ?></h2>
 
 				<?php
 
@@ -131,6 +135,31 @@ do_action( 'bp_before_create_group_page' ); ?>
 					</div>
 
 				</fieldset>
+
+				<?php // Group type selection ?>
+				<?php if ( $group_types = bp_groups_get_group_types( array( 'show_in_create_screen' => true ), 'objects' ) ): ?>
+
+					<fieldset class="group-create-types">
+						<legend><?php _e( 'Group Types', 'buddypress' ); ?></legend>
+
+						<p><?php _e( 'Select the types this group should be a part of.', 'buddypress' ); ?></p>
+
+						<?php foreach ( $group_types as $type ) : ?>
+							<div class="checkbox">
+								<label for="<?php printf( 'group-type-%s', $type->name ); ?>"><input type="checkbox" name="group-types[]" id="<?php printf( 'group-type-%s', $type->name ); ?>" value="<?php echo esc_attr( $type->name ); ?>" /> <?php echo esc_html( $type->labels['name'] ); ?>
+									<?php
+										if ( isset( $type->description ) ) {
+											printf( __( '&ndash; %s', 'buddypress' ), '<span class="bp-group-type-desc">' . $type->description . '</span>' );
+										}
+									?>
+								</label>
+							</div>
+
+						<?php endforeach; ?>
+
+					</fieldset>
+
+				<?php endif; ?>
 
 				<fieldset class="group-create-invitations">
 
@@ -184,6 +213,8 @@ do_action( 'bp_before_create_group_page' ); ?>
 
 			<?php /* Group creation step 3: Avatar Uploads */ ?>
 			<?php if ( bp_is_group_creation_step( 'group-avatar' ) ) : ?>
+
+				<h2 class="bp-screen-reader-text"><?php _e( 'Group Avatar', 'buddypress' ); ?></h2>
 
 				<?php
 
@@ -265,6 +296,8 @@ do_action( 'bp_before_create_group_page' ); ?>
 			<?php /* Group creation step 4: Cover image */ ?>
 			<?php if ( bp_is_group_creation_step( 'group-cover-image' ) ) : ?>
 
+				<h2 class="bp-screen-reader-text"><?php _e( 'Cover Image', 'buddypress' ); ?></h2>
+
 				<?php
 
 				/**
@@ -295,6 +328,8 @@ do_action( 'bp_before_create_group_page' ); ?>
 
 			<?php /* Group creation step 5: Invite friends to group */ ?>
 			<?php if ( bp_is_group_creation_step( 'group-invites' ) ) : ?>
+
+				<h2 class="bp-screen-reader-text"><?php _e( 'Group Invites', 'buddypress' ); ?></h2>
 
 				<?php
 

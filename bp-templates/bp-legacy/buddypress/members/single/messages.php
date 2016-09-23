@@ -8,7 +8,7 @@
 
 ?>
 
-<div class="item-list-tabs no-ajax" id="subnav" role="navigation">
+<div class="item-list-tabs no-ajax" id="subnav" aria-label="<?php esc_attr_e( 'Member secondary navigation', 'buddypress' ); ?>" role="navigation">
 	<ul>
 
 		<?php bp_get_options_nav(); ?>
@@ -36,6 +36,12 @@ switch ( bp_current_action() ) :
 		 * @since 1.2.0
 		 */
 		do_action( 'bp_before_member_messages_content' ); ?>
+
+		<?php if ( bp_is_messages_inbox() ) : ?>
+			<h2 class="bp-screen-reader-text"><?php _e( 'Messages inbox', 'buddypress' ); ?></h2>
+		<?php elseif ( bp_is_messages_sentbox() ) : ?>
+			<h2 class="bp-screen-reader-text"><?php _e( 'Sent Messages', 'buddypress' ); ?></h2>
+		<?php endif; ?>
 
 		<div class="messages">
 			<?php bp_get_template_part( 'members/single/messages/messages-loop' ); ?>
@@ -70,6 +76,8 @@ switch ( bp_current_action() ) :
 		 * @since 1.2.0
 		 */
 		do_action( 'bp_before_member_messages_content' ); ?>
+
+		<h2 class="bp-screen-reader-text"><?php _e( 'Sitewide Notices', 'buddypress' ); ?></h2>
 
 		<div class="messages">
 			<?php bp_get_template_part( 'members/single/messages/notices-loop' ); ?>

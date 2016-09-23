@@ -202,10 +202,12 @@ function bp_core_install_groups() {
 				slug varchar(200) NOT NULL,
 				description longtext NOT NULL,
 				status varchar(10) NOT NULL DEFAULT 'public',
+				parent_id bigint(20) NOT NULL DEFAULT 0,
 				enable_forum tinyint(1) NOT NULL DEFAULT '1',
 				date_created datetime NOT NULL,
 				KEY creator_id (creator_id),
-				KEY status (status)
+				KEY status (status),
+				KEY parent_id (parent_id)
 			) {$charset_collate};";
 
 	$sql[] = "CREATE TABLE {$bp_prefix}bp_groups_members (
@@ -517,6 +519,8 @@ function bp_core_install_emails() {
 			) );
 		}
 	}
+
+	bp_update_option( 'bp-emails-unsubscribe-salt', base64_encode( wp_generate_password( 64, true, true ) ) );
 
 	/**
 	 * Fires after BuddyPress adds the posts for its emails.

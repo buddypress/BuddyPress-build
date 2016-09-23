@@ -288,7 +288,9 @@ class BP_Friends_Component extends BP_Component {
 
 		// Global groups.
 		wp_cache_add_global_groups( array(
-			'bp_friends_requests'
+			'bp_friends_requests',
+			'bp_friends_friendships', // Individual friendship objects are cached here by ID.
+			'bp_friends_friendships_for_user' // All friendship IDs for a single user.
 		) );
 
 		parent::setup_cache_groups();

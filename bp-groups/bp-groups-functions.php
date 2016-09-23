@@ -36,29 +36,19 @@ function bp_groups_has_directory() {
  * support and pass through the groups_get_group filter.
  *
  * @since 1.2.0
+ * @since 2.7.0 The function signature was changed to accept a group ID only,
+ *              instead of an array containing the group ID.
  *
- * @param array|string $args {
- *     Array of al arguments.
- *     @type int  $group_id        ID of the group.
- *     @type bool $load_users      No longer used.
- *     @type bool $populate_extras Whether to fetch membership data and other
- *                                 extra information about the group.
- *                                 Default: false.
- * }
+ * @param int $group_id ID of the group.
  * @return BP_Groups_Group $group The group object.
  */
-function groups_get_group( $args = '' ) {
-	$r = wp_parse_args( $args, array(
-		'group_id'          => false,
-		'load_users'        => false,
-		'populate_extras'   => false,
-	) );
+function groups_get_group( $group_id ) {
+	// Backward compatibilty.
+	if ( is_array( $group_id ) && isset( $group_id['group_id'] ) ) {
+		$group_id = $group_id['group_id'];
+	}
 
-	$group_args = array(
-		'populate_extras' => $r['populate_extras'],
-	);
-
-	$group = new BP_Groups_Group( $r['group_id'], $group_args );
+	$group = new BP_Groups_Group( $group_id );
 
 	/**
 	 * Filters a single group object.
@@ -87,6 +77,7 @@ function groups_get_group( $args = '' ) {
  *     @type string   $slug         The group slug.
  *     @type string   $status       The group's status. Accepts 'public', 'private' or
  *                                  'hidden'. Defaults to 'public'.
+ *     @type int      $parent_id    The ID of the parent group. Default: 0.
  *     @type int      $enable_forum Optional. Whether the group has a forum enabled.
  *                                  If the legacy forums are enabled for this group
  *                                  or if a bbPress forum is enabled for the group,
@@ -105,6 +96,7 @@ function groups_create_group( $args = '' ) {
 		'description'  => '',
 		'slug'         => '',
 		'status'       => 'public',
+		'parent_id'    => 0,
 		'enable_forum' => 0,
 		'date_created' => bp_core_current_time()
 	);
@@ -114,7 +106,7 @@ function groups_create_group( $args = '' ) {
 
 	// Pass an existing group ID.
 	if ( ! empty( $group_id ) ) {
-		$group = groups_get_group( array( 'group_id' => $group_id ) );
+		$group = groups_get_group( $group_id );
 		$name  = ! empty( $name ) ? $name : $group->name;
 		$slug  = ! empty( $slug ) ? $slug : $group->slug;
 		$description = ! empty( $description ) ? $description : $group->description;
@@ -151,6 +143,7 @@ function groups_create_group( $args = '' ) {
 	$group->description  = $description;
 	$group->slug         = $slug;
 	$group->status       = $status;
+	$group->parent_id    = $parent_id;
 	$group->enable_forum = (int) $enable_forum;
 	$group->date_created = $date_created;
 
@@ -228,7 +221,7 @@ function groups_edit_base_group_details( $group_id, $group_name, $group_desc, $n
 	if ( empty( $group_name ) || empty( $group_desc ) )
 		return false;
 
-	$group     = groups_get_group( array( 'group_id' => $group_id ) );
+	$group     = groups_get_group( $group_id );
 	$old_group = clone $group;
 
 	$group->name        = $group_name;
@@ -270,9 +263,9 @@ function groups_edit_base_group_details( $group_id, $group_name, $group_desc, $n
  *                                   to the group. 'members', 'mods', or 'admins'.
  * @return bool True on success, false on failure.
  */
-function groups_edit_group_settings( $group_id, $enable_forum, $status, $invite_status = false ) {
+function groups_edit_group_settings( $group_id, $enable_forum, $status, $invite_status = false, $parent_id = false ) {
 
-	$group = groups_get_group( array( 'group_id' => $group_id ) );
+	$group = groups_get_group( $group_id );
 	$group->enable_forum = $enable_forum;
 
 	/**
@@ -284,6 +277,11 @@ function groups_edit_group_settings( $group_id, $enable_forum, $status, $invite_
 
 	// Now update the status.
 	$group->status = $status;
+
+	// Update the parent ID if necessary.
+	if ( false !== $parent_id ) {
+		$group->parent_id = $parent_id;
+	}
 
 	if ( !$group->save() )
 		return false;
@@ -333,7 +331,7 @@ function groups_delete_group( $group_id ) {
 	do_action( 'groups_before_delete_group', $group_id );
 
 	// Get the group object.
-	$group = groups_get_group( array( 'group_id' => $group_id ) );
+	$group = groups_get_group( $group_id );
 
 	// Bail if group cannot be deleted.
 	if ( ! $group->delete() ) {
@@ -405,7 +403,7 @@ function groups_check_slug( $slug ) {
  * @return string The group's slug.
  */
 function groups_get_slug( $group_id ) {
-	$group = groups_get_group( array( 'group_id' => $group_id ) );
+	$group = groups_get_group( $group_id );
 	return !empty( $group->slug ) ? $group->slug : '';
 }
 
@@ -507,7 +505,7 @@ function groups_join_group( $group_id, $user_id = 0 ) {
 	$bp = buddypress();
 
 	if ( !isset( $bp->groups->current_group ) || !$bp->groups->current_group || $group_id != $bp->groups->current_group->id )
-		$group = groups_get_group( array( 'group_id' => $group_id ) );
+		$group = groups_get_group( $group_id );
 	else
 		$group = $bp->groups->current_group;
 
@@ -684,6 +682,7 @@ function groups_get_total_member_count( $group_id ) {
  *
  * @since 1.2.0
  * @since 2.6.0 Added `$group_type`, `$group_type__in`, and `$group_type__not_in` parameters.
+ * @since 2.7.0 Added `$update_admin_cache` and `$parent_id` parameters.
  *
  * @param array|string $args {
  *     Array of arguments. Supports all arguments of
@@ -703,6 +702,7 @@ function groups_get_groups( $args = '' ) {
 		'user_id'            => false,          // Pass a user_id to limit to only groups that this user is a member of.
 		'include'            => false,          // Only include these specific groups (group_ids).
 		'exclude'            => false,          // Do not include these specific groups (group_ids).
+		'parent_id'          => null,           // Get groups that are children of the specified group(s).
 		'search_terms'       => false,          // Limit to groups that match these search terms.
 		'group_type'         => '',
 		'group_type__in'     => '',
@@ -711,8 +711,8 @@ function groups_get_groups( $args = '' ) {
 		'show_hidden'        => false,          // Show hidden groups to non-admins.
 		'per_page'           => 20,             // The number of results to return per page.
 		'page'               => 1,              // The page to return if limiting per page.
-		'populate_extras'    => true,           // Fetch meta such as is_banned and is_member.
 		'update_meta_cache'  => true,           // Pre-fetch groupmeta for queried groups.
+		'update_admin_cache' => false,
 	);
 
 	$r = wp_parse_args( $args, $defaults );
@@ -722,6 +722,7 @@ function groups_get_groups( $args = '' ) {
 		'user_id'            => $r['user_id'],
 		'include'            => $r['include'],
 		'exclude'            => $r['exclude'],
+		'parent_id'          => $r['parent_id'],
 		'search_terms'       => $r['search_terms'],
 		'group_type'         => $r['group_type'],
 		'group_type__in'     => $r['group_type__in'],
@@ -730,8 +731,8 @@ function groups_get_groups( $args = '' ) {
 		'show_hidden'        => $r['show_hidden'],
 		'per_page'           => $r['per_page'],
 		'page'               => $r['page'],
-		'populate_extras'    => $r['populate_extras'],
 		'update_meta_cache'  => $r['update_meta_cache'],
+		'update_admin_cache' => $r['update_admin_cache'],
 		'order'              => $r['order'],
 		'orderby'            => $r['orderby'],
 	) );
@@ -1201,7 +1202,7 @@ function groups_post_update( $args = '' ) {
 	if ( empty( $content ) || !strlen( trim( $content ) ) || empty( $user_id ) || empty( $group_id ) )
 		return false;
 
-	$bp->groups->current_group = groups_get_group( array( 'group_id' => $group_id ) );
+	$bp->groups->current_group = groups_get_group( $group_id );
 
 	// Be sure the user is a member of the group before posting.
 	if ( !bp_current_user_can( 'bp_moderate' ) && !groups_is_user_member( $user_id, $group_id ) )
@@ -1509,7 +1510,7 @@ function groups_send_invites( $user_id, $group_id ) {
 
 	// Send friend invites.
 	$invited_users = groups_get_invites_for_group( $user_id, $group_id );
-	$group = groups_get_group( array( 'group_id' => $group_id ) );
+	$group = groups_get_group( $group_id );
 
 	for ( $i = 0, $count = count( $invited_users ); $i < $count; ++$i ) {
 		$member = new BP_Groups_Member( $invited_users[$i], $group_id );
@@ -2114,12 +2115,23 @@ add_action( 'bp_make_spam_user', 'groups_remove_data_for_user' );
  * Register a group type.
  *
  * @since 2.6.0
+ * @since 2.7.0 Introduce $has_directory, $show_in_create_screen, $show_in_list, and
+ *              $description as $args parameters.
  *
  * @param string $group_type Unique string identifier for the group type.
  * @param array  $args {
  *     Array of arguments describing the group type.
  *
- *     @type array $labels {
+ *     @type string|bool $has_directory         Set the slug to be used for custom group directory page. eg.
+ *                                              example.com/groups/type/MY_SLUG. Default: false.
+ *     @type bool        $show_in_create_screen Whether this group type is allowed to be selected on the group creation
+ *                                              page. Default: false.
+ *     @type bool|null   $show_in_list          Whether this group type should be shown in lists rendered by
+ *                                              bp_group_type_list(). Default: null. If $show_in_create_screen is true,
+ *                                              this will default to true, unless this is set explicitly to false.
+ *     @type string      $description           A short descriptive summary of what the group type is. Currently shown
+ *                                              on a group's "Manage > Settings" page when selecting group types.
+ *     @type array       $labels {
  *         Array of labels to use in various parts of the interface.
  *
  *         @type string $name          Default name. Should typically be plural.
@@ -2136,7 +2148,11 @@ function bp_groups_register_group_type( $group_type, $args = array() ) {
 	}
 
 	$r = bp_parse_args( $args, array(
-		'labels'        => array(),
+		'has_directory'         => false,
+		'show_in_create_screen' => false,
+		'show_in_list'          => null,
+		'description'           => '',
+		'labels'                => array(),
 	), 'register_group_type' );
 
 	$group_type = sanitize_key( $group_type );
@@ -2166,6 +2182,32 @@ function bp_groups_register_group_type( $group_type, $args = array() ) {
 		'name'          => $default_name,
 		'singular_name' => $default_name,
 	), $r['labels'] );
+
+	// Directory slug.
+	if ( ! empty( $r['has_directory'] ) ) {
+		// A string value is intepreted as the directory slug.
+		if ( is_string( $r['has_directory'] ) ) {
+			$directory_slug = $r['has_directory'];
+
+		// Otherwise fall back on group type.
+		} else {
+			$directory_slug = $group_type;
+		}
+
+		// Sanitize for use in URLs.
+		$r['directory_slug'] = sanitize_title( $directory_slug );
+		$r['has_directory']  = true;
+	} else {
+		$r['directory_slug'] = '';
+		$r['has_directory']  = false;
+	}
+
+	// Type lists.
+	if ( true === $r['show_in_create_screen'] && is_null( $r['show_in_list'] ) ) {
+		$r['show_in_list'] = true;
+	} else {
+		$r['show_in_list'] = (bool) $r['show_in_list'];
+	}
 
 	$bp->groups->types[ $group_type ] = $type = (object) $r;
 
@@ -2246,17 +2288,29 @@ function bp_groups_get_group_type_object( $group_type ) {
  * Set type for a group.
  *
  * @since 2.6.0
+ * @since 2.7.0 $group_type parameter also accepts an array of group types now.
  *
- * @param int    $group      ID of the group.
- * @param string $group_type Group type.
- * @param bool   $append     Optional. True to append this to existing types for group,
- *                           false to replace. Default: false.
+ * @param int          $group      ID of the group.
+ * @param string|array $group_type Group type or array of group types to set.
+ * @param bool         $append     Optional. True to append this to existing types for group,
+ *                                 false to replace. Default: false.
  * @return array $retval See bp_set_object_terms().
  */
 function bp_groups_set_group_type( $group_id, $group_type, $append = false ) {
 	// Pass an empty group type to remove group's type.
-	if ( ! empty( $group_type ) && ! bp_groups_get_group_type_object( $group_type ) ) {
+	if ( ! empty( $group_type ) && is_string( $group_type ) && ! bp_groups_get_group_type_object( $group_type ) ) {
 		return false;
+	}
+
+	// Cast as array.
+	$group_type = (array) $group_type;
+
+	// Validate group types.
+	foreach ( $group_type as $type ) {
+		// Remove any invalid group types.
+		if ( is_null( bp_groups_get_group_type_object( $type ) ) ) {
+			unset( $group_type[ $type ] );
+		}
 	}
 
 	$retval = bp_set_object_terms( $group_id, $group_type, 'bp_group_type', $append );
@@ -2270,9 +2324,9 @@ function bp_groups_set_group_type( $group_id, $group_type, $append = false ) {
 		 *
 		 * @since 2.6.0
 		 *
-		 * @param int    $group_id   ID of the group whose group type has been updated.
-		 * @param string $group_type Group type.
-		 * @param bool   $append     Whether the type is being appended to existing types.
+		 * @param int          $group_id   ID of the group whose group type has been updated.
+		 * @param string|array $group_type Group type or array of group types.
+		 * @param bool         $append     Whether the type is being appended to existing types.
 		 */
 		do_action( 'bp_groups_set_group_type', $group_id, $group_type, $append );
 	}
@@ -2388,6 +2442,25 @@ function bp_groups_has_group_type( $group_id, $group_type ) {
 	}
 
 	return in_array( $group_type, $types );
+}
+
+/**
+ * Get the "current" group type, if one is provided, in group directories.
+ *
+ * @since 2.7.0
+ *
+ * @return string
+ */
+function bp_get_current_group_directory_type() {
+
+	/**
+	 * Filters the "current" group type, if one is provided, in group directories.
+	 *
+	 * @since 2.7.0
+	 *
+	 * @param string $value "Current" group type.
+	 */
+	return apply_filters( 'bp_get_current_group_directory_type', buddypress()->groups->current_directory_type );
 }
 
 /**

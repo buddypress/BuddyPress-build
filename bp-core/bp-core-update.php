@@ -265,7 +265,7 @@ function bp_version_updater() {
 		}
 
 		// Version 2.7.0.
-		if ( $raw_db_version < 10940 ) {
+		if ( $raw_db_version < 11105 ) {
 			bp_update_to_2_7();
 		}
 	}
@@ -394,6 +394,7 @@ function bp_update_to_1_9() {
  * bp-default would no longer be available, with no obvious way (outside of
  * a manual filter) to restore it. In 1.9.2, we add an option that flags
  * whether bp-default or a child theme is active at the time of upgrade; if so,
+ *
  * the theme directory will continue to be registered even if the theme is
  * deactivated temporarily. Thus, new installations will not see bp-default,
  * but legacy installations using the theme will continue to see it.
@@ -508,11 +509,37 @@ function bp_update_to_2_5() {
  * 2.7.0 update routine.
  *
  * - Add email unsubscribe salt.
+ * - Save legacy directory titles to the corresponding WP pages.
+ * - Add ignore deprecated code option (false for updates).
  *
  * @since 2.7.0
  */
 function bp_update_to_2_7() {
 	bp_add_option( 'bp-emails-unsubscribe-salt', base64_encode( wp_generate_password( 64, true, true ) ) );
+
+	// Update post_titles
+	bp_migrate_directory_page_titles();
+
+	/*
+	 * Add `parent_id` column to groups table.
+	 * Also handled by `bp_core_install()`.
+	 */
+	if ( bp_is_active( 'groups' ) ) {
+		bp_core_install_groups();
+
+		// Invalidate all cached group objects.
+		global $wpdb;
+		$bp = buddypress();
+
+		$group_ids = $wpdb->get_col( "SELECT id FROM {$bp->groups->table_name}" );
+
+		foreach ( $group_ids as $group_id ) {
+			wp_cache_delete( $group_id, 'bp_groups' );
+		}
+	}
+
+	// Load deprecated code for existing installs.
+	bp_add_option( '_bp_ignore_deprecated_code', false );
 }
 
 /**
@@ -560,6 +587,55 @@ function bp_cleanup_friendship_activities() {
 		'type'          => 'friendship_created',
 		'hide_sitewide' => true,
 	) );
+}
+
+/**
+ * Update WP pages so that their post_title matches the legacy component directory title.
+ *
+ * As of 2.7.0, component directory titles come from the `post_title` attribute of the corresponding WP post object,
+ * instead of being hardcoded. To ensure that directory titles don't change for existing installations, we update these
+ * WP posts with the formerly hardcoded titles.
+ *
+ * @since 2.7.0
+ */
+function bp_migrate_directory_page_titles() {
+	$bp_pages = bp_core_get_directory_page_ids( 'all' );
+
+	$default_titles = bp_core_get_directory_page_default_titles();
+
+	$legacy_titles = array(
+		'activity' => _x( 'Site-Wide Activity', 'component directory title', 'buddypress' ),
+		'blogs'    => _x( 'Sites', 'component directory title', 'buddypress' ),
+		'groups'   => _x( 'Groups', 'component directory title', 'buddypress' ),
+		'members'  => _x( 'Members', 'component directory title', 'buddypress' ),
+	);
+
+	foreach ( $bp_pages as $component => $page_id ) {
+		if ( ! isset( $legacy_titles[ $component ] ) ) {
+			continue;
+		}
+
+		$page = get_post( $page_id );
+		if ( ! $page ) {
+			continue;
+		}
+
+		// If the admin has changed the default title, don't touch it.
+		if ( isset( $default_titles[ $component ] ) && $default_titles[ $component ] !== $page->post_title ) {
+			continue;
+		}
+
+		// If the saved page title is the same as the legacy title, there's nothing to do.
+		if ( $legacy_titles[ $component ] == $page->post_title ) {
+			continue;
+		}
+
+		// Update the page with the legacy title.
+		wp_update_post( array(
+			'ID' => $page_id,
+			'post_title' => $legacy_titles[ $component ],
+		) );
+	}
 }
 
 /**
