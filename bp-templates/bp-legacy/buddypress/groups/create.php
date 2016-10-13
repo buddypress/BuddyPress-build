@@ -43,17 +43,23 @@ do_action( 'bp_before_create_group_page' ); ?>
 			</ul>
 		</div>
 
-		<?php
+		<div id="template-notices" role="alert" aria-atomic="true">
+			<?php
 
-		/** This action is documented in bp-templates/bp-legacy/buddypress/activity/index.php */
-		do_action( 'template_notices' ); ?>
+			/** This action is documented in bp-templates/bp-legacy/buddypress/activity/index.php */
+			do_action( 'template_notices' ); ?>
+
+		</div>
 
 		<div class="item-body" id="group-create-body">
 
 			<?php /* Group creation step 1: Basic group details */ ?>
 			<?php if ( bp_is_group_creation_step( 'group-details' ) ) : ?>
 
-				<h2 class="bp-screen-reader-text"><?php _e( 'Group Details', 'buddypress' ); ?></h2>
+				<h2 class="bp-screen-reader-text"><?php
+					/* translators: accessibility text */
+					_e( 'Group Details', 'buddypress' );
+				?></h2>
 
 				<?php
 
@@ -91,7 +97,10 @@ do_action( 'bp_before_create_group_page' ); ?>
 			<?php /* Group creation step 2: Group settings */ ?>
 			<?php if ( bp_is_group_creation_step( 'group-settings' ) ) : ?>
 
-				<h2 class="bp-screen-reader-text"><?php _e( 'Group Settings', 'buddypress' ); ?></h2>
+				<h2 class="bp-screen-reader-text"><?php
+					/* translators: accessibility text */
+					_e( 'Group Settings', 'buddypress' );
+				?></h2>
 
 				<?php
 
@@ -146,10 +155,11 @@ do_action( 'bp_before_create_group_page' ); ?>
 
 						<?php foreach ( $group_types as $type ) : ?>
 							<div class="checkbox">
-								<label for="<?php printf( 'group-type-%s', $type->name ); ?>"><input type="checkbox" name="group-types[]" id="<?php printf( 'group-type-%s', $type->name ); ?>" value="<?php echo esc_attr( $type->name ); ?>" /> <?php echo esc_html( $type->labels['name'] ); ?>
+								<label for="<?php printf( 'group-type-%s', $type->name ); ?>"><input type="checkbox" name="group-types[]" id="<?php printf( 'group-type-%s', $type->name ); ?>" value="<?php echo esc_attr( $type->name ); ?>" <?php checked( true, ! empty( $type->create_screen_checked ) ); ?> /> <?php echo esc_html( $type->labels['name'] ); ?>
 									<?php
-										if ( isset( $type->description ) ) {
-											printf( __( '&ndash; %s', 'buddypress' ), '<span class="bp-group-type-desc">' . $type->description . '</span>' );
+										if ( ! empty( $type->description ) ) {
+											/* translators: Group type description shown when creating a group. */
+											printf( __( '&ndash; %s', 'buddypress' ), '<span class="bp-group-type-desc">' . esc_html( $type->description ) . '</span>' );
 										}
 									?>
 								</label>
@@ -214,7 +224,10 @@ do_action( 'bp_before_create_group_page' ); ?>
 			<?php /* Group creation step 3: Avatar Uploads */ ?>
 			<?php if ( bp_is_group_creation_step( 'group-avatar' ) ) : ?>
 
-				<h2 class="bp-screen-reader-text"><?php _e( 'Group Avatar', 'buddypress' ); ?></h2>
+				<h2 class="bp-screen-reader-text"><?php
+					/* translators: accessibility text */
+					_e( 'Group Avatar', 'buddypress' );
+				?></h2>
 
 				<?php
 
@@ -296,7 +309,10 @@ do_action( 'bp_before_create_group_page' ); ?>
 			<?php /* Group creation step 4: Cover image */ ?>
 			<?php if ( bp_is_group_creation_step( 'group-cover-image' ) ) : ?>
 
-				<h2 class="bp-screen-reader-text"><?php _e( 'Cover Image', 'buddypress' ); ?></h2>
+				<h2 class="bp-screen-reader-text"><?php
+					/* translators: accessibility text */
+					_e( 'Cover Image', 'buddypress' );
+				?></h2>
 
 				<?php
 
@@ -329,7 +345,10 @@ do_action( 'bp_before_create_group_page' ); ?>
 			<?php /* Group creation step 5: Invite friends to group */ ?>
 			<?php if ( bp_is_group_creation_step( 'group-invites' ) ) : ?>
 
-				<h2 class="bp-screen-reader-text"><?php _e( 'Group Invites', 'buddypress' ); ?></h2>
+				<h2 class="bp-screen-reader-text"><?php
+					/* translators: accessibility text */
+					_e( 'Group Invites', 'buddypress' );
+				?></h2>
 
 				<?php
 

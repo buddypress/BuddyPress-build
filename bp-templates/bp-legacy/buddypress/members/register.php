@@ -24,10 +24,15 @@
 		<form action="" name="signup_form" id="signup_form" class="standard-form" method="post" enctype="multipart/form-data">
 
 		<?php if ( 'registration-disabled' == bp_get_current_signup_step() ) : ?>
-			<?php
 
-			/** This action is documented in bp-templates/bp-legacy/buddypress/activity/index.php */
-			do_action( 'template_notices' ); ?>
+			<div id="template-notices" role="alert" aria-atomic="true">
+				<?php
+
+				/** This action is documented in bp-templates/bp-legacy/buddypress/activity/index.php */
+				do_action( 'template_notices' ); ?>
+
+			</div>
+
 			<?php
 
 			/**
@@ -51,10 +56,13 @@
 
 		<?php if ( 'request-details' == bp_get_current_signup_step() ) : ?>
 
-			<?php
+			<div id="template-notices" role="alert" aria-atomic="true">
+				<?php
 
-			/** This action is documented in bp-templates/bp-legacy/buddypress/activity/index.php */
-			do_action( 'template_notices' ); ?>
+				/** This action is documented in bp-templates/bp-legacy/buddypress/activity/index.php */
+				do_action( 'template_notices' ); ?>
+
+			</div>
 
 			<p><?php _e( 'Registering for this site is easy. Just fill in the fields below, and we\'ll get a new account set up for you in no time.', 'buddypress' ); ?></p>
 
@@ -294,18 +302,20 @@
 						do_action( 'bp_signup_blog_title_errors' ); ?>
 						<input type="text" name="signup_blog_title" id="signup_blog_title" value="<?php bp_signup_blog_title_value(); ?>" />
 
-						<span class="label"><?php _e( 'I would like my site to appear in search engines, and in public listings around this network.', 'buddypress' ); ?></span>
-						<?php
+						<fieldset class="register-site">
+							<legend class="label"><?php _e( 'Privacy: I would like my site to appear in search engines, and in public listings around this network.', 'buddypress' ); ?></legend>
+							<?php
 
-						/**
-						 * Fires and displays any member registration blog privacy errors.
-						 *
-						 * @since 1.1.0
-						 */
-						do_action( 'bp_signup_blog_privacy_errors' ); ?>
+							/**
+							 * Fires and displays any member registration blog privacy errors.
+							 *
+							 * @since 1.1.0
+							 */
+							do_action( 'bp_signup_blog_privacy_errors' ); ?>
 
-						<label for="signup_blog_privacy_public"><input type="radio" name="signup_blog_privacy" id="signup_blog_privacy_public" value="public"<?php if ( 'public' == bp_get_signup_blog_privacy_value() || !bp_get_signup_blog_privacy_value() ) : ?> checked="checked"<?php endif; ?> /> <?php _e( 'Yes', 'buddypress' ); ?></label>
-						<label for="signup_blog_privacy_private"><input type="radio" name="signup_blog_privacy" id="signup_blog_privacy_private" value="private"<?php if ( 'private' == bp_get_signup_blog_privacy_value() ) : ?> checked="checked"<?php endif; ?> /> <?php _e( 'No', 'buddypress' ); ?></label>
+							<label for="signup_blog_privacy_public"><input type="radio" name="signup_blog_privacy" id="signup_blog_privacy_public" value="public"<?php if ( 'public' == bp_get_signup_blog_privacy_value() || !bp_get_signup_blog_privacy_value() ) : ?> checked="checked"<?php endif; ?> /> <?php _e( 'Yes', 'buddypress' ); ?></label>
+							<label for="signup_blog_privacy_private"><input type="radio" name="signup_blog_privacy" id="signup_blog_privacy_private" value="private"<?php if ( 'private' == bp_get_signup_blog_privacy_value() ) : ?> checked="checked"<?php endif; ?> /> <?php _e( 'No', 'buddypress' ); ?></label>
+						</fieldset>
 
 						<?php
 
@@ -359,10 +369,14 @@
 
 		<?php if ( 'completed-confirmation' == bp_get_current_signup_step() ) : ?>
 
-			<?php
+			<div id="template-notices" role="alert" aria-atomic="true">
+				<?php
 
-			/** This action is documented in bp-templates/bp-legacy/buddypress/activity/index.php */
-			do_action( 'template_notices' ); ?>
+				/** This action is documented in bp-templates/bp-legacy/buddypress/activity/index.php */
+				do_action( 'template_notices' ); ?>
+
+			</div>
+
 			<?php
 
 			/**
@@ -372,11 +386,13 @@
 			 */
 			do_action( 'bp_before_registration_confirmed' ); ?>
 
-			<?php if ( bp_registration_needs_activation() ) : ?>
-				<p><?php _e( 'You have successfully created your account! To begin using this site you will need to activate your account via the email we have just sent to your address.', 'buddypress' ); ?></p>
-			<?php else : ?>
-				<p><?php _e( 'You have successfully created your account! Please log in using the username and password you have just created.', 'buddypress' ); ?></p>
-			<?php endif; ?>
+			<div id="template-notices" role="alert" aria-atomic="true">
+				<?php if ( bp_registration_needs_activation() ) : ?>
+					<p><?php _e( 'You have successfully created your account! To begin using this site you will need to activate your account via the email we have just sent to your address.', 'buddypress' ); ?></p>
+				<?php else : ?>
+					<p><?php _e( 'You have successfully created your account! Please log in using the username and password you have just created.', 'buddypress' ); ?></p>
+				<?php endif; ?>
+			</div>
 
 			<?php
 

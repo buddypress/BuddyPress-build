@@ -48,10 +48,13 @@ do_action( 'bp_before_directory_groups_page' ); ?>
 
 	<form action="" method="post" id="groups-directory-form" class="dir-form">
 
-		<?php
+		<div id="template-notices" role="alert" aria-atomic="true">
+			<?php
 
-		/** This action is documented in bp-templates/bp-legacy/buddypress/activity/index.php */
-		do_action( 'template_notices' ); ?>
+			/** This action is documented in bp-templates/bp-legacy/buddypress/activity/index.php */
+			do_action( 'template_notices' ); ?>
+
+		</div>
 
 		<div class="item-list-tabs" aria-label="<?php esc_attr_e( 'Groups directory main navigation', 'buddypress' ); ?>">
 			<ul>
@@ -107,7 +110,10 @@ do_action( 'bp_before_directory_groups_page' ); ?>
 			</ul>
 		</div>
 
-		<h2 class="bp-screen-reader-text"><?php _e( 'Groups directory', 'buddypress' ); ?></h2>
+		<h2 class="bp-screen-reader-text"><?php
+			/* translators: accessibility text */
+			_e( 'Groups directory', 'buddypress' );
+		?></h2>
 
 		<div id="groups-dir-list" class="groups dir-list">
 			<?php bp_get_template_part( 'groups/groups-loop' ); ?>
