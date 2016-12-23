@@ -43,9 +43,18 @@ function bp_groups_has_directory() {
  * @return BP_Groups_Group $group The group object.
  */
 function groups_get_group( $group_id ) {
-	// Backward compatibilty.
-	if ( is_array( $group_id ) && isset( $group_id['group_id'] ) ) {
-		$group_id = $group_id['group_id'];
+	/*
+	 * Backward compatibilty.
+	 * Old-style arguments take the form of an array or a query string.
+	 */
+	if ( ! is_numeric( $group_id ) ) {
+		$r = wp_parse_args( $group_id, array(
+			'group_id'        => false,
+			'load_users'      => false,
+			'populate_extras' => false,
+		) );
+
+		$group_id = $r['group_id'];
 	}
 
 	$group = new BP_Groups_Group( $group_id );
@@ -704,9 +713,9 @@ function groups_get_groups( $args = '' ) {
 		'exclude'            => false,          // Do not include these specific groups (group_ids).
 		'parent_id'          => null,           // Get groups that are children of the specified group(s).
 		'search_terms'       => false,          // Limit to groups that match these search terms.
-		'group_type'         => '',
-		'group_type__in'     => '',
-		'group_type__not_in' => '',
+		'group_type'         => '',             // Array or comma-separated list of group types to limit results to.
+		'group_type__in'     => '',             // Array or comma-separated list of group types to limit results to.
+		'group_type__not_in' => '',             // Array or comma-separated list of group types that will be excluded from results.
 		'meta_query'         => false,          // Filter by groupmeta. See WP_Meta_Query for syntax.
 		'show_hidden'        => false,          // Show hidden groups to non-admins.
 		'per_page'           => 20,             // The number of results to return per page.
@@ -715,7 +724,7 @@ function groups_get_groups( $args = '' ) {
 		'update_admin_cache' => false,
 	);
 
-	$r = wp_parse_args( $args, $defaults );
+	$r = bp_parse_args( $args, $defaults, 'groups_get_groups' );
 
 	$groups = BP_Groups_Group::get( array(
 		'type'               => $r['type'],
@@ -2386,7 +2395,7 @@ function bp_groups_get_group_type( $group_id, $single = true ) {
 	 *
 	 * @param string|array $type     Group type.
 	 * @param int          $group_id ID of the group.
-	 * @param bool         $single   Whether to return a single type srting, or an array.
+	 * @param bool         $single   Whether to return a single type string, or an array.
 	 */
 	return apply_filters( 'bp_groups_get_group_type', $type, $group_id, $single );
 }
@@ -2431,7 +2440,7 @@ function bp_groups_remove_group_type( $group_id, $group_type ) {
  * @since 2.6.0
  *
  * @param  int    $group_id   ID of the group.
- * @param  srting $group_type Group type.
+ * @param  string $group_type Group type.
  * @return bool   Whether the group has the give group type.
  */
 function bp_groups_has_group_type( $group_id, $group_type ) {

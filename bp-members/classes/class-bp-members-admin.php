@@ -1040,7 +1040,7 @@ class BP_Members_Admin {
 					/**
 					 * In configs where BuddyPress is not network activated,
 					 * regular admins cannot mark a user as a spammer on front
-					 * end. This prevent them to do it in backend.
+					 * end. This prevent them to do it in the back end.
 					 *
 					 * Also prevent admins from marking themselves or other
 					 * admins as spammers.
@@ -1306,7 +1306,7 @@ class BP_Members_Admin {
 	 * @since 2.1.0
 	 */
 	public function remove_edit_profile_url_filter() {
-		remove_filter( 'bp_members_edit_profile_url', array( $this, 'filter_adminbar_profile_link' ), 10, 3 );
+		remove_filter( 'bp_members_edit_profile_url', array( $this, 'filter_adminbar_profile_link' ), 10 );
 	}
 
 	/** Signups Management ****************************************************/
@@ -2243,7 +2243,7 @@ class BP_Members_Admin {
 	 * @return array $columns
 	 */
 	public function users_table_add_type_column( $columns = array() ) {
-		$columns[ bp_get_member_type_tax_name() ] = _x( 'Member Type', 'Label for the WP users table member type column' , 'buddypress' );
+		$columns[ bp_get_member_type_tax_name() ] = _x( 'Member Type', 'Label for the WP users table member type column', 'buddypress' );
 
 		return $columns;
 	}

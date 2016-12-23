@@ -1,9 +1,9 @@
 === BuddyPress ===
 Contributors: johnjamesjacoby, DJPaul, boonebgorges, r-a-y, imath, mercime, tw2113, dcavins, hnla
 Tags: social networking, activity, profiles, messaging, friends, groups, forums, notifications, settings, social, community, networks, networking
-Requires at least: 4.2
-Tested up to: 4.5.3
-Stable tag: 2.7.3
+Requires at least: 4.3
+Tested up to: 4.8
+Stable tag: 2.7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -19,7 +19,7 @@ Enable registered members to create profiles, have private conversations, make c
 
 = Extensions =
 
-BuddyPress has an ever-increasing array of extended features developed by an active and thriving plugin development community, with hundreds of free-and-open BuddyPress-compatible plugins available. We list them on both <a href="https://buddypress.org/extend/recommended-plugins/">our plugin directory</a> and <a href="https://wordpress.org/plugins/search.php?q=buddypress">WordPress.org</a>. Any plugin can be conveniently installed using the plugin installer in your WordPress Dashboard.
+BuddyPress has an ever-increasing array of extended features developed by an active and thriving plugin development community, with hundreds of free-and-open BuddyPress-compatible plugins available at <a href="https://wordpress.org/plugins/search.php?q=buddypress">WordPress.org</a>. Any plugin can be conveniently installed using the plugin installer in your WordPress Dashboard.
 
 = More Information =
 
@@ -81,8 +81,6 @@ Yes! If your WordPress installation has multisite enabled, BuddyPress will suppo
 
 Our community provides free support at <a href="https://buddypress.org/support/">https://buddypress.org/support/</a>.
 
-For dedicated consultations, see our <a href="https://buddypress.org/consulting/">unofficial list</a> of freelancers, contractors, and agencies offering BuddyPress services.
-
 = Where can I find documentation? =
 
 Our codex can be found at <a href="https://codex.buddypress.org/">https://codex.buddypress.org/</a>.
@@ -118,6 +116,16 @@ Please consider helping translate BuddyPress at our <a href="https://translate.w
 
 == Upgrade Notice ==
 
+= 2.7.2 =
+See: https://codex.buddypress.org/releases/version-2-7-2/
+
+= 2.7.1 =
+See: https://codex.buddypress.org/releases/version-2-7-1/
+
+= 2.7.0 =
+
+See: https://codex.buddypress.org/releases/version-2-7-0/
+
 = 2.6.2 =
 See: https://codex.buddypress.org/releases/version-2-6-2/
 
@@ -131,6 +139,15 @@ See: https://codex.buddypress.org/releases/version-2-6-1/
 See: https://codex.buddypress.org/releases/version-2-6-0/
 
 == Changelog ==
+
+= 2.7.2 =
+See: https://codex.buddypress.org/releases/version-2-7-2/
+
+= 2.7.1 =
+See: https://codex.buddypress.org/releases/version-2-7-1/
+
+= 2.7.0 =
+See: https://codex.buddypress.org/releases/version-2-7-0/
 
 = 2.6.2 =
 See: https://codex.buddypress.org/releases/version-2-6-2/

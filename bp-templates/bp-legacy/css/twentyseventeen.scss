@@ -9,22 +9,25 @@
 // We follow the dictats of the parent theme in respect of media queries,
 // font sizing etc. Media queries are used in a modular sense (OOCSS)
 // rather than described as blocks to the end of the sheet, this aids ease
-// of managing media queries, scalability & flexibility .
+// of managing media queries, scalability & flexibility.
 
-// 2016 Media Queries / Breakpoints.
-// @media screen and (min-width: 44.375em)
-// @media screen and (min-width: 61.5625em)
-// @media screen and (min-width: 75em)
+// 2017 Media Queries / Breakpoints.
+$small-up-2017:      "min-width: 30em";
+$med-small-up-2017:  "min-width: 48em";
+$medium-up-2017:     "min-width: 55em";
+$large-up-2017:      "min-width: 67em";
+$x-large-up-2017:    "min-width: 79em";
 
 
 // In addition BP will use the em breakpoints as  referenced below to provide
-// a series of finer breakpoints, these are be used sparingly though.
-// @media screen and (max-width: 22em) // Additional for xtra small mobile only
-// @media screen and (max-width: 30em) // Additional small only
-// @media screen and (min-width: 38.75em)
-// @media screen and (min-width: 46.25em)
-// @media screen and (min-width: 55em)
-// @media screen and (min-width: 87.6875em)
+// a series of finer breakpoints for max widths, to allow fine adjustments;
+// For main structural elements we use the themes values, only using bp breakpoints
+// to manage granular elements in loops etc.
+
+$x-small-only-bp: "max-width: 22em"; // for xtra small mobile only
+$small-only-bp:   "max-width: 38.75em"; //  small only
+$small-up-bp:     "min-width: 38.75em"; //  small only
+$med-only-bp:     "max-width: 46.25em"; // med small only
 
 // Mixins and Variables
 
@@ -35,24 +38,59 @@
 // }
 //
 
+@mixin x-small-only {
+	@media screen and ($x-small-only-bp){
+		@content;
+	}
+}
+
+@mixin small-only {
+	@media screen and ($small-only-bp){
+		@content;
+	}
+}
+
+@mixin medium-only-bp {
+	@media screen and ($med-only-bp){
+		@content;
+	}
+}
+
+@mixin small-up-bp {
+	@media screen and ($small-up-bp){
+		@content;
+	}
+}
+
 @mixin small-up {
-	@media screen and (min-width: 44.375em) {
+	@media screen and ($small-up-2017){
+		@content;
+	}
+}
+
+@mixin med-small-up {
+	@media screen and ($med-small-up-2017) {
 		@content;
 	}
 }
 
 @mixin medium-up {
-	@media screen and (min-width: 61.5625em) {
+	@media screen and ($medium-up-2017) {
 		@content;
 	}
 }
 
 @mixin large-up {
-	@media screen and (min-width: 75em) {
+	@media screen and ($large-up-2017) {
 		@content;
 	}
 }
 
+@mixin x-large-up {
+	@media screen and ($x-large-up-2017) {
+		@content;
+	}
+}
 
 // Common spacing values
 $spacing-val-lg: 40px;
@@ -61,7 +99,7 @@ $spacing-val-sm: 10px;
 $spacing-val-xs: 5px;
 
 // A simple mixin to handle font-sizing
-// 2016 uses a basic pixel font size approach, we'll stick with rem/px
+// 2017 uses a basic pixel font size approach, we'll stick with rem/px
 @mixin font-size($font-size: 16) {
 	$rem-font-value: ($font-size / 16);
 	font-size: ($font-size * 1px);
@@ -148,9 +186,9 @@ $spacing-val-xs: 5px;
 	color: $text-color;
 }
 
-// 2016 font family
+// 2017 font family
 @mixin default-font-sans() {
-	font-family: "Source Sans Pro", Helvetica, sans-serif;
+	font-family: "Libre Franklin", "Helvetica Neue", helvetica, arial, sans-serif;
 }
 
 // Variables: color definitions
@@ -164,7 +202,7 @@ $dark-background:    #555;
 $border-color:       #d4d0ba;    // border color is varied using rgba
 $border-light:       #eaeaea; // BP dividers
 $border-med:         #ddd;
-$background-hover:   #db572f; // 2016 link background hover
+$background-hover:   #db572f; // 2017 link background hover
 $bp-button-hover:    #ededed; // this is the default BP button hover background
 $notice-error:       #c85a6e;
 $notice-warning:     #d05656;
@@ -172,16 +210,16 @@ $notice-info:        #9fd1e2;
 $notice-update:      #ced98c;
 $stripe-odd:         #ebf0ff;
 $stripe-even:        #dbe5ff;
-$unread:             #dce5ff;
+$unread:             #eee;
 $link-action:        #c82b2b;
 /*--------------------------------------------------------------
 
 This is the BuddyPress companion stylesheet for
-the WordPress Twentysixteen theme.
+the WordPress twentyseventeen theme.
 
 This sheet supports the primary BuddyPress styles in buddypress.css
 
-If you are running as a child theme of twentysixteen this stylesheet will be
+If you are running as a child theme of twentyseventeen this stylesheet will be
 loaded by default. If you want to modify the styles the normal BP Theme Compat
 hierarchy works and you can copy the file to buddypress/css/ or community/css/
 in your child themes root & either start over or modify the rulesets.
@@ -235,32 +273,6 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 *-------------------------------------------------------------------------------
 */
 
-// A conflict between BP's body.no-js being removed only
-// when the DOM is fully loaded & Twentysixteens hardcoded
-// class on the html el & scripting in head at start of DOM
-// causes mobile menu to stay opened too long.
-// This ruleset hides menu if html.js (2016 JS has kicked in) but BP still
-// rendering body.no-js before it's own JS removal kicks in.
-// See trac ticket https://buddypress.trac.wordpress.org/ticket/7314
-
-/**
-* Corrective measure to deal with 2016 / BP handling of no-js
-* classes - hide menu if BP still showing 'no-js'.
-*/
-
-@media screen and (max-width: 905px) {
-
-	html.js {
-
-		body.no-js {
-
-			.site-header-menu {
-				display: none;
-			}
-		}
-	}
-}
-
 .buddypress {
 	// Remove any empty clearing elements, CSS provides clearing.
 	div.clear {display: none;}
@@ -279,44 +291,73 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 		}
 	}
 
-	// The breakpoint for main & sidebar could cut in earlier, elements wrap to blocks/columns
-	// but margins & padding still in effect for sidebar style.css L:2781.
+} // close .buddypress
 
-	@include small-up {
-		#primary {
-			float: none;
-			margin: 0;
-			width: auto;
+	// reduce the overlarge entry title margins
+@include medium-up {
 
-			.entry-header {
-				margin: 0;
-			}
+	.buddypress.bp-user.page,
+	.buddypress.single-item.groups,
+	.buddypress.groups.group-create,
+	.directory.buddypress.page-one-column {
 
-			.entry-content,
-			.content-bottom-widgets {
-				margin-left: 7.6923%;
-				margin-right: 7.6923%;
-			}
+		.site-content {
+			padding-top: $spacing-val-lg;
 		}
 
-		.sidebar {
-			float: none;
-			margin-left: 0;
-			padding: 0 7.6923%;
-			width: auto;
+		.entry-header {
+			margin: $spacing-val-sm 0;
+		}
+	}
+}
+// 2017 has very small page entry title headings
+// enlarge slightly for BP screens.
+.buddypress {
+	article.page {
+		.entry-header {
+			.entry-title {
+				@include font-size(22);
+
+				@include medium-up {
+					@include font-size(28);
+				}
+			}
+		}
+	}
+}
+
+// Open up the content width areas for BP screens to allow max widths.
+// This takes into account the ability to add/remove sidebars in 2017.
+// Only effect changes based on breakpoints.
+
+@include medium-up {
+
+	body.buddypress.page.page-two-column {
+
+		#primary {
+
+			.entry-header {
+				width: 20%;
+			}
+
+			.entry-content {
+				width: 80%;
+			}
 		}
 	}
 
-	@include medium-up {
-		#primary {
-			float: left;
-			margin-right: -100%;
-			width: 70%;
+	body.buddypress:not(.has-sidebar),
+	body.buddypress:not(.page-two-column) {
+
+		#primary.content-area {
+			max-width: 100%;
+			width: 100%;
 
 			.entry-content,
 			.content-bottom-widgets {
 				margin-left: 0;
 				margin-right: 0;
+//				width: auto;
 			}
 		}
 
@@ -327,21 +368,7 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 			width: 25%;
 		}
 
-	}
-
-} // .buddypress (body class)
-
-// 2016 defines the class 'no-sidebar' if the primary sidebar is empty/inactive in terms
-// of widgets; if this is in effect on a site then adjust the BP screens for full width.
-
-.buddypress.no-sidebar {
-
-	#primary {
-		float: none;
-		margin: 0;
-		width: auto;
-	}
-
+	} // body.buddypress
 }
 
 /**
@@ -349,8 +376,6 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 * @section 2.0 - Navigation - General
 *-------------------------------------------------------------------------------
 */
-
-
 
 /**
 *----------------------------------------------------------
@@ -367,8 +392,11 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 
 	// active/current states all navs
 	div.item-list-tabs {
+
 		ul {
+
 			li.selected {
+
 				a {
 					background: inherit;
 					opacity: 1;
@@ -376,16 +404,19 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 			}
 		}
 	}
+
 	// global nav styles
 	div.item-list-tabs {
+
 		ul {
-			background-color: $cream-background;
+			background-color: $off-white;
 			border-bottom: 1px solid rgba($border-light, 0.9);
 			border-top: 1px solid rgba($border-light, 0.9);
 			overflow: hidden;
 			padding: 0;
 
 			li {
+
 				a {
 					color: #0073c1;
 
@@ -403,10 +434,10 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 
 	#buddypress {
 
-		@media screen and (max-width: 38.75em) {
+		@include small-only {
 
 			#object-nav {
-				background: $cream-background;
+				background: $off-white;
 				border: 1px solid $border-light;
 				overflow: visible;
 				padding: $spacing-val-sm;
@@ -458,7 +489,8 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 				float: none;
 			}
 
-			@media screen and (max-width: 38.75em) {
+			@include small-only {
+
 				li:not(:last-child) {
 					border-bottom: 1px solid $border-light;
 				}
@@ -466,7 +498,8 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 
 			li:not(.selected) {
 
-				@media screen and (max-width: 38.75em) {
+				@include small-only {
+
 					&:focus,
 					&:hover {
 						background: darken($cream-background, 2%);
@@ -474,7 +507,7 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 				}
 			}
 
-			@media screen and (min-width: 38.75em) {
+			@include small-up-bp {
 				li {
 					float: left;
 				}
@@ -504,6 +537,10 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 					outline: 0;
 				}
 
+				label {
+					display: inline;
+				}
+
 				select,
 				label,
 				option {
@@ -512,10 +549,11 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 
 				select {
 					font-style: italic;
+					height: auto;
 				}
 			}
 
-			@media screen and (min-width: 38.75em) {
+			@include small-up-bp {
 				li.last {
 					text-align: right;
 				}
@@ -530,12 +568,13 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 
 // This block contains rules to re-factor the item-body structural element
 // to sit alongside the vert menu
-// 2016 right sidebar is displayed if the widget sidebar has widgets;
+// 2017 right sidebar is displayed if the widget sidebar has widgets;
 // we'll only display object nav as a vert menu if sidebar not present.
 
-@media screen and (min-width: 55em) {
+@include medium-up {
 
 	body.no-sidebar {
+
 		#buddypress {
 
 			#item-header,
@@ -589,8 +628,10 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 // Tabbed Nav styling
 // Primarilly used for group create screens & ? directory nav.
 
-@media screen and (min-width: 46.25em) {
+@include med-small-up {
+
 	#main {
+
 		#buddypress {
 
 			#group-create-tabs.item-list-tabs {
@@ -654,6 +695,7 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 
 	div.pagination {
 		box-shadow: none;
+		font-weight: 400;
 		min-height: 0;
 
 		&:before,
@@ -701,9 +743,11 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 *-------------------------------------------------------------------------------
 */
 
-// Adjusts Meta items and various elements to match 2016 font-family
+// Adjusts Meta items and various elements to match 2017 font-family
 #buddypress {
+
 	.item-list {
+
 		.activity-header,
 		.activity-meta {
 			@include default-font-sans();
@@ -712,8 +756,11 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 }
 
 #buddypress {
+
 	.activity-meta {
+
 		.button {
+
 			&:focus,
 			&:hover {
 				background: inherit;
@@ -741,10 +788,12 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 // This block:
 // * Manages li items, Stacks them small screen, floated left at wider screens.
 // * Adjusts display of action buttons at small screen mobile up.
-// Adjusts Meta items to match 2016 font-family
+// Adjusts Meta items to match 2017 font-family
 
 #buddypress {
+
 	ul.item-list {
+
 		li {
 			overflow: hidden !important;
 
@@ -752,7 +801,7 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 			.item-avatar {
 				margin-bottom: $spacing-val-sm;
 
-				@media screen and (min-width: 38.75em) {
+				@include small-up-bp {
 					margin-bottom: 0;
 				}
 
@@ -776,7 +825,7 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 			.item {
 				overflow: hidden;
 
-				@media screen and (min-width: 46.25em) {
+				@include med-small-up {
 					margin-left: 15%;
 				}
 
@@ -816,6 +865,7 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 			}
 
 			@include medium-up {
+
 				.item-avatar,
 				.item,
 				.action {
@@ -865,9 +915,9 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 						width: 100%;
 					}
 					// Provisionally lets keep the 'action' div
-					//position but inline-block the buttons
+					// position but inline-block the buttons
 
-					@media screen and (min-width: 38.75em) {
+					@include med-small-up {
 						// keep buttons to a row small tablet up
 						margin: 0 $spacing-val-sm $spacing-val-sm 0;
 						width: auto;
@@ -914,7 +964,8 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 
 		// corrective measure for clipped elements due to JS inline styling
 
-		@media screen and (max-width: 46.25em) {
+		@include medium-only-bp {
+
 			#whats-new-content {
 				clear: left;
 				margin: $spacing-val-sm 0 $spacing-val-md;
@@ -923,7 +974,9 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 		}
 
 		#whats-new-content.active {
+
 			#whats-new-options[style] {
+
 				#whats-new-post-in-box {
 					border: 1px solid rgba($border-color, 0.5);
 					float: left;
@@ -942,7 +995,7 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 					}
 				}
 
-				@media screen and (min-width: 30em) {
+				@include small-up {
 					#whats-new-post-in-box {
 						width: auto;
 					}
@@ -1010,7 +1063,7 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 				}
 			}
 
-			@media screen and (min-width: 46.25em) {
+			@include med-small-up {
 
 				.activity-avatar {
 					float: left;
@@ -1033,6 +1086,7 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 		} // close li
 
 		li.mini {
+
 			.activity-avatar {
 				a {
 					img.avatar {
@@ -1044,6 +1098,7 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 			}
 
 			.activity-content {
+
 				.activity-header {
 					@include font-size(14);
 				}
@@ -1076,7 +1131,7 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 					display: block;
 					margin-bottom: $spacing-val-xs;
 
-					@media screen and (min-width: 38.75em) {
+					@include small-up-bp {
 						display: inline-block;
 						margin-bottom: 0;
 					}
@@ -1109,6 +1164,7 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 
 .activity-permalink {
 	#buddypress {
+
 		#activity-stream {
 
 			li.activity-item {
@@ -1118,7 +1174,7 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 			li.mini {
 				.activity-header {
 					@include font-size(16);
-					@media screen and (min-width: 46.25em) {
+					@include med-small-up {
 						@include font-size(20);
 					}
 
@@ -1138,6 +1194,7 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 #buddypress {
 
 	#activity-stream {
+
 		.activity-comments {
 			border-left: 1px solid $border-light;
 			margin-top: 5px;
@@ -1195,6 +1252,7 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 */
 
 #buddypress {
+
 	#members-list {
 
 		@include medium-up {
@@ -1226,6 +1284,7 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 */
 
 #buddypress {
+
 	#signup_form.standard-form {
 
 		#profile-details-section,
@@ -1234,12 +1293,12 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 			float: none;
 			width: 100%;
 
-			@media screen and (min-width: 38.75em) {
+			@include small-up-bp {
 				width: 48%;
 			}
 		}
 
-		@media screen and (min-width: 38.75em) {
+		@include small-up {
 			#profile-details-section {float: right;}
 			#basic-details-section {float: left;}
 		}
@@ -1262,8 +1321,11 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 
 .bp-user,
 .single-item.groups {
+
 	#buddypress {
+
 		#item-header-content {
+
 			#item-meta {
 				@include font-size(14);
 				text-align: left;
@@ -1273,7 +1335,8 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 		}
 	}
 
-	@media screen and (max-width: 46.25em) {
+	@include medium-only-bp {
+
 		main {
 			header.entry-header {
 				padding-bottom: 1rem;
@@ -1281,7 +1344,8 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 		}
 	}
 
-	@media screen and (max-width: 38.75em) {
+	@include small-only {
+
 		h1,
 		#item-header-content {
 			text-align: center;
@@ -1289,8 +1353,11 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 	}
 
 	#buddypress {
-		@media screen and (max-width: 46.25em) {
+
+		@include medium-only-bp {
+
 			#item-header {
+
 				.generic-button {
 					float: none;
 					margin: 1.5em 0 0 0;
@@ -1298,7 +1365,8 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 			}
 		}
 
-		@media screen and (max-width: 38.75em) {
+		@include small-only {
+
 			h1 {
 				margin-bottom: 0;
 			}
@@ -1325,8 +1393,10 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 */
 
 .single-item.groups {
+
 	#buddypress {
-		@media screen and (max-width: 46.25em) {
+
+		@include medium-only-bp {
 			#item-header {
 				#item-meta {
 					margin-bottom: $spacing-val-md;
@@ -1336,7 +1406,8 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 
 		// Move visual flow of avatar & item-actions at narrow width,
 		// avatar first after group title
-		@media screen and (max-width: 38.75em) {
+		@include small-only {
+
 			div#item-header {
 				display: flex;
 				flex-direction: column;
@@ -1377,7 +1448,7 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 				margin: 0;
 				width: 100%;
 
-				@media screen and (min-width: 38.75em) {
+				@include small-up-bp {
 					border-left: 1px solid $border-light;
 					clear: none;
 					float: right;
@@ -1385,7 +1456,7 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 					width: 30%;
 				} // close @media
 
-				@media screen and (min-width: 46.25em) {
+				@include med-small-up {
 					width: 40%;
 				}
 
@@ -1397,7 +1468,7 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 				h2 {
 					@include font-size(14);
 
-					@media screen and (min-width: 46.25em) {
+					@include med-small-up {
 						@include font-size(16);
 					}
 
@@ -1405,7 +1476,7 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 				}
 			} // close item-actions
 
-			@media screen and (min-width: 46.25em) {
+			@include med-small-up {
 
 				#item-header-avatar,
 				#item-header-content {
@@ -1442,6 +1513,7 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 
 .bp-user {
 	#buddypress {
+
 		#item-header {
 			padding: $spacing-val-md 0;
 
@@ -1450,6 +1522,7 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 				width: 100%;
 
 				img.avatar,
+
 				a {
 					border-bottom: 0;
 					display: inline-block;
@@ -1457,7 +1530,8 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 				}
 			}
 
-			@media screen and (min-width: 46.25em) {
+			@include med-small-up {
+
 				#item-header-avatar {
 					float: left;
 					width: 20%;
@@ -1502,7 +1576,9 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 
 // headings settings screens & general global settings styles
 .groups {
+
 	#group-settings-form {
+
 		h3 {
 			background: $dark-background;
 			color: $content-background;
@@ -1512,6 +1588,7 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 }
 
 .groups.edit-details {
+
 	#group-settings-form {
 
 		label {
@@ -1536,6 +1613,7 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 } // close .groups.edit-details
 
 .groups.group-settings {
+
 	#group-settings-form {
 
 		div.radio label {
@@ -1560,8 +1638,11 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 }
 
 .groups.manage-members {
+
 	#group-settings-form {
+
 		.item-list {
+
 			li {
 				border-bottom: 1px solid $border-light;
 
@@ -1606,9 +1687,10 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 
 // Massage the members search for groups nav specifically.
 .groups.group-members {
+
 	#subnav {
 		li {
-			@media screen and (max-width: 38.75em) {
+			@include small-only {
 				background: $content-background;
 				padding: $spacing-val-md 0;
 			}
@@ -1618,7 +1700,7 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 			#search-members-form {
 				float: right;
 
-				@media screen and (max-width: 38.75em) {
+				@include small-only {
 					margin: 0;
 					width: 100%;
 
@@ -1642,7 +1724,10 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 */
 
 .bp-user {
-	.entry-title {margin-bottom: 0.5em;}
+
+	.entry-title {
+		margin-bottom: 0.5em;
+	}
 }
 
 /**
@@ -1655,18 +1740,39 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 	#buddypress {
 
 		table {
-			th {@include font-size(14)}
-			td {@include font-size(12)}
-			a { color: #0074c2; }
+
+			th {
+				@include font-size(14)
+			}
+
+			td {
+				@include font-size(12)
+			}
+
+			a {
+				color: #0074c2;
+			}
 
 			@include medium-up {
-				th {@include font-size(16)}
-				td {@include font-size(14)}
+
+				th {
+					@include font-size(16)
+				}
+
+				td {
+					@include font-size(14)
+				}
 			}
 
 			@include large-up {
-				th {@include font-size(18)}
-				td {@include font-size(16)}
+
+				th {
+					@include font-size(18)
+				}
+
+				td {
+					@include font-size(16)
+				}
 			}
 		}
 
@@ -1677,8 +1783,12 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 			float: left;
 			width: 100%;
 
-			@media screen and (min-width: 38.75em) {
+			@include small-up-bp {
 				width: 300px;
+			}
+
+			select {
+				height: auto;
 			}
 
 			select,
@@ -1720,10 +1830,10 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 		.profile {
 			.bp-widget {
 				h2 {
-					background: lighten($dark-background, 10%);
+					background: lighten($dark-background, 15%);
 					color: #fff;
-					margin-bottom: 0;
-					padding: 0.4em;
+					margin: $spacing-val-lg 0 $spacing-val-sm;
+					padding: 0.1em 0 0.1em 0.4em;
 				}
 
 				table {margin-top: 0;}
@@ -1848,7 +1958,7 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 					float: none;
 				}
 
-				@media screen and (min-width: 46.25em) {
+				@include med-small-up {
 					img.avatar {
 						float: left;
 					}
@@ -1921,7 +2031,7 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 				td.thread-from {
 					height: 3em;
 
-					@media screen and (max-width: 38.75em) {
+					@include small-only {
 						height: 5.2em;
 					}
 				}
@@ -1938,7 +2048,7 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 					width: 100%;
 
 					a::after {
-						content: " \2016 \00a0"attr(title);
+						content: " \2017 \00a0"attr(title);
 						@include font-size(12);
 					}
 				}
@@ -1961,7 +2071,7 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 					float: right;
 					line-height: 2;
 
-					@media screen and (max-width: 38.75em) {
+					@include small-only {
 						clear: both;
 						@include font-size(11);
 						width: 100%;
@@ -1991,6 +2101,12 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 			td.thread-star {
 				border-right: 0;
 				width: 30px;
+			}
+		}
+
+		.messages-options-nav {
+			select {
+				height: auto;
 			}
 		}
 
@@ -2130,11 +2246,13 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 		}
 
 		table.notification-settings {
+
 			td.yes,
 			td.no {
 				vertical-align: middle;
 			}
 		}
+
 		// Profile table td widths
 		table.profile-settings {
 			width: 100%;
@@ -2144,7 +2262,8 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 				width: 50%;
 			}
 
-			@media screen and (min-width: 46.25em) {
+			@include med-small-up {
+
 				th.field-group-name,
 				td.field-name {
 					width: 70%;
@@ -2157,7 +2276,10 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 			}
 
 			td.field-visibility {
-				select {width: 100%;}
+
+				select {
+					width: 100%;
+				}
 			}
 		}
 
@@ -2190,7 +2312,7 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 
 #buddypress {
 
-	// Match BP form elements to Themes(2016) styling where styles
+	// Match BP form elements to Themes(2017) styling where styles
 	// are not inherited or being overriden.
 	div.activity-comments {
 
@@ -2205,6 +2327,11 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 				}
 			}
 		}
+	}
+
+	// 2017 sets large height on selects lets try to manage that
+	select {
+		height: auto;
 	}
 
 	.standard-form {
@@ -2244,7 +2371,7 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 		margin: $spacing-val-sm 0;
 
 		// Stylise the seach form elements, in part this deals with padding
-		// issues on the submit & sizing issues between bp styles & 2016
+		// issues on the submit & sizing issues between bp styles & 2017
 
 		form { // *sigh* only to bludgeon over specified rules
 			border: 1px solid rgba($border-color, 0.6);
@@ -2252,13 +2379,13 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 
 			label {
 				float: left;
-				width: 70%;
+				margin: 0;
 			}
 
 			input[type='text'] {
 				float: left;
 				margin: 0;
-				width: 100%;
+				width: 70%;
 			}
 
 			input[type='text'],
@@ -2287,7 +2414,7 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 
 	// Shift the search parent to the right and allow to shrinkwrap
 
-	@media screen and (min-width: 38.75em) {
+	@include small-up {
 		div.dir-search,
 		div.message-search,
 		li.groups-members-search {
@@ -2309,10 +2436,18 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 	@include large-up {
 
 		.dir-search,
+
 		.message-search {
+
 			form {
-				input[type='text'] { @include font-size(16) ;}
-				input[type='submit'] { @include font-size(16) ;}
+
+				input[type='text'] {
+					@include font-size(16) ;
+				}
+
+				input[type='submit'] {
+					@include font-size(16) ;
+				}
 			}
 		}
 	}
@@ -2329,7 +2464,9 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 // This approach will require refinement and perhaps re-location to
 // a more general typography section to manage BP elements grouped under
 // breakpoints. Provide top/bottom margins for tables, lacking in BP styles
+
 #buddypress {
+
 	table {
 		@include font-size(14);
 		margin: $spacing-val-md 0;
@@ -2341,11 +2478,15 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 		}
 
 		// Reduce the themes inherited paragraph margins in tables
-		p {margin-bottom: 0.5em;}
+		p {
+			margin-bottom: 0.5em;
+		}
 	}
 
-	@media screen and (min-width: 55em) {
-		table {@include font-size(16);}
+	@include medium-up {
+		table {
+			@include font-size(16);
+		}
 	}
 }
 
@@ -2356,6 +2497,7 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 	// Manage some table cells widths that are disproportionate to their content
 	.notifications,
 	.messages-notices {
+
 		th {
 			width: 30%;
 
@@ -2384,6 +2526,7 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 		// Notices action buttons, this maybe better moved, temp for now to address
 		// styling issues - this will need styling ideas
 		td {
+
 			.button {
 				border: 0;
 				display: block;
@@ -2406,19 +2549,23 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 // to background color darker by 50%
 
 #buddypress {
+
 	div#message {
+
 		p {
 			@include font-size(18);
 			font-weight: bold;
 		}
 
 		&.info {
+
 			p {
 				@include message-box($notice-info);
 			}
 		}
 
 		&.updated {
+
 			p {
 				@include message-box($notice-update);
 			}
@@ -2428,12 +2575,16 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 
 } // close  #buddypress
 
-// Without direct classes on our mesages ( 'warning' )
+// Without direct classes on our mesages ( 'warning')
 // we need to use the body classes
 // todo: If this is class .warning is included in main BP styles remove from here
+
 .delete-group {
+
 	#buddypress {
+
 		div#message.info {
+
 			p {
 				@include message-box($notice-warning);
 			}

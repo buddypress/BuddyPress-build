@@ -575,6 +575,13 @@ function bp_group_class( $classes = array() ) {
 		// Group type - public, private, hidden.
 		$classes[] = sanitize_key( $groups_template->group->status );
 
+		// Add current group types.
+		if ( $group_types = bp_groups_get_group_type( bp_get_group_id(), false ) ) {
+			foreach ( $group_types as $group_type ) {
+				$classes[] = sprintf( 'group-type-%s', esc_attr( $group_type ) );
+			}
+		}
+
 		// User's group role.
 		if ( bp_is_user_active() ) {
 
@@ -992,7 +999,7 @@ function bp_group_permalink( $group = null ) {
 		 * @param string $value Permalink for the current group in the loop.
 		 * @param object $group Group object.
 		 */
-		return apply_filters( 'bp_get_group_permalink', trailingslashit( bp_get_groups_directory_permalink() . $group->slug . '/' ), $group );
+		return apply_filters( 'bp_get_group_permalink', trailingslashit( bp_get_groups_directory_permalink() . bp_get_group_slug( $group ) . '/' ), $group );
 	}
 
 /**
@@ -2830,7 +2837,7 @@ function bp_group_admin_tabs( $group = false ) {
 
 	bp_get_options_nav( $group->slug . '_manage' );
 
-	remove_filter( "bp_get_options_nav_{$css_id}", 'bp_group_admin_tabs_backcompat', 10, 3 );
+	remove_filter( "bp_get_options_nav_{$css_id}", 'bp_group_admin_tabs_backcompat', 10 );
 }
 
 /**
@@ -4792,7 +4799,7 @@ function bp_new_group_id() {
 		 *
 		 * @param int $new_group_id ID of the new group.
 		 */
-		return apply_filters( 'bp_get_new_group_id', $new_group_id );
+		return (int) apply_filters( 'bp_get_new_group_id', $new_group_id );
 	}
 
 /**
