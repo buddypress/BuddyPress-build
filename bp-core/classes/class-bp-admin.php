@@ -117,10 +117,6 @@ class BP_Admin {
 	 * @since 1.6.0
 	 */
 	private function includes() {
-		if ( ! buddypress()->do_autoload ) {
-			require( $this->admin_dir . 'bp-core-admin-classes.php'    );
-		}
-
 		require( $this->admin_dir . 'bp-core-admin-actions.php'    );
 		require( $this->admin_dir . 'bp-core-admin-settings.php'   );
 		require( $this->admin_dir . 'bp-core-admin-functions.php'  );
@@ -550,11 +546,6 @@ class BP_Admin {
 	 * @since 1.7.0
 	 */
 	public function about_screen() {
-		$embedded_activity = '';
-
-		if ( version_compare( $GLOBALS['wp_version'], '4.5', '>=' ) ) {
-			$embedded_activity = wp_oembed_get( 'https://buddypress.org/members/djpaul/activity/573821/' );
-		}
 	?>
 
 		<div class="wrap about-wrap">
@@ -783,10 +774,10 @@ class BP_Admin {
 
 			<h3 class="wp-people-group"><?php _e( 'BuddyPress Team', 'buddypress' ); ?></h3>
 			<ul class="wp-people-group " id="wp-people-group-core-team">
-				<li class="wp-person" id="wp-person-mercime">
-					<a class="web" href="https://profiles.wordpress.org/mercime"><img alt="" class="gravatar" src="//www.gravatar.com/avatar/fae451be6708241627983570a1a1817a?s=60">
-					Mercime</a>
-					<span class="title"><?php _e( '2.7 Release Lead', 'buddypress' ); ?></span>
+				<li class="wp-person" id="wp-person-slaffik">
+					<a class="web" href="https://profiles.wordpress.org/r-a-y"><img alt="" class="gravatar" src="//www.gravatar.com/avatar/61fb07ede3247b63f19015f200b3eb2c?s=60">
+					Slava Abakumov</a>
+					<span class="title"><?php _e( '2.8 Release Lead', 'buddypress' ); ?></span>
 				</li>
 				<li class="wp-person" id="wp-person-r-a-y">
 					<a class="web" href="https://profiles.wordpress.org/r-a-y"><img alt="" class="gravatar" src="//www.gravatar.com/avatar/3bfa556a62b5bfac1012b6ba5f42ebfa?s=60">
@@ -797,6 +788,11 @@ class BP_Admin {
 					<a class="web" href="https://profiles.wordpress.org/imath"><img alt="" class="gravatar" src="//www.gravatar.com/avatar/8b208ca408dad63888253ee1800d6a03?s=60">
 					Mathieu Viet</a>
 					<span class="title"><?php _e( 'Core Developer', 'buddypress' ); ?></span>
+				</li>
+				<li class="wp-person" id="wp-person-mercime">
+					<a class="web" href="https://profiles.wordpress.org/mercime"><img alt="" class="gravatar" src="//www.gravatar.com/avatar/fae451be6708241627983570a1a1817a?s=60">
+					Mercime</a>
+					<span class="title"><?php _e( 'Navigator', 'buddypress' ); ?></span>
 				</li>
 				<li class="wp-person" id="wp-person-dcavins">
 					<a class="web" href="https://profiles.wordpress.org/dcavins"><img alt="" class="gravatar" src="//www.gravatar.com/avatar/a5fa7e83d59cb45ebb616235a176595a?s=60">
@@ -828,21 +824,24 @@ class BP_Admin {
 					shanebp</a>
 					<span class="title"><?php _e( 'Community Support', 'buddypress' ); ?></span>
 				</li>
+
+				<li class="wp-person" id="wp-person-offereins">
+					<a class="web" href="https://profiles.wordpress.org/Offereins"><img alt="" class="gravatar" src="//www.gravatar.com/avatar/2404ed0a35bb41aedefd42b0a7be61c1?s=60">
+					Laurens Offereins</a>
+					<span class="title"><?php _e( 'Core Developer', 'buddypress' ); ?></span>
+				</li>
+				<li class="wp-person" id="wp-person-netweb">
+					<a class="web" href="https://profiles.wordpress.org/netweb"><img alt="" class="gravatar" src="//www.gravatar.com/avatar/97e1620b501da675315ba7cfb740e80f?s=60">
+					Stephen Edgar</a>
+					<span class="title"><?php _e( 'Core Developer', 'buddypress' ); ?></span>
+				</li>
 			</ul>
 
 			<h3 class="wp-people-group"><?php _e( '&#x1f31f;Recent Rockstars&#x1f31f;', 'buddypress' ); ?></h3>
 			<ul class="wp-people-group " id="wp-people-group-rockstars">
-				<li class="wp-person" id="wp-person-netweb">
-					<a class="web" href="https://profiles.wordpress.org/netweb"><img alt="" class="gravatar" src="//www.gravatar.com/avatar/97e1620b501da675315ba7cfb740e80f?s=60">
-					Stephen Edgar</a>
-				</li>
 				<li class="wp-person" id="wp-person-dimensionmedia">
 					<a class="web" href="https://profiles.wordpress.org/dimensionmedia"><img alt="" class="gravatar" src="//www.gravatar.com/avatar/7735aada1ec39d0c1118bd92ed4551f1?s=60">
 					David Bisset</a>
-				</li>
-				<li class="wp-person" id="wp-person-offereins">
-					<a class="web" href="https://profiles.wordpress.org/Offereins"><img alt="" class="gravatar" src="//www.gravatar.com/avatar/2404ed0a35bb41aedefd42b0a7be61c1?s=60">
-					Laurens Offereins</a>
 				</li>
 				<li class="wp-person" id="wp-person-garrett-eclipse">
 					<a class="web" href="https://profiles.wordpress.org/garrett-eclipse"><img alt="" class="gravatar" src="//www.gravatar.com/avatar/7f68f24441c61514d5d0e1451bb5bc9d?s=60">
@@ -856,51 +855,48 @@ class BP_Admin {
 					<a class="web" href="https://profiles.wordpress.org/ramiy"><img alt="" class="gravatar" src="//www.gravatar.com/avatar/ce2a269e424156d79cb0c4e1d4d82db1?s=60">
 					Rami Yushuvaev</a>
 				</li>
-				<li class="wp-person" id="wp-person-slaffik">
-					<a class="web" href="https://profiles.wordpress.org/slaffik/"><img alt="" class="gravatar" src="//www.gravatar.com/avatar/61fb07ede3247b63f19015f200b3eb2c?s=60">
-					Slava Abakumov</a>
-				</li>
 			</ul>
 
 			<h3 class="wp-people-group"><?php printf( esc_html__( 'Contributors to BuddyPress %s', 'buddypress' ), self::display_version() ); ?></h3>
 			<p class="wp-credits-list">
-				<a href="https://profiles.wordpress.org/jorbin/">Aaron Jorbin (jorbin)</a>,
-				<a href="https://profiles.wordpress.org/abwebstudio1/">abwebstudio1</a>,
+				<a href="https://profiles.wordpress.org/angeljs/">angeljs</a>,
 				<a href="https://profiles.wordpress.org/boonebgorges/">Boone B Gorges (boonebgorges)</a>,
-				<a href="https://profiles.wordpress.org/sbrajesh/">Brajesh Singh (sbrajesh)</a>,
-				<a href="https://profiles.wordpress.org/needle/">Christian Wach (needle)</a>,
+				<a href="https://profiles.wordpress.org/bhargavbhandari90/">Bunty (bhargavbhandari90)</a>,
+				<a href="https://profiles.wordpress.org/ketuchetan/">chetansatasiya (ketuchetan)</a>,
+				<a href="https://profiles.wordpress.org/chiragpatel/">Chirag Patel (chiragpatel)</a>,
 				<a href="https://profiles.wordpress.org/danbp/">danbp</a>,
-				<a href="https://profiles.wordpress.org/danielhuesken/">Daniel Hüsken (danielhuesken)</a>,
 				<a href="https://profiles.wordpress.org/dcavins/">David Cavins (dcavins)</a>,
-				<a href="https://profiles.wordpress.org/demon_ru/">demon_ru</a>,
 				<a href="https://profiles.wordpress.org/wpdennis/">Dennis (wpdennis)</a>,
-				<a href="https://profiles.wordpress.org/ericlewis/">Eric Andrew Lewis (ericlewis)</a>,
-				<a href="https://profiles.wordpress.org/henrywright/">Henry Wright (henry.wright)</a>,
-				<a href="https://profiles.wordpress.org/herbovec/">herbovec</a>,
+				<a href="https://profiles.wordpress.org/Dianakc/">Diana K. Cury (Dianakc)</a>,
 				<a href="https://profiles.wordpress.org/hnla/">Hugo (hnla)</a>,
 				<a href="https://profiles.wordpress.org/jdgrimes/">J.D. Grimes (jdgrimes)</a>,
 				<a href="https://profiles.wordpress.org/johnjamesjacoby/">John James Jacoby (johnjamesjacoby)</a>,
-				<a href="https://profiles.wordpress.org/dunhakdis/">Joseph G. (dunhakdis)</a>,
-				<a href="https://profiles.wordpress.org/kitsunesolar/">kitsunesolar</a>,
+				<a href="https://profiles.wordpress.org/jonas-lundman/">Jonas Lundman (jonas-lundman)</a>,
+				<a href="https://profiles.wordpress.org/jonieske/">jonieske</a>,
+				<a href="https://profiles.wordpress.org/jreeve/">jreeve</a>,
 				<a href="https://profiles.wordpress.org/lakrisgubben/">lakrisgubben</a>,
 				<a href="https://profiles.wordpress.org/Offereins">Laurens Offereins (Offereins)</a>,
+				<a href="https://profiles.wordpress.org/lgreenwoo/">lgreenwoo</a>,
+				<a href="https://profiles.wordpress.org/maccast/">maccast</a>,
 				<a href="https://profiles.wordpress.org/imath/">Mathieu Viet (imath)</a>,
+				<a href="https://profiles.wordpress.org/mchansy/">mchansy</a>,
 				<a href="https://profiles.wordpress.org/mercime/">mercime</a>,
 				<a href="https://profiles.wordpress.org/tw2113/">Michael Beckwith (tw2113)</a>,
-				<a href="https://profiles.wordpress.org/michaelbeil/">Michael Beil (michaelbeil)</a>,
-				<a href="https://profiles.wordpress.org/swissspidy/">Pascal Birchler (swissspidy)</a>,
+				<a href="https://profiles.wordpress.org/modemlooper/">modemlooper</a>,
+				<a href="https://profiles.wordpress.org/m_uysl/">Mustafa Uysal (m_uysl)</a>,
+				<a href="https://profiles.wordpress.org/nickmomrik/">Nick Momrik (nickmomrik)</a>,
 				<a href="https://profiles.wordpress.org/DJPaul/">Paul Gibbs (DJPaul)</a>,
+				<a href="https://profiles.wordpress.org/pareshradadiya/">paresh.radadiya (pareshradadiya)</a>,
+				<a href="https://profiles.wordpress.org/petya/">Petya Raykovska</a>,
 				<a href="https://profiles.wordpress.org/r-a-y/">r-a-y</a>,
-				<a href="https://profiles.wordpress.org/espellcaste/">Renato Alves (espellcaste)</a>,
-				<a href="https://profiles.wordpress.org/scharc/">scharc</a>,
+				<a href="https://profiles.wordpress.org/rekmla/">rekmla</a>,
+				<a href="https://profiles.wordpress.org/rogercoathup/">Roger Coathup (rogercoathup)</a>,
+				<a href="https://profiles.wordpress.org/DarkWolf/">Salvatore (DarkWolf)</a>,
+				<a href="https://profiles.wordpress.org/sanket.parmar/">Sanket Parmar (sanket.parmar)</a>,
 				<a href="https://profiles.wordpress.org/slaffik/">Slava Abakumov (slaffik)</a>,
-				<a href="https://profiles.wordpress.org/spenser4551/">spenser4551</a>,
+				<a href="https://profiles.wordpress.org/stagger-lee/">Stagger Lee (stagger-lee)</a>,
 				<a href="https://profiles.wordpress.org/netweb/">Stephen Edgar (netweb)</a>,
-				<a href="https://profiles.wordpress.org/svenl77/">Sven Lehnert (svenl77)</a>,
-				<a href="https://profiles.wordpress.org/tharsheblows/">tharsheblows</a>,
-				<a href="https://profiles.wordpress.org/thomaslhotta/">thomaslhotta</a>,
-				<a href="https://profiles.wordpress.org/tomas711/">tomas711</a>,
-				<a href="https://profiles.wordpress.org/venturavan2/">venturavan2</a>,
+				<a href="https://profiles.wordpress.org/mahype/">Sven Wagener (mahype)</a>,
 				<a href="https://profiles.wordpress.org/wordpressrene/">wordpressrene</a>.
 			</p>
 

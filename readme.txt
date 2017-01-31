@@ -116,29 +116,19 @@ Please consider helping translate BuddyPress at our <a href="https://translate.w
 
 == Upgrade Notice ==
 
-= 2.7.2 =
-See: https://codex.buddypress.org/releases/version-2-7-2/
-
-= 2.7.1 =
-See: https://codex.buddypress.org/releases/version-2-7-1/
-
-= 2.7.0 =
-
-See: https://codex.buddypress.org/releases/version-2-7-0/
-
-= 2.6.2 =
-See: https://codex.buddypress.org/releases/version-2-6-2/
-
-= 2.6.1.1 =
-See: https://codex.buddypress.org/releases/version-2-6-1-1/
-
-= 2.6.1 =
-See: https://codex.buddypress.org/releases/version-2-6-1/
-
-= 2.6.0 =
-See: https://codex.buddypress.org/releases/version-2-6-0/
+= 2.8.0 =
+See: https://codex.buddypress.org/releases/version-2-8-0/
 
 == Changelog ==
+
+= 2.8.0 =
+See: https://codex.buddypress.org/releases/version-2-8-0/
+
+= 2.7.4 =
+See: https://codex.buddypress.org/releases/version-2-7-4/
+
+= 2.7.4 =
+See: https://codex.buddypress.org/releases/version-2-7-4/
 
 = 2.7.2 =
 See: https://codex.buddypress.org/releases/version-2-7-2/

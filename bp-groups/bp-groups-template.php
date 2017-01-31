@@ -10,13 +10,6 @@
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
-if ( ! buddypress()->do_autoload ) {
-	require dirname( __FILE__ ) . '/classes/class-bp-groups-template.php';
-	require dirname( __FILE__ ) . '/classes/class-bp-groups-group-members-template.php';
-	require dirname( __FILE__ ) . '/classes/class-bp-groups-membership-requests-template.php';
-	require dirname( __FILE__ ) . '/classes/class-bp-groups-invite-template.php';
-}
-
 /**
  * Output the groups component slug.
  *
@@ -802,7 +795,6 @@ function bp_group_avatar( $args = '' ) {
 		// Fetch the avatar from the folder.
 		$avatar = bp_core_fetch_avatar( array(
 			'item_id'    => $groups_template->group->id,
-			'title'      => $groups_template->group->name,
 			'avatar_dir' => 'group-avatars',
 			'object'     => 'group',
 			'type'       => $r['type'],

@@ -376,8 +376,7 @@ class BP_Activity_Activity {
 				10 => 'spam'
 			);
 
-			$func_args = func_get_args();
-			$args      = bp_core_parse_args_array( $old_args_keys, $func_args );
+			$args = bp_core_parse_args_array( $old_args_keys, func_get_args() );
 		}
 
 		$bp = buddypress();
@@ -426,7 +425,7 @@ class BP_Activity_Activity {
 
 			// Override some arguments if needed.
 			if ( ! empty( $scope_query['override'] ) ) {
-				$r = self::array_replace_recursive( $r, $scope_query['override'] );
+				$r = array_replace_recursive( $r, $scope_query['override'] );
 			}
 
 			// Advanced filtering.
@@ -1474,7 +1473,6 @@ class BP_Activity_Activity {
 			}
 
 			// Legacy query - not recommended.
-			$func_args = func_get_args();
 
 			/**
 			 * Filters if BuddyPress should use the legacy activity query.
@@ -1485,7 +1483,7 @@ class BP_Activity_Activity {
 			 * @param BP_Activity_Activity $value     Magic method referring to currently called method.
 			 * @param array                $func_args Array of the method's argument list.
 			 */
-			if ( apply_filters( 'bp_use_legacy_activity_query', false, __METHOD__, $func_args ) ) {
+			if ( apply_filters( 'bp_use_legacy_activity_query', false, __METHOD__, func_get_args() ) ) {
 
 				/**
 				 * Filters the MySQL prepared statement for the legacy activity query.
@@ -1869,58 +1867,5 @@ class BP_Activity_Activity {
 		$bp = buddypress();
 
 		return $wpdb->get_var( $wpdb->prepare( "UPDATE {$bp->activity->table_name} SET hide_sitewide = 1 WHERE user_id = %d", $user_id ) );
-	}
-
-	/**
-	 * PHP-agnostic version of {@link array_replace_recursive()}.
-	 *
-	 * The array_replace_recursive() function is a PHP 5.3 function.  BuddyPress (and
-	 * WordPress) currently supports down to PHP 5.2, so this method is a workaround
-	 * for PHP 5.2.
-	 *
-	 * Note: array_replace_recursive() supports infinite arguments, but for our use-
-	 * case, we only need to support two arguments.
-	 *
-	 * Subject to removal once WordPress makes PHP 5.3.0 the minimum requirement.
-	 *
-	 * @since 2.2.0
-	 *
-	 * @see http://php.net/manual/en/function.array-replace-recursive.php#109390
-	 *
-	 * @param  array $base         Array with keys needing to be replaced.
-	 * @param  array $replacements Array with the replaced keys.
-	 * @return array
-	 */
-	protected static function array_replace_recursive( $base = array(), $replacements = array() ) {
-		if ( function_exists( 'array_replace_recursive' ) ) {
-			return array_replace_recursive( $base, $replacements );
-		}
-
-		// PHP 5.2-compatible version
-		// http://php.net/manual/en/function.array-replace-recursive.php#109390.
-		foreach ( array_slice( func_get_args(), 1 ) as $replacements ) {
-			$bref_stack = array( &$base );
-			$head_stack = array( $replacements );
-
-			do {
-				end( $bref_stack );
-
-				$bref = &$bref_stack[ key( $bref_stack ) ];
-				$head = array_pop( $head_stack );
-
-				unset( $bref_stack[ key($bref_stack) ] );
-
-				foreach ( array_keys( $head ) as $key ) {
-					if ( isset( $key, $bref ) && is_array( $bref[$key] ) && is_array( $head[$key] ) ) {
-						$bref_stack[] = &$bref[ $key ];
-						$head_stack[] = $head[ $key ];
-					} else {
-						$bref[ $key ] = $head[ $key ];
-					}
-				}
-			} while( count( $head_stack ) );
-		}
-
-		return $base;
 	}
 }

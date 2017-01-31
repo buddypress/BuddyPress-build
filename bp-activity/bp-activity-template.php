@@ -10,10 +10,6 @@
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
-if ( ! buddypress()->do_autoload ) {
-	require dirname( __FILE__ ) . '/classes/class-bp-activity-template.php';
-}
-
 /**
  * Output the activity component slug.
  *
@@ -1390,7 +1386,8 @@ function bp_activity_content_body() {
 		 *
 		 * @since 1.2.0
 		 *
-		 * @param array $value Array containing the current activity content body and the current activity.
+		 * @param string $content  Content body.
+		 * @param object $activity Activity object. Passed by reference.
 		 */
 		return apply_filters_ref_array( 'bp_get_activity_content_body', array( $activities_template->activity->content, &$activities_template->activity ) );
 	}
@@ -3799,45 +3796,15 @@ function bp_activity_show_filters( $context = '' ) {
 	 * @return string HTML for <option> values.
 	 */
 	function bp_get_activity_show_filters( $context = '' ) {
-		// Set default context based on current page.
-		if ( empty( $context ) ) {
-
-			// On member pages, default to 'member', unless this
-			// is a user's Groups activity.
-			if ( bp_is_user() ) {
-				if ( bp_is_active( 'groups' ) && bp_is_current_action( bp_get_groups_slug() ) ) {
-					$context = 'member_groups';
-				} else {
-					$context = 'member';
-				}
-
-			// On individual group pages, default to 'group'.
-			} elseif ( bp_is_active( 'groups' ) && bp_is_group() ) {
-				$context = 'group';
-
-			// 'activity' everywhere else.
-			} else {
-				$context = 'activity';
-			}
-		}
-
 		$filters = array();
-
-		// Walk through the registered actions, and prepare an the
-		// select box options.
-		foreach ( bp_activity_get_actions() as $actions ) {
-			foreach ( $actions as $action ) {
-				if ( ! in_array( $context, (array) $action['context'] ) ) {
-					continue;
-				}
-
-				// Friends activity collapses two filters into one.
-				if ( in_array( $action['key'], array( 'friendship_accepted', 'friendship_created' ) ) ) {
-					$action['key'] = 'friendship_accepted,friendship_created';
-				}
-
-				$filters[ $action['key'] ] = $action['label'];
+		$actions = bp_activity_get_actions_for_context( $context );
+		foreach ( $actions as $action ) {
+			// Friends activity collapses two filters into one.
+			if ( in_array( $action['key'], array( 'friendship_accepted', 'friendship_created' ) ) ) {
+				$action['key'] = 'friendship_accepted,friendship_created';
 			}
+
+			$filters[ $action['key'] ] = $action['label'];
 		}
 
 		/**

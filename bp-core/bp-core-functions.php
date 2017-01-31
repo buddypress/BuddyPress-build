@@ -120,10 +120,40 @@ function bp_core_get_table_prefix() {
  * @return array $items The sorted array.
  */
 function bp_sort_by_key( $items, $key, $type = 'alpha', $preserve_keys = false ) {
+	$callback = function( $a, $b ) use ( $key, $type ) {
+		$values = array( 0 => false, 1 => false );
+		foreach ( func_get_args() as $indexi => $index ) {
+			if ( isset( $index->{$key} ) ) {
+				$values[ $indexi ] = $index->{$key};
+			} elseif ( isset( $index[ $key ] ) ) {
+				$values[ $indexi ] = $index[ $key ];
+			}
+		}
+
+		if ( isset( $values[0], $values[1] ) ) {
+			if ( 'num' === $type ) {
+				$cmp = $values[0] - $values[1];
+			} else {
+				$cmp = strcmp( $values[0], $values[1] );
+			}
+
+			if ( 0 > $cmp ) {
+				$retval = -1;
+			} elseif ( 0 < $cmp ) {
+				$retval = 1;
+			} else {
+				$retval = 0;
+			}
+			return $retval;
+		} else {
+			return 0;
+		}
+	};
+
 	if ( true === $preserve_keys ) {
-		uasort( $items, array( new BP_Core_Sort_By_Key_Callback( $key, $type ), 'sort_callback' ) );
+		uasort( $items, $callback );
 	} else {
-		usort( $items, array( new BP_Core_Sort_By_Key_Callback( $key, $type ), 'sort_callback' ) );
+		usort( $items, $callback );
 	}
 
 	return $items;
@@ -3059,7 +3089,7 @@ function bp_get_email( $email_type ) {
  * @param string|array|int|WP_User $to         Either a email address, user ID, WP_User object,
  *                                             or an array containg the address and name.
  * @param array                    $args {
- *     Optional. Array of extra. parameters.
+ *     Optional. Array of extra parameters.
  *
  *     @type array $tokens Optional. Assocative arrays of string replacements for the email.
  * }
@@ -3104,6 +3134,23 @@ function bp_send_email( $email_type, $to, $args = array() ) {
 	// From, subject, content are set automatically.
 	$email->set_to( $to );
 	$email->set_tokens( $args['tokens'] );
+
+	/**
+	 * Gives access to an email before it is sent.
+	 *
+	 * @since 2.8.0
+	 *
+	 * @param BP_Email                 $email      The email (object) about to be sent.
+	 * @param string                   $email_type Type of email being sent.
+	 * @param string|array|int|WP_User $to         Either a email address, user ID, WP_User object,
+	 *                                             or an array containg the address and name.
+     * @param array                    $args {
+	 *     Optional. Array of extra parameters.
+	 *
+	 *     @type array $tokens Optional. Assocative arrays of string replacements for the email.
+	 * }
+	 */
+	do_action_ref_array( 'bp_send_email', array( &$email, $email_type, $to, $args ) );
 
 	$status = $email->validate();
 	if ( is_wp_error( $status ) ) {

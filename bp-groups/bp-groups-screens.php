@@ -14,10 +14,6 @@
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
-if ( ! buddypress()->do_autoload ) {
-	require dirname( __FILE__ ) . '/classes/class-bp-groups-theme-compat.php';
-}
-
 /**
  * Handle the display of the Groups directory index.
  *
@@ -25,22 +21,6 @@ if ( ! buddypress()->do_autoload ) {
  */
 function groups_directory_groups_setup() {
 	if ( bp_is_groups_directory() ) {
-		// Set group type if available.
-		if ( bp_is_current_action( bp_get_groups_group_type_base() ) && bp_action_variable() ) {
-			$matched_types = bp_groups_get_group_types( array(
-				'has_directory'  => true,
-				'directory_slug' => bp_action_variable(),
-			) );
-
-			// Redirect back to group directory if no match.
-			if ( empty( $matched_types ) ) {
-				bp_core_redirect( bp_get_groups_directory_permalink() );
-			}
-
-			// Set our global variable.
-			buddypress()->groups->current_directory_type = reset( $matched_types );
-		}
-
 		bp_update_is_directory( true, 'groups' );
 
 		/**
