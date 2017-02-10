@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later (license.txt).
 msgid ""
 msgstr ""
-"Project-Id-Version: BuddyPress 2.8.0-beta1\n"
+"Project-Id-Version: BuddyPress 2.8.0-RC1\n"
 "Report-Msgid-Bugs-To: https://buddypress.trac.wordpress.org\n"
-"POT-Creation-Date: 2017-01-31 20:33:17+00:00\n"
+"POT-Creation-Date: 2017-02-10 20:18:55+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -26,7 +26,7 @@ msgid "The activity item has been marked as spam and is no longer visible."
 msgstr ""
 
 #: bp-activity/bp-activity-actions.php:292
-#: bp-templates/bp-legacy/buddypress-functions.php:920
+#: bp-templates/bp-legacy/buddypress-functions.php:922
 msgid "Please enter some content to post."
 msgstr ""
 
@@ -39,7 +39,7 @@ msgid "There was an error when posting your update. Please try again."
 msgstr ""
 
 #: bp-activity/bp-activity-actions.php:365
-#: bp-templates/bp-legacy/buddypress-functions.php:1013
+#: bp-templates/bp-legacy/buddypress-functions.php:1015
 msgid "Please do not leave the comment area blank."
 msgstr ""
 
@@ -454,7 +454,7 @@ msgid "Reply"
 msgstr ""
 
 #: bp-activity/bp-activity-admin.php:1049 bp-groups/bp-groups-admin.php:708
-#: bp-members/classes/class-bp-members-admin.php:2083
+#: bp-members/classes/class-bp-members-admin.php:2131
 #: bp-templates/bp-legacy/buddypress/activity/entry.php:129
 #: bp-templates/bp-legacy/buddypress/forums/index.php:216
 #: bp-xprofile/classes/class-bp-xprofile-field.php:1308
@@ -521,7 +521,7 @@ msgid "%s posted a new activity comment"
 msgstr ""
 
 #: bp-activity/bp-activity-functions.php:2584
-#: bp-templates/bp-legacy/buddypress-functions.php:1010
+#: bp-templates/bp-legacy/buddypress-functions.php:1012
 msgid "There was an error posting your reply. Please try again."
 msgstr ""
 
@@ -684,7 +684,7 @@ msgid ""
 "more details."
 msgstr ""
 
-#: bp-activity/bp-activity-template.php:2598
+#: bp-activity/bp-activity-template.php:2640
 #: bp-core/bp-core-attachments.php:724 bp-forums/bp-forums-template.php:2782
 #: bp-groups/classes/class-bp-groups-component.php:706
 #: bp-groups/classes/class-bp-groups-list-table.php:371
@@ -703,7 +703,7 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
-#: bp-activity/bp-activity-template.php:2703
+#: bp-activity/bp-activity-template.php:2745
 #: bp-core/admin/bp-core-admin-functions.php:1039
 #: bp-core/admin/bp-core-admin-slugs.php:149
 #: bp-core/admin/bp-core-admin-slugs.php:220
@@ -713,19 +713,19 @@ msgstr ""
 msgid "View"
 msgstr ""
 
-#: bp-activity/bp-activity-template.php:2812
+#: bp-activity/bp-activity-template.php:2854
 msgid "Clear Filter"
 msgstr ""
 
-#: bp-activity/bp-activity-template.php:3122
+#: bp-activity/bp-activity-template.php:3164
 msgid "a user"
 msgstr ""
 
-#: bp-activity/bp-activity-template.php:3179
+#: bp-activity/bp-activity-template.php:3221
 msgid "Public Message"
 msgstr ""
 
-#: bp-activity/bp-activity-template.php:3771
+#: bp-activity/bp-activity-template.php:3813
 msgid "Site Wide Activity RSS Feed"
 msgstr ""
 
@@ -2903,239 +2903,233 @@ msgid ""
 "active BuddyPress users and developers are waiting to share tips and more."
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:609
-msgid "Groups Query Overhaul"
+#: bp-core/classes/class-bp-admin.php:608
+msgid "Modernizing the Codebase"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:613
-#. translators: %s: URL to the development post about this feature
+#: bp-core/classes/class-bp-admin.php:611
+#. translators: 1: BP REST API, 2: Link to Codex article
 msgid ""
-"Huge performance improvements on sites using persistent caching. <a "
-"href=\"%s\">Learn more about the Groups Query rewrite</a>."
+"To continue the migration of legacy code to modern standards and techniques "
+"necessary for the %1$s project and other new features moving forward, <a "
+"href=\"%2$s\">BuddyPress 2.8 requires at least PHP 5.3</a>. This will allow "
+"us to build better, robust, and secure code, benefitting developers and "
+"users now and in the future."
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:621
+#: bp-core/classes/class-bp-admin.php:620
 msgid "For Developers &amp; Site Builders"
 msgstr ""
 
 #: bp-core/classes/class-bp-admin.php:625
-msgid "Improved Profile Date Field"
+msgid "More helpful \"Activate Pending Accounts\" screen"
 msgstr ""
 
 #: bp-core/classes/class-bp-admin.php:626
-msgid ""
-"New Date Field settings, \"Date format\" and \"Range\", make it easier for "
-"site administrators to decide how date-based data will be collected and "
-"displayed."
+msgid "The improved pending account screen."
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:631
-msgid "Group Types Integration in Templates"
+#: bp-core/classes/class-bp-admin.php:627
+msgid ""
+"When you click on the username on the \"Users > Manage Signups\" page, you "
+"can now view profile data entered by the user at the time of registration."
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:634
-#. translators: %s: URL to the BuddyPress Codex article
+#: bp-core/classes/class-bp-admin.php:633
+#. translators: %s: List-Unsubscribe
+msgid "Support for %s header in emails"
+msgstr ""
+
+#: bp-core/classes/class-bp-admin.php:636
+msgid "Email header showing the list-unsubscribe feature."
+msgstr ""
+
+#: bp-core/classes/class-bp-admin.php:637
 msgid ""
-"Enable developers to show Group Types on the front end as well as control "
-"where the group type information is rendered. <a href=\"%s\">Learn how to "
-"implement this feature</a>."
+"Allow users to unsubscribe from BuddyPress email notifications in some "
+"email clients such as Gmail (web), when properly configured."
 msgstr ""
 
 #: bp-core/classes/class-bp-admin.php:641
-msgid "Use the Site Icon as Your Site&#8217;s Profile Photo"
+msgid "Twenty Seventeen Companion Stylesheet"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:644
-#. translators: %s: URL to the WordPress Codex article
+#: bp-core/classes/class-bp-admin.php:642
 msgid ""
-"BuddyPress sets the site admin&#8217;s profile photo as the default site "
-"profile photo on the Sites Directory page. You can now <a href=\"%s\">use "
-"the Site Icon introduced in WordPress 4.3</a> instead."
+"BuddyPress looks great in WordPress's latest default theme with the new "
+"Twenty Seventeen companion stylesheet."
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:651
-msgid "Member Type and Group Type Filters in Users and Groups Admin Screens"
+#: bp-core/classes/class-bp-admin.php:645
+#. translators: 1: Link to the Codex article, 2: functions.php
+msgid ""
+"To change the default two-column page layout to a full-width layout as seen "
+"in the image, add the <a href=\"%1$s\">following code</a> to the  %2$s file "
+"of your Twenty Seventeen child theme."
 msgstr ""
 
 #: bp-core/classes/class-bp-admin.php:652
+msgid "Full-width BuddyPress layout for Twenty Seventeen theme."
+msgstr ""
+
+#: bp-core/classes/class-bp-admin.php:660
+msgid "More hooks for Messages"
+msgstr ""
+
+#: bp-core/classes/class-bp-admin.php:661
 msgid ""
-"Easily filter your members and groups by type and set types in bulk on the "
-"users and groups list tables in the dashboard."
+"We've added new filters and actions for different methods throughout the "
+"Messages component."
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:657
-msgid "Localized Timestamps"
-msgstr ""
-
-#: bp-core/classes/class-bp-admin.php:658
-msgid ""
-"Fix inaccurate timestamps due to time zones or page caching with new "
-"client-side timestamp handling."
-msgstr ""
-
-#: bp-core/classes/class-bp-admin.php:663
-msgid "Links to Unsubscribe from Emails"
-msgstr ""
-
-#: bp-core/classes/class-bp-admin.php:664
-msgid ""
-"Improve user experience by facilitating the removal of any or all "
-"subscriptions via new email tokens and unsubscribe links."
+#: bp-core/classes/class-bp-admin.php:666
+msgid "A more flexible Group search"
 msgstr ""
 
 #: bp-core/classes/class-bp-admin.php:669
-msgid "Use WP Page Names for Headings of BP Directory Pages"
-msgstr ""
-
-#: bp-core/classes/class-bp-admin.php:670
+#. translators: 1: search_column, 2: BP_Groups_Group::get()
 msgid ""
-"Whatever you choose as the title of your Activity, Sites, Members, or "
-"Groups directory pages on the back end, is what you&#8217;ll get as the "
-"heading on the front end."
+"The new %1$s parameter allows developers to specify which columns should be "
+"matched, as well as where wildcard characters should be placed, when "
+"searching via %2$s."
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:675
-msgid "Accessibility Updates for the Front End and Back End"
+#: bp-core/classes/class-bp-admin.php:677
+msgid "Alphabetical sorting for Groups widget"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:676
+#: bp-core/classes/class-bp-admin.php:678
+msgid ""
+"The groups widget can now be sorted alphabetically, in addition to sorting "
+"the results by recently active, popular, and newest groups."
+msgstr ""
+
+#: bp-core/classes/class-bp-admin.php:685
+#. translators: %s: PHPMailer
+msgid "Enable choice of %s"
+msgstr ""
+
+#: bp-core/classes/class-bp-admin.php:689
+#. translators: %s: PHPMailer
+msgid ""
+"Developers can specify which %s should be used when sending BuddyPress with "
+"a new filter."
+msgstr ""
+
+#: bp-core/classes/class-bp-admin.php:697
+msgid "More under the hood &#8230;"
+msgstr ""
+
+#: bp-core/classes/class-bp-admin.php:700
+msgid "Localization Improvements"
+msgstr ""
+
+#: bp-core/classes/class-bp-admin.php:701
+msgid ""
+"We continue to improve our localization internals, making it easier for "
+"translation editors to ensure that BuddyPress will be available for "
+"everyone in their own language."
+msgstr ""
+
+#: bp-core/classes/class-bp-admin.php:704
+msgid "Developer Reference"
+msgstr ""
+
+#: bp-core/classes/class-bp-admin.php:705
+msgid ""
+"Regular updates to inline code documentation make it easier for developers "
+"to understand how BuddyPress works."
+msgstr ""
+
+#: bp-core/classes/class-bp-admin.php:709
+msgid "Accessibility Upgrades"
+msgstr ""
+
+#: bp-core/classes/class-bp-admin.php:710
 msgid ""
 "Continued improvements for universal access help make BuddyPress back- and "
 "front-end screens usable for everyone (and on more devices)."
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:683
-#. translators: %s: BP_Button
-msgid "Refactored %s Class to Accept New Arguments"
-msgstr ""
-
-#: bp-core/classes/class-bp-admin.php:685
-msgid ""
-"Provides developers with improved syntax and more control over the "
-"rendering of buttons."
-msgstr ""
-
-#: bp-core/classes/class-bp-admin.php:690
-msgid "Improvements to a Single Group&#8217;s Management Screens"
-msgstr ""
-
-#: bp-core/classes/class-bp-admin.php:691
-msgid ""
-"Improved markup, new modular group management templates, and a new member "
-"search form are just some of the enhancements added to the single group "
-"admin screens."
-msgstr ""
-
-#: bp-core/classes/class-bp-admin.php:698
-#. translators: %s: parent_id
-msgid "Support for Querying for Groups by New Column %s"
-msgstr ""
-
-#: bp-core/classes/class-bp-admin.php:700
-msgid ""
-"Query support for hierarchical groups makes it much easier for developers "
-"to add custom front-end functionality."
-msgstr ""
-
-#: bp-core/classes/class-bp-admin.php:705
-msgid "Many, Many Performance Improvements"
-msgstr ""
-
-#: bp-core/classes/class-bp-admin.php:708
-#. translators: %s: bp_get_user_groups()
-msgid ""
-"Improved performance by removing extra database queries, adding new cache "
-"calls, and removing the number of loops in %s."
-msgstr ""
-
-#: bp-core/classes/class-bp-admin.php:717
-msgid "And so much more!"
-msgstr ""
-
-#: bp-core/classes/class-bp-admin.php:720
-#. translators: %s: URL to the BuddyPress Codex article
-msgid "<a href=\"%s\">Changelog for BuddyPress 2.7.</a>"
-msgstr ""
-
-#: bp-core/classes/class-bp-admin.php:754
+#: bp-core/classes/class-bp-admin.php:744
 msgid "BuddyPress is created by a worldwide network of friendly folks like these."
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:756
+#: bp-core/classes/class-bp-admin.php:746
 msgid "Project Leaders"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:761
+#: bp-core/classes/class-bp-admin.php:751
 msgid "Project Lead"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:766
-#: bp-core/classes/class-bp-admin.php:771
+#: bp-core/classes/class-bp-admin.php:756
+#: bp-core/classes/class-bp-admin.php:761
 msgid "Lead Developer"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:775
+#: bp-core/classes/class-bp-admin.php:765
 msgid "BuddyPress Team"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:780
+#: bp-core/classes/class-bp-admin.php:770
 msgid "2.8 Release Lead"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:785
+#: bp-core/classes/class-bp-admin.php:775
+#: bp-core/classes/class-bp-admin.php:780
 #: bp-core/classes/class-bp-admin.php:790
+#: bp-core/classes/class-bp-admin.php:795
 #: bp-core/classes/class-bp-admin.php:800
-#: bp-core/classes/class-bp-admin.php:805
-#: bp-core/classes/class-bp-admin.php:810
-#: bp-core/classes/class-bp-admin.php:831
-#: bp-core/classes/class-bp-admin.php:836
+#: bp-core/classes/class-bp-admin.php:821
+#: bp-core/classes/class-bp-admin.php:826
 msgid "Core Developer"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:795
+#: bp-core/classes/class-bp-admin.php:785
 msgid "Navigator"
 msgstr ""
 
+#: bp-core/classes/class-bp-admin.php:805
+#: bp-core/classes/class-bp-admin.php:810
 #: bp-core/classes/class-bp-admin.php:815
-#: bp-core/classes/class-bp-admin.php:820
-#: bp-core/classes/class-bp-admin.php:825
 msgid "Community Support"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:840
+#: bp-core/classes/class-bp-admin.php:830
 msgid "&#x1f31f;Recent Rockstars&#x1f31f;"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:860
+#: bp-core/classes/class-bp-admin.php:850
 msgid "Contributors to BuddyPress %s"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:903
+#: bp-core/classes/class-bp-admin.php:898
 msgid "&#x1f496;With our thanks to these Open Source projects&#x1f496;"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:931
+#: bp-core/classes/class-bp-admin.php:926
 msgid ""
 "Thank you for installing BuddyPress! BuddyPress helps site builders and "
 "WordPress developers add community features to their websites, with user "
 "profile fields, activity streams, messaging, and notifications."
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:932
+#: bp-core/classes/class-bp-admin.php:927
 msgid ""
-"Thank you for updating! BuddyPress %s has many new features that you will "
-"enjoy."
+"Thank you for updating! BuddyPress %s has many new improvements that you "
+"will enjoy."
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:936
+#: bp-core/classes/class-bp-admin.php:931
 msgid "Welcome to BuddyPress %s"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:965
+#: bp-core/classes/class-bp-admin.php:960
 msgid "What&#8217;s New"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:967
+#: bp-core/classes/class-bp-admin.php:962
 msgid "Credits"
 msgstr ""
 
@@ -3851,7 +3845,7 @@ msgid "You already have a pending friendship request with this user"
 msgstr ""
 
 #: bp-friends/bp-friends-actions.php:80
-#: bp-templates/bp-legacy/buddypress-functions.php:1368
+#: bp-templates/bp-legacy/buddypress-functions.php:1370
 msgid "Friendship could not be canceled."
 msgstr ""
 
@@ -3968,7 +3962,7 @@ msgid "%d friends"
 msgstr ""
 
 #: bp-friends/bp-friends-template.php:371
-#: bp-templates/bp-legacy/buddypress-functions.php:1380
+#: bp-templates/bp-legacy/buddypress-functions.php:1382
 msgid "Cancel Friendship Request"
 msgstr ""
 
@@ -3981,8 +3975,8 @@ msgid "Cancel Friendship"
 msgstr ""
 
 #: bp-friends/bp-friends-template.php:419
-#: bp-templates/bp-legacy/buddypress-functions.php:1370
-#: bp-templates/bp-legacy/buddypress-functions.php:1388
+#: bp-templates/bp-legacy/buddypress-functions.php:1372
+#: bp-templates/bp-legacy/buddypress-functions.php:1390
 msgid "Add Friend"
 msgstr ""
 
@@ -4324,7 +4318,7 @@ msgid "You are about to delete the following groups:"
 msgstr ""
 
 #: bp-groups/bp-groups-admin.php:705
-#: bp-members/classes/class-bp-members-admin.php:2078
+#: bp-members/classes/class-bp-members-admin.php:2126
 msgid "This action cannot be undone."
 msgstr ""
 
@@ -4927,13 +4921,13 @@ msgid ""
 msgstr ""
 
 #: bp-groups/bp-groups-template.php:3448
-#: bp-templates/bp-legacy/buddypress-functions.php:1469
-#: bp-templates/bp-legacy/buddypress-functions.php:1482
+#: bp-templates/bp-legacy/buddypress-functions.php:1471
+#: bp-templates/bp-legacy/buddypress-functions.php:1484
 msgid "Leave Group"
 msgstr ""
 
 #: bp-groups/bp-groups-template.php:3469
-#: bp-templates/bp-legacy/buddypress-functions.php:1503
+#: bp-templates/bp-legacy/buddypress-functions.php:1505
 msgid "Join Group"
 msgstr ""
 
@@ -4942,12 +4936,12 @@ msgid "Accept Invitation"
 msgstr ""
 
 #: bp-groups/bp-groups-template.php:3502
-#: bp-templates/bp-legacy/buddypress-functions.php:1492
+#: bp-templates/bp-legacy/buddypress-functions.php:1494
 msgid "Request Sent"
 msgstr ""
 
 #: bp-groups/bp-groups-template.php:3517
-#: bp-templates/bp-legacy/buddypress-functions.php:1505
+#: bp-templates/bp-legacy/buddypress-functions.php:1507
 msgid "Request Membership"
 msgstr ""
 
@@ -5184,7 +5178,7 @@ msgid "No Group Type"
 msgstr ""
 
 #: bp-groups/classes/class-bp-groups-list-table.php:787
-#: bp-members/classes/class-bp-members-admin.php:2131
+#: bp-members/classes/class-bp-members-admin.php:2179
 #: bp-templates/bp-legacy/buddypress/members/single/profile/edit.php:62
 #: bp-xprofile/classes/class-bp-xprofile-user-admin.php:391
 msgid "Change"
@@ -5762,32 +5756,46 @@ msgstr ""
 msgid "You are about to resend an activation email to the following accounts:"
 msgstr ""
 
-#: bp-members/classes/class-bp-members-admin.php:2060
+#: bp-members/classes/class-bp-members-admin.php:2080
+msgid "Display Name"
+msgstr ""
+
+#: bp-members/classes/class-bp-members-admin.php:2085
+#: bp-members/classes/class-bp-members-list-table.php:152
+#: bp-members/classes/class-bp-members-list-table.php:316
+#: bp-members/classes/class-bp-members-ms-list-table.php:139
+#: bp-members/classes/class-bp-members-ms-list-table.php:309
+#: bp-settings/classes/class-bp-settings-component.php:123
+#: bp-settings/classes/class-bp-settings-component.php:198
+msgid "Email"
+msgstr ""
+
+#: bp-members/classes/class-bp-members-admin.php:2108
 msgid "Last notified: %s"
 msgstr ""
 
-#: bp-members/classes/class-bp-members-admin.php:2064
+#: bp-members/classes/class-bp-members-admin.php:2112
 msgid "(less than 24 hours ago)"
 msgstr ""
 
-#: bp-members/classes/class-bp-members-admin.php:2082
+#: bp-members/classes/class-bp-members-admin.php:2130
 msgid "Confirm"
 msgstr ""
 
-#: bp-members/classes/class-bp-members-admin.php:2116
-#: bp-members/classes/class-bp-members-admin.php:2118
+#: bp-members/classes/class-bp-members-admin.php:2164
+#: bp-members/classes/class-bp-members-admin.php:2166
 msgid "Change member type to&hellip;"
 msgstr ""
 
-#: bp-members/classes/class-bp-members-admin.php:2126
+#: bp-members/classes/class-bp-members-admin.php:2174
 msgid "No Member Type"
 msgstr ""
 
-#: bp-members/classes/class-bp-members-admin.php:2221
+#: bp-members/classes/class-bp-members-admin.php:2269
 msgid "There was an error while changing member type. Please try again."
 msgstr ""
 
-#: bp-members/classes/class-bp-members-admin.php:2224
+#: bp-members/classes/class-bp-members-admin.php:2272
 msgid "Member type was changed successfully."
 msgstr ""
 
@@ -5797,15 +5805,6 @@ msgstr ""
 
 #: bp-members/classes/class-bp-members-component.php:375
 msgid "You"
-msgstr ""
-
-#: bp-members/classes/class-bp-members-list-table.php:152
-#: bp-members/classes/class-bp-members-list-table.php:316
-#: bp-members/classes/class-bp-members-ms-list-table.php:139
-#: bp-members/classes/class-bp-members-ms-list-table.php:309
-#: bp-settings/classes/class-bp-settings-component.php:123
-#: bp-settings/classes/class-bp-settings-component.php:198
-msgid "Email"
 msgstr ""
 
 #: bp-members/classes/class-bp-members-list-table.php:153
@@ -5939,7 +5938,7 @@ msgstr ""
 
 #: bp-messages/bp-messages-actions.php:419
 #: bp-messages/bp-messages-actions.php:465
-#: bp-templates/bp-legacy/buddypress-functions.php:1665
+#: bp-templates/bp-legacy/buddypress-functions.php:1667
 msgid "Messages deleted."
 msgstr ""
 
@@ -6410,15 +6409,15 @@ msgstr ""
 
 #: bp-templates/bp-legacy/buddypress/activity/entry.php:75
 #: bp-templates/bp-legacy/buddypress-functions.php:297
-#: bp-templates/bp-legacy/buddypress-functions.php:1198
-#: bp-templates/bp-legacy/buddypress-functions.php:1216
+#: bp-templates/bp-legacy/buddypress-functions.php:1200
+#: bp-templates/bp-legacy/buddypress-functions.php:1218
 msgid "Favorite"
 msgstr ""
 
 #: bp-templates/bp-legacy/buddypress/activity/entry.php:79
 #: bp-templates/bp-legacy/buddypress-functions.php:300
-#: bp-templates/bp-legacy/buddypress-functions.php:1196
-#: bp-templates/bp-legacy/buddypress-functions.php:1218
+#: bp-templates/bp-legacy/buddypress-functions.php:1198
+#: bp-templates/bp-legacy/buddypress-functions.php:1220
 msgid "Remove Favorite"
 msgstr ""
 
@@ -6892,7 +6891,7 @@ msgstr ""
 
 #: bp-templates/bp-legacy/buddypress/groups/create.php:397
 #: bp-templates/bp-legacy/buddypress/groups/single/invites-loop.php:74
-#: bp-templates/bp-legacy/buddypress-functions.php:1318
+#: bp-templates/bp-legacy/buddypress-functions.php:1320
 msgid "Remove Invite"
 msgstr ""
 
@@ -7657,71 +7656,71 @@ msgid ""
 "be lost."
 msgstr ""
 
-#: bp-templates/bp-legacy/buddypress-functions.php:956
+#: bp-templates/bp-legacy/buddypress-functions.php:958
 msgid "There was a problem posting your update. Please try again."
 msgstr ""
 
-#: bp-templates/bp-legacy/buddypress-functions.php:1090
-#: bp-templates/bp-legacy/buddypress-functions.php:1130
+#: bp-templates/bp-legacy/buddypress-functions.php:1092
+#: bp-templates/bp-legacy/buddypress-functions.php:1132
 msgid "There was a problem when deleting. Please try again."
 msgstr ""
 
-#: bp-templates/bp-legacy/buddypress-functions.php:1322
+#: bp-templates/bp-legacy/buddypress-functions.php:1324
 msgid ""
 "%s has previously requested to join this group. Sending an invitation will "
 "automatically add the member to the group."
 msgstr ""
 
-#: bp-templates/bp-legacy/buddypress-functions.php:1378
+#: bp-templates/bp-legacy/buddypress-functions.php:1380
 msgid " Friendship could not be requested."
 msgstr ""
 
-#: bp-templates/bp-legacy/buddypress-functions.php:1390
+#: bp-templates/bp-legacy/buddypress-functions.php:1392
 msgid "Friendship request could not be cancelled."
 msgstr ""
 
-#: bp-templates/bp-legacy/buddypress-functions.php:1395
+#: bp-templates/bp-legacy/buddypress-functions.php:1397
 msgid "Request Pending"
 msgstr ""
 
-#: bp-templates/bp-legacy/buddypress-functions.php:1416
+#: bp-templates/bp-legacy/buddypress-functions.php:1418
 msgid "There was a problem accepting that request. Please try again."
 msgstr ""
 
-#: bp-templates/bp-legacy/buddypress-functions.php:1436
+#: bp-templates/bp-legacy/buddypress-functions.php:1438
 msgid "There was a problem rejecting that request. Please try again."
 msgstr ""
 
-#: bp-templates/bp-legacy/buddypress-functions.php:1467
+#: bp-templates/bp-legacy/buddypress-functions.php:1469
 msgid "Error joining group"
 msgstr ""
 
-#: bp-templates/bp-legacy/buddypress-functions.php:1480
-#: bp-templates/bp-legacy/buddypress-functions.php:1490
+#: bp-templates/bp-legacy/buddypress-functions.php:1482
+#: bp-templates/bp-legacy/buddypress-functions.php:1492
 msgid "Error requesting membership"
 msgstr ""
 
-#: bp-templates/bp-legacy/buddypress-functions.php:1501
+#: bp-templates/bp-legacy/buddypress-functions.php:1503
 msgid "Error leaving group"
 msgstr ""
 
-#: bp-templates/bp-legacy/buddypress-functions.php:1525
+#: bp-templates/bp-legacy/buddypress-functions.php:1527
 msgid "There was a problem closing the notice."
 msgstr ""
 
-#: bp-templates/bp-legacy/buddypress-functions.php:1588
+#: bp-templates/bp-legacy/buddypress-functions.php:1590
 msgid "There was a problem sending that reply. Please try again."
 msgstr ""
 
-#: bp-templates/bp-legacy/buddypress-functions.php:1607
+#: bp-templates/bp-legacy/buddypress-functions.php:1609
 msgid "There was a problem marking messages as unread."
 msgstr ""
 
-#: bp-templates/bp-legacy/buddypress-functions.php:1633
+#: bp-templates/bp-legacy/buddypress-functions.php:1635
 msgid "There was a problem marking messages as read."
 msgstr ""
 
-#: bp-templates/bp-legacy/buddypress-functions.php:1659
+#: bp-templates/bp-legacy/buddypress-functions.php:1661
 msgid "There was a problem deleting messages."
 msgstr ""
 
@@ -8765,52 +8764,52 @@ msgctxt "BuddyPress setting tab"
 msgid "Profile Settings"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:727
+#: bp-core/classes/class-bp-admin.php:717
 msgctxt "About screen, website links"
 msgid "Learn more:"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:727
+#: bp-core/classes/class-bp-admin.php:717
 msgctxt "About screen, link to project blog"
 msgid "News"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:727
+#: bp-core/classes/class-bp-admin.php:717
 msgctxt "About screen, link to support site"
 msgid "Support"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:727
+#: bp-core/classes/class-bp-admin.php:717
 msgctxt "About screen, link to documentation"
 msgid "Documentation"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:727
+#: bp-core/classes/class-bp-admin.php:717
 msgctxt "About screen, link to development blog"
 msgid "Development Blog"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:729
+#: bp-core/classes/class-bp-admin.php:719
 msgctxt "official Twitter accounts:"
 msgid "Twitter:"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:729
+#: bp-core/classes/class-bp-admin.php:719
 msgctxt "@buddypress twitter account name"
 msgid "BuddyPress"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:729
+#: bp-core/classes/class-bp-admin.php:719
 msgctxt "@bptrac twitter account name"
 msgid "Trac"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:729
+#: bp-core/classes/class-bp-admin.php:719
 msgctxt "@buddypressdev twitter account name"
 msgid "Development"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:986
+#: bp-core/classes/class-bp-admin.php:981
 msgctxt "Email post type"
 msgid "Situations"
 msgstr ""
@@ -9306,7 +9305,7 @@ msgid_plural "%s sign-ups were not deleted."
 msgstr[0] ""
 msgstr[1] ""
 
-#: bp-members/classes/class-bp-members-admin.php:2242
+#: bp-members/classes/class-bp-members-admin.php:2290
 msgctxt "Label for the WP users table member type column"
 msgid "Member Type"
 msgstr ""
