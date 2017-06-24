@@ -39,12 +39,6 @@ function bp_admin_bar_my_account_root() {
 				'class' => 'ab-sub-secondary'
 			)
 		) );
-
-		// Remove 'Edit' post link as it's not applicable to BP.
-		// Remove when https://core.trac.wordpress.org/ticket/29538 is addressed.
-		if ( is_buddypress() ) {
-			$wp_admin_bar->remove_node( 'edit' );
-		}
 	}
 }
 add_action( 'admin_bar_menu', 'bp_admin_bar_my_account_root', 100 );
@@ -66,6 +60,11 @@ function bp_core_load_admin_bar() {
 	// Hide the WordPress Toolbar and show the BuddyBar.
 	if ( ! bp_use_wp_admin_bar() ) {
 		_doing_it_wrong( __FUNCTION__, __( 'The BuddyBar is no longer supported. Please migrate to the WordPress toolbar as soon as possible.', 'buddypress' ), '2.1.0' );
+
+		// Load deprecated code if not available.
+		if ( ! function_exists( 'bp_core_admin_bar' ) ) {
+			require buddypress()->plugin_dir . 'bp-core/deprecated/2.1.php';
+		}
 
 		// Keep the WP Toolbar from loading.
 		show_admin_bar( false );

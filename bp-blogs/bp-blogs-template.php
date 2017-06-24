@@ -228,6 +228,8 @@ function bp_blogs_pagination_count() {
  * @since 2.7.0
  *
  * @global object $blogs_template {@link BP_Blogs_Template}
+ *
+ * @return string
  */
 function bp_get_blogs_pagination_count() {
 	global $blogs_template;
@@ -1077,7 +1079,7 @@ function bp_blogs_signup_blog( $blogname = '', $blog_title = '', $errors = '' ) 
 	if ( !is_subdomain_install() )
 		echo '<span class="prefix_address">' . $current_site->domain . $current_site->path . '</span> <input name="blogname" type="text" id="blogname" value="'.$blogname.'" maxlength="63" /><br />';
 	else
-		echo '<input name="blogname" type="text" id="blogname" value="'.$blogname.'" maxlength="63" ' . bp_get_form_field_attributes( 'blogname' ) . '/> <span class="suffix_address">.' . bp_blogs_get_subdomain_base() . '</span><br />';
+		echo '<input name="blogname" type="text" id="blogname" value="'.$blogname.'" maxlength="63" ' . bp_get_form_field_attributes( 'blogname' ) . '/> <span class="suffix_address">.' . bp_signup_get_subdomain_base() . '</span><br />';
 
 	if ( !is_user_logged_in() ) {
 		print '(<strong>' . __( 'Your address will be ' , 'buddypress');
@@ -1336,7 +1338,7 @@ function bp_blog_create_button() {
 	 *
 	 * @since 2.0.0
 	 *
-	 * @return string
+	 * @return false|string
 	 */
 	function bp_get_blog_create_button() {
 		if ( ! is_user_logged_in() ) {
@@ -1410,7 +1412,7 @@ function bp_blog_create_nav_item() {
  *
  * @since 2.2.0
  *
- * @return string HTML Output
+ * @return string|null HTML Output
  */
 function bp_blog_backcompat_create_nav_item() {
 	// Bail if Blogs nav item is already used by bp-legacy.

@@ -520,7 +520,7 @@ class BP_Groups_List_Table extends WP_List_Table {
 		 * @param string $value Name of the group being rendered.
 		 * @param array  $item  Array for the current group item.
 		 */
-		$group_name = apply_filters_ref_array( 'bp_get_group_name', array( $item['name'] ), $item );
+		$group_name = apply_filters_ref_array( 'bp_get_group_name', array( $item['name'], $item ) );
 
 		// Rollover actions.
 		// Edit.
@@ -706,9 +706,10 @@ class BP_Groups_List_Table extends WP_List_Table {
 	 *
 	 * @since 2.7.0
 	 *
-	 * @param string $value       Empty string.
+	 * @param string $retval      Empty string.
 	 * @param string $column_name Name of the column being rendered.
 	 * @param array  $item        The current group item in the loop.
+	 * @return string
 	 */
 	public function column_content_group_type( $retval = '', $column_name, $item ) {
 		if ( 'bp_group_type' !== $column_name ) {

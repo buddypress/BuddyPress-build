@@ -382,6 +382,11 @@ class BP_Admin {
 
 		// Only show 'switch to Toolbar' option if the user chose to retain the BuddyBar during the 1.6 upgrade.
 		if ( (bool) bp_get_option( '_bp_force_buddybar', false ) ) {
+			// Load deprecated code if not available.
+			if ( ! function_exists( 'bp_admin_setting_callback_force_buddybar' ) ) {
+				require buddypress()->plugin_dir . 'bp-core/deprecated/2.1.php';
+			}
+
 			add_settings_field( '_bp_force_buddybar', __( 'Toolbar', 'buddypress' ), 'bp_admin_setting_callback_force_buddybar', 'buddypress', 'bp_main' );
 			register_setting( 'buddypress', '_bp_force_buddybar', 'bp_admin_sanitize_callback_force_buddybar' );
 		}
@@ -389,6 +394,10 @@ class BP_Admin {
 		// Allow account deletion.
 		add_settings_field( 'bp-disable-account-deletion', __( 'Account Deletion', 'buddypress' ), 'bp_admin_setting_callback_account_deletion', 'buddypress', 'bp_main' );
 		register_setting( 'buddypress', 'bp-disable-account-deletion', 'intval' );
+
+		// Template pack picker.
+		add_settings_field( '_bp_theme_package_id', __( 'Template Pack', 'buddypress' ), 'bp_admin_setting_callback_theme_package_id', 'buddypress', 'bp_main' );
+		register_setting( 'buddypress', '_bp_theme_package_id', 'sanitize_text_field' );
 
 		/* XProfile Section **************************************************/
 
@@ -923,7 +932,7 @@ class BP_Admin {
 
 		// Switch welcome text based on whether this is a new installation or not.
 		$welcome_text = ( self::is_new_install() )
-			? __( 'Thank you for installing BuddyPress! BuddyPress helps site builders and WordPress developers add community features to their websites, with user profile fields, activity streams, messaging, and notifications.', 'buddypress' )
+			? __( 'Thank you for installing BuddyPress! BuddyPress adds community features to WordPress. Member Profiles, Activity Streams, Direct Messaging, Notifications, and more!', 'buddypress' )
 			: __( 'Thank you for updating! BuddyPress %s has many new improvements that you will enjoy.', 'buddypress' );
 
 		?>

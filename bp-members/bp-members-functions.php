@@ -206,17 +206,26 @@ function bp_core_get_user_domain( $user_id = 0, $user_nicename = false, $user_lo
  *
  * @since 1.2.0
  *
- * @param int $user_id The ID of the user.
- * @return array
+ * @param  int $user_id The ID of the user.
+ * @return array|bool Array of data on success, boolean false on failure.
  */
 function bp_core_get_core_userdata( $user_id = 0 ) {
 	if ( empty( $user_id ) ) {
 		return false;
 	}
 
-	if ( !$userdata = wp_cache_get( 'bp_core_userdata_' . $user_id, 'bp' ) ) {
+	$userdata = wp_cache_get( 'bp_core_userdata_' . $user_id, 'bp' );
+
+	// No cache.
+	if ( false === $userdata ) {
 		$userdata = BP_Core_User::get_core_userdata( $user_id );
-		wp_cache_set( 'bp_core_userdata_' . $user_id, $userdata, 'bp' );
+
+		// Cache data; no-result is cached as integer 0.
+		wp_cache_set( 'bp_core_userdata_' . $user_id, false === $userdata ? 0 : $userdata, 'bp' );
+
+	// Cached no-result, so set return value as false as expected.
+	} elseif ( 0 === $userdata ) {
+		$userdata = false;
 	}
 
 	/**
@@ -224,7 +233,7 @@ function bp_core_get_core_userdata( $user_id = 0 ) {
 	 *
 	 * @since 1.2.0
 	 *
-	 * @param array $userdata Array of user data for a passed user.
+	 * @param array|bool $userdata Array of user data for a passed user on success, boolean false on failure.
 	 */
 	return apply_filters( 'bp_core_get_core_userdata', $userdata );
 }
@@ -1186,7 +1195,7 @@ function bp_update_user_last_activity( $user_id = 0, $time = '' ) {
  * @param null   $retval Null retval value.
  * @param int    $object_id ID of the user.
  * @param string $meta_key  Meta key being fetched.
- * @return mixed
+ * @return string|null
  */
 function _bp_get_user_meta_last_activity_warning( $retval, $object_id, $meta_key ) {
 	static $warned = false;
@@ -1819,7 +1828,7 @@ function bp_core_validate_blog_signup( $blog_url, $blog_title ) {
  * @param string $user_email    Email address entered by the user.
  * @param array  $usermeta      Miscellaneous metadata about the user (blog-specific
  *                              signup data, xprofile data, etc).
- * @return bool|WP_Error True on success, WP_Error on failure.
+ * @return int|false True on success, WP_Error on failure.
  */
 function bp_core_signup_user( $user_login, $user_password, $user_email, $usermeta ) {
 	$bp = buddypress();
@@ -2700,7 +2709,7 @@ function bp_get_member_types( $args = array(), $output = 'names', $operator = 'a
  * @param string $member_type Member type.
  * @param bool   $append      Optional. True to append this to existing types for user,
  *                            false to replace. Default: false.
- * @return array $retval See {@see bp_set_object_terms()}.
+ * @return false|array $retval See {@see bp_set_object_terms()}.
  */
 function bp_set_member_type( $user_id, $member_type, $append = false ) {
 	// Pass an empty $member_type to remove a user's type.
@@ -2847,7 +2856,7 @@ function bp_has_member_type( $user_id, $member_type ) {
  * @since 2.2.0
  *
  * @param int $user_id ID of the user.
- * @return array $value See {@see bp_set_member_type()}.
+ * @return false|array $value See {@see bp_set_member_type()}.
  */
 function bp_remove_member_type_on_user_delete( $user_id ) {
 	return bp_set_member_type( $user_id, '' );

@@ -50,7 +50,7 @@ do_action( 'bp_before_member_messages_loop' ); ?>
 	 */
 	do_action( 'bp_before_member_messages_threads' ); ?>
 
-	<form action="<?php echo bp_loggedin_user_domain() . bp_get_messages_slug() . '/' . bp_current_action() ?>/bulk-manage/" method="post" id="messages-bulk-management">
+	<form action="<?php echo bp_displayed_user_domain() . bp_get_messages_slug() . '/' . bp_current_action() ?>/bulk-manage/" method="post" id="messages-bulk-management">
 
 		<table id="message-threads" class="messages-notices">
 
@@ -115,7 +115,7 @@ do_action( 'bp_before_member_messages_loop' ); ?>
 						<?php endif; ?>
 
 						<td class="thread-info">
-							<p><a href="<?php bp_message_thread_view_link(); ?>" title="<?php esc_attr_e( "View Message", 'buddypress' ); ?>"><?php bp_message_thread_subject(); ?></a></p>
+							<p><a href="<?php bp_message_thread_view_link(); ?>" class="bp-tooltip" data-bp-tooltip="<?php esc_attr_e( "View Message", 'buddypress' ); ?>" aria-label="<?php esc_attr_e( "View Message", 'buddypress' ); ?>"><?php bp_message_thread_subject(); ?></a></p>
 							<p class="thread-excerpt"><?php bp_message_thread_excerpt(); ?></p>
 						</td>
 
@@ -203,4 +203,4 @@ do_action( 'bp_before_member_messages_loop' ); ?>
  *
  * @since 1.2.0
  */
-do_action( 'bp_after_member_messages_loop' ); ?>
+do_action( 'bp_after_member_messages_loop' );
