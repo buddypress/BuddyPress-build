@@ -456,6 +456,21 @@ class BP_Activity_Activity {
 		if ( $r['search_terms'] ) {
 			$search_terms_like = '%' . bp_esc_like( $r['search_terms'] ) . '%';
 			$where_conditions['search_sql'] = $wpdb->prepare( 'a.content LIKE %s', $search_terms_like );
+
+			/**
+			 * Filters whether or not to include users for search parameters.
+			 *
+			 * @since 3.0.0
+			 *
+			 * @param bool $value Whether or not to include user search. Default false.
+			 */
+			if ( apply_filters( 'bp_activity_get_include_user_search', false ) ) {
+				$user_search = get_user_by( 'slug', $r['search_terms'] );
+				if ( false !== $user_search ) {
+					$user_id                         = $user_search->ID;
+					$where_conditions['search_sql'] .= $wpdb->prepare( ' OR a.user_id = %d', $user_id );
+				}
+			}
 		}
 
 		// Sorting.
@@ -1832,7 +1847,7 @@ class BP_Activity_Activity {
 		// Get activities from user meta.
 		$favorite_activity_entries = bp_get_user_meta( $user_id, 'bp_favorite_activities', true );
 		if ( ! empty( $favorite_activity_entries ) ) {
-			return count( maybe_unserialize( $favorite_activity_entries ) );
+			return count( $favorite_activity_entries );
 		}
 
 		// No favorites.

@@ -336,27 +336,24 @@ class BP_Admin {
 
 		$hooks = array();
 
-		// Require WP 4.0+.
-		if ( bp_is_root_blog() && version_compare( $GLOBALS['wp_version'], '4.0', '>=' ) ) {
-			// Appearance > Emails.
-			$hooks[] = add_theme_page(
-				_x( 'Emails', 'screen heading', 'buddypress' ),
-				_x( 'Emails', 'screen heading', 'buddypress' ),
-				$this->capability,
-				'bp-emails-customizer-redirect',
-				'bp_email_redirect_to_customizer'
-			);
+		// Appearance > Emails.
+		$hooks[] = add_theme_page(
+			_x( 'Emails', 'screen heading', 'buddypress' ),
+			_x( 'Emails', 'screen heading', 'buddypress' ),
+			$this->capability,
+			'bp-emails-customizer-redirect',
+			'bp_email_redirect_to_customizer'
+		);
 
-			// Emails > Customize.
-			$hooks[] = add_submenu_page(
-				'edit.php?post_type=' . bp_get_email_post_type(),
-				_x( 'Customize', 'email menu label', 'buddypress' ),
-				_x( 'Customize', 'email menu label', 'buddypress' ),
-				$this->capability,
-				'bp-emails-customizer-redirect',
-				'bp_email_redirect_to_customizer'
-			);
-		}
+		// Emails > Customize.
+		$hooks[] = add_submenu_page(
+			'edit.php?post_type=' . bp_get_email_post_type(),
+			_x( 'Customize', 'email menu label', 'buddypress' ),
+			_x( 'Customize', 'email menu label', 'buddypress' ),
+			$this->capability,
+			'bp-emails-customizer-redirect',
+			'bp_email_redirect_to_customizer'
+		);
 
 		foreach( $hooks as $hook ) {
 			add_action( "admin_head-$hook", 'bp_core_modify_admin_menu_highlight' );
@@ -443,18 +440,6 @@ class BP_Admin {
 			}
 		}
 
-		/* Forums ************************************************************/
-
-		if ( bp_is_active( 'forums' ) ) {
-
-			// Add the main section.
-			add_settings_section( 'bp_forums', __( 'Legacy Group Forums', 'buddypress' ), 'bp_admin_setting_callback_bbpress_section', 'buddypress' );
-
-			// Allow subscriptions setting.
-			add_settings_field( 'bb-config-location', __( 'bbPress Configuration', 'buddypress' ), 'bp_admin_setting_callback_bbpress_configuration', 'buddypress', 'bp_forums' );
-			register_setting( 'buddypress', 'bb-config-location', '' );
-		}
-
 		/* Activity Section **************************************************/
 
 		if ( bp_is_active( 'activity' ) ) {
@@ -462,8 +447,8 @@ class BP_Admin {
 			// Add the main section.
 			add_settings_section( 'bp_activity', __( 'Activity Settings', 'buddypress' ), 'bp_admin_setting_callback_activity_section', 'buddypress' );
 
-			// Activity commenting on blog and forum posts.
-			add_settings_field( 'bp-disable-blogforum-comments', __( 'Blog &amp; Forum Comments', 'buddypress' ), 'bp_admin_setting_callback_blogforum_comments', 'buddypress', 'bp_activity' );
+			// Activity commenting on post and comments.
+			add_settings_field( 'bp-disable-blogforum-comments', __( 'Post Comments', 'buddypress' ), 'bp_admin_setting_callback_blogforum_comments', 'buddypress', 'bp_activity' );
 			register_setting( 'buddypress', 'bp-disable-blogforum-comments', 'bp_admin_sanitize_callback_blogforum_comments' );
 
 			// Activity Heartbeat refresh.
@@ -588,16 +573,16 @@ class BP_Admin {
 								<h4><?php _e( 'Administration Tools', 'buddypress' ); ?></h4>
 								<ul>
 									<?php if ( bp_is_active( 'members' ) ) : ?>
-										<li><?php printf( '<a href="%s" class="welcome-icon welcome-add-page">' . __( 'Add User Profile Fields', 'buddypress' ) . '</a>', esc_url( bp_get_admin_url( add_query_arg( array( 'page' => 'bp-profile-setup' ), 'users.php' ) ) ) ); ?></li>
+										<li><?php printf( '<a href="%s" class="welcome-icon welcome-add-page">' . __( 'Add User Profile Fields', 'buddypress' ) . '</a>', esc_url( add_query_arg( array( 'page' => 'bp-profile-setup' ), bp_get_admin_url( 'users.php' ) ) ) ); ?></li>
 									<?php endif; ?>
-									<li><?php printf( '<a href="%s" class="welcome-icon welcome-add-page">' . __( 'Manage User Signups', 'buddypress' ) . '</a>', esc_url( bp_get_admin_url( add_query_arg( array( 'page' => 'bp-signups' ), 'users.php' ) ) ) ); ?></li>
+									<li><?php printf( '<a href="%s" class="welcome-icon welcome-add-page">' . __( 'Manage User Signups', 'buddypress' ) . '</a>', esc_url( add_query_arg( array( 'page' => 'bp-signups' ), bp_get_admin_url( 'users.php' ) ) ) ); ?></li>
 									<?php if ( bp_is_active( 'activity' ) ) : ?>
-										<li><?php printf( '<a href="%s" class="welcome-icon welcome-add-page">' . __( 'Moderate Activity Streams', 'buddypress' ) . '</a>', esc_url( bp_get_admin_url( add_query_arg( array( 'page' => 'bp-activity' ), 'admin.php' ) ) ) ); ?></li>
+										<li><?php printf( '<a href="%s" class="welcome-icon welcome-add-page">' . __( 'Moderate Activity Streams', 'buddypress' ) . '</a>', esc_url( add_query_arg( array( 'page' => 'bp-activity' ), bp_get_admin_url( 'admin.php' ) ) ) ); ?></li>
 									<?php endif; ?>
 									<?php if ( bp_is_active( 'groups' ) ) : ?>
-										<li><?php printf( '<a href="%s" class="welcome-icon welcome-add-page">' . __( 'Manage Groups', 'buddypress' ) . '</a>', esc_url( bp_get_admin_url( add_query_arg( array( 'page' => 'bp-groups' ), 'admin.php' ) ) ) ); ?></li>
+										<li><?php printf( '<a href="%s" class="welcome-icon welcome-add-page">' . __( 'Manage Groups', 'buddypress' ) . '</a>', esc_url( add_query_arg( array( 'page' => 'bp-groups' ), bp_get_admin_url( 'admin.php' ) ) ) ); ?></li>
 									<?php endif; ?>
-									<li><?php printf( '<a href="%s" class="welcome-icon welcome-add-page">' . __( 'Repair Data', 'buddypress' ) . '</a>', esc_url( bp_get_admin_url( add_query_arg( array( 'page' => 'bp-tools' ), 'tools.php' ) ) ) ); ?>
+									<li><?php printf( '<a href="%s" class="welcome-icon welcome-add-page">' . __( 'Repair Data', 'buddypress' ) . '</a>', esc_url( add_query_arg( array( 'page' => 'bp-tools' ), bp_get_admin_url( 'tools.php' ) ) ) ); ?>
 									</li>
 								</ul>
 							</div>

@@ -100,7 +100,7 @@ function bp_blogs_record_existing_blogs( $args = array() ) {
 
 	// Query for all sites in network.
 	$r = bp_parse_args( $args, array(
-		'offset'   => false === bp_get_option( '_bp_record_blogs_offset' ) ? 0 : bp_get_option( '_bp_record_blogs_offset' ),
+		'offset'   => (int) bp_get_option( '_bp_record_blogs_offset' ),
 		'limit'    => 50,
 		'blog_ids' => array(),
 		'site_id'  => $wpdb->siteid
@@ -362,6 +362,7 @@ function bp_blogs_record_blog( $blog_id, $user_id, $no_activity = false ) {
 	$description     = get_blog_option( $blog_id, 'blogdescription' );
 	$close_old_posts = get_blog_option( $blog_id, 'close_comments_for_old_posts' );
 	$close_days_old  = get_blog_option( $blog_id, 'close_comments_days_old' );
+	$moderation      = get_blog_option( $blog_id, 'comment_moderation' );
 
 	$thread_depth = get_blog_option( $blog_id, 'thread_comments' );
 	if ( ! empty( $thread_depth ) ) {
@@ -384,6 +385,7 @@ function bp_blogs_record_blog( $blog_id, $user_id, $no_activity = false ) {
 	bp_blogs_update_blogmeta( $recorded_blog->blog_id, 'close_comments_for_old_posts', $close_old_posts );
 	bp_blogs_update_blogmeta( $recorded_blog->blog_id, 'close_comments_days_old', $close_days_old );
 	bp_blogs_update_blogmeta( $recorded_blog->blog_id, 'thread_comments_depth', $thread_depth );
+	bp_blogs_update_blogmeta( $recorded_blog->blog_id, 'comment_moderation', $moderation );
 
 	$is_private = !empty( $_POST['blog_public'] ) && (int) $_POST['blog_public'] ? false : true;
 
@@ -526,6 +528,19 @@ function bp_blogs_update_option_thread_comments_depth( $oldvalue, $newvalue ) {
 add_action( 'update_option_thread_comments_depth', 'bp_blogs_update_option_thread_comments_depth', 10, 2 );
 
 /**
+ * When updating comment moderation, mirror value in blogmeta table.
+ *
+ * @since 3.0.0
+ *
+ * @param string $oldvalue Value before save. Passed by do_action() but unused here.
+ * @param string $newvalue Value to change meta to.
+ */
+function bp_blogs_update_option_comment_moderation( $oldvalue, $newvalue ) {
+	bp_blogs_update_blogmeta( $GLOBALS['wpdb']->blogid, 'comment_moderation', $newvalue );
+}
+add_action( 'update_option_comment_moderation', 'bp_blogs_update_option_comment_moderation', 10, 2 );
+
+/**
  * Syncs site icon URLs to blogmeta.
  *
  * @since 2.7.0
@@ -548,8 +563,9 @@ add_action( 'update_option_site_icon', 'bp_blogs_update_option_site_icon', 10, 2
 /**
  * Deletes the 'url' blogmeta for a site.
  *
- * Hooked to 'refresh_blog_details', which is notably used when editing a site
- * under "Network Admin > Sites".
+ * Fires when a site's details are updated, which generally happens when
+ * editing a site under "Network Admin > Sites". Prior to WP 4.9, the
+ * correct hook was 'refresh_blog_details'; afterward, 'clean_site_cache'.
  *
  * @since 2.3.0
  *
@@ -558,7 +574,12 @@ add_action( 'update_option_site_icon', 'bp_blogs_update_option_site_icon', 10, 2
 function bp_blogs_delete_url_blogmeta( $site_id = 0 ) {
 	bp_blogs_delete_blogmeta( (int) $site_id, 'url' );
 }
-add_action( 'refresh_blog_details', 'bp_blogs_delete_url_blogmeta' );
+
+if ( function_exists( 'wp_switch_roles_and_user' ) ) {
+	add_action( 'clean_site_cache', 'bp_blogs_delete_url_blogmeta' );
+} else {
+	add_action( 'refresh_blog_details', 'bp_blogs_delete_url_blogmeta' );
+}
 
 /**
  * Record activity metadata about a published blog post.

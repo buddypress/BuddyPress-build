@@ -21,14 +21,19 @@ defined( 'ABSPATH' ) || exit;
  * @param array|string $args {
  *     Array of arguments. See BP_XProfile_Group::get() for full description. Those arguments whose defaults differ
  *     from that method are described here:
+ *     @type int          $user_id                Default: ID of the displayed user.
  *     @type string|array $member_type            Default: 'any'.
+ *     @type int|bool     $profile_group_id       Default: false.
  *     @type bool         $hide_empty_groups      Default: true.
  *     @type bool         $hide_empty_fields      Defaults to true on the Dashboard, on a user's Edit Profile page,
  *                                                or during registration. Otherwise false.
- *     @type bool         $fetch_visibility_level Defaults to true when an admin is viewing a profile, or when a user is
- *                                                viewing her own profile, or during registration. Otherwise false.
  *     @type bool         $fetch_fields           Default: true.
  *     @type bool         $fetch_field_data       Default: true.
+ *     @type bool         $fetch_visibility_level Defaults to true when an admin is viewing a profile, or when a user is
+ *                                                viewing her own profile, or during registration. Otherwise false.
+ *     @type int|bool     $exclude_groups         Default: false.
+ *     @type int|bool     $exclude_fields         Default: false
+ *     @type bool         $update_meta_cache      Default: true.
  * }
  *
  * @return bool
@@ -588,27 +593,22 @@ function bp_the_profile_field_edit_value() {
 	function bp_get_the_profile_field_edit_value() {
 		global $field;
 
-		/**
-		 * Check to see if the posted value is different, if it is re-display this
-		 * value as long as it's not empty and a required field.
-		 */
+		// Make sure field data object exists
 		if ( ! isset( $field->data ) ) {
 			$field->data = new stdClass;
 		}
 
+		// Default to empty value
 		if ( ! isset( $field->data->value ) ) {
 			$field->data->value = '';
 		}
 
-		if ( isset( $_POST['field_' . $field->id] ) && $field->data->value != $_POST['field_' . $field->id] ) {
-			if ( ! empty( $_POST['field_' . $field->id] ) ) {
-				$field->data->value = $_POST['field_' . $field->id];
-			} else {
-				$field->data->value = '';
-			}
-		}
+		// Was a new value posted? If so, use it instead.
+		if ( isset( $_POST['field_' . $field->id] ) ) {
 
-		$field_value = isset( $field->data->value ) ? bp_unserialize_profile_field( $field->data->value ) : '';
+			// This is sanitized via the filter below (based on the field type)
+			$field->data->value = $_POST['field_' . $field->id];
+		}
 
 		/**
 		 * Filters the XProfile field edit value.
@@ -619,7 +619,7 @@ function bp_the_profile_field_edit_value() {
 		 * @param string $type        Type for the profile field.
 		 * @param int    $id          ID for the profile field.
 		 */
-		return apply_filters( 'bp_get_the_profile_field_edit_value', $field_value, $field->type, $field->id );
+		return apply_filters( 'bp_get_the_profile_field_edit_value', $field->data->value, $field->type, $field->id );
 	}
 
 /**
@@ -904,7 +904,8 @@ function bp_the_profile_field_visibility_level_label() {
 	}
 
 /**
- * Return unserialized profile field data.
+ * Return unserialized profile field data, and combine any array items into a
+ * comma-separated string.
  *
  * @since 1.0.0
  *
@@ -913,7 +914,7 @@ function bp_the_profile_field_visibility_level_label() {
  */
 function bp_unserialize_profile_field( $value ) {
 	if ( is_serialized($value) ) {
-		$field_value = maybe_unserialize($value);
+		$field_value = @unserialize($value);
 		$field_value = implode( ', ', $field_value );
 		return $field_value;
 	}
