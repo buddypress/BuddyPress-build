@@ -10,7 +10,7 @@
 
 	<?php if ( bp_nouveau_has_nav( array( 'object' => 'directory' ) ) ) : ?>
 
-		<ul type="list" class="component-navigation <?php bp_nouveau_directory_list_class(); ?>">
+		<ul class="component-navigation <?php bp_nouveau_directory_list_class(); ?>">
 
 			<?php
 			while ( bp_nouveau_nav_items() ) :
@@ -22,7 +22,7 @@
 						<?php bp_nouveau_nav_link_text(); ?>
 
 						<?php if ( bp_nouveau_nav_has_count() ) : ?>
-							<span><?php bp_nouveau_nav_count(); ?></span>
+							<span class="count"><?php bp_nouveau_nav_count(); ?></span>
 						<?php endif; ?>
 					</a>
 				</li>
