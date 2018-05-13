@@ -1,4 +1,5 @@
 // BP Buttons, Submits, Icons and general clicky things styling.
+// @version 3.0.0
 
 // Buttons by default are styled as simple boxes but we may
 // change that by adding a parent class ( on any close parent to
@@ -230,6 +231,11 @@
 
 		.create-button { // the parent, i.e li element.
 			background: none;
+
+			a:focus,
+			a:hover {
+				text-decoration: underline;
+			}
 
 			@include medium-up {
 				float: right;

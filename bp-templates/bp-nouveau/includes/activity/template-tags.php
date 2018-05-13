@@ -3,6 +3,7 @@
  * Activity Template tags
  *
  * @since 3.0.0
+ * @version 3.0.0
  */
 
 // Exit if accessed directly.
@@ -17,14 +18,14 @@ function bp_nouveau_before_activity_directory_content() {
 	/**
 	 * Fires at the begining of the templates BP injected content.
 	 *
-	 * @since 2.3.0 (BuddyPress)
+	 * @since 2.3.0
 	 */
 	do_action( 'bp_before_directory_activity' );
 
 	/**
 	 * Fires before the activity directory display content.
 	 *
-	 * @since 1.2.0 (BuddyPress)
+	 * @since 1.2.0
 	 */
 	do_action( 'bp_before_directory_activity_content' );
 }
@@ -137,14 +138,14 @@ function bp_nouveau_activity_member_post_form() {
 function bp_nouveau_activity_hook( $when = '', $suffix = '' ) {
 	$hook = array( 'bp' );
 
-	if ( ! $when ) {
+	if ( $when ) {
 		$hook[] = $when;
 	}
 
 	// It's a activity entry hook
 	$hook[] = 'activity';
 
-	if ( ! $suffix ) {
+	if ( $suffix ) {
 		$hook[] = $suffix;
 	}
 
@@ -175,10 +176,37 @@ function bp_nouveau_activity_content() {
 	/**
 	 * Fires after the display of an activity entry content.
 	 *
-	 * @since 1.2.0 (BuddyPress)
+	 * @since 1.2.0
 	 */
 	do_action( 'bp_activity_entry_content' );
 }
+
+/**
+ * Output the Activity timestamp into the bp-timestamp attribute.
+ *
+ * @since 3.0.0
+ */
+function bp_nouveau_activity_timestamp() {
+	echo esc_attr( bp_nouveau_get_activity_timestamp() );
+}
+
+	/**
+	 * Get the Activity timestamp.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return integer The Activity timestamp.
+	 */
+	function bp_nouveau_get_activity_timestamp() {
+		/**
+		 * Filter here to edit the activity timestamp.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param integer $value The Activity timestamp.
+		 */
+		return apply_filters( 'bp_nouveau_get_activity_timestamp', strtotime( bp_get_activity_date_recorded() ) );
+	}
 
 /**
  * Output the action buttons inside an Activity Loop.
@@ -195,7 +223,7 @@ function bp_nouveau_activity_entry_buttons( $args = array() ) {
 	/**
 	 * Fires at the end of the activity entry meta data area.
 	 *
-	 * @since 1.2.0 (BuddyPress)
+	 * @since 1.2.0
 	 */
 	do_action( 'bp_activity_entry_meta' );
 
@@ -585,7 +613,7 @@ function bp_nouveau_activity_recurse_comments( $comment ) {
 	/**
 	 * Filters the opening tag for the template that lists activity comments.
 	 *
-	 * @since 1.6.0 (BuddyPress)
+	 * @since 1.6.0
 	 *
 	 * @param string $value Opening tag for the HTML markup to use.
 	 */
@@ -599,7 +627,7 @@ function bp_nouveau_activity_recurse_comments( $comment ) {
 		/**
 		 * Fires before the display of an activity comment.
 		 *
-		 * @since 1.5.0 (BuddyPress)
+		 * @since 1.5.0
 		 */
 		do_action( 'bp_before_activity_comment' );
 
@@ -608,7 +636,7 @@ function bp_nouveau_activity_recurse_comments( $comment ) {
 		/**
 		 * Fires after the display of an activity comment.
 		 *
-		 * @since 1.5.0 (BuddyPress)
+		 * @since 1.5.0
 		 */
 		do_action( 'bp_after_activity_comment' );
 
@@ -618,7 +646,7 @@ function bp_nouveau_activity_recurse_comments( $comment ) {
 	/**
 	 * Filters the closing tag for the template that list activity comments.
 	 *
-	 * @since 1.6.0 (BuddyPress)
+	 * @since 1.6.0
 	 *
 	 * @param string $value Closing tag for the HTML markup to use.
 	 */
@@ -671,7 +699,7 @@ function bp_nouveau_activity_comment_form() {
 	/**
 	 * Fires after the activity entry comment form.
 	 *
-	 * @since 1.5.0 (BuddyPress)
+	 * @since 1.5.0
 	 */
 	do_action( 'bp_activity_entry_comments' );
 }
@@ -690,7 +718,7 @@ function bp_nouveau_activity_comment_buttons( $args = array() ) {
 	/**
 	 * Fires after the defualt comment action options display.
 	 *
-	 * @since 1.6.0 (BuddyPress)
+	 * @since 1.6.0
 	 */
 	do_action( 'bp_activity_comment_options' );
 

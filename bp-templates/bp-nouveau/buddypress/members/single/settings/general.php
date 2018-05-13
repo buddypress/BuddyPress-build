@@ -3,11 +3,12 @@
  * BuddyPress - Members Settings ( General )
  *
  * @since 3.0.0
+ * @version 3.0.0
  */
 
 bp_nouveau_member_hook( 'before', 'settings_template' ); ?>
 
-<h2 class="screen-heading genaral-settings-screen">
+<h2 class="screen-heading general-settings-screen">
 	<?php _e( 'Email & Password', 'buddypress' ); ?>
 </h2>
 

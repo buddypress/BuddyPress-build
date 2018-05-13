@@ -3,6 +3,7 @@
  * Common template tags
  *
  * @since 3.0.0
+ * @version 3.0.0
  */
 
 // Exit if accessed directly.
@@ -27,6 +28,11 @@ function bp_nouveau_hook( $pieces = array() ) {
 
 	$hook = join( '_', $pieces );
 
+	/**
+	 * Fires inside the `bp_nouveau_hook()` function.
+	 *
+	 * @since 3.0.0
+	 */
 	do_action( $hook );
 }
 
@@ -207,7 +213,7 @@ function bp_nouveau_template_message() {
 			/**
 			 * Filters the 'template_notices' feedback message content.
 			 *
-			 * @since 1.5.5 (BuddyPress)
+			 * @since 1.5.5
 			 *
 			 * @param string $template_message Feedback message content.
 			 * @param string $type             The type of message being displayed.
@@ -284,12 +290,21 @@ function bp_nouveau_user_feedback( $feedback_id = '' ) {
 	}
 
 	if ( ! empty( $feedback['before'] ) ) {
+
+		/**
+		 * Fires before display of a feedback message to the user.
+		 *
+		 * This is a dynamic filter that is dependent on the "before" value provided by bp_nouveau_get_user_feedback().
+		 *
+		 * @since 3.0.0
+		 */
 		do_action( $feedback['before'] );
 	}
 
 	$bp_nouveau->user_feedback = $feedback;
 
 	bp_get_template_part(
+
 		/**
 		 * Filter here if you wish to use a different templates than the notice one.
 		 *
@@ -301,6 +316,14 @@ function bp_nouveau_user_feedback( $feedback_id = '' ) {
 	);
 
 	if ( ! empty( $feedback['after'] ) ) {
+
+		/**
+		 * Fires before display of a feedback message to the user.
+		 *
+		 * This is a dynamic filter that is dependent on the "after" value provided by bp_nouveau_get_user_feedback().
+		 *
+		 * @since 3.0.0
+		 */
 		do_action( $feedback['after'] );
 	}
 
@@ -323,6 +346,8 @@ function bp_nouveau_before_loop() {
 	/**
 	 * Fires before the start of the component loop.
 	 *
+	 * This is a variable hook that is dependent on the current component.
+	 *
 	 * @since 1.2.0
 	 */
 	do_action( "bp_before_{$component}_loop" );
@@ -342,6 +367,8 @@ function bp_nouveau_after_loop() {
 
 	/**
 	 * Fires after the finish of the component loop.
+	 *
+	 * This is a variable hook that is dependent on the current component.
 	 *
 	 * @since 1.2.0
 	 */
@@ -635,7 +662,13 @@ function bp_nouveau_avatar_args() {
 	/**
 	 * Filter arguments for full-size avatars.
 	 *
-	 * @param array $args
+	 * @since 3.0.0
+	 *
+	 * @param array $args {
+	 *     @param string $type   Avatar type.
+	 *     @param int    $width  Avatar width value.
+	 *     @param int    $height Avatar height value.
+	 * }
 	 */
 	return apply_filters( 'bp_nouveau_avatar_args', array(
 		'type'   => 'full',
@@ -1120,7 +1153,7 @@ function bp_nouveau_nav_link_text() {
 		$link_text  = '';
 
 		if ( 'directory' === $bp_nouveau->displayed_nav && ! empty( $nav_item->text ) ) {
-			$link_text = $nav_item->text;
+			$link_text = _bp_strip_spans_from_title( $nav_item->text );
 
 		} elseif (
 			( 'groups' === $bp_nouveau->displayed_nav || 'personal' === $bp_nouveau->displayed_nav )
@@ -1396,6 +1429,13 @@ function bp_nouveau_container_classes() {
 			}
 
 		} else {
+			/**
+			 * Filters the BuddyPress Nouveau single item setting ID.
+			 *
+			 * @since 3.0.0
+			 *
+			 * @param string $value Setting ID.
+			 */
 			$customizer_option = apply_filters( 'bp_nouveau_single_item_display_settings_id', '' );
 		}
 
@@ -1436,6 +1476,16 @@ function bp_nouveau_container_classes() {
 
 		$class = array_map( 'sanitize_html_class', $classes );
 
+		/**
+		 * Filters the final results for BuddyPress Nouveau container classes.
+		 *
+		 * This filter will return a single string of concatenated classes to be used.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param string $value   Concatenated classes.
+		 * @param array  $classes Array of classes that were concatenated.
+		 */
 		return apply_filters( 'bp_nouveau_get_container_classes', join( ' ', $class ), $classes );
 	}
 
@@ -1465,16 +1515,18 @@ function bp_nouveau_single_item_nav_classes() {
 		// @todo wasn't able to get $customizer_option to pass a string to get_settings
 		// this is a temp workaround but differs from earlier dir approach- bad!
 		if ( bp_is_group() ) {
-			$nav_tabs = bp_nouveau_get_temporary_setting( 'group_nav_tabs', bp_nouveau_get_appearance_settings( 'group_nav_tabs' ) );
+			$nav_tabs = (int) bp_nouveau_get_temporary_setting( 'group_nav_tabs', bp_nouveau_get_appearance_settings( 'group_nav_tabs' ) );
 
 		} elseif ( bp_is_user() ) {
-			$nav_tabs = bp_nouveau_get_temporary_setting( 'user_nav_tabs', bp_nouveau_get_appearance_settings( 'user_nav_tabs' ) );
+			$nav_tabs = (int) bp_nouveau_get_temporary_setting( 'user_nav_tabs', bp_nouveau_get_appearance_settings( 'user_nav_tabs' ) );
 		}
 
 		if ( bp_is_group() && 1 === $nav_tabs) {
 			$classes[] = 'group-nav-tabs';
+			$classes[] = 'tabbed-links';
 		} elseif ( bp_is_user() && 1 === $nav_tabs ) {
 			$classes[] = 'user-nav-tabs';
+			$classes[] = 'tabbed-links';
 		}
 
 		if ( bp_is_user() ) {
@@ -1486,7 +1538,7 @@ function bp_nouveau_single_item_nav_classes() {
 
 		$customizer_option = ( bp_is_user() )? 'user_nav_display' : 'group_nav_display';
 
-		$layout_prefs = bp_nouveau_get_temporary_setting( $customizer_option, bp_nouveau_get_appearance_settings( $customizer_option ) );
+		$layout_prefs = (int) bp_nouveau_get_temporary_setting( $customizer_option, bp_nouveau_get_appearance_settings( $customizer_option ) );
 
 		// Set the global for a later use - this is moved from the `bp_nouveau_get_container_classes()
 		// But was set as a check for this array class addition.
@@ -1501,6 +1553,16 @@ function bp_nouveau_single_item_nav_classes() {
 		$classes[] = $menu_type;
 		$class = array_map( 'sanitize_html_class', $classes );
 
+		/**
+		 * Filters the final results for BuddyPress Nouveau single item nav classes.
+		 *
+		 * This filter will return a single string of concatenated classes to be used.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param string $value   Concatenated classes.
+		 * @param array  $classes Array of classes that were concatenated.
+		 */
 		return apply_filters( 'bp_nouveau_get_single_item_nav_classes', join( ' ', $class ), $classes );
 	}
 
@@ -1534,12 +1596,12 @@ function bp_nouveau_single_item_subnav_classes() {
 			$classes[] = 'group-subnav';
 		}
 
-		if ( bp_is_group() && 'send-invites' === bp_current_action() ) {
+		if ( ( bp_is_group() && 'send-invites' === bp_current_action() ) || ( bp_is_group_create() && 'group-invites' === bp_get_groups_current_create_step() ) ) {
 			$classes[] = 'bp-invites-nav';
 		}
 
 		$customizer_option = ( bp_is_user() )? 'user_subnav_tabs' : 'group_subnav_tabs';
-		$nav_tabs = bp_nouveau_get_temporary_setting( $customizer_option, bp_nouveau_get_appearance_settings( $customizer_option ) );
+		$nav_tabs = (int) bp_nouveau_get_temporary_setting( $customizer_option, bp_nouveau_get_appearance_settings( $customizer_option ) );
 
 		if ( bp_is_user() && 1 === $nav_tabs ) {
 			$classes[] = 'tabbed-links';
@@ -1551,6 +1613,16 @@ function bp_nouveau_single_item_subnav_classes() {
 
 		$class = array_map( 'sanitize_html_class', $classes );
 
+		/**
+		 * Filters the final results for BuddyPress Nouveau single item subnav classes.
+		 *
+		 * This filter will return a single string of concatenated classes to be used.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param string $value   Concatenated classes.
+		 * @param array  $classes Array of classes that were concatenated.
+		 */
 		return apply_filters( 'bp_nouveau_get_single_item_subnav_classes', join( ' ', $class ), $classes );
 	}
 
@@ -1574,7 +1646,7 @@ function bp_nouveau_groups_create_steps_classes() {
 	 */
 	function bp_nouveau_get_group_create_steps_classes() {
 		$classes  = array( 'bp-navs', 'group-create-links', 'no-ajax' );
-		$nav_tabs = bp_nouveau_get_temporary_setting( 'groups_create_tabs', bp_nouveau_get_appearance_settings( 'groups_create_tabs' ) );
+		$nav_tabs = (int) bp_nouveau_get_temporary_setting( 'groups_create_tabs', bp_nouveau_get_appearance_settings( 'groups_create_tabs' ) );
 
 		if ( 1 === $nav_tabs ) {
 			$classes[] = 'tabbed-links';
@@ -1582,6 +1654,16 @@ function bp_nouveau_groups_create_steps_classes() {
 
 		$class = array_map( 'sanitize_html_class', $classes );
 
+		/**
+		 * Filters the final results for BuddyPress Nouveau group creation step classes.
+		 *
+		 * This filter will return a single string of concatenated classes to be used.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param string $value   Concatenated classes.
+		 * @param array  $classes Array of classes that were concatenated.
+		 */
 		return apply_filters( 'bp_nouveau_get_group_create_steps_classes', join( ' ', $class ), $classes );
 	}
 
@@ -1605,6 +1687,14 @@ function bp_nouveau_get_search_primary_object( $object = '' ) {
 	} elseif ( bp_is_directory() ) {
 		$object = 'dir';
 	} else {
+
+		/**
+		 * Filters the search primary object if no other was found.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param string $object Search object.
+		 */
 		$object = apply_filters( 'bp_nouveau_get_search_primary_object', $object );
 	}
 
@@ -1635,6 +1725,14 @@ function bp_nouveau_get_search_objects( $objects = array() ) {
 	} elseif ( 'group' === $primary ) {
 		$objects['secondary'] = bp_current_action();
 	} else {
+
+		/**
+		 * Filters the search objects if no others were found.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param array $objects Search objects.
+		 */
 		$objects = apply_filters( 'bp_nouveau_get_search_objects', $objects );
 	}
 
@@ -1651,6 +1749,30 @@ function bp_nouveau_search_container_class() {
 	$class   = join( '-search ', array_map( 'sanitize_html_class', $objects ) ) . '-search';
 
 	echo esc_attr( $class );
+}
+
+/**
+ * Output the search form data-bp attribute.
+ *
+ * @since 3.0.0
+ *
+ * @param  string $attr The data-bp attribute.
+ * @return string The data-bp attribute.
+ */
+function bp_nouveau_search_object_data_attr( $attr = '' ) {
+	$objects = bp_nouveau_get_search_objects();
+
+	if ( ! isset( $objects['secondary'] ) ) {
+		return $attr;
+	}
+
+	if ( bp_is_active( 'groups' ) && bp_is_group_members() ) {
+		$attr = join( '_', $objects );
+	} else {
+		$attr = $objects['secondary'];
+	}
+
+	echo esc_attr( $attr );
 }
 
 /**
@@ -1735,7 +1857,7 @@ function bp_nouveau_search_form() {
 			/**
 			 * Fires before the display of the activity syndication options.
 			 *
-			 * @since 1.2.0 (BuddyPress)
+			 * @since 1.2.0
 			 */
 			do_action( 'bp_activity_syndication_options' );
 
@@ -1743,7 +1865,7 @@ function bp_nouveau_search_form() {
 			/**
 			 * Fires inside the unordered list displaying blog sub-types.
 			 *
-			 * @since 1.5.0 (BuddyPress)
+			 * @since 1.5.0
 			 */
 			do_action( 'bp_blogs_directory_blog_sub_types' );
 
@@ -1751,7 +1873,7 @@ function bp_nouveau_search_form() {
 			/**
 			 * Fires inside the groups directory group types.
 			 *
-			 * @since 1.2.0 (BuddyPress)
+			 * @since 1.2.0
 			 */
 			do_action( 'bp_groups_directory_group_types' );
 
@@ -1759,7 +1881,7 @@ function bp_nouveau_search_form() {
 			/**
 			 * Fires inside the members directory member sub-types.
 			 *
-			 * @since 1.5.0 (BuddyPress)
+			 * @since 1.5.0
 			 */
 			do_action( 'bp_members_directory_member_sub_types' );
 		}
@@ -1767,7 +1889,7 @@ function bp_nouveau_search_form() {
 		/**
 		 * Fires inside the syndication options list, after the RSS option.
 		 *
-		 * @since 1.2.0 (BuddyPress)
+		 * @since 1.2.0
 		 */
 		do_action( 'bp_group_activity_syndication_options' );
 	}
@@ -1796,7 +1918,11 @@ function bp_nouveau_current_object() {
 		$component['members_select']   = 'groups_members-order-select';
 		$component['members_order_by'] = 'groups_members-order-by';
 		$component['object']           = bp_current_action();
-		$component['data_filter']      = 'group_' . bp_current_action();
+		$component['data_filter']      = bp_current_action();
+
+		if ( 'activity' !== bp_current_action() ) {
+			$component['data_filter'] = 'group_' . bp_current_action();
+		}
 
 	} else {
 		$component['members_select']   = 'members-order-select';
@@ -1837,6 +1963,14 @@ function bp_nouveau_filter_container_id() {
 		);
 
 		if ( isset( $ids[ $component['object'] ] ) ) {
+
+			/**
+			 * Filters the container ID for BuddyPress Nouveau filters.
+			 *
+			 * @since 3.0.0
+			 *
+			 * @param string $value ID based on current component object.
+			 */
 			return apply_filters( 'bp_nouveau_get_filter_container_id', $ids[ $component['object'] ] );
 		}
 
@@ -1872,6 +2006,14 @@ function bp_nouveau_filter_id() {
 		);
 
 		if ( isset( $ids[ $component['object'] ] ) ) {
+
+			/**
+			 * Filters the filter ID for BuddyPress Nouveau filters.
+			 *
+			 * @since 3.0.0
+			 *
+			 * @param string $value ID based on current component object.
+			 */
 			return apply_filters( 'bp_nouveau_get_filter_id', $ids[ $component['object'] ] );
 		}
 
@@ -1902,7 +2044,15 @@ function bp_nouveau_filter_label() {
 			$label = __( 'Show:', 'buddypress' );
 		}
 
-		return apply_filters( 'bp_nouveau_get_filter_label', $label );
+		/**
+		 * Filters the label for BuddyPress Nouveau filters.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param string $label     Label for BuddyPress Nouveau filter.
+		 * @param array  $component The data filter's data-bp-filter attribute value.
+		 */
+		return apply_filters( 'bp_nouveau_get_filter_label', $label, $component );
 	}
 
 /**
@@ -2059,13 +2209,13 @@ function bp_nouveau_signup_hook( $when = '', $prefix = '' ) {
 function bp_nouveau_activation_hook( $when = '', $suffix = '' ) {
 	$hook = array( 'bp' );
 
-	if ( ! $when ) {
+	if ( $when ) {
 		$hook[] = $when;
 	}
 
 	$hook[] = 'activate';
 
-	if ( ! $suffix ) {
+	if ( $suffix ) {
 		$hook[] = $suffix;
 	}
 
@@ -2233,7 +2383,9 @@ function bp_nouveau_signup_form( $section = 'account_details' ) {
 	/**
 	 * Fires and displays any extra member registration details fields.
 	 *
-	 * @since 1.9.0 (BuddyPress)
+	 * This is a variable hook that depends on the current section.
+	 *
+	 * @since 1.9.0
 	 */
 	do_action( "bp_{$section}_fields" );
 }
@@ -2252,6 +2404,14 @@ function bp_nouveau_submit_button( $action ) {
 	}
 
 	if ( ! empty( $submit_data['before'] ) ) {
+
+		/**
+		 * Fires before display of the submit button.
+		 *
+		 * This is a dynamic filter that is dependent on the "before" value provided by bp_nouveau_get_submit_button().
+		 *
+		 * @since 3.0.0
+		 */
 		do_action( $submit_data['before'] );
 	}
 
@@ -2266,6 +2426,14 @@ function bp_nouveau_submit_button( $action ) {
 	wp_nonce_field( $submit_data['nonce'] );
 
 	if ( ! empty( $submit_data['after'] ) ) {
+
+		/**
+		 * Fires before display of the submit button.
+		 *
+		 * This is a dynamic filter that is dependent on the "after" value provided by bp_nouveau_get_submit_button().
+		 *
+		 * @since 3.0.0
+		 */
 		do_action( $submit_data['after'] );
 	}
 }

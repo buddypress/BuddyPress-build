@@ -8,6 +8,7 @@
  * It's also used to create the common Backbone views.
  *
  * @since 2.3.0
+ * @version 3.0.0
  */
 
 /**
@@ -37,8 +38,20 @@ do_action( 'bp_attachments_avatar_check_template' );
 		<?php bp_nouveau_user_feedback( 'group-avatar-delete-info' ); ?>
 		<button type="button" class="button edit" id="bp-delete-avatar"><?php esc_html_e( 'Delete Group Profile Photo', 'buddypress' ); ?></button>
 	<# } else { #>
-		<?php do_action( 'bp_attachments_avatar_delete_template' ); ?>
+		<?php
+			/**
+			 * Fires inside the avatar delete frontend template markup if no other data.object condition is met.
+			 *
+			 * @since 3.0.0
+			 */
+			do_action( 'bp_attachments_avatar_delete_template' ); ?>
 	<# } #>
 </script>
 
-<?php do_action( 'bp_attachments_avatar_main_template' ); ?>
+<?php
+	/**
+	 * Fires after the avatar main frontend template markup.
+	 *
+	 * @since 3.0.0
+	 */
+	do_action( 'bp_attachments_avatar_main_template' ); ?>

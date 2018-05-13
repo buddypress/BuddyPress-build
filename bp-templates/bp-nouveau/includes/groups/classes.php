@@ -3,6 +3,7 @@
  * Groups classes
  *
  * @since 3.0.0
+ * @version 3.0.0
  */
 
 // Exit if accessed directly.
@@ -228,6 +229,7 @@ class BP_Nouveau_Customizer_Group_Nav extends BP_Core_Nav {
 				'name'                => __( 'Memberships', 'buddypress' ),
 				'slug'                => $this->group->slug,
 				'position'            => -1,
+				/** This filter is documented in bp-groups/classes/class-bp-groups-component.php. */
 				'default_subnav_slug' => apply_filters( 'bp_groups_default_extension', defined( 'BP_GROUPS_DEFAULT_EXTENSION' ) ? BP_GROUPS_DEFAULT_EXTENSION : 'home' ),
 			),
 			'home'    => array(

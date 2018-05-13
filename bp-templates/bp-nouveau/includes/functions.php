@@ -3,6 +3,7 @@
  * Common functions
  *
  * @since 3.0.0
+ * @version 3.0.0
  */
 
 // Exit if accessed directly.
@@ -235,7 +236,7 @@ function bp_nouveau_wrapper( $args = array() ) {
 	*/
 	$current_component_class = bp_current_component() . '-meta';
 
-	if ( 'groups' === bp_current_component() && 'activity' === bp_current_action() ) {
+	if ( bp_is_group_activity() ) {
 		$generic_class = ' activity-meta ';
 	} else {
 		$generic_class = '';
@@ -362,6 +363,15 @@ function bp_nouveau_is_object_nav_in_sidebar() {
  * @return bool
  */
 function bp_nouveau_current_user_can( $capability = '' ) {
+	/**
+	 * Filters whether or not the current user can perform an action for BuddyPress Nouveau.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param bool   $value      Whether or not the user is logged in.
+	 * @param string $capability Current capability being checked.
+	 * @param int    $value      Current logged in user ID.
+	 */
 	return apply_filters( 'bp_nouveau_current_user_can', is_user_logged_in(), $capability, bp_loggedin_user_id() );
 }
 
@@ -385,6 +395,14 @@ function bp_nouveau_parse_hooked_dir_nav( $hook = '', $component = '', $position
 
 	// Get the hook output.
 	ob_start();
+
+	/**
+	 * Fires at the start of the output for `bp_nouveau_parse_hooked_dir_nav()`.
+	 *
+	 * This hook is variable and depends on the hook parameter passed in.
+	 *
+	 * @since 3.0.0
+	 */
 	do_action( $hook );
 	$output = ob_get_clean();
 
@@ -451,6 +469,14 @@ function bp_nouveau_parse_hooked_options( $hook = '', $filters = array() ) {
 	}
 
 	ob_start();
+
+	/**
+	 * Fires at the start of the output for `bp_nouveau_parse_hooked_options()`.
+	 *
+	 * This hook is variable and depends on the hook parameter passed in.
+	 *
+	 * @since 3.0.0
+	 */
 	do_action( $hook );
 
 	$output = ob_get_clean();
@@ -544,7 +570,10 @@ function bp_nouveau_get_temporary_setting( $option = '', $retval = false ) {
 		return $retval;
 	}
 
-	$temporary_setting = json_decode( wp_unslash( $_POST['customized'] ), true );
+	$temporary_setting = wp_unslash( $_POST['customized'] );
+	if ( ! is_array( $temporary_setting ) ) {
+		$temporary_setting = json_decode( $temporary_setting, true );
+	}
 
 	// This is used to transport the customizer settings into Ajax requests.
 	if ( 'any' === $option ) {
@@ -880,7 +909,11 @@ function bp_nouveau_theme_cover_image( $params = array() ) {
  */
 function bp_nouveau_get_user_feedback( $feedback_id = '' ) {
 	/**
-	 * Filter to add your custom feedback messages
+	 * Filters the BuddyPress Nouveau feedback messages.
+	 *
+	 * Use this filter to add your custom feedback messages.
+	 *
+	 * @since 3.0.0
 	 *
 	 * @param array $value The list of feedback messages.
 	 */
@@ -905,11 +938,11 @@ function bp_nouveau_get_user_feedback( $feedback_id = '' ) {
 		),
 		'directory-activity-loading' => array(
 			'type'    => 'loading',
-			'message' => __( 'Loading the community updates, please wait.', 'buddypress' ),
+			'message' => __( 'Loading the community updates. Please wait.', 'buddypress' ),
 		),
 		'single-activity-loading' => array(
 			'type'    => 'loading',
-			'message' => __( 'Loading the update, please wait.', 'buddypress' ),
+			'message' => __( 'Loading the update. Please wait.', 'buddypress' ),
 		),
 		'activity-loop-none' => array(
 			'type'    => 'info',
@@ -925,11 +958,11 @@ function bp_nouveau_get_user_feedback( $feedback_id = '' ) {
 		),
 		'directory-blogs-loading' => array(
 			'type'    => 'loading',
-			'message' => __( 'Loading the sites of the network, please wait.', 'buddypress' ),
+			'message' => __( 'Loading the sites of the network. Please wait.', 'buddypress' ),
 		),
 		'directory-groups-loading' => array(
 			'type'    => 'loading',
-			'message' => __( 'Loading the groups of the community, please wait.', 'buddypress' ),
+			'message' => __( 'Loading the groups of the community. Please wait.', 'buddypress' ),
 		),
 		'groups-loop-none' => array(
 			'type'    => 'info',
@@ -937,11 +970,11 @@ function bp_nouveau_get_user_feedback( $feedback_id = '' ) {
 		),
 		'group-activity-loading' => array(
 			'type'    => 'loading',
-			'message' => __( 'Loading the group updates, please wait.', 'buddypress' ),
+			'message' => __( 'Loading the group updates. Please wait.', 'buddypress' ),
 		),
 		'group-members-loading' => array(
 			'type'    => 'loading',
-			'message' => __( 'Requesting the group members, please wait.', 'buddypress' ),
+			'message' => __( 'Requesting the group members. Please wait.', 'buddypress' ),
 		),
 		'group-members-none' => array(
 			'type'    => 'info',
@@ -961,11 +994,11 @@ function bp_nouveau_get_user_feedback( $feedback_id = '' ) {
 		),
 		'group-requests-loading' => array(
 			'type'    => 'loading',
-			'message' => __( 'Loading the members who requested to join the group, please wait.', 'buddypress' ),
+			'message' => __( 'Loading the members who requested to join the group. Please wait.', 'buddypress' ),
 		),
 		'group-delete-warning' => array(
 			'type'    => 'warning',
-			'message' => __( 'WARNING: Deleting this group will completely remove ALL content associated with it. There is no way back, please be careful with this option.', 'buddypress' ),
+			'message' => __( 'WARNING: Deleting this group will completely remove ALL content associated with it. There is no way back. Please be careful with this option.', 'buddypress' ),
 		),
 		'group-avatar-delete-info' => array(
 			'type'    => 'info',
@@ -973,7 +1006,7 @@ function bp_nouveau_get_user_feedback( $feedback_id = '' ) {
 		),
 		'directory-members-loading' => array(
 			'type'    => 'loading',
-			'message' => __( 'Loading the members of your community, please wait.', 'buddypress' ),
+			'message' => __( 'Loading the members of your community. Please wait.', 'buddypress' ),
 		),
 		'members-loop-none' => array(
 			'type'    => 'info',
@@ -1001,23 +1034,23 @@ function bp_nouveau_get_user_feedback( $feedback_id = '' ) {
 		),
 		'member-activity-loading' => array(
 			'type'    => 'loading',
-			'message' => __( 'Loading the user\'s updates, please wait.', 'buddypress' ),
+			'message' => __( 'Loading the user\'s updates. Please wait.', 'buddypress' ),
 		),
 		'member-blogs-loading' => array(
 			'type'    => 'loading',
-			'message' => __( 'Loading the blogs the user is a contributor of, please wait.', 'buddypress' ),
+			'message' => __( 'Loading the user\'s blogs. Please wait.', 'buddypress' ),
 		),
 		'member-friends-loading' => array(
 			'type'    => 'loading',
-			'message' => __( 'Loading the members the user is friend with, please wait.', 'buddypress' ),
+			'message' => __( 'Loading the user\'s friends. Please wait.', 'buddypress' ),
 		),
 		'member-groups-loading' => array(
 			'type'    => 'loading',
-			'message' => __( 'Loading the groups the user is a member of, please wait.', 'buddypress' ),
+			'message' => __( 'Loading the user\'s groups. Please wait.', 'buddypress' ),
 		),
 		'member-notifications-loading' => array(
 			'type'    => 'loading',
-			'message' => __( 'Loading notifications, please wait.', 'buddypress' ),
+			'message' => __( 'Loading notifications. Please wait.', 'buddypress' ),
 		),
 		'member-group-invites-all' => array(
 			'type'    => 'info',
@@ -1025,7 +1058,7 @@ function bp_nouveau_get_user_feedback( $feedback_id = '' ) {
 		),
 		'member-group-invites-friends-only' => array(
 			'type'    => 'info',
-			'message' => __( 'Currently only your friends can invite you to groups, uncheck the box to allow any member to send invites.', 'buddypress' ),
+			'message' => __( 'Currently only your friends can invite you to groups. Uncheck the box to allow any member to send invites.', 'buddypress' ),
 		),
 	) );
 
@@ -1055,13 +1088,13 @@ function bp_nouveau_get_user_feedback( $feedback_id = '' ) {
 	} elseif ( 'member-delete-account' === $feedback_id && bp_is_my_profile() ) {
 		$feedback_messages['member-delete-account']['message'] = __( 'Deleting your account will delete all of the content you have created. It will be completely irrecoverable.', 'buddypress' );
 	} elseif ( 'member-activity-loading' === $feedback_id && bp_is_my_profile() ) {
-		$feedback_messages['member-activity-loading']['message'] = __( 'Loading your updates, please wait.', 'buddypress' );
+		$feedback_messages['member-activity-loading']['message'] = __( 'Loading your updates. Please wait.', 'buddypress' );
 	} elseif ( 'member-blogs-loading' === $feedback_id && bp_is_my_profile() ) {
-		$feedback_messages['member-blogs-loading']['message'] = __( 'Loading the blogs you are a contributor of, please wait.', 'buddypress' );
+		$feedback_messages['member-blogs-loading']['message'] = __( 'Loading your blogs. Please wait.', 'buddypress' );
 	} elseif ( 'member-friends-loading' === $feedback_id && bp_is_my_profile() ) {
-		$feedback_messages['member-friends-loading']['message'] = __( 'Loading your friends, please wait.', 'buddypress' );
+		$feedback_messages['member-friends-loading']['message'] = __( 'Loading your friends. Please wait.', 'buddypress' );
 	} elseif ( 'member-groups-loading' === $feedback_id && bp_is_my_profile() ) {
-		$feedback_messages['member-groups-loading']['message'] = __( 'Loading the groups you are a member of, please wait.', 'buddypress' );
+		$feedback_messages['member-groups-loading']['message'] = __( 'Loading your groups. Please wait.', 'buddypress' );
 	}
 
 	/**

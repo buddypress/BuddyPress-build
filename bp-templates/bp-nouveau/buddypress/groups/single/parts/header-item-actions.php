@@ -3,11 +3,14 @@
  * BuddyPress - Groups Header item-actions.
  *
  * @since 3.0.0
+ * @version 3.0.0
  */
 ?>
 <div id="item-actions" class="group-item-actions">
 
 	<?php if ( bp_current_user_can( 'groups_access_group' ) ) : ?>
+
+		<h2 class="bp-screen-reader-text"><?php esc_html_e( 'Leadership', 'buddypress' ); ?></h2>
 
 		<dl class="moderators-lists">
 			<dt class="moderators-title"><?php _e( 'Group Admins', 'buddypress' ); ?></dt>

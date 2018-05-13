@@ -3,12 +3,23 @@
  * BP Nouveau Group's edit settings template.
  *
  * @since 3.0.0
+ * @version 3.0.0
  */
 ?>
 
-<h2 class="bp-screen-title <?php if ( bp_is_group_create() ) : ?>creation-step-name<?php endif; ?>">
-	<?php _e( 'Group Settings', 'buddypress' ); ?>
-</h2>
+<?php if ( bp_is_group_create() ) : ?>
+
+	<h3 class="bp-screen-title creation-step-name">
+		<?php esc_html_e( 'Select Group Settings', 'buddypress' ); ?>
+	</h3>
+
+<?php else : ?>
+
+	<h2 class="bp-screen-title">
+		<?php esc_html_e( 'Change Group Settings', 'buddypress' ); ?>
+	</h2>
+
+<?php endif; ?>
 
 <div class="group-settings-selections">
 

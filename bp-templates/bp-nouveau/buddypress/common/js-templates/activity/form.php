@@ -2,11 +2,12 @@
 /**
  * Activity Post form JS Templates
  *
+ * @version 3.0.0
  */
 ?>
 
 <script type="text/html" id="tmpl-activity-post-form-feedback">
-	<p>{{{data.message}}}</p>
+	<span class="bp-icon" aria-hidden="true"></span><p>{{{data.message}}}</p>
 </script>
 
 <script type="text/html" id="tmpl-activity-post-form-avatar">

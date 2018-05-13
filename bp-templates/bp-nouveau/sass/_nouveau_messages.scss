@@ -1,5 +1,5 @@
 // Nouveau Messages styles.
-
+// @version 3.0.0
 // Icon additions to default action star
 
 
@@ -96,7 +96,8 @@
 			@include box-item-size(1, 2, 5%);
 		}
 
-		.thread-from {
+		.thread-from,
+		.thread-to {
 
 			@include box-item-size(1, 2, 20%);
 
@@ -108,6 +109,14 @@
 			.user-name {
 				display: inline-block;
 				line-height: 1.1;
+			}
+
+			.num-recipients {
+				color: $meta-text;
+				font-weight: 400;
+
+				@include font-size(12);
+				margin: 0;
 			}
 		}
 
@@ -133,8 +142,12 @@
 			}
 		}
 
+		// the unread parent li
+		&.unread {
+			font-weight: 700;
+		}
+
 		.thread-content {
-			cursor: pointer;
 
 			.excerpt {
 				color: $meta-text;
@@ -144,6 +157,7 @@
 			}
 
 			.thread-from,
+			.thread-to,
 			.thread-subject {
 
 				@include responsive-font(16);
@@ -174,7 +188,7 @@
 		float: right;
 		max-width: 30%;
 
-		.bp-icons {
+		.bp-icons:not(.bp-hide) {
 			display: inline-block;
 			margin: 0;
 			padding: $pad-xsml $pad-sml;
@@ -192,7 +206,7 @@
 		margin-top: $marg-lrg;
 
 		.preview-message {
-			clear: both;
+			overflow: hidden;
 		}
 
 		.preview-content {
@@ -230,8 +244,9 @@
 			border-bottom: 1px solid $bp-border-dark;
 
 			@include box-shadow(-2px 1px 9px 0 #eee);
-			overflow: hidden;
+			display: table;
 			padding: 0.2em;
+			width: 100%;
 
 			.avatar {
 				width: 30px;
@@ -262,7 +277,7 @@
 		}
 
 		.message-content {
-			clear: both;
+			overflow: hidden;
 			margin: 1em auto 0;
 			width: 90%;
 		}

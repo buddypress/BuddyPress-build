@@ -6,17 +6,42 @@
  * dealing with invites.
  *
  * @since 3.0.0
+ * @version 3.0.0
  */
 ?>
-<nav class="<?php bp_nouveau_single_item_subnav_classes(); ?>" id="subnav" role="navigation" aria-label="<?php esc_attr_e( 'Group invitations menu', 'buddypress' ); ?>"></nav>
 
-<h2 class="bp-screen-title <?php if ( bp_is_group_create() ) { echo esc_attr( 'creation-step-name' ); } ?>">
-	<?php _e( 'Invite Members', 'buddypress' ); ?>
-</h2>
+<?php if ( bp_is_group_create() ) : ?>
 
-<div class="subnav-filters group-subnav-filters bp-invites-filters"></div>
-<div class="bp-invites-feedback"></div>
-<div class="members bp-invites-content"></div>
+	<h3 class="bp-screen-title creation-step-name">
+		<?php esc_html_e( 'Invite Members', 'buddypress' ); ?>
+	</h3>
+
+<?php else : ?>
+
+	<h2 class="bp-screen-title">
+		<?php esc_html_e( 'Invite Members', 'buddypress' ); ?>
+	</h2>
+
+<?php endif; ?>
+
+<div id="group-invites-container">
+
+	<nav class="<?php bp_nouveau_single_item_subnav_classes(); ?>" id="subnav" role="navigation" aria-label="<?php esc_attr_e( 'Group invitations menu', 'buddypress' ); ?>"></nav>
+
+	<div class="group-invites-column">
+		<div class="subnav-filters group-subnav-filters bp-invites-filters"></div>
+		<div class="bp-invites-feedback"></div>
+		<div class="members bp-invites-content"></div>
+	</div>
+
+</div>
+
+<script type="text/html" id="tmpl-bp-group-invites-feedback">
+	<div class="bp-feedback {{data.type}}">
+		<span class="bp-icon" aria-hidden="true"></span>
+		<p>{{{data.message}}}</p>
+	</div>
+</script>
 
 <script type="text/html" id="tmpl-bp-invites-nav">
 	<a href="{{data.href}}" class="bp-invites-nav-item" data-nav="{{data.id}}">{{data.name}}</a>
@@ -58,16 +83,22 @@
 
 	<div class="action">
 		<# if ( undefined === data.is_sent || ( false === data.is_sent && true === data.can_edit ) ) { #>
-			<button type="button" class="button invite-button group-add-remove-invite-button bp-tooltip bp-icons" data-bp-tooltip="<?php esc_attr_e( 'Invite / Uninvite', 'buddypress' ); ?>">
-				<span class="icons"></span>
-				<span class="bp-screen-reader-text"><?php esc_html_e( 'Invite/Uninvite', 'buddypress' ); ?></span>
+			<button type="button" class="button invite-button group-add-remove-invite-button bp-tooltip bp-icons<# if ( data.selected ) { #> selected<# } #>" data-bp-tooltip="<# if ( data.selected ) { #><?php esc_attr_e( 'Disinvite', 'buddypress' ); ?><# } else { #><?php esc_attr_e( 'Invite', 'buddypress' ); ?><# } #>">
+				<span class="icons" aria-hidden="true"></span>
+				<span class="bp-screen-reader-text">
+					<# if ( data.selected ) { #>
+						<?php esc_html_e( 'Disinvite', 'buddypress' ); ?>
+					<# } else { #>
+						<?php esc_html_e( 'Invite', 'buddypress' ); ?>
+					<# } #>
+				</span>
 			</button>
 		<# } #>
 
 		<# if ( undefined !== data.can_edit && true === data.can_edit ) { #>
-			<button type="button" class="button invite-button group-remove-invite-button bp-tooltip bp-icons" data-bp-tooltip="<?php esc_attr_e( 'Remove', 'buddypress' ); ?>">
-				<span class=" icons"></span>
-				<span class="bp-screen-reader-text"><?php esc_html_e( 'Remove', 'buddypress' ); ?></span>
+			<button type="button" class="button invite-button group-remove-invite-button bp-tooltip bp-icons" data-bp-tooltip="<?php esc_attr_e( 'Disinvite', 'buddypress' ); ?>">
+				<span class=" icons" aria-hidden="true"></span>
+				<span class="bp-screen-reader-text"><?php esc_html_e( 'Disinvite', 'buddypress' ); ?></span>
 			</button>
 		<# } #>
 	</div>
@@ -75,8 +106,8 @@
 </script>
 
 <script type="text/html" id="tmpl-bp-invites-selection">
-	<a href="#" title="{{data.name}}">
-		<img src="{{data.avatar}}" class="avatar" alt="{{data.name}}" />
+	<a href="#uninvite-user-{{data.id}}" class="bp-tooltip" data-bp-tooltip="{{data.uninviteTooltip}}" aria-label="{{data.uninviteTooltip}}">
+		<img src="{{data.avatar}}" class="avatar" alt=""/>
 	</a>
 </script>
 
@@ -103,20 +134,22 @@
 					<span id="button-text" class="bp-screen-reader-text"><?php esc_html_e( 'Search', 'buddypress' ); ?></span>
 				</button>
 			</form>
-			</div>
+		</div>
 	</div>
 </script>
 
 <script type="text/html" id="tmpl-bp-invites-paginate">
 	<# if ( 1 !== data.page ) { #>
-		<button type="button" id="bp-invites-prev-page" class="button invite-button">
-			<span class="bp-screen-reader-text"><?php esc_html_e( 'Previous', 'buddypress' ); ?></span>
-		</button>
+		<a href="#previous-page" id="bp-invites-prev-page" class="button invite-button bp-tooltip" data-bp-tooltip="<?php esc_attr_e( 'Previous page', 'buddypress' ); ?>">
+			<span class="dashicons dashicons-arrow-left" aria-hidden="true"></span>
+			<span class="bp-screen-reader-text"><?php esc_html_e( 'Previous page', 'buddypress' ); ?></span>
+		</a>
 	<# } #>
 
 	<# if ( data.total_page !== data.page ) { #>
-		<button type="button" id="bp-invites-next-page" class="button invite-button">
-			<span class="bp-screen-reader-text"><?php esc_html_e( 'Next', 'buddypress' ); ?></span>
+		<a href="#next-page" id="bp-invites-next-page" class="button invite-button bp-tooltip" data-bp-tooltip="<?php esc_attr_e( 'Next page', 'buddypress' ); ?>">
+			<span class="bp-screen-reader-text"><?php esc_html_e( 'Next page', 'buddypress' ); ?></span>
+			<span class="dashicons dashicons-arrow-right" aria-hidden="true"></span>
 		</button>
 	<# } #>
 </script>

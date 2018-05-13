@@ -1,5 +1,6 @@
 /* global wp, bp, BP_Nouveau, _, Backbone, tinymce, tinyMCE */
 /* jshint devel: true */
+/* @version 3.0.0 */
 window.wp = window.wp || {};
 window.bp = window.bp || {};
 
@@ -452,18 +453,13 @@ window.bp = window.bp || {};
 	bp.Views.Feedback = bp.Nouveau.Messages.View.extend( {
 		tagName: 'div',
 		className: 'bp-messages bp-user-messages-feedback',
+		template  : bp.template( 'bp-messages-feedback' ),
 
 		initialize: function() {
-			this.value = this.options.value;
-
-			if ( this.options.type ) {
-				this.el.className += ' ' + this.options.type;
-			}
-		},
-
-		render: function() {
-			this.$el.html( this.value );
-			return this;
+			this.model = new Backbone.Model( {
+				type: this.options.type || 'info',
+				message: this.options.value
+			} );
 		}
 	} );
 
@@ -639,8 +635,7 @@ window.bp = window.bp || {};
 		tagName   : 'div',
 
 		events: {
-			'click .thread-content'       : 'changePreview',
-			'dblclick .thread-content'    : 'loadSingleView'
+			'click .subject' : 'changePreview'
 		},
 
 		initialize: function() {
@@ -671,6 +666,9 @@ window.bp = window.bp || {};
 
 		threadsFetched: function() {
 			bp.Nouveau.Messages.removeFeedback();
+
+			// Inform the user about how to use the UI.
+			bp.Nouveau.Messages.displayFeedback( BP_Nouveau.messages.howto, 'info' );
 		},
 
 		threadsFetchError: function( collection, response ) {
@@ -693,23 +691,13 @@ window.bp = window.bp || {};
 			this.views.add( '#message-threads', new bp.Views.userThread( { model: thread } ) );
 		},
 
-		changePreview: function( event ) {
-			var target = $( event.currentTarget );
-
-			if ( ! target.hasClass( 'thread-content' ) || $( event.target ).hasClass( 'user-link' ) ) {
-				return event;
-			}
-
-			event.preventDefault();
-
-			if ( target.parent( 'li' ).hasClass( 'selected' ) ) {
+		setActiveThread: function( active ) {
+			if ( ! active ) {
 				return;
 			}
 
-			var selected = target.data( 'thread-id' );
-
 			_.each( this.collection.models, function( thread ) {
-				if ( thread.id === selected ) {
+				if ( thread.id === active ) {
 					thread.set( 'active', true );
 				} else {
 					thread.unset( 'active' );
@@ -717,18 +705,31 @@ window.bp = window.bp || {};
 			}, this );
 		},
 
-		loadSingleView: function( event ) {
+		changePreview: function( event ) {
 			var target = $( event.currentTarget );
 
-			if ( ! target.hasClass( 'thread-content' ) || $( event.target ).hasClass( 'user-link' ) ) {
-				return event;
-			}
+			event.preventDefault();
+			bp.Nouveau.Messages.removeFeedback();
 
+			// If the click is done on an active conversation, open it.
+			if ( $( event.currentTarget ).closest( '.thread-item' ).hasClass( 'selected' ) ) {
+				this.loadSingleView( event );
+
+			// Otherwise activate the conversation and display its preview.
+			} else {
+				this.setActiveThread( target.closest( '.thread-content' ).data( 'thread-id' ) );
+
+				$( '.message-action-view' ).focus();
+			}
+		},
+
+		loadSingleView: function( event ) {
 			event.preventDefault();
 
-			var id = target.data( 'thread-id' );
-
-			bp.Nouveau.Messages.router.navigate( 'view/' + id, { trigger: true } );
+			bp.Nouveau.Messages.router.navigate(
+				'view/' + $( event.currentTarget ).closest( '.thread-content' ).data( 'thread-id' ),
+				{ trigger: true }
+			);
 		}
 	} );
 
@@ -748,6 +749,23 @@ window.bp = window.bp || {};
 
 			if ( this.model.get( 'unread' ) ) {
 				this.el.className += ' unread';
+			}
+
+			if ( 'sentbox' === bp.Nouveau.Messages.box ) {
+				var recipientsCount = this.model.get( 'recipients' ).length, toOthers = '';
+
+				if ( 2 === recipientsCount ) {
+					toOthers = BP_Nouveau.messages.toOthers.one;
+				} else if ( 2 < recipientsCount ) {
+					toOthers = BP_Nouveau.messages.toOthers.more.replace( '%d', Number( recipientsCount - 1 ) );
+				}
+
+				this.model.set( {
+					recipientsCount: recipientsCount,
+					toOthers: toOthers
+				}, { silent: true } );
+			} else if ( this.model.get( 'recipientsCount' )  ) {
+				this.model.unset( 'recipientsCount', { silent: true } );
 			}
 
 			this.model.on( 'change:active', this.toggleClass, this );
@@ -794,8 +812,13 @@ window.bp = window.bp || {};
 
 			if ( hasChecked ) {
 				$( '#user-messages-bulk-actions' ).closest( '.bulk-actions-wrap' ).removeClass( 'bp-hide' );
+
+				// Inform the user about how to use the bulk actions.
+				bp.Nouveau.Messages.displayFeedback( BP_Nouveau.messages.howtoBulk, 'info' );
 			} else {
 				$( '#user-messages-bulk-actions' ).closest( '.bulk-actions-wrap' ).addClass( 'bp-hide' );
+
+				bp.Nouveau.Messages.removeFeedback();
 			}
 		},
 
@@ -855,7 +878,8 @@ window.bp = window.bp || {};
 		},
 
 		doAction: function( event ) {
-			var action = $( event.currentTarget ).data( 'bp-action' ), self = this, options = {}, mid;
+			var action = $( event.currentTarget ).data( 'bp-action' ), self = this, options = {}, mid,
+			    feedback = BP_Nouveau.messages.doingAction;
 
 			if ( ! action ) {
 				return event;
@@ -879,7 +903,14 @@ window.bp = window.bp || {};
 				mid = model.get( 'starred_id' );
 			}
 
+			if ( ! _.isUndefined( feedback[ action ] ) ) {
+				bp.Nouveau.Messages.displayFeedback( feedback[ action ], 'loading' );
+			}
+
 			this.collection.doAction( action, mid, options ).done( function( response ) {
+				// Remove previous feedback.
+				bp.Nouveau.Messages.removeFeedback();
+
 				bp.Nouveau.Messages.displayFeedback( response.feedback, response.type );
 
 				if ( 'delete' === action || ( 'starred' === self.collection.options.box && 'unstar' === action ) ) {
@@ -900,6 +931,9 @@ window.bp = window.bp || {};
 					model.set( _.first( response.messages ) );
 				}
 			} ).fail( function( response ) {
+				// Remove previous feedback.
+				bp.Nouveau.Messages.removeFeedback();
+
 				bp.Nouveau.Messages.displayFeedback( response.feedback, response.type );
 			} );
 		}
@@ -925,8 +959,13 @@ window.bp = window.bp || {};
 
 			if ( isChecked ) {
 				$( this.el ).find( '.bulk-actions-wrap' ).removeClass( 'bp-hide' ).addClass( 'bp-show' );
+
+				// Inform the user about how to use the bulk actions.
+				bp.Nouveau.Messages.displayFeedback( BP_Nouveau.messages.howtoBulk, 'info' );
 			} else {
 				$( this.el ).find( '.bulk-actions-wrap' ).addClass( 'bp-hide' );
+
+				bp.Nouveau.Messages.removeFeedback();
 			}
 
 			_.each( this.collection.models, function( model ) {
@@ -935,7 +974,8 @@ window.bp = window.bp || {};
 		},
 
 		doBulkAction: function( event ) {
-			var self = this, options = {}, ids, attr = 'id';
+			var self = this, options = {}, ids, attr = 'id',
+			    feedback = BP_Nouveau.messages.doingAction;
 
 			event.preventDefault();
 
@@ -974,7 +1014,14 @@ window.bp = window.bp || {};
 			    return [model.get( attr ), model.get( 'id' )];
 			} ) );
 
+			if ( ! _.isUndefined( feedback[ action ] ) ) {
+				bp.Nouveau.Messages.displayFeedback( feedback[ action ], 'loading' );
+			}
+
 			this.collection.doAction( action, ids, options ).done( function( response ) {
+				// Remove previous feedback.
+				bp.Nouveau.Messages.removeFeedback();
+
 				bp.Nouveau.Messages.displayFeedback( response.feedback, response.type );
 
 				if ( 'delete' === action || ( 'starred' === self.collection.options.box && 'unstar' === action ) ) {
@@ -993,6 +1040,9 @@ window.bp = window.bp || {};
 					} );
 				}
 			} ).fail( function( response ) {
+				// Remove previous feedback.
+				bp.Nouveau.Messages.removeFeedback();
+
 				bp.Nouveau.Messages.displayFeedback( response.feedback, response.type );
 			} );
 		}
@@ -1087,11 +1137,13 @@ window.bp = window.bp || {};
 		template : bp.template( 'bp-messages-single-header' ),
 
 		events: {
-			'click .actions a' : 'doAction'
+			'click .actions a' : 'doAction',
+			'click .actions button' : 'doAction'
 		},
 
 		doAction: function( event ) {
-			var action = $( event.currentTarget ).data( 'bp-action' ), self = this, options = {};
+			var action = $( event.currentTarget ).data( 'bp-action' ), self = this, options = {},
+			    feedback = BP_Nouveau.messages.doingAction;
 
 			if ( ! action ) {
 				return event;
@@ -1104,9 +1156,22 @@ window.bp = window.bp || {};
 			}
 
 			if ( 'star' === action || 'unstar' === action ) {
+				var opposite = {
+					'star'  : 'unstar',
+					'unstar' : 'star'
+				};
+
 				options.data = {
 					'star_nonce' : this.model.get( 'star_nonce' )
 				};
+
+				$( event.currentTarget ).addClass( 'bp-hide' );
+				$( event.currentTarget ).parent().find( '[data-bp-action="' + opposite[ action ] + '"]' ).removeClass( 'bp-hide' );
+
+			}
+
+			if ( ! _.isUndefined( feedback[ action ] ) ) {
+				bp.Nouveau.Messages.displayFeedback( feedback[ action ], 'loading' );
 			}
 
 			bp.Nouveau.Messages.threads.doAction( action, this.model.get( 'id' ), options ).done( function( response ) {
@@ -1116,10 +1181,16 @@ window.bp = window.bp || {};
 				} else if ( response.messages ) {
 					self.model.set( _.first( response.messages ) );
 				}
+
+				// Remove previous feedback.
+				bp.Nouveau.Messages.removeFeedback();
+
 				// Display the feedback
 				bp.Nouveau.Messages.displayFeedback( response.feedback, response.type );
-
 			} ).fail( function( response ) {
+				// Remove previous feedback.
+				bp.Nouveau.Messages.removeFeedback();
+
 				bp.Nouveau.Messages.displayFeedback( response.feedback, response.type );
 			} );
 		}
@@ -1199,8 +1270,10 @@ window.bp = window.bp || {};
 			this.views.add( '#bp-message-thread-header', new bp.Views.userMessagesHeader( { model: this.options.thread } ) );
 		},
 
-		messagesFetchError: function( collection ) {
-			console.log( collection );
+		messagesFetchError: function( collection, response ) {
+			if ( response.feedback && response.type ) {
+				bp.Nouveau.Messages.displayFeedback( response.feedback, response.type );
+			}
 		},
 
 		addMessage: function( message ) {
@@ -1242,7 +1315,9 @@ window.bp = window.bp || {};
 		},
 
 		replyError: function( response ) {
-			console.log( response );
+			if ( response.feedback && response.type ) {
+				bp.Nouveau.Messages.displayFeedback( response.feedback, response.type );
+			}
 		}
 	} );
 

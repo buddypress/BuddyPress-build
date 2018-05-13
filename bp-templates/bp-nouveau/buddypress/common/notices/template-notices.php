@@ -1,8 +1,9 @@
 <?php
 /**
- * BP Nouveau temptate notices template.
+ * BP Nouveau template notices template.
  *
  * @since 3.0.0
+ * @version 3.0.0
  */
 ?>
 <aside class="<?php bp_nouveau_template_message_classes(); ?>">

@@ -6,11 +6,20 @@
  * dealing with user's private messages.
  *
  * @since 3.0.0
+ * @version 3.0.0
  */
 ?>
 <div class="subnav-filters filters user-subnav bp-messages-filters" id="subsubnav"></div>
-<div class="bp-messages-content"></div>
+
 <div class="bp-messages-feedback"></div>
+<div class="bp-messages-content"></div>
+
+<script type="text/html" id="tmpl-bp-messages-feedback">
+	<div class="bp-feedback {{data.type}}">
+		<span class="bp-icon" aria-hidden="true"></span>
+		<p>{{{data.message}}}</p>
+	</div>
+</script>
 
 <script type="text/html" id="tmpl-bp-messages-form">
 	<?php bp_nouveau_messages_hook( 'before', 'compose_content' ); ?>
@@ -33,8 +42,8 @@
 
 <script type="text/html" id="tmpl-bp-messages-editor">
 	<?php
-	// Temporarly filter the editor
-	add_filter( 'mce_buttons', 'bp_nouveau_mce_buttons', 10, 1 );
+	// Add a temporary filter on editor buttons
+	add_filter( 'mce_buttons', 'bp_nouveau_messages_mce_buttons', 10, 1 );
 
 	wp_editor(
 		'',
@@ -50,8 +59,8 @@
 			'textarea_rows' => 5,
 		)
 	);
-	// Temporarly filter the editor
-	remove_filter( 'mce_buttons', 'bp_nouveau_mce_buttons', 10, 1 );
+	// Remove the temporary filter on editor buttons
+	remove_filter( 'mce_buttons', 'bp_nouveau_messages_mce_buttons', 10, 1 );
 	?>
 </script>
 
@@ -114,20 +123,39 @@
 <script type="text/html" id="tmpl-bp-messages-thread">
 	<div class="thread-cb">
 		<input class="message-check" type="checkbox" name="message_ids[]" id="bp-message-thread-{{data.id}}" value="{{data.id}}">
-		<label for="bp-message-thread-{{data.id}}" class="bp-screen-reader-text"><?php esc_html_e( 'Select this message', 'buddypress' ); ?></label>
+		<label for="bp-message-thread-{{data.id}}" class="bp-screen-reader-text"><?php esc_html_e( 'Select message:', 'buddypress' ); ?> {{data.subject}}</label>
 	</div>
-	<div class="thread-from">
-		<a class="user-link" href="{{data.sender_link}}">
-			<img class="avatar" src="{{data.sender_avatar}}" alt="" />
-			<span class="user-name">{{data.sender_name}}</span>
-		</a>
-	</div>
+
+	<# if ( ! data.recipientsCount ) { #>
+		<div class="thread-from">
+			<a class="user-link" href="{{data.sender_link}}">
+				<img class="avatar" src="{{data.sender_avatar}}" alt="" />
+				<span class="bp-screen-reader-text"><?php esc_html_e( 'From:', 'buddypress' ); ?></span>
+				<span class="user-name">{{data.sender_name}}</span>
+			</a>
+		</div>
+	<# } else {
+		var recipient = _.first( data.recipients );
+		#>
+		<div class="thread-to">
+			<a class="user-link" href="{{recipient.user_link}}">
+				<img class="avatar" src="{{recipient.avatar}}" alt="" />
+				<span class="bp-screen-reader-text"><?php esc_html_e( 'To:', 'buddypress' ); ?></span>
+				<span class="user-name">{{recipient.user_name}}</span>
+			</a>
+
+			<# if ( data.toOthers ) { #>
+				<span class="num-recipients">{{data.toOthers}}</span>
+			<# } #>
+		</div>
+	<# } #>
+
 	<div class="thread-content" data-thread-id="{{data.id}}">
 		<div class="thread-subject">
 			<span class="thread-count">({{data.count}})</span>
-			<span class="subject"><# print( data.subject ); #></span>
+			<a class="subject" href="#view/{{data.id}}">{{data.subject}}</a>
 		</div>
-		<p class="excerpt"><# print( data.excerpt ); #></p>
+		<p class="excerpt">{{data.excerpt}}</p>
 	</div>
 	<div class="thread-date">
 		<time datetime="{{data.date.toISOString()}}">{{data.display_date}}</time>
@@ -228,17 +256,13 @@
 		<div class="actions">
 			<# if ( undefined !== data.star_link ) { #>
 
-				<?php $test = 1; ?>
+				<button type="button" class="message-action-unstar bp-tooltip bp-icons <# if ( false === data.is_starred ) { #>bp-hide<# } #>" data-bp-star-link="{{data.star_link}}" data-bp-action="unstar" data-bp-tooltip="<?php esc_attr_e( 'Unstar Message', 'buddypress' ); ?>">
+					<span class="bp-screen-reader-text"><?php esc_html_e( 'Unstar Message', 'buddypress' ); ?></span>
+				</button>
 
-				<# if ( false !== data.is_starred ) { #>
-					<button type="button" class="message-action-unstar bp-tooltip bp-icons" data-bp-star-link="{{data.star_link}}" data-bp-action="unstar" data-bp-tooltip="<?php esc_attr_e( 'Unstar Message', 'buddypress' ); ?>">
-						<span class="bp-screen-reader-text"><?php esc_html_e( 'Unstar Message', 'buddypress' ); ?></span>
-					</button>
-				<# } else { #>
-					<button type="button" class="message-action-star bp-tooltip bp-icons" data-bp-star-link="{{data.star_link}}" data-bp-action="star" data-bp-tooltip="<?php esc_attr_e( 'Star Message', 'buddypress' ); ?>">
-						<span class="bp-screen-reader-text"><?php esc_html_e( 'Star Message', 'buddypress' ); ?></span>
-					</button>
-				<# } #>
+				<button type="button" class="message-action-star bp-tooltip bp-icons <# if ( false !== data.is_starred ) { #>bp-hide<# } #>" data-bp-star-link="{{data.star_link}}" data-bp-action="star" data-bp-tooltip="<?php esc_attr_e( 'Star Message', 'buddypress' ); ?>">
+					<span class="bp-screen-reader-text"><?php esc_html_e( 'Star Message', 'buddypress' ); ?></span>
+				</button>
 
 			<# } #>
 		</div>

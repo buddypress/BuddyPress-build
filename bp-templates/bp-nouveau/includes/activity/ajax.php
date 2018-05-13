@@ -3,6 +3,7 @@
  * Activity Ajax functions
  *
  * @since 3.0.0
+ * @version 3.0.0
  */
 
 // Exit if accessed directly.
@@ -438,6 +439,15 @@ function bp_nouveau_ajax_get_activity_objects() {
 
 		wp_send_json_success( array_map( 'bp_nouveau_prepare_group_for_js', $groups['groups'] ) );
 	} else {
+
+		/**
+		 * Filters the response for custom activity objects.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param array $response Array of custom response objects to send to AJAX return.
+		 * @param array $value    Activity object type from $_POST global.
+		 */
 		$response = apply_filters( 'bp_nouveau_get_activity_custom_objects', $response, $_POST['type'] );
 	}
 
@@ -541,8 +551,16 @@ function bp_nouveau_ajax_post_update() {
 
 	wp_send_json_success( array(
 		'id'           => $activity_id,
-		'message'      => sprintf( __( 'Update posted <a href="%s" class="just-posted">View activity</a>', 'buddypress' ), esc_url( bp_activity_get_permalink( $activity_id ) ) ),
+		'message'      => esc_html__( 'Update posted.', 'buddypress' ) . ' ' . sprintf( '<a href="%s" class="just-posted">%s</a>', esc_url( bp_activity_get_permalink( $activity_id ) ), esc_html__( 'View activity.', 'buddypress' ) ),
 		'activity'     => $acivity,
+
+		/**
+		 * Filters whether or not an AJAX post update is private.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param string/bool $is_private Privacy status for the update.
+		 */
 		'is_private'   => apply_filters( 'bp_nouveau_ajax_post_update_is_private', $is_private ),
 		'is_directory' => bp_is_activity_directory(),
 	) );

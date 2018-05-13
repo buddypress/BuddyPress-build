@@ -3,11 +3,12 @@
  * BuddyPress - Groups Cover Image Header.
  *
  * @since 3.0.0
+ * @version 3.0.0
  */
 ?>
 
 <div id="cover-image-container">
-	<a id="header-cover-image" href="<?php echo esc_url( bp_get_group_permalink() ); ?>"></a>
+	<div id="header-cover-image"></div>
 
 	<div id="item-header-cover-image">
 		<?php if ( ! bp_disable_group_avatar_uploads() ) : ?>

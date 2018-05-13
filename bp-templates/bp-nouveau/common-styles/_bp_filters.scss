@@ -1,6 +1,7 @@
 // BP Directory Filters
 // Specific Styling & Positioning
 // N.B. See _bp_navigation for additional rules and properties.
+// @version 3.0.0.
 .buddypress-wrap {
 
 	.dir-component-filters { // ul
@@ -186,6 +187,17 @@
 			border: 0;
 			border-radius: 0;
 			line-height: 1.6;
+		}
+	}
+
+	.group-subnav-filters {
+
+		.group-invites-search {
+			margin-bottom: 1em;
+		}
+
+		.last {
+			text-align: center;
 		}
 	}
 

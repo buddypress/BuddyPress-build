@@ -3,6 +3,7 @@
  * Messages functions
  *
  * @since 3.0.0
+ * @version 3.0.0
  */
 
 // Exit if accessed directly.
@@ -91,15 +92,28 @@ function bp_nouveau_messages_localize_scripts( $params = array() ) {
 
 	$params['messages'] = array(
 		'errors' => array(
-			'send_to'         => __( 'Please add at least a user to send the message to, using their @username.', 'buddypress' ),
+			'send_to'         => __( 'Please add at least one recipient.', 'buddypress' ),
 			'subject'         => __( 'Please add a subject to your message.', 'buddypress' ),
 			'message_content' => __( 'Please add some content to your message.', 'buddypress' ),
 		),
 		'nonces' => array(
 			'send' => wp_create_nonce( 'messages_send_message' ),
 		),
-		'loading' => '<div class="bp-feedback info"><span class="bp-icon"></span><p>' . __( 'Loading messages, please wait.', 'buddypress' ) . '</p></div>',
-		'bulk_actions' => bp_nouveau_messages_get_bulk_actions(),
+		'loading'       => __( 'Loading messages. Please wait.', 'buddypress' ),
+		'doingAction'   => array(
+			'read'   => __( 'Marking message(s) as read. Please wait.', 'buddypress' ),
+			'unread' => __( 'Marking message(s) as unread. Please wait.', 'buddypress' ),
+			'delete' => __( 'Deleting message(s). Please wait.', 'buddypress' ),
+			'star'   => __( 'Starring message(s). Please wait.', 'buddypress' ),
+			'unstar' => __( 'Unstarring message(s). Please wait.', 'buddypress' ),
+		),
+		'bulk_actions'  => bp_nouveau_messages_get_bulk_actions(),
+		'howto'         => __( 'Click on the message title to preview it in the Active conversation box below.', 'buddypress' ),
+		'howtoBulk'     => __( 'Use the select box to define your bulk action and click on the &#10003; button to apply.', 'buddypress' ),
+		'toOthers'      => array(
+			'one'  => __( '(and 1 other)', 'buddypress' ),
+			'more' => __( '(and %d others)', 'buddypress' ),
+		),
 	);
 
 	// Star private messages.
@@ -246,7 +260,7 @@ function bp_nouveau_format_notice_notification_for_user( $array ) {
 	}
 
 	return array(
-		'text' => esc_html__( 'New site wide notice', 'buddypress' ),
+		'text' => esc_html__( 'New sitewide notice', 'buddypress' ),
 		'link' => bp_loggedin_user_domain(),
 	);
 }
@@ -299,14 +313,23 @@ function bp_nouveau_push_sitewide_notices() {
 }
 
 /**
+ * Disable the WP Editor buttons not allowed in messages content.
+ *
  * @since 3.0.0
+ *
+ * @param array $buttons The WP Editor buttons list.
+ * @param array          The filtered WP Editor buttons list.
  */
-function bp_nouveau_mce_buttons( $buttons = array() ) {
+function bp_nouveau_messages_mce_buttons( $buttons = array() ) {
 	$remove_buttons = array(
 		'wp_more',
 		'spellchecker',
 		'wp_adv',
 		'fullscreen',
+		'alignleft',
+		'alignright',
+		'aligncenter',
+		'formatselect',
 	);
 
 	// Remove unused buttons
@@ -364,6 +387,16 @@ function bp_nouveau_get_message_date( $date ) {
 		$date_format = 'M j';
 	}
 
+	/**
+	 * Filters the message date for BuddyPress Nouveau display.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param string $value           Internationalization-ready formatted date value.
+	 * @param mixed  $calculated_time Calculated time.
+	 * @param string $date            Date value.
+	 * @param string $date_format     Format to convert the calcuated date to.
+	 */
 	return apply_filters( 'bp_nouveau_get_message_date', date_i18n( $date_format, $calculated_time, true ), $calculated_time, $date, $date_format );
 }
 

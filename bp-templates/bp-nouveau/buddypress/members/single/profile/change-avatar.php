@@ -3,12 +3,13 @@
  * BuddyPress - Members Profile Change Avatar
  *
  * @since 3.0.0
+ * @version 3.0.0
  */
 ?>
 
-<h2 class="screen-heading"><?php _e( 'Change Profile Photo', 'buddypress' ); ?></h2>
+<h2 class="screen-heading change-avatar-screen"><?php _e( 'Change Profile Photo', 'buddypress' ); ?></h2>
 
-<?php bp_nouveau_xprofile_hook( 'before', 'avatar_upload_content' ); ?>
+<?php bp_nouveau_member_hook( 'before', 'avatar_upload_content' ); ?>
 
 <?php if ( ! (int) bp_get_option( 'bp-disable-avatar-uploads' ) ) : ?>
 
@@ -78,4 +79,4 @@
 <?php endif; ?>
 
 <?php
-bp_nouveau_xprofile_hook( 'after', 'avatar_upload_content' );
+bp_nouveau_member_hook( 'after', 'avatar_upload_content' );

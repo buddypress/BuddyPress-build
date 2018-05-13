@@ -3,6 +3,7 @@
  * Functions of BuddyPress's "Nouveau" template pack.
  *
  * @since 3.0.0
+ * @version 3.0.0
  *
  * @buddypress-template-pack {
  *   Template Pack ID:       nouveau
@@ -116,6 +117,13 @@ class BP_Nouveau extends BP_Theme_Compat {
 			require( $component_loader );
 		}
 
+		/**
+		 * Fires after all of the BuddyPress Nouveau includes have been loaded. Passed by reference.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param BP_Nouveau $value Current BP_Nouveau instance.
+		 */
 		do_action_ref_array( 'bp_nouveau_includes', array( &$this ) );
 	}
 
@@ -127,11 +135,9 @@ class BP_Nouveau extends BP_Theme_Compat {
 	protected function setup_support() {
 		$width         = 1300;
 		$top_offset    = 150;
-		$avatar_height = apply_filters( 'bp_core_avatar_full_height', $top_offset );
 
-		if ( ! empty( $GLOBALS['content_width'] ) ) {
-			$width = $GLOBALS['content_width'];
-		}
+		/** This filter is documented in bp-core/bp-core-avatars.php. */
+		$avatar_height = apply_filters( 'bp_core_avatar_full_height', $top_offset );
 
 		if ( $avatar_height > $top_offset ) {
 			$top_offset = $avatar_height;
@@ -214,8 +220,26 @@ class BP_Nouveau extends BP_Theme_Compat {
 			$rtl = '-rtl';
 		}
 
+		/**
+		 * Filters the BuddyPress Nouveau CSS dependencies.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param array $value Array of style dependencies. Default Dashicons.
+		 */
 		$css_dependencies = apply_filters( 'bp_nouveau_css_dependencies', array( 'dashicons' ) );
 
+		/**
+		 * Filters the styles to enqueue for BuddyPress Nouveau.
+		 *
+		 * This filter provides a multidimensional array that will map to arguments used for wp_enqueue_style().
+		 * The primary index should have the stylesheet handle to use, and be assigned an array that has indexes for
+		 * file location, dependencies, and version.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param array $value Array of styles to enqueue.
+		 */
 		$styles = apply_filters( 'bp_nouveau_enqueue_styles', array(
 			'bp-nouveau' => array(
 				'file' => 'css/buddypress%1$s%2$s.css', 'dependencies' => $css_dependencies, 'version' => $this->version,
@@ -269,6 +293,17 @@ class BP_Nouveau extends BP_Theme_Compat {
 
 		unset( $dependencies[ $bp_confirm ] );
 
+		/**
+		 * Filters the scripts to enqueue for BuddyPress Nouveau.
+		 *
+		 * This filter provides a multidimensional array that will map to arguments used for wp_register_script().
+		 * The primary index should have the script handle to use, and be assigned an array that has indexes for
+		 * file location, dependencies, version and if it should load in the footer or not.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param array $value Array of scripts to register.
+		 */
 		$scripts = apply_filters( 'bp_nouveau_register_scripts', array(
 			'bp-nouveau' => array(
 				'file'         => 'js/buddypress-nouveau%s.js',
@@ -336,6 +371,11 @@ class BP_Nouveau extends BP_Theme_Compat {
 			wp_enqueue_script( 'comment-reply' );
 		}
 
+		/**
+		 * Fires after all of the BuddyPress Nouveau scripts have been enqueued.
+		 *
+		 * @since 3.0.0
+		 */
 		do_action( 'bp_nouveau_enqueue_scripts' );
 	}
 
@@ -382,35 +422,6 @@ class BP_Nouveau extends BP_Theme_Compat {
 			'unsaved_changes'     => __( 'Your profile has unsaved changes. If you leave the page, the changes will be lost.', 'buddypress' ),
 			'view'                => __( 'View', 'buddypress' ),
 			'object_nav_parent'   => '#buddypress',
-			'time_since'          => array(
-				'sometime'    => _x( 'sometime', 'javascript time since', 'buddypress' ),
-				'now'         => _x( 'right now', 'javascript time since', 'buddypress' ),
-				'ago'         => _x( '% ago', 'javascript time since', 'buddypress' ),
-				'separator'   => _x( ',', 'Separator in javascript time since', 'buddypress' ),
-				'year'        => _x( '% year', 'javascript time since singular', 'buddypress' ),
-				'years'       => _x( '% years', 'javascript time since plural', 'buddypress' ),
-				'month'       => _x( '% month', 'javascript time since singular', 'buddypress' ),
-				'months'      => _x( '% months', 'javascript time since plural', 'buddypress' ),
-				'week'        => _x( '% week', 'javascript time since singular', 'buddypress' ),
-				'weeks'       => _x( '% weeks', 'javascript time since plural', 'buddypress' ),
-				'day'         => _x( '% day', 'javascript time since singular', 'buddypress' ),
-				'days'        => _x( '% days', 'javascript time since plural', 'buddypress' ),
-				'hour'        => _x( '% hour', 'javascript time since singular', 'buddypress' ),
-				'hours'       => _x( '% hours', 'javascript time since plural', 'buddypress' ),
-				'minute'      => _x( '% minute', 'javascript time since singular', 'buddypress' ),
-				'minutes'     => _x( '% minutes', 'javascript time since plural', 'buddypress' ),
-				'second'      => _x( '% second', 'javascript time since singular', 'buddypress' ),
-				'seconds'     => _x( '% seconds', 'javascript time since plural', 'buddypress' ),
-				'time_chunks' => array(
-					'a_year'   => YEAR_IN_SECONDS,
-					'b_month'  => 30 * DAY_IN_SECONDS,
-					'c_week'   => WEEK_IN_SECONDS,
-					'd_day'    => DAY_IN_SECONDS,
-					'e_hour'   => HOUR_IN_SECONDS,
-					'f_minute' => MINUTE_IN_SECONDS,
-					'g_second' => 1,
-				),
-			),
 		);
 
 		// If the Object/Item nav are in the sidebar
@@ -418,7 +429,13 @@ class BP_Nouveau extends BP_Theme_Compat {
 			$params['object_nav_parent'] = '.buddypress_object_nav';
 		}
 
-		// Set the supported components
+		/**
+		 * Filters the supported BuddyPress Nouveau components.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param array $value Array of supported components.
+		 */
 		$supported_objects = (array) apply_filters( 'bp_nouveau_supported_components', bp_core_get_packaged_component_ids() );
 		$object_nonces     = array();
 
@@ -449,7 +466,7 @@ class BP_Nouveau extends BP_Theme_Compat {
 		 *
 		 * @since 3.0.0
 		 *
-		 * @param array $value Array of key/value pairs for AJAX usage.
+		 * @param array $params Array of key/value pairs for AJAX usage.
 		 */
 		wp_localize_script( 'bp-nouveau', 'BP_Nouveau', apply_filters( 'bp_core_get_js_strings', $params ) );
 	}
@@ -470,7 +487,7 @@ class BP_Nouveau extends BP_Theme_Compat {
 		/**
 		 * Filters whether or not we are looking at a directory to determine if to return early.
 		 *
-		 * @since 2.2.0
+		 * @since 3.0.0
 		 *
 		 * @param bool $value Whether or not we are viewing a directory.
 		 */

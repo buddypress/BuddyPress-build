@@ -1,4 +1,5 @@
 // BP Widgets
+// @version 3.0.0
 
 .buddypress.widget {
 
@@ -54,10 +55,35 @@
 			}
 		} // close li
 	}
+
+	.activity-list {
+		padding: 0;
+
+		blockquote {
+			margin: 0 0 1.5em;
+			overflow: visible;
+			padding: 0 0 0.75em 0.75em;
+		}
+
+		img {
+			margin-bottom: 0.5em;
+		}
+	}
+
+	.avatar-block {
+
+		@include flex-box-dir($flex-dir: row, $flex-wrap: wrap);
+
+		img {
+			margin-bottom: 1em;
+			margin-right: 1em;
+		}
+	}
 }
 
+
 // Are we in a main site sidebar?
-// while hard to tell width asume that
+// while hard to tell width assume that
 // at large width it's narrow &
 // adjust the li widths & margins to %
 // & flex basis to auto for large up.
