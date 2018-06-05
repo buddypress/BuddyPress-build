@@ -126,11 +126,11 @@ Try <a href="https://wordpress.org/plugins/bbpress/">bbPress</a>. It integrates 
 
 == Upgrade Notice ==
 
-= 3.0.0 =
-See: https://codex.buddypress.org/releases/version-3-0-0/
+= 3.1.0 =
+See: https://codex.buddypress.org/releases/version-3-1-0/
 
 == Changelog ==
 
-= 3.0.0 =
+= 3.1.0 =
 
-See: https://codex.buddypress.org/releases/version-3-0-0/
+See: https://codex.buddypress.org/releases/version-3-1-0/
