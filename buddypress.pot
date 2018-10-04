@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later (license.txt).
 msgid ""
 msgstr ""
-"Project-Id-Version: BuddyPress 3.1.0\n"
+"Project-Id-Version: BuddyPress 3.2.0\n"
 "Report-Msgid-Bugs-To: https://buddypress.trac.wordpress.org\n"
-"POT-Creation-Date: 2018-06-05 19:25:47+00:00\n"
+"POT-Creation-Date: 2018-09-14 13:40:29+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -348,7 +348,7 @@ msgstr ""
 
 #: bp-activity/bp-activity-admin.php:777
 #: bp-xprofile/classes/class-bp-xprofile-field.php:1202
-#: bp-xprofile/classes/class-bp-xprofile-group.php:739
+#: bp-xprofile/classes/class-bp-xprofile-group.php:741
 msgid "Update"
 msgstr ""
 
@@ -460,7 +460,7 @@ msgstr ""
 #: bp-templates/bp-legacy/buddypress/activity/entry.php:130
 #: bp-templates/bp-nouveau/includes/activity/functions.php:167
 #: bp-xprofile/classes/class-bp-xprofile-field.php:1355
-#: bp-xprofile/classes/class-bp-xprofile-group.php:831
+#: bp-xprofile/classes/class-bp-xprofile-group.php:833
 msgid "Cancel"
 msgstr ""
 
@@ -569,16 +569,16 @@ msgid "You have %1$d new comment replies"
 msgstr ""
 
 #: bp-activity/bp-activity-notifications.php:74
-msgid "%1$s replied to one your activity comments"
+msgid "%1$s replied to one of your activity comments"
 msgstr ""
 
-#: bp-activity/bp-activity-notifications.php:365
+#: bp-activity/bp-activity-notifications.php:389
 #: bp-activity/classes/class-bp-activity-oembed-extension.php:138
 #: bp-activity/classes/class-bp-activity-theme-compat.php:161
 msgid "Activity"
 msgstr ""
 
-#: bp-activity/bp-activity-notifications.php:366
+#: bp-activity/bp-activity-notifications.php:390
 #: bp-blogs/bp-blogs-template.php:1114
 #: bp-friends/bp-friends-notifications.php:252
 #: bp-groups/bp-groups-notifications.php:1085
@@ -588,7 +588,7 @@ msgstr ""
 msgid "Yes"
 msgstr ""
 
-#: bp-activity/bp-activity-notifications.php:367
+#: bp-activity/bp-activity-notifications.php:391
 #: bp-blogs/bp-blogs-template.php:1118
 #: bp-friends/bp-friends-notifications.php:253
 #: bp-groups/bp-groups-notifications.php:1086
@@ -598,12 +598,12 @@ msgstr ""
 msgid "No"
 msgstr ""
 
-#: bp-activity/bp-activity-notifications.php:375
+#: bp-activity/bp-activity-notifications.php:399
 msgid "A member mentions you in an update using \"@%s\""
 msgstr ""
 
-#: bp-activity/bp-activity-notifications.php:378
-#: bp-activity/bp-activity-notifications.php:392
+#: bp-activity/bp-activity-notifications.php:402
+#: bp-activity/bp-activity-notifications.php:416
 #: bp-friends/bp-friends-notifications.php:263
 #: bp-friends/bp-friends-notifications.php:275
 #: bp-groups/bp-groups-notifications.php:1096
@@ -616,8 +616,8 @@ msgstr ""
 msgid "Yes, send email"
 msgstr ""
 
-#: bp-activity/bp-activity-notifications.php:382
-#: bp-activity/bp-activity-notifications.php:396
+#: bp-activity/bp-activity-notifications.php:406
+#: bp-activity/bp-activity-notifications.php:420
 #: bp-friends/bp-friends-notifications.php:267
 #: bp-friends/bp-friends-notifications.php:279
 #: bp-groups/bp-groups-notifications.php:1100
@@ -630,7 +630,7 @@ msgstr ""
 msgid "No, do not send email"
 msgstr ""
 
-#: bp-activity/bp-activity-notifications.php:389
+#: bp-activity/bp-activity-notifications.php:413
 msgid "A member replies to an update or comment you've posted"
 msgstr ""
 
@@ -721,7 +721,6 @@ msgstr ""
 #: bp-groups/classes/class-bp-groups-list-table.php:533
 #: bp-members/bp-members-template.php:1048
 #: bp-templates/bp-legacy/buddypress-functions.php:305
-#: bp-templates/bp-nouveau/buddypress-functions.php:423
 msgid "View"
 msgstr ""
 
@@ -841,7 +840,7 @@ msgstr ""
 
 #: bp-activity/classes/class-bp-activity-list-table.php:609
 #: bp-core/bp-core-cssjs.php:165
-#: bp-templates/bp-nouveau/buddypress-functions.php:416
+#: bp-templates/bp-nouveau/buddypress-functions.php:412
 msgid "Are you sure?"
 msgstr ""
 
@@ -1160,7 +1159,7 @@ msgstr ""
 #: bp-core/admin/bp-core-admin-components.php:24
 #: bp-core/admin/bp-core-admin-settings.php:267
 #: bp-core/admin/bp-core-admin-slugs.php:24
-#: bp-core/classes/class-bp-admin.php:732
+#: bp-core/classes/class-bp-admin.php:747
 msgid "BuddyPress Settings"
 msgstr ""
 
@@ -1344,7 +1343,7 @@ msgid "Pages"
 msgstr ""
 
 #: bp-core/admin/bp-core-admin-functions.php:434
-#: bp-core/classes/class-bp-admin.php:734
+#: bp-core/classes/class-bp-admin.php:749
 msgid "Credits"
 msgstr ""
 
@@ -1710,6 +1709,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: bp-core/bp-core-admin.php:37 bp-core/classes/class-bp-admin.php:579
+#: bp-core/classes/class-bp-admin.php:594
 #. translators: 1: BuddyPress version number, 2: plural number of bugs.
 msgid "<strong>Version %1$s</strong> addressed %2$s bug."
 msgid_plural "<strong>Version %1$s</strong> addressed %2$s bugs."
@@ -1896,11 +1896,11 @@ msgid ""
 "wide, and %2$spx tall."
 msgstr ""
 
-#: bp-core/bp-core-attachments.php:1342 bp-core/bp-core-avatars.php:902
+#: bp-core/bp-core-attachments.php:1344 bp-core/bp-core-avatars.php:902
 msgid "Upload Failed! Error was: %s"
 msgstr ""
 
-#: bp-core/bp-core-attachments.php:1346
+#: bp-core/bp-core-attachments.php:1348
 msgid "There was a problem uploading the cover image."
 msgstr ""
 
@@ -1918,11 +1918,11 @@ msgid ""
 "results, upload a picture larger than %d x %d pixels."
 msgstr ""
 
-#: bp-core/bp-core-buddybar.php:680 bp-core/bp-core-buddybar.php:696
+#: bp-core/bp-core-buddybar.php:678 bp-core/bp-core-buddybar.php:694
 msgid "You do not have access to that page."
 msgstr ""
 
-#: bp-core/bp-core-buddybar.php:716
+#: bp-core/bp-core-buddybar.php:714
 msgid "You do not have access to this page."
 msgstr ""
 
@@ -2128,7 +2128,8 @@ msgstr ""
 
 #: bp-core/bp-core-functions.php:2628
 #: bp-core/classes/class-bp-core-login-widget.php:116
-#: bp-core/deprecated/2.1.php:190
+#: bp-core/deprecated/2.1.php:190 bp-members/bp-members-adminbar.php:55
+#: bp-templates/bp-nouveau/buddypress/members/activate.php:30
 msgid "Log In"
 msgstr ""
 
@@ -2250,8 +2251,12 @@ msgstr ""
 msgid ""
 "Thanks for registering!\n"
 "\n"
-"To complete the activation of your account, go to the following link: <a "
-"href=\"{{{activate.url}}}\">{{{activate.url}}}</a>"
+"To complete the activation of your account, go to the following link and "
+"click on the <strong>Activate</strong> button:\n"
+"<a href=\"{{{activate.url}}}\">{{{activate.url}}}</a>\n"
+"\n"
+"If the 'Activation Key' field is empty, copy and paste the following into "
+"the field - {{key}}"
 msgstr ""
 
 #: bp-core/bp-core-functions.php:3390
@@ -2259,8 +2264,11 @@ msgstr ""
 msgid ""
 "Thanks for registering!\n"
 "\n"
-"To complete the activation of your account, go to the following link: "
-"{{{activate.url}}}"
+"To complete the activation of your account, go to the following link and "
+"click on the 'Activate' button: {{{activate.url}}}\n"
+"\n"
+"If the 'Activation Key' field is empty, copy and paste the following into "
+"the field - {{key}}"
 msgstr ""
 
 #: bp-core/bp-core-functions.php:3394
@@ -2815,7 +2823,7 @@ msgstr ""
 msgid "Close pop-up"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:596
+#: bp-core/classes/class-bp-admin.php:611
 msgid ""
 "A bold reimagining of our legacy templates, Nouveau is our celebration of "
 "<a href=\"%s\">10 years of BuddyPress</a>! Nouveau delivers modern markup "
@@ -2824,14 +2832,14 @@ msgid ""
 "BuddyPress content than ever before."
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:601
+#: bp-core/classes/class-bp-admin.php:616
 msgid ""
 "Nouveau provides vertical and horizontal layout options for BuddyPress "
 "navigation, and for the component directories, you can choose between a "
 "grid layout, and a classic flat list."
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:605
+#: bp-core/classes/class-bp-admin.php:620
 msgid ""
 "Nouveau is fully compatible with WordPress. Existing BuddyPress themes have "
 "been written for our legacy template pack, and until they are updated, "
@@ -2839,7 +2847,7 @@ msgid ""
 "option in <a href=\"%s\">Settings &gt; BuddyPress</a>."
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:617
+#: bp-core/classes/class-bp-admin.php:632
 msgid ""
 "<a href=\"%s\">WP-CLI</a> is the command-line interface for WordPress. You "
 "can update plugins, configure multisite installs, and much more, without "
@@ -2847,7 +2855,7 @@ msgid ""
 "your BuddyPress content from WP-CLI."
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:624
+#: bp-core/classes/class-bp-admin.php:639
 msgid ""
 "Site Notices are a feature within the Private Messaging component that "
 "allows community managers to share important messages with all members of "
@@ -2855,13 +2863,13 @@ msgid ""
 "has been removed from the front-end theme templates."
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:630
+#: bp-core/classes/class-bp-admin.php:645
 msgid ""
 "Explore the new management interface at <a href=\"%s\">Users &gt; Site "
 "Notices</a>."
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:638
+#: bp-core/classes/class-bp-admin.php:653
 msgid ""
 "A new telephone number field type has been added to the Extended Profiles "
 "component, with support for all international number formats. With a modern "
@@ -2869,7 +2877,7 @@ msgid ""
 "directly."
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:641
+#: bp-core/classes/class-bp-admin.php:656
 msgid ""
 "With every BuddyPress version, we strive to make performance improvements "
 "alongside new features and fixes; this version is no exception. Memory use "
@@ -2877,20 +2885,20 @@ msgid ""
 "individual code file when it's needed, not before."
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:645
+#: bp-core/classes/class-bp-admin.php:660
 msgid ""
 "Most notably, the <a href=\"%s\">Legacy Forums component has been "
 "removed</a> after 9 years of service. If your site was using Legacy Forums, "
 "you need to <a href=\"%s\">migrate to the bbPress plugin</a>."
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:655
+#: bp-core/classes/class-bp-admin.php:670
 msgid ""
 "To read the full list of features, fixes, and changes in this version of "
 "BuddyPress, <a href=\"%s\">visit Trac</a>."
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:665
+#: bp-core/classes/class-bp-admin.php:680
 msgid ""
 " How are you using BuddyPress? Receiving your feedback and suggestions for "
 "future versions of BuddyPress genuinely motivates and encourages our "
@@ -2898,80 +2906,80 @@ msgid ""
 "version of BuddyPress on our website. "
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:670
+#: bp-core/classes/class-bp-admin.php:685
 msgid "Thank you for using BuddyPress! 😊"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:680
+#: bp-core/classes/class-bp-admin.php:695
 msgid "Built by <a href=\"%s\">%s volunteer</a>."
 msgid_plural "Built by <a href=\"%s\">%s volunteers</a>."
 msgstr[0] ""
 msgstr[1] ""
 
-#: bp-core/classes/class-bp-admin.php:736
+#: bp-core/classes/class-bp-admin.php:751
 msgid "Meet the contributors behind BuddyPress:"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:738
+#: bp-core/classes/class-bp-admin.php:753
 msgid "Project Leaders"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:743
+#: bp-core/classes/class-bp-admin.php:758
 msgid "Project Lead"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:748
+#: bp-core/classes/class-bp-admin.php:763
 msgid "Lead Developer"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:753
+#: bp-core/classes/class-bp-admin.php:768
 msgid "Release Lead"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:757
+#: bp-core/classes/class-bp-admin.php:772
 msgid "BuddyPress Team"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:762
-#: bp-core/classes/class-bp-admin.php:767
-#: bp-core/classes/class-bp-admin.php:772
+#: bp-core/classes/class-bp-admin.php:777
 #: bp-core/classes/class-bp-admin.php:782
 #: bp-core/classes/class-bp-admin.php:787
-#: bp-core/classes/class-bp-admin.php:807
-#: bp-core/classes/class-bp-admin.php:812
-#: bp-core/classes/class-bp-admin.php:817
+#: bp-core/classes/class-bp-admin.php:797
+#: bp-core/classes/class-bp-admin.php:802
 #: bp-core/classes/class-bp-admin.php:822
+#: bp-core/classes/class-bp-admin.php:827
+#: bp-core/classes/class-bp-admin.php:832
+#: bp-core/classes/class-bp-admin.php:837
 msgid "Core Developer"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:777
+#: bp-core/classes/class-bp-admin.php:792
 msgid "Navigator"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:792
-#: bp-core/classes/class-bp-admin.php:797
-#: bp-core/classes/class-bp-admin.php:802
-#: bp-core/classes/class-bp-admin.php:827
+#: bp-core/classes/class-bp-admin.php:807
+#: bp-core/classes/class-bp-admin.php:812
+#: bp-core/classes/class-bp-admin.php:817
+#: bp-core/classes/class-bp-admin.php:842
 msgid "Community Support"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:831
+#: bp-core/classes/class-bp-admin.php:846
 msgid "Recent Rockstars"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:855
+#: bp-core/classes/class-bp-admin.php:870
 msgid "Contributors to BuddyPress %s"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:916
+#: bp-core/classes/class-bp-admin.php:931
 msgid "With our thanks to these Open Source projects"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:930
+#: bp-core/classes/class-bp-admin.php:945
 msgid "Contributor Emeriti"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:935
+#: bp-core/classes/class-bp-admin.php:950
 msgid "Project Founder"
 msgstr ""
 
@@ -4233,13 +4241,13 @@ msgid ""
 msgstr ""
 
 #: bp-groups/bp-groups-template.php:3277
-#: bp-templates/bp-legacy/buddypress-functions.php:1521
-#: bp-templates/bp-legacy/buddypress-functions.php:1534
+#: bp-templates/bp-legacy/buddypress-functions.php:1536
+#: bp-templates/bp-legacy/buddypress-functions.php:1550
 msgid "Leave Group"
 msgstr ""
 
 #: bp-groups/bp-groups-template.php:3298
-#: bp-templates/bp-legacy/buddypress-functions.php:1555
+#: bp-templates/bp-legacy/buddypress-functions.php:1570
 msgid "Join Group"
 msgstr ""
 
@@ -4248,12 +4256,12 @@ msgid "Accept Invitation"
 msgstr ""
 
 #: bp-groups/bp-groups-template.php:3331
-#: bp-templates/bp-legacy/buddypress-functions.php:1544
+#: bp-templates/bp-legacy/buddypress-functions.php:1560
 msgid "Request Sent"
 msgstr ""
 
 #: bp-groups/bp-groups-template.php:3346
-#: bp-templates/bp-legacy/buddypress-functions.php:1557
+#: bp-templates/bp-legacy/buddypress-functions.php:1572
 msgid "Request Membership"
 msgstr ""
 
@@ -4309,7 +4317,7 @@ msgstr ""
 #: bp-templates/bp-legacy/buddypress/members/single/blogs.php:19
 #: bp-templates/bp-legacy/buddypress/members/single/friends.php:20
 #: bp-templates/bp-legacy/buddypress/members/single/groups.php:20
-#: bp-templates/bp-nouveau/includes/template-tags.php:2041
+#: bp-templates/bp-nouveau/includes/template-tags.php:2099
 msgid "Order By:"
 msgstr ""
 
@@ -4688,10 +4696,6 @@ msgstr ""
 
 #: bp-members/bp-members-adminbar.php:41
 msgid "Edit My Profile"
-msgstr ""
-
-#: bp-members/bp-members-adminbar.php:55
-msgid "Log in"
 msgstr ""
 
 #: bp-members/bp-members-adminbar.php:95
@@ -5536,7 +5540,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: bp-messages/bp-messages-template.php:856
-#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:98
+#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/search-form.php:11
 #. translators: accessibility text
 msgid "Search Messages"
 msgstr ""
@@ -6006,7 +6010,7 @@ msgstr ""
 #: bp-templates/bp-legacy/buddypress/activity/index.php:168
 #: bp-templates/bp-legacy/buddypress/groups/single/activity.php:25
 #: bp-templates/bp-legacy/buddypress/members/single/activity.php:18
-#: bp-templates/bp-nouveau/includes/template-tags.php:2044
+#: bp-templates/bp-nouveau/includes/template-tags.php:2102
 msgid "Show:"
 msgstr ""
 
@@ -6059,7 +6063,7 @@ msgstr ""
 #: bp-templates/bp-nouveau/includes/functions.php:1268
 #: bp-templates/bp-nouveau/includes/functions.php:1320
 #: bp-xprofile/classes/class-bp-xprofile-field.php:1180
-#: bp-xprofile/classes/class-bp-xprofile-group.php:730
+#: bp-xprofile/classes/class-bp-xprofile-group.php:732
 msgid "Save"
 msgstr ""
 
@@ -6068,7 +6072,7 @@ msgstr ""
 #: bp-templates/bp-legacy/buddypress/groups/single/admin/group-avatar.php:58
 #: bp-templates/bp-legacy/buddypress/members/single/profile/change-avatar.php:61
 #: bp-templates/bp-nouveau/buddypress/groups/single/admin/group-avatar.php:106
-#: bp-templates/bp-nouveau/buddypress/members/single/profile/change-avatar.php:52
+#: bp-templates/bp-nouveau/buddypress/members/single/profile/change-avatar.php:59
 msgid "Crop Image"
 msgstr ""
 
@@ -6082,7 +6086,7 @@ msgstr ""
 #: bp-templates/bp-legacy/buddypress/assets/_attachments/avatars/index.php:39
 #: bp-templates/bp-legacy/buddypress/members/single/profile/change-avatar.php:46
 #: bp-templates/bp-nouveau/buddypress/assets/_attachments/avatars/index.php:36
-#: bp-templates/bp-nouveau/buddypress/members/single/profile/change-avatar.php:37
+#: bp-templates/bp-nouveau/buddypress/members/single/profile/change-avatar.php:44
 msgid "Delete My Profile Photo"
 msgstr ""
 
@@ -6322,7 +6326,7 @@ msgstr ""
 #: bp-templates/bp-legacy/buddypress/groups/single/admin/group-avatar.php:21
 #: bp-templates/bp-legacy/buddypress/members/single/profile/change-avatar.php:37
 #: bp-templates/bp-nouveau/buddypress/groups/single/admin/group-avatar.php:49
-#: bp-templates/bp-nouveau/buddypress/members/single/profile/change-avatar.php:29
+#: bp-templates/bp-nouveau/buddypress/members/single/profile/change-avatar.php:36
 #. translators: accessibility text
 msgid "Select an image"
 msgstr ""
@@ -6331,7 +6335,7 @@ msgstr ""
 #: bp-templates/bp-legacy/buddypress/groups/single/admin/group-avatar.php:24
 #: bp-templates/bp-legacy/buddypress/members/single/profile/change-avatar.php:40
 #: bp-templates/bp-nouveau/buddypress/groups/single/admin/group-avatar.php:51
-#: bp-templates/bp-nouveau/buddypress/members/single/profile/change-avatar.php:31
+#: bp-templates/bp-nouveau/buddypress/members/single/profile/change-avatar.php:38
 msgid "Upload Image"
 msgstr ""
 
@@ -6351,7 +6355,7 @@ msgstr ""
 #: bp-templates/bp-legacy/buddypress/groups/single/admin/group-avatar.php:52
 #: bp-templates/bp-legacy/buddypress/members/single/profile/change-avatar.php:55
 #: bp-templates/bp-nouveau/buddypress/groups/single/admin/group-avatar.php:100
-#: bp-templates/bp-nouveau/buddypress/members/single/profile/change-avatar.php:46
+#: bp-templates/bp-nouveau/buddypress/members/single/profile/change-avatar.php:53
 msgid "Profile photo to crop"
 msgstr ""
 
@@ -6359,7 +6363,7 @@ msgstr ""
 #: bp-templates/bp-legacy/buddypress/groups/single/admin/group-avatar.php:55
 #: bp-templates/bp-legacy/buddypress/members/single/profile/change-avatar.php:58
 #: bp-templates/bp-nouveau/buddypress/groups/single/admin/group-avatar.php:103
-#: bp-templates/bp-nouveau/buddypress/members/single/profile/change-avatar.php:49
+#: bp-templates/bp-nouveau/buddypress/members/single/profile/change-avatar.php:56
 msgid "Profile photo preview"
 msgstr ""
 
@@ -6606,19 +6610,18 @@ msgid ""
 msgstr ""
 
 #: bp-templates/bp-legacy/buddypress/members/activate.php:47
-#: bp-templates/bp-nouveau/buddypress/members/activate.php:27
 msgid ""
 "Your account was activated successfully! You can now <a href=\"%s\">log "
 "in</a> with the username and password you provided when you signed up."
 msgstr ""
 
 #: bp-templates/bp-legacy/buddypress/members/activate.php:52
-#: bp-templates/bp-nouveau/buddypress/members/activate.php:37
+#: bp-templates/bp-nouveau/buddypress/members/activate.php:36
 msgid "Please provide a valid activation key."
 msgstr ""
 
 #: bp-templates/bp-legacy/buddypress/members/activate.php:56
-#: bp-templates/bp-nouveau/buddypress/members/activate.php:41
+#: bp-templates/bp-nouveau/buddypress/members/activate.php:40
 msgid "Activation Key:"
 msgstr ""
 
@@ -6663,7 +6666,7 @@ msgstr ""
 #: bp-templates/bp-legacy/buddypress/members/register.php:119
 #: bp-templates/bp-legacy/buddypress/members/register.php:280
 #: bp-templates/bp-legacy/buddypress/members/register.php:296
-#: bp-templates/bp-nouveau/includes/template-tags.php:2259
+#: bp-templates/bp-nouveau/includes/template-tags.php:2317
 #: bp-xprofile/bp-xprofile-template.php:1463
 msgid "(required)"
 msgstr ""
@@ -6705,7 +6708,6 @@ msgstr ""
 #: bp-templates/bp-legacy/buddypress/members/register.php:205
 #: bp-templates/bp-legacy/buddypress/members/single/profile/edit.php:75
 #: bp-templates/bp-legacy/buddypress-functions.php:294
-#: bp-templates/bp-nouveau/buddypress-functions.php:413
 #: bp-xprofile/classes/class-bp-xprofile-user-admin.php:402
 msgid "Close"
 msgstr ""
@@ -6853,12 +6855,12 @@ msgid "Select this message"
 msgstr ""
 
 #: bp-templates/bp-legacy/buddypress/members/single/messages/messages-loop.php:105
-#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:143
+#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:134
 msgid "From:"
 msgstr ""
 
 #: bp-templates/bp-legacy/buddypress/members/single/messages/messages-loop.php:112
-#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:153
+#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:144
 msgid "To:"
 msgstr ""
 
@@ -6897,12 +6899,12 @@ msgid "Conversation between %s."
 msgstr ""
 
 #: bp-templates/bp-legacy/buddypress/members/single/messages/single.php:102
-#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:332
+#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:323
 msgid "Send a Reply"
 msgstr ""
 
 #: bp-templates/bp-legacy/buddypress/members/single/messages/single.php:125
-#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:343
+#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:334
 #. translators: accessibility text
 msgid "Reply to Message"
 msgstr ""
@@ -6981,14 +6983,14 @@ msgid ""
 msgstr ""
 
 #: bp-templates/bp-legacy/buddypress/members/single/profile/change-avatar.php:32
-#: bp-templates/bp-nouveau/buddypress/members/single/profile/change-avatar.php:26
+#: bp-templates/bp-nouveau/buddypress/members/single/profile/change-avatar.php:33
 msgid ""
 "Click below to select a JPG, GIF or PNG format photo from your computer and "
 "then click 'Upload Image' to proceed."
 msgstr ""
 
 #: bp-templates/bp-legacy/buddypress/members/single/profile/change-avatar.php:53
-#: bp-templates/bp-nouveau/buddypress/members/single/profile/change-avatar.php:44
+#: bp-templates/bp-nouveau/buddypress/members/single/profile/change-avatar.php:51
 msgid "Crop Your New Profile Photo"
 msgstr ""
 
@@ -7102,39 +7104,32 @@ msgid "BuddyPress Legacy"
 msgstr ""
 
 #: bp-templates/bp-legacy/buddypress-functions.php:293
-#: bp-templates/bp-nouveau/buddypress-functions.php:412
 msgid "Accepted"
 msgstr ""
 
 #: bp-templates/bp-legacy/buddypress-functions.php:295
-#: bp-templates/bp-nouveau/buddypress-functions.php:414
 msgid "comments"
 msgstr ""
 
 #: bp-templates/bp-legacy/buddypress-functions.php:296
-#: bp-templates/bp-nouveau/buddypress-functions.php:415
 msgid "Are you sure you want to leave this group?"
 msgstr ""
 
 #: bp-templates/bp-legacy/buddypress-functions.php:298
-#: bp-templates/bp-nouveau/buddypress-functions.php:417
 #: bp-templates/bp-nouveau/includes/activity/ajax.php:113
 #: bp-templates/bp-nouveau/includes/activity/functions.php:227
 msgid "My Favorites"
 msgstr ""
 
 #: bp-templates/bp-legacy/buddypress-functions.php:299
-#: bp-templates/bp-nouveau/buddypress-functions.php:418
 msgid "Rejected"
 msgstr ""
 
 #: bp-templates/bp-legacy/buddypress-functions.php:301
-#: bp-templates/bp-nouveau/buddypress-functions.php:419
 msgid "Show all"
 msgstr ""
 
 #: bp-templates/bp-legacy/buddypress-functions.php:302
-#: bp-templates/bp-nouveau/buddypress-functions.php:420
 msgid "Show all comments for this thread"
 msgstr ""
 
@@ -7143,7 +7138,7 @@ msgid "Show all comments (%d)"
 msgstr ""
 
 #: bp-templates/bp-legacy/buddypress-functions.php:304
-#: bp-templates/bp-nouveau/buddypress-functions.php:422
+#: bp-templates/bp-nouveau/buddypress-functions.php:414
 msgid ""
 "Your profile has unsaved changes. If you leave the page, the changes will "
 "be lost."
@@ -7195,29 +7190,34 @@ msgstr ""
 msgid "There was a problem rejecting that request. Please try again."
 msgstr ""
 
-#: bp-templates/bp-legacy/buddypress-functions.php:1519
+#: bp-templates/bp-legacy/buddypress-functions.php:1528
+#: bp-templates/bp-legacy/buddypress-functions.php:1534
 msgid "Error joining group"
 msgstr ""
 
-#: bp-templates/bp-legacy/buddypress-functions.php:1532
 #: bp-templates/bp-legacy/buddypress-functions.php:1542
+msgid "Error accepting invitation"
+msgstr ""
+
+#: bp-templates/bp-legacy/buddypress-functions.php:1548
+#: bp-templates/bp-legacy/buddypress-functions.php:1558
 msgid "Error requesting membership"
 msgstr ""
 
-#: bp-templates/bp-legacy/buddypress-functions.php:1553
+#: bp-templates/bp-legacy/buddypress-functions.php:1568
 msgid "Error leaving group"
 msgstr ""
 
-#: bp-templates/bp-legacy/buddypress-functions.php:1579
+#: bp-templates/bp-legacy/buddypress-functions.php:1595
 msgid "There was a problem closing the notice."
 msgstr ""
 
-#: bp-templates/bp-legacy/buddypress-functions.php:1646
+#: bp-templates/bp-legacy/buddypress-functions.php:1662
 msgid "There was a problem sending that reply. Please try again."
 msgstr ""
 
 #: bp-templates/bp-nouveau/buddypress/assets/_attachments/avatars/index.php:35
-#: bp-templates/bp-nouveau/buddypress/members/single/profile/change-avatar.php:36
+#: bp-templates/bp-nouveau/buddypress/members/single/profile/change-avatar.php:43
 msgid ""
 "If you'd like to delete your current profile photo, use the delete profile "
 "photo button."
@@ -7266,56 +7266,56 @@ msgstr ""
 msgid "Send @Username"
 msgstr ""
 
-#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:113
+#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:104
 msgid "All Messages"
 msgstr ""
 
-#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:117
+#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:108
 msgid "Select bulk action"
 msgstr ""
 
-#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:136
+#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:127
 msgid "Select message:"
 msgstr ""
 
-#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:178
+#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:169
 msgid "Active conversation:"
 msgstr ""
 
-#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:184
-#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:247
+#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:175
+#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:238
 msgid "Participants:"
 msgstr ""
 
-#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:197
-#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:198
-#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:259
-#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:260
+#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:188
+#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:189
+#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:250
+#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:251
 msgid "Delete conversation."
 msgstr ""
 
-#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:204
-#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:205
+#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:195
+#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:196
 msgid "Unstar Conversation"
 msgstr ""
 
-#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:208
-#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:209
+#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:199
+#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:200
 msgid "Star Conversation"
 msgstr ""
 
-#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:215
-#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:216
+#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:206
+#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:207
 msgid "View full conversation and reply."
 msgstr ""
 
-#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:282
-#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:283
+#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:273
+#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:274
 msgid "Unstar Message"
 msgstr ""
 
-#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:286
-#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:287
+#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:277
+#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:278
 msgid "Star Message"
 msgstr ""
 
@@ -7426,6 +7426,12 @@ msgstr ""
 msgid "Group menu"
 msgstr ""
 
+#: bp-templates/bp-nouveau/buddypress/members/activate.php:23
+msgid ""
+"Your account was activated successfully! You can now log in with the "
+"username and password you provided when you signed up."
+msgstr ""
+
 #: bp-templates/bp-nouveau/buddypress/members/register.php:89
 msgid "Site Details"
 msgstr ""
@@ -7488,20 +7494,27 @@ msgstr ""
 msgid "Who is allowed to see this field?"
 msgstr ""
 
-#: bp-templates/bp-nouveau/buddypress/members/single/profile/change-avatar.php:18
+#: bp-templates/bp-nouveau/buddypress/members/single/profile/change-avatar.php:21
+#. Translators: %s is used to output the link to the Gravatar site
 msgid ""
 "Your profile photo will be used on your profile and throughout the site. If "
-"there is a <a href=\"https://gravatar.com\">Gravatar</a> associated with "
-"your account email we will use that, or you can upload an image from your "
-"computer."
+"there is a %s associated with your account email we will use that, or you "
+"can upload an image from your computer."
 msgstr ""
 
-#: bp-templates/bp-nouveau/buddypress/members/single/profile/change-avatar.php:77
+#: bp-templates/bp-nouveau/buddypress/members/single/profile/change-avatar.php:23
+#: bp-templates/bp-nouveau/buddypress/members/single/profile/change-avatar.php:89
+#. Translators: Url to the Gravatar site, you can use the one for your country
+#. eg: https:fr.gravatar.com for French translation
+msgid "https://gravatar.com"
+msgstr ""
+
+#: bp-templates/bp-nouveau/buddypress/members/single/profile/change-avatar.php:87
+#. Translators: %s is used to output the link to the Gravatar site
 msgid ""
 "Your profile photo will be used on your profile and throughout the site. To "
-"change your profile photo, create an account with <a "
-"href=\"https://gravatar.com\">Gravatar</a> using the same email address as "
-"you used to register with this site."
+"change your profile photo, create an account with %s using the same email "
+"address as you used to register with this site."
 msgstr ""
 
 #: bp-templates/bp-nouveau/buddypress/members/single/profile/edit.php:34
@@ -7565,7 +7578,7 @@ msgstr ""
 msgid "Settings menu"
 msgstr ""
 
-#: bp-templates/bp-nouveau/buddypress-functions.php:421
+#: bp-templates/bp-nouveau/buddypress-functions.php:413
 msgid "Show all %d comments"
 msgstr ""
 
@@ -7574,7 +7587,7 @@ msgid "There was a problem displaying the content. Please try again."
 msgstr ""
 
 #: bp-templates/bp-nouveau/includes/activity/ajax.php:455
-msgid "No activites were found."
+msgid "No activities were found."
 msgstr ""
 
 #: bp-templates/bp-nouveau/includes/activity/ajax.php:554
@@ -8216,11 +8229,11 @@ msgstr ""
 msgid "Group Moderator promotions"
 msgstr ""
 
-#: bp-templates/bp-nouveau/includes/groups/template-tags.php:1282
+#: bp-templates/bp-nouveau/includes/groups/template-tags.php:1290
 msgid "Groups default front page"
 msgstr ""
 
-#: bp-templates/bp-nouveau/includes/groups/template-tags.php:1300
+#: bp-templates/bp-nouveau/includes/groups/template-tags.php:1308
 #: bp-templates/bp-nouveau/includes/members/template-tags.php:711
 msgid "(BuddyPress) Widgets"
 msgstr ""
@@ -8263,7 +8276,7 @@ msgid "There was a problem starring your messages. Please try again."
 msgstr ""
 
 #: bp-templates/bp-nouveau/includes/messages/ajax.php:554
-msgid "There was a problem unstarring your messages. Please try agian."
+msgid "There was a problem unstarring your messages. Please try again."
 msgstr ""
 
 #: bp-templates/bp-nouveau/includes/messages/ajax.php:628
@@ -8350,21 +8363,21 @@ msgstr ""
 msgid "(and %d others)"
 msgstr ""
 
-#: bp-templates/bp-nouveau/includes/messages/functions.php:257
+#: bp-templates/bp-nouveau/includes/messages/functions.php:234
 msgid "New sitewide notice"
 msgstr ""
 
-#: bp-templates/bp-nouveau/includes/messages/functions.php:436
+#: bp-templates/bp-nouveau/includes/messages/functions.php:413
 msgid "New private messages"
 msgstr ""
 
-#: bp-templates/bp-nouveau/includes/template-tags.php:2253
+#: bp-templates/bp-nouveau/includes/template-tags.php:2311
 #. translators: Do not translate placeholders. 2 = form field name, 3 =
 #. "(required)".
 msgid "<label for=\"%1$s\">%2$s %3$s</label>"
 msgstr ""
 
-#: bp-templates/bp-nouveau/includes/template-tags.php:2272
+#: bp-templates/bp-nouveau/includes/template-tags.php:2330
 msgid ""
 "I would like my site to appear in search engines, and in public listings "
 "around this network."
@@ -8396,7 +8409,7 @@ msgid "%s's profile was updated"
 msgstr ""
 
 #: bp-xprofile/bp-xprofile-admin.php:149 bp-xprofile/bp-xprofile-admin.php:157
-#: bp-xprofile/classes/class-bp-xprofile-group.php:729
+#: bp-xprofile/classes/class-bp-xprofile-group.php:731
 msgid "Add New Field Group"
 msgstr ""
 
@@ -8715,12 +8728,12 @@ msgid "Edit Field"
 msgstr ""
 
 #: bp-xprofile/classes/class-bp-xprofile-field.php:1328
-#: bp-xprofile/classes/class-bp-xprofile-group.php:807
+#: bp-xprofile/classes/class-bp-xprofile-group.php:809
 msgid "Submit"
 msgstr ""
 
 #: bp-xprofile/classes/class-bp-xprofile-field.php:1398
-#: bp-xprofile/classes/class-bp-xprofile-group.php:774
+#: bp-xprofile/classes/class-bp-xprofile-group.php:776
 #. translators: accessibility text
 msgid "Add description"
 msgstr ""
@@ -8784,19 +8797,19 @@ msgstr ""
 msgid "Type"
 msgstr ""
 
-#: bp-xprofile/classes/class-bp-xprofile-group.php:589
+#: bp-xprofile/classes/class-bp-xprofile-group.php:591
 msgid "Please make sure you give the group a name."
 msgstr ""
 
-#: bp-xprofile/classes/class-bp-xprofile-group.php:738
+#: bp-xprofile/classes/class-bp-xprofile-group.php:740
 msgid "Edit Field Group"
 msgstr ""
 
-#: bp-xprofile/classes/class-bp-xprofile-group.php:765
+#: bp-xprofile/classes/class-bp-xprofile-group.php:767
 msgid "Field Group Name (required)"
 msgstr ""
 
-#: bp-xprofile/classes/class-bp-xprofile-group.php:770
+#: bp-xprofile/classes/class-bp-xprofile-group.php:772
 msgid "Field Group Description"
 msgstr ""
 
@@ -9413,7 +9426,7 @@ msgctxt "Colloquial alternative to \"learn about BuddyPress\""
 msgid "Hello, BuddyPress!"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:971
+#: bp-core/classes/class-bp-admin.php:986
 msgctxt "Email post type"
 msgid "Situations"
 msgstr ""
@@ -10170,21 +10183,20 @@ msgid "Send"
 msgstr ""
 
 #: bp-templates/bp-nouveau/buddypress/common/js-templates/invites/index.php:134
-#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:103
+#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/search-form.php:16
 #: bp-templates/bp-nouveau/buddypress/common/search/search-form.php:19
-#: bp-templates/bp-nouveau/includes/messages/functions.php:149
 msgctxt "button"
 msgid "Search"
 msgstr ""
 
-#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:126
-#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:128
+#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:117
+#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:119
 #: bp-templates/bp-nouveau/includes/notifications/template-tags.php:121
 msgctxt "button"
 msgid "Apply"
 msgstr ""
 
-#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:349
+#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:340
 msgctxt "button"
 msgid "Send Reply"
 msgstr ""
@@ -10196,7 +10208,7 @@ msgctxt "button"
 msgid "Close"
 msgstr ""
 
-#: bp-templates/bp-nouveau/buddypress/members/activate.php:45
+#: bp-templates/bp-nouveau/buddypress/members/activate.php:44
 msgctxt "button"
 msgid "Activate"
 msgstr ""
@@ -10278,7 +10290,7 @@ msgid "Search Members"
 msgstr ""
 
 #: bp-templates/bp-nouveau/buddypress/common/js-templates/invites/index.php:130
-#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/index.php:100
+#: bp-templates/bp-nouveau/buddypress/common/js-templates/messages/search-form.php:13
 msgctxt "search placeholder text"
 msgid "Search"
 msgstr ""
