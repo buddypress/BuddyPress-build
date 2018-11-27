@@ -2548,14 +2548,15 @@ function bp_core_get_components( $type = 'all' ) {
  * @return mixed A URL or an array of dummy pages.
  */
 function bp_nav_menu_get_loggedin_pages() {
+	$bp = buddypress();
 
 	// Try to catch the cached version first.
-	if ( ! empty( buddypress()->wp_nav_menu_items->loggedin ) ) {
-		return buddypress()->wp_nav_menu_items->loggedin;
+	if ( ! empty( $bp->wp_nav_menu_items->loggedin ) ) {
+		return $bp->wp_nav_menu_items->loggedin;
 	}
 
 	// Pull up a list of items registered in BP's primary nav for the member.
-	$bp_menu_items = buddypress()->members->nav->get_primary();
+	$bp_menu_items = $bp->members->nav->get_primary();
 
 	// Some BP nav menu items will not be represented in bp_nav, because
 	// they are not real BP components. We add them manually here.
@@ -2590,11 +2591,11 @@ function bp_nav_menu_get_loggedin_pages() {
 		);
 	}
 
-	if ( empty( buddypress()->wp_nav_menu_items ) ) {
+	if ( empty( $bp->wp_nav_menu_items ) ) {
 		buddypress()->wp_nav_menu_items = new stdClass;
 	}
 
-	buddypress()->wp_nav_menu_items->loggedin = $page_args;
+	$bp->wp_nav_menu_items->loggedin = $page_args;
 
 	return $page_args;
 }
@@ -2614,10 +2615,11 @@ function bp_nav_menu_get_loggedin_pages() {
  * @return mixed A URL or an array of dummy pages.
  */
 function bp_nav_menu_get_loggedout_pages() {
+	$bp = buddypress();
 
 	// Try to catch the cached version first.
-	if ( ! empty( buddypress()->wp_nav_menu_items->loggedout ) ) {
-		return buddypress()->wp_nav_menu_items->loggedout;
+	if ( ! empty( $bp->wp_nav_menu_items->loggedout ) ) {
+		return $bp->wp_nav_menu_items->loggedout;
 	}
 
 	$bp_menu_items = array();
@@ -2664,11 +2666,11 @@ function bp_nav_menu_get_loggedout_pages() {
 		);
 	}
 
-	if ( empty( buddypress()->wp_nav_menu_items ) ) {
-		buddypress()->wp_nav_menu_items = new stdClass;
+	if ( empty( $bp->wp_nav_menu_items ) ) {
+		$bp->wp_nav_menu_items = new stdClass;
 	}
 
-	buddypress()->wp_nav_menu_items->loggedout = $page_args;
+	$bp->wp_nav_menu_items->loggedout = $page_args;
 
 	return $page_args;
 }
@@ -2766,6 +2768,40 @@ function bp_core_get_suggestions( $args ) {
 	 */
 	return apply_filters( 'bp_core_get_suggestions', $retval, $args );
 }
+
+/**
+ * AJAX endpoint for Suggestions API lookups.
+ *
+ * @since 2.1.0
+ * @since 4.0.0 Moved here to make sure this function is available
+ *              even if the Activity component is not active.
+ */
+function bp_ajax_get_suggestions() {
+	if ( ! bp_is_user_active() || empty( $_GET['term'] ) || empty( $_GET['type'] ) ) {
+		wp_send_json_error( 'missing_parameter' );
+		exit;
+	}
+
+	$args = array(
+		'term' => sanitize_text_field( $_GET['term'] ),
+		'type' => sanitize_text_field( $_GET['type'] ),
+	);
+
+	// Support per-Group suggestions.
+	if ( ! empty( $_GET['group-id'] ) ) {
+		$args['group_id'] = absint( $_GET['group-id'] );
+	}
+
+	$results = bp_core_get_suggestions( $args );
+
+	if ( is_wp_error( $results ) ) {
+		wp_send_json_error( $results->get_error_message() );
+		exit;
+	}
+
+	wp_send_json_success( $results );
+}
+add_action( 'wp_ajax_bp_get_suggestions', 'bp_ajax_get_suggestions' );
 
 /**
  * Set data from the BP root blog's upload directory.
