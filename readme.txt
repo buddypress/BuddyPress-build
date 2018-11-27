@@ -132,5 +132,4 @@ See: https://codex.buddypress.org/releases/version-4-0-0/
 == Changelog ==
 
 = 4.0.0 =
-
 See: https://codex.buddypress.org/releases/version-4-0-0/
