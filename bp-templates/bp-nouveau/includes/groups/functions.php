@@ -199,26 +199,37 @@ function bp_nouveau_groups_get_inviter_ids( $user_id, $group_id ) {
  * @since 3.0.0
  */
 function bp_nouveau_prepare_group_potential_invites_for_js( $user ) {
-	$bp = buddypress();
+	$bp    = buddypress();
+	$scope = '';
+	if ( isset( $bp->groups->invites_scope ) ) {
+		$scope = $bp->groups->invites_scope;
+	}
 
 	$response = array(
-		'id'           => intval( $user->ID ),
-		'name'         => $user->display_name,
-		'avatar'       => htmlspecialchars_decode( bp_core_fetch_avatar( array(
-			'item_id' => $user->ID,
-			'object'  => 'user',
-			'type'    => 'thumb',
-			'width'   => 50,
-			'height'  => 50,
-			'html'    => false )
-		) ),
+		'id'      => intval( $user->ID ),
+		'name'    => $user->display_name,
+		'avatar'  => htmlspecialchars_decode(
+			bp_core_fetch_avatar(
+				array(
+					'item_id' => $user->ID,
+					'object'  => 'user',
+					'type'    => 'thumb',
+					'width'   => 50,
+					'height'  => 50,
+					'html'    => false
+				)
+			)
+		),
+		'scope'      => $scope,
+		'is_sent'    => false,
+		'invited_by' => array(),
+		'can_invite' => 'invited' !== $scope,
 	);
 
 	// Do extra queries only if needed
-	if ( ! empty( $bp->groups->invites_scope ) && 'invited' === $bp->groups->invites_scope ) {
-		$response['is_sent']  = (bool) groups_check_user_has_invite( $user->ID, bp_get_current_group_id() );
-
-		$inviter_ids = bp_nouveau_groups_get_inviter_ids( $user->ID, bp_get_current_group_id() );
+	if ( 'invited' === $scope ) {
+		$response['is_sent'] = (bool) groups_check_user_has_invite( $user->ID, bp_get_current_group_id() );
+		$inviter_ids         = bp_nouveau_groups_get_inviter_ids( $user->ID, bp_get_current_group_id() );
 
 		foreach ( $inviter_ids as $inviter_id ) {
 			$class = false;
@@ -228,25 +239,25 @@ function bp_nouveau_prepare_group_potential_invites_for_js( $user ) {
 			}
 
 			$response['invited_by'][] = array(
-				'avatar' => htmlspecialchars_decode( bp_core_fetch_avatar( array(
-					'item_id' => $inviter_id,
-					'object'  => 'user',
-					'type'    => 'thumb',
-					'width'   => 50,
-					'height'  => 50,
-					'html'    => false,
-					'class'   => $class,
-				) ) ),
+				'avatar' => htmlspecialchars_decode(
+					bp_core_fetch_avatar(
+						array(
+							'item_id' => $inviter_id,
+							'object'  => 'user',
+							'type'    => 'thumb',
+							'width'   => 50,
+							'height'  => 50,
+							'html'    => false,
+							'class'   => $class,
+						)
+					)
+				),
 				'user_link' => bp_core_get_userlink( $inviter_id, false, true ),
 				'user_name' => bp_core_get_username( $inviter_id ),
 			);
 		}
 
-		if ( bp_is_item_admin() ) {
-			$response['can_edit'] = true;
-		} else {
-			$response['can_edit'] = in_array( bp_loggedin_user_id(), $inviter_ids, true );
-		}
+		$response['can_edit'] = bp_is_item_admin() || in_array( bp_loggedin_user_id(), $inviter_ids, true );
 	}
 
 	/**
@@ -1211,7 +1222,7 @@ function bp_nouveau_group_get_core_manage_screens( $id = '' ) {
 	$screens = array(
 		'edit-details'        => array( 'hook' => 'group_details_admin',             'nonce' => 'groups_edit_group_details'  ),
 		'group-settings'      => array( 'hook' => 'group_settings_admin',            'nonce' => 'groups_edit_group_settings' ),
-		'group-avatar'        => array(),
+		'group-avatar'        => array( 'hook' => 'group_settings_avatar',           'nonce' => ''                           ),
 		'group-cover-image'   => array( 'hook' => 'group_settings_cover_image',      'nonce' => ''                           ),
 		'manage-members'      => array( 'hook' => 'group_manage_members_admin',      'nonce' => ''                           ),
 		'membership-requests' => array( 'hook' => 'group_membership_requests_admin', 'nonce' => ''                           ),
