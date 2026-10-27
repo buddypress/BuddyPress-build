@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2020-09-14T19:14:34+00:00\n"
+"POT-Creation-Date: 2020-11-27T22:06:30+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.4.0\n"
 "X-Domain: buddypress\n"
@@ -12423,11 +12423,11 @@ msgctxt "xprofile field type category"
 msgid "Other"
 msgstr ""
 
-#: bp-xprofile/bp-xprofile-filters.php:676
+#: bp-xprofile/bp-xprofile-filters.php:682
 msgid "BuddyPress Extended Profile Data"
 msgstr ""
 
-#: bp-xprofile/bp-xprofile-filters.php:678
+#: bp-xprofile/bp-xprofile-filters.php:684
 msgctxt "BuddyPress Extended Profile data exporter friendly name"
 msgid "Extended Profile information"
 msgstr ""
@@ -12531,7 +12531,7 @@ msgid "The date the field data was last updated, in the site's timezone."
 msgstr ""
 
 #: bp-xprofile/classes/class-bp-rest-xprofile-field-groups-endpoint.php:73
-#: bp-xprofile/classes/class-bp-rest-xprofile-field-groups-endpoint.php:722
+#: bp-xprofile/classes/class-bp-rest-xprofile-field-groups-endpoint.php:726
 msgid "A unique numeric ID for the group of profile fields."
 msgstr ""
 
@@ -12561,80 +12561,80 @@ msgstr ""
 msgid "Could not delete XProfile field group."
 msgstr ""
 
-#: bp-xprofile/classes/class-bp-rest-xprofile-field-groups-endpoint.php:728
+#: bp-xprofile/classes/class-bp-rest-xprofile-field-groups-endpoint.php:732
 msgid "The name of group of profile fields."
 msgstr ""
 
-#: bp-xprofile/classes/class-bp-rest-xprofile-field-groups-endpoint.php:736
+#: bp-xprofile/classes/class-bp-rest-xprofile-field-groups-endpoint.php:740
 msgid "The description of the group of profile fields."
 msgstr ""
 
-#: bp-xprofile/classes/class-bp-rest-xprofile-field-groups-endpoint.php:744
+#: bp-xprofile/classes/class-bp-rest-xprofile-field-groups-endpoint.php:748
 msgid "Content for the group of profile fields, as it exists in the database."
 msgstr ""
 
-#: bp-xprofile/classes/class-bp-rest-xprofile-field-groups-endpoint.php:749
+#: bp-xprofile/classes/class-bp-rest-xprofile-field-groups-endpoint.php:753
 msgid "HTML content for the group of profile fields, transformed for display."
 msgstr ""
 
-#: bp-xprofile/classes/class-bp-rest-xprofile-field-groups-endpoint.php:758
+#: bp-xprofile/classes/class-bp-rest-xprofile-field-groups-endpoint.php:762
 msgid "The order of the group of profile fields."
 msgstr ""
 
-#: bp-xprofile/classes/class-bp-rest-xprofile-field-groups-endpoint.php:763
+#: bp-xprofile/classes/class-bp-rest-xprofile-field-groups-endpoint.php:767
 msgid "Whether the group of profile fields can be deleted or not."
 msgstr ""
 
-#: bp-xprofile/classes/class-bp-rest-xprofile-field-groups-endpoint.php:768
+#: bp-xprofile/classes/class-bp-rest-xprofile-field-groups-endpoint.php:772
 msgid "The fields associated with this group of profile fields."
 msgstr ""
 
-#: bp-xprofile/classes/class-bp-rest-xprofile-field-groups-endpoint.php:795
+#: bp-xprofile/classes/class-bp-rest-xprofile-field-groups-endpoint.php:799
 msgid "ID of the field group that have fields."
 msgstr ""
 
-#: bp-xprofile/classes/class-bp-rest-xprofile-field-groups-endpoint.php:803
-#: bp-xprofile/classes/class-bp-rest-xprofile-field-groups-endpoint.php:828
+#: bp-xprofile/classes/class-bp-rest-xprofile-field-groups-endpoint.php:807
+#: bp-xprofile/classes/class-bp-rest-xprofile-field-groups-endpoint.php:832
 #: bp-xprofile/classes/class-bp-rest-xprofile-fields-endpoint.php:1132
 msgid "Whether to hide profile groups of fields that do not have any profile fields or not."
 msgstr ""
 
-#: bp-xprofile/classes/class-bp-rest-xprofile-field-groups-endpoint.php:811
+#: bp-xprofile/classes/class-bp-rest-xprofile-field-groups-endpoint.php:815
 #: bp-xprofile/classes/class-bp-rest-xprofile-fields-endpoint.php:73
 #: bp-xprofile/classes/class-bp-rest-xprofile-fields-endpoint.php:1140
 msgid "Required if you want to load a specific user's data."
 msgstr ""
 
-#: bp-xprofile/classes/class-bp-rest-xprofile-field-groups-endpoint.php:819
+#: bp-xprofile/classes/class-bp-rest-xprofile-field-groups-endpoint.php:823
 #: bp-xprofile/classes/class-bp-rest-xprofile-fields-endpoint.php:1148
 msgid "Limit fields by those restricted to a given member type, or array of member types. If `$user_id` is provided, the value of `$member_type` will be overridden by the member types of the provided user. The special value of 'any' will return only those fields that are unrestricted by member type - i.e., those applicable to any type."
 msgstr ""
 
-#: bp-xprofile/classes/class-bp-rest-xprofile-field-groups-endpoint.php:836
+#: bp-xprofile/classes/class-bp-rest-xprofile-field-groups-endpoint.php:840
 msgid "Whether to fetch the fields for each group."
 msgstr ""
 
-#: bp-xprofile/classes/class-bp-rest-xprofile-field-groups-endpoint.php:844
+#: bp-xprofile/classes/class-bp-rest-xprofile-field-groups-endpoint.php:848
 #: bp-xprofile/classes/class-bp-rest-xprofile-fields-endpoint.php:1165
 msgid "Whether to fetch data for each field. Requires a $user_id."
 msgstr ""
 
-#: bp-xprofile/classes/class-bp-rest-xprofile-field-groups-endpoint.php:852
+#: bp-xprofile/classes/class-bp-rest-xprofile-field-groups-endpoint.php:856
 #: bp-xprofile/classes/class-bp-rest-xprofile-fields-endpoint.php:1173
 msgid "Whether to fetch the visibility level for each field."
 msgstr ""
 
-#: bp-xprofile/classes/class-bp-rest-xprofile-field-groups-endpoint.php:860
+#: bp-xprofile/classes/class-bp-rest-xprofile-field-groups-endpoint.php:864
 #: bp-xprofile/classes/class-bp-rest-xprofile-fields-endpoint.php:1181
 msgid "Ensure result set excludes specific profile field groups."
 msgstr ""
 
-#: bp-xprofile/classes/class-bp-rest-xprofile-field-groups-endpoint.php:869
+#: bp-xprofile/classes/class-bp-rest-xprofile-field-groups-endpoint.php:873
 #: bp-xprofile/classes/class-bp-rest-xprofile-fields-endpoint.php:1190
 msgid "Ensure result set excludes specific profile fields."
 msgstr ""
 
-#: bp-xprofile/classes/class-bp-rest-xprofile-field-groups-endpoint.php:878
+#: bp-xprofile/classes/class-bp-rest-xprofile-field-groups-endpoint.php:882
 #: bp-xprofile/classes/class-bp-rest-xprofile-fields-endpoint.php:1199
 msgid "Whether to pre-fetch xprofilemeta for all retrieved groups, fields, and data."
 msgstr ""
