@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2020-05-14T21:50:09+00:00\n"
+"POT-Creation-Date: 2020-04-29T23:55:13+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.4.0\n"
 "X-Domain: buddypress\n"
@@ -3757,8 +3757,8 @@ msgstr ""
 #: bp-settings/classes/class-bp-settings-component.php:28
 #: bp-settings/classes/class-bp-settings-component.php:142
 #: bp-settings/classes/class-bp-settings-component.php:243
-#: bp-groups/js/blocks/group.js:70
-#: bp-members/js/blocks/member.js:69
+#: bp-groups/js/blocks/group.js:194
+#: bp-members/js/blocks/member.js:194
 msgid "Settings"
 msgstr ""
 
@@ -4041,8 +4041,7 @@ msgstr ""
 msgid "Community Support"
 msgstr ""
 
-#. translators: %s: BuddyPress version number
-#: bp-core/classes/class-bp-admin.php:934
+#: bp-core/classes/class-bp-admin.php:930
 msgid "Noteworthy Contributors to %s"
 msgstr ""
 
@@ -4051,19 +4050,19 @@ msgstr ""
 msgid "All Contributors to BuddyPress %s"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:1008
+#: bp-core/classes/class-bp-admin.php:994
 msgid "With our thanks to these Open Source projects"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:1022
+#: bp-core/classes/class-bp-admin.php:1008
 msgid "Contributor Emeriti"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:1027
+#: bp-core/classes/class-bp-admin.php:1013
 msgid "Project Founder"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:1067
+#: bp-core/classes/class-bp-admin.php:1049
 msgctxt "Email post type"
 msgid "Situations"
 msgstr ""
@@ -5569,7 +5568,7 @@ msgstr ""
 #: bp-groups/bp-groups-functions.php:1213
 #: bp-groups/bp-groups-functions.php:2916
 #: bp-members/classes/class-bp-members-admin.php:836
-#: bp-members/js/blocks/member.js:143
+#: bp-members/js/blocks/member.js:246
 msgid "Member"
 msgstr ""
 
@@ -5925,7 +5924,7 @@ msgid "Private Group"
 msgstr ""
 
 #: bp-groups/bp-groups-template.php:690
-#: bp-groups/js/blocks/group.js:142
+#: bp-groups/js/blocks/group.js:246
 msgid "Group"
 msgstr ""
 
@@ -13245,152 +13244,152 @@ msgstr ""
 msgid "BuddyPress Nouveau"
 msgstr ""
 
-#: bp-core/js/block-components.js:167
+#: bp-core/js/block-components.js:355
 msgid "Item's name"
 msgstr ""
 
-#: bp-core/js/block-components.js:171
+#: bp-core/js/block-components.js:359
 msgid "Enter Item's name here…"
 msgstr ""
 
-#: bp-groups/js/blocks/group.js:20
-#: bp-members/js/blocks/member.js:20
+#: bp-groups/js/blocks/group.js:149
+#: bp-members/js/blocks/member.js:149
 msgid "None"
 msgstr ""
 
-#: bp-groups/js/blocks/group.js:24
-#: bp-members/js/blocks/member.js:24
+#: bp-groups/js/blocks/group.js:152
+#: bp-members/js/blocks/member.js:152
 msgid "Thumb"
 msgstr ""
 
-#: bp-groups/js/blocks/group.js:28
-#: bp-members/js/blocks/member.js:28
+#: bp-groups/js/blocks/group.js:155
+#: bp-members/js/blocks/member.js:155
 msgid "Full"
 msgstr ""
 
-#: bp-groups/js/blocks/group.js:41
+#: bp-groups/js/blocks/group.js:173
 msgid "BuddyPress Group"
 msgstr ""
 
-#: bp-groups/js/blocks/group.js:42
+#: bp-groups/js/blocks/group.js:174
 msgid "Start typing the name of the group you want to feature into this post."
 msgstr ""
 
-#: bp-groups/js/blocks/group.js:47
+#: bp-groups/js/blocks/group.js:178
 msgid "Group's name"
 msgstr ""
 
-#: bp-groups/js/blocks/group.js:48
+#: bp-groups/js/blocks/group.js:179
 msgid "Enter Group's name here…"
 msgstr ""
 
-#: bp-groups/js/blocks/group.js:62
+#: bp-groups/js/blocks/group.js:187
 msgid "Select another group"
 msgstr ""
 
-#: bp-groups/js/blocks/group.js:72
+#: bp-groups/js/blocks/group.js:197
 msgid "Display Group's home button"
 msgstr ""
 
-#: bp-groups/js/blocks/group.js:79
+#: bp-groups/js/blocks/group.js:204
 msgid "Include a link to the group's home page under their name."
 msgstr ""
 
-#: bp-groups/js/blocks/group.js:80
+#: bp-groups/js/blocks/group.js:204
 msgid "Toggle to display a link to the group's home page under their name."
 msgstr ""
 
-#: bp-groups/js/blocks/group.js:85
+#: bp-groups/js/blocks/group.js:206
 msgid "Display group's description"
 msgstr ""
 
-#: bp-groups/js/blocks/group.js:92
+#: bp-groups/js/blocks/group.js:213
 msgid "Include the group's description under their name."
 msgstr ""
 
-#: bp-groups/js/blocks/group.js:93
+#: bp-groups/js/blocks/group.js:213
 msgid "Toggle to display the group's description under their name."
 msgstr ""
 
-#: bp-groups/js/blocks/group.js:99
-#: bp-members/js/blocks/member.js:85
+#: bp-groups/js/blocks/group.js:215
+#: bp-members/js/blocks/member.js:206
 msgid "Avatar size"
 msgstr ""
 
-#: bp-groups/js/blocks/group.js:102
-#: bp-members/js/blocks/member.js:88
+#: bp-groups/js/blocks/group.js:218
+#: bp-members/js/blocks/member.js:209
 msgid "Select \"None\" to disable the avatar."
 msgstr ""
 
-#: bp-groups/js/blocks/group.js:111
-#: bp-members/js/blocks/member.js:97
+#: bp-groups/js/blocks/group.js:225
+#: bp-members/js/blocks/member.js:216
 msgid "Display Cover Image"
 msgstr ""
 
-#: bp-groups/js/blocks/group.js:118
+#: bp-groups/js/blocks/group.js:232
 msgid "Include the group's cover image over their name."
 msgstr ""
 
-#: bp-groups/js/blocks/group.js:119
+#: bp-groups/js/blocks/group.js:232
 msgid "Toggle to display the group's cover image over their name."
 msgstr ""
 
-#: bp-groups/js/blocks/group.js:144
+#: bp-groups/js/blocks/group.js:247
 msgid "BuddyPress Group."
 msgstr ""
 
-#: bp-members/js/blocks/member.js:41
+#: bp-members/js/blocks/member.js:174
 msgid "BuddyPress Member"
 msgstr ""
 
-#: bp-members/js/blocks/member.js:42
+#: bp-members/js/blocks/member.js:175
 msgid "Start typing the name of the member you want to feature into this post."
 msgstr ""
 
-#: bp-members/js/blocks/member.js:46
+#: bp-members/js/blocks/member.js:178
 msgid "Member's username"
 msgstr ""
 
-#: bp-members/js/blocks/member.js:47
+#: bp-members/js/blocks/member.js:179
 msgid "Enter Member's username here…"
 msgstr ""
 
-#: bp-members/js/blocks/member.js:61
+#: bp-members/js/blocks/member.js:187
 msgid "Select another member"
 msgstr ""
 
-#: bp-members/js/blocks/member.js:71
+#: bp-members/js/blocks/member.js:197
 msgid "Display Profile button"
 msgstr ""
 
-#: bp-members/js/blocks/member.js:78
+#: bp-members/js/blocks/member.js:204
 msgid "Include a link to the user's profile page under their display name."
 msgstr ""
 
-#: bp-members/js/blocks/member.js:79
+#: bp-members/js/blocks/member.js:204
 msgid "Toggle to display a link to the user's profile page under their display name."
 msgstr ""
 
-#: bp-members/js/blocks/member.js:104
+#: bp-members/js/blocks/member.js:223
 msgid "Include the user's cover image over their display name."
 msgstr ""
 
-#: bp-members/js/blocks/member.js:105
+#: bp-members/js/blocks/member.js:223
 msgid "Toggle to display the user's cover image over their display name."
 msgstr ""
 
-#: bp-members/js/blocks/member.js:112
+#: bp-members/js/blocks/member.js:225
 msgid "Display Mention slug"
 msgstr ""
 
-#: bp-members/js/blocks/member.js:119
+#: bp-members/js/blocks/member.js:232
 msgid "Include the user's mention name under their display name."
 msgstr ""
 
-#: bp-members/js/blocks/member.js:120
+#: bp-members/js/blocks/member.js:232
 msgid "Toggle to display the user's mention name under their display name."
 msgstr ""
 
-#: bp-members/js/blocks/member.js:145
+#: bp-members/js/blocks/member.js:247
 msgid "BuddyPress Member."
 msgstr ""
