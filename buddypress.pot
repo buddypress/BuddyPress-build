@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2023-12-11T21:24:37+00:00\n"
+"POT-Creation-Date: 2023-11-28T00:17:00+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.5.0\n"
 "X-Domain: buddypress\n"
@@ -177,10 +177,10 @@ msgstr ""
 
 #: bp-activity/bp-activity-admin.php:222
 #: bp-activity/bp-activity-admin.php:276
-#: bp-core/admin/bp-core-admin-functions.php:697
-#: bp-core/admin/bp-core-admin-functions.php:723
-#: bp-core/admin/bp-core-admin-functions.php:742
-#: bp-core/admin/bp-core-admin-functions.php:769
+#: bp-core/admin/bp-core-admin-functions.php:696
+#: bp-core/admin/bp-core-admin-functions.php:721
+#: bp-core/admin/bp-core-admin-functions.php:739
+#: bp-core/admin/bp-core-admin-functions.php:765
 #: bp-core/admin/bp-core-admin-optouts.php:64
 #: bp-groups/bp-groups-admin.php:175
 #: bp-groups/bp-groups-admin.php:228
@@ -224,10 +224,10 @@ msgstr ""
 
 #: bp-activity/bp-activity-admin.php:241
 #: bp-activity/bp-activity-admin.php:293
-#: bp-core/admin/bp-core-admin-functions.php:710
-#: bp-core/admin/bp-core-admin-functions.php:730
-#: bp-core/admin/bp-core-admin-functions.php:755
-#: bp-core/admin/bp-core-admin-functions.php:782
+#: bp-core/admin/bp-core-admin-functions.php:709
+#: bp-core/admin/bp-core-admin-functions.php:728
+#: bp-core/admin/bp-core-admin-functions.php:752
+#: bp-core/admin/bp-core-admin-functions.php:778
 #: bp-core/admin/bp-core-admin-optouts.php:86
 #: bp-groups/bp-groups-admin.php:183
 #: bp-groups/bp-groups-admin.php:244
@@ -411,7 +411,7 @@ msgstr ""
 #: bp-activity/classes/class-bp-activity-list-table.php:663
 #: bp-activity/classes/class-bp-akismet.php:218
 #: bp-activity/classes/class-bp-akismet.php:261
-#: bp-core/admin/bp-core-admin-functions.php:1374
+#: bp-core/admin/bp-core-admin-functions.php:1370
 msgid "Spam"
 msgstr ""
 
@@ -954,7 +954,7 @@ msgid "Delete"
 msgstr ""
 
 #: bp-activity/bp-activity-template.php:3134
-#: bp-core/admin/bp-core-admin-functions.php:1380
+#: bp-core/admin/bp-core-admin-functions.php:1376
 #: bp-groups/classes/class-bp-groups-list-table.php:611
 #: bp-members/bp-members-template.php:1180
 #: bp-messages/classes/class-bp-messages-component.php:258
@@ -1145,7 +1145,7 @@ msgstr ""
 
 #: bp-activity/classes/class-bp-activity-list-table.php:402
 #: bp-activity/classes/class-bp-activity-list-table.php:661
-#: bp-core/admin/bp-core-admin-functions.php:1362
+#: bp-core/admin/bp-core-admin-functions.php:1358
 msgid "Not Spam"
 msgstr ""
 
@@ -1936,7 +1936,7 @@ msgstr ""
 #: bp-core/admin/bp-core-admin-rewrites.php:141
 #: bp-core/admin/bp-core-admin-settings.php:387
 #: bp-core/classes/class-bp-admin.php:994
-#: bp-core/classes/class-bp-admin.php:1632
+#: bp-core/classes/class-bp-admin.php:1618
 msgid "BuddyPress Settings"
 msgstr ""
 
@@ -1976,7 +1976,7 @@ msgstr ""
 #: bp-core/admin/bp-core-admin-components.php:73
 #: bp-core/admin/bp-core-admin-functions.php:526
 #: bp-core/bp-core-functions.php:2735
-#: bp-core/classes/class-bp-admin.php:1632
+#: bp-core/classes/class-bp-admin.php:1618
 #: bp-notifications/bp-notifications-functions.php:978
 #: bp-notifications/classes/class-bp-notifications-component.php:296
 #: bp-templates/bp-legacy/buddypress/members/single/notifications/read.php:16
@@ -2151,116 +2151,116 @@ msgstr ""
 msgid "Support Forums"
 msgstr ""
 
-#: bp-core/admin/bp-core-admin-functions.php:705
+#: bp-core/admin/bp-core-admin-functions.php:704
 msgid "Managing Components"
 msgstr ""
 
-#: bp-core/admin/bp-core-admin-functions.php:750
+#: bp-core/admin/bp-core-admin-functions.php:747
 msgid "Managing Settings"
 msgstr ""
 
-#: bp-core/admin/bp-core-admin-functions.php:777
+#: bp-core/admin/bp-core-admin-functions.php:773
 msgid "Managing Profile Fields"
 msgstr ""
 
-#: bp-core/admin/bp-core-admin-functions.php:807
+#: bp-core/admin/bp-core-admin-functions.php:803
 msgid "By default, all but four of the BuddyPress components are enabled. You can selectively enable or disable any of the components by using the form below. Your BuddyPress installation will continue to function. However, the features of the disabled components will no longer be accessible to anyone using the site."
 msgstr ""
 
-#: bp-core/admin/bp-core-admin-functions.php:811
+#: bp-core/admin/bp-core-admin-functions.php:807
 msgid "Extra configuration settings are provided and activated. You can selectively enable or disable any setting by using the form on this screen."
 msgstr ""
 
-#: bp-core/admin/bp-core-admin-functions.php:815
+#: bp-core/admin/bp-core-admin-functions.php:811
 msgid "Your users will distinguish themselves through their profile page. Create relevant profile fields that will show on each users profile."
 msgstr ""
 
-#: bp-core/admin/bp-core-admin-functions.php:815
+#: bp-core/admin/bp-core-admin-functions.php:811
 msgid "Note: Drag fields from other groups and drop them on the \"Signup Fields\" tab to include them into your registration form."
 msgstr ""
 
-#: bp-core/admin/bp-core-admin-functions.php:819
+#: bp-core/admin/bp-core-admin-functions.php:815
 msgid "Customize the page titles and URL slugs for the BuddyPress screens on your site."
 msgstr ""
 
-#: bp-core/admin/bp-core-admin-functions.php:819
+#: bp-core/admin/bp-core-admin-functions.php:815
 msgid "The <strong>title</strong> is the page title displayed above the BuddyPress content. For example, the page title \"Members\" is shown above the members directory."
 msgstr ""
 
-#: bp-core/admin/bp-core-admin-functions.php:819
+#: bp-core/admin/bp-core-admin-functions.php:815
 msgid "A <strong>slug</strong> is a portion of the URL itself. For instance, \"members\" is the members directory slug in the following example URL: <code>https://mysite.org/members</code>. Slugs should only include lowercase letters, numbers, and hyphens."
 msgstr ""
 
-#: bp-core/admin/bp-core-admin-functions.php:995
+#: bp-core/admin/bp-core-admin-functions.php:991
 #: bp-members/blocks/member/index.js:1
 msgid "BuddyPress Member"
 msgstr ""
 
-#: bp-core/admin/bp-core-admin-functions.php:1041
+#: bp-core/admin/bp-core-admin-functions.php:1037
 msgid "Search BuddyPress member menu items"
 msgstr ""
 
-#: bp-core/admin/bp-core-admin-functions.php:1042
-#: bp-core/admin/bp-core-admin-functions.php:1067
+#: bp-core/admin/bp-core-admin-functions.php:1038
+#: bp-core/admin/bp-core-admin-functions.php:1063
 msgid "All BuddyPress Member menu items"
 msgstr ""
 
-#: bp-core/admin/bp-core-admin-functions.php:1078
+#: bp-core/admin/bp-core-admin-functions.php:1074
 msgid "Logged-In"
 msgstr ""
 
-#: bp-core/admin/bp-core-admin-functions.php:1079
+#: bp-core/admin/bp-core-admin-functions.php:1075
 msgid "Logged-Out"
 msgstr ""
 
-#: bp-core/admin/bp-core-admin-functions.php:1080
+#: bp-core/admin/bp-core-admin-functions.php:1076
 #: bp-members/classes/class-bp-members-invitations-list-table.php:143
 msgid "All"
 msgstr ""
 
 #. Translators: %s is the url to the BuddyPress tools administration screen.
-#: bp-core/admin/bp-core-admin-functions.php:1185
+#: bp-core/admin/bp-core-admin-functions.php:1181
 msgid "Are these emails not written in your site's language? Go to <a href=\"%s\">BuddyPress Tools and try the \"reinstall emails\"</a> tool."
 msgstr ""
 
 #. Translators: %s is the url to the BuddyPress codex page about BP Email tokens.
-#: bp-core/admin/bp-core-admin-functions.php:1206
+#: bp-core/admin/bp-core-admin-functions.php:1202
 msgid "Phrases wrapped in braces <code>{{ }}</code> are email tokens. <a href=\"%s\">Learn about tokens on the BuddyPress Codex</a>."
 msgstr ""
 
-#: bp-core/admin/bp-core-admin-functions.php:1256
+#: bp-core/admin/bp-core-admin-functions.php:1252
 msgid "Choose when this email will be sent."
 msgstr ""
 
 #. translators: accessibility text
-#: bp-core/admin/bp-core-admin-functions.php:1269
-#: bp-core/admin/bp-core-admin-functions.php:1288
+#: bp-core/admin/bp-core-admin-functions.php:1265
+#: bp-core/admin/bp-core-admin-functions.php:1284
 msgid "Plain text email content"
 msgstr ""
 
-#: bp-core/admin/bp-core-admin-functions.php:1292
+#: bp-core/admin/bp-core-admin-functions.php:1288
 msgid "Most email clients support HTML email. However, some people prefer to receive plain text email. Enter a plain text alternative version of your email here."
 msgstr ""
 
-#: bp-core/admin/bp-core-admin-functions.php:1432
+#: bp-core/admin/bp-core-admin-functions.php:1428
 #: bp-core/deprecated/3.0.php:136
 #: bp-members/classes/class-bp-members-admin.php:521
 msgid "User marked as spammer. Spam users are visible only to site admins."
 msgstr ""
 
-#: bp-core/admin/bp-core-admin-functions.php:1434
+#: bp-core/admin/bp-core-admin-functions.php:1430
 msgid "User removed from spam."
 msgstr ""
 
-#: bp-core/admin/bp-core-admin-functions.php:1546
+#: bp-core/admin/bp-core-admin-functions.php:1542
 msgid "Community blocks"
 msgstr ""
 
-#: bp-core/admin/bp-core-admin-functions.php:1583
+#: bp-core/admin/bp-core-admin-functions.php:1579
 msgid "Dismiss the notification"
 msgstr ""
 
-#: bp-core/admin/bp-core-admin-functions.php:1583
+#: bp-core/admin/bp-core-admin-functions.php:1579
 #: bp-core/bp-core-attachments.php:687
 msgid "Dismiss"
 msgstr ""
@@ -5025,28 +5025,28 @@ msgstr ""
 msgid "All Contributors to BuddyPress %s"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:1190
+#: bp-core/classes/class-bp-admin.php:1176
 msgid "With our thanks to these Open Source projects"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:1203
+#: bp-core/classes/class-bp-admin.php:1189
 msgid "Contributor Emeriti"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:1208
+#: bp-core/classes/class-bp-admin.php:1194
 msgid "Project Founder"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:1248
+#: bp-core/classes/class-bp-admin.php:1234
 msgctxt "Email post type"
 msgid "Situations"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:1564
+#: bp-core/classes/class-bp-admin.php:1550
 msgid "BuddyPress Add-ons"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:1645
+#: bp-core/classes/class-bp-admin.php:1631
 msgid "No new Admin Notfications"
 msgstr ""
 
@@ -5260,13 +5260,13 @@ msgstr ""
 msgid "The `href` attribute is not available inside the `&lt;button&gt;` tag. Please use a `data-*` attribute to transport a link into this tag."
 msgstr ""
 
-#: bp-core/classes/class-bp-component.php:700
+#: bp-core/classes/class-bp-component.php:692
 #: bp-templates/bp-nouveau/includes/members/functions.php:501
 msgctxt "Member Home page"
 msgid "Home"
 msgstr ""
 
-#: bp-core/classes/class-bp-component.php:1335
+#: bp-core/classes/class-bp-component.php:1327
 msgid "Members-only area"
 msgstr ""
 
