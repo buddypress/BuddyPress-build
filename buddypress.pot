@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later (license.txt).
 msgid ""
 msgstr ""
-"Project-Id-Version: BuddyPress 5.0.0-RC1\n"
+"Project-Id-Version: BuddyPress 5.0.0-RC2\n"
 "Report-Msgid-Bugs-To: https://buddypress.trac.wordpress.org\n"
-"POT-Creation-Date: 2019-09-16 22:41:25+00:00\n"
+"POT-Creation-Date: 2019-09-26 01:57:11+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -3473,15 +3473,15 @@ msgstr ""
 msgid "Contributors to BuddyPress %s"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:993
+#: bp-core/classes/class-bp-admin.php:985
 msgid "With our thanks to these Open Source projects"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:1007
+#: bp-core/classes/class-bp-admin.php:999
 msgid "Contributor Emeriti"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:1012
+#: bp-core/classes/class-bp-admin.php:1004
 msgid "Project Founder"
 msgstr ""
 
@@ -11651,7 +11651,7 @@ msgctxt "Colloquial alternative to \"learn about BuddyPress\""
 msgid "Hello, BuddyPress!"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:1048
+#: bp-core/classes/class-bp-admin.php:1040
 msgctxt "Email post type"
 msgid "Situations"
 msgstr ""
