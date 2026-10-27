@@ -21,3 +21,4 @@ var e=require("./setPrototypeOf");function r(r,t){if("function"!=typeof t&&null!
 },{"./autocompleter":"W80x"}],"Ee8M":[function(require,module,exports) {
 "use strict";Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"blockComponents",{enumerable:!0,get:function(){return e.default}});var e=t(require("./components"));function t(e){return e&&e.__esModule?e:{default:e}}
 },{"./components":"iA92"}]},{},["Ee8M"], "bp")
+//# sourceMappingURL=/block-components.js.map
