@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later (license.txt).
 msgid ""
 msgstr ""
-"Project-Id-Version: BuddyPress 5.1.2\n"
+"Project-Id-Version: BuddyPress 5.2.0\n"
 "Report-Msgid-Bugs-To: https://buddypress.trac.wordpress.org\n"
-"POT-Creation-Date: 2020-01-03 21:04:46+00:00\n"
+"POT-Creation-Date: 2020-04-21 18:45:02+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -718,13 +718,13 @@ msgstr ""
 msgid "View Discussion"
 msgstr ""
 
-#: bp-activity/bp-activity-template.php:2172
+#: bp-activity/bp-activity-template.php:2177
 msgid ""
 "%1$s no longer accepts arguments. See the inline documentation at %2$s for "
 "more details."
 msgstr ""
 
-#: bp-activity/bp-activity-template.php:2642
+#: bp-activity/bp-activity-template.php:2647
 #: bp-core/bp-core-attachments.php:777
 #: bp-groups/classes/class-bp-groups-component.php:746
 #: bp-groups/classes/class-bp-groups-list-table.php:371
@@ -743,7 +743,7 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
-#: bp-activity/bp-activity-template.php:2747
+#: bp-activity/bp-activity-template.php:2752
 #: bp-core/admin/bp-core-admin-functions.php:1021
 #: bp-core/admin/bp-core-admin-slugs.php:148
 #: bp-core/admin/bp-core-admin-slugs.php:219
@@ -753,19 +753,19 @@ msgstr ""
 msgid "View"
 msgstr ""
 
-#: bp-activity/bp-activity-template.php:2856
+#: bp-activity/bp-activity-template.php:2861
 msgid "Clear Filter"
 msgstr ""
 
-#: bp-activity/bp-activity-template.php:3166
+#: bp-activity/bp-activity-template.php:3171
 msgid "a user"
 msgstr ""
 
-#: bp-activity/bp-activity-template.php:3223
+#: bp-activity/bp-activity-template.php:3228
 msgid "Public Message"
 msgstr ""
 
-#: bp-activity/bp-activity-template.php:3815
+#: bp-activity/bp-activity-template.php:3820
 msgid "Site Wide Activity RSS Feed"
 msgstr ""
 
@@ -773,7 +773,7 @@ msgstr ""
 #: bp-activity/classes/class-bp-activity-template.php:146
 #: bp-groups/bp-groups-functions.php:246 bp-groups/bp-groups-functions.php:697
 #: bp-groups/bp-groups-functions.php:1674
-#: bp-groups/bp-groups-functions.php:2011
+#: bp-groups/bp-groups-functions.php:2013
 #: bp-groups/classes/class-bp-groups-group-members-template.php:100
 #: bp-groups/classes/class-bp-groups-group.php:1058
 #: bp-groups/classes/class-bp-groups-invite-template.php:85
@@ -4186,9 +4186,9 @@ msgstr ""
 
 #: bp-friends/bp-friends-functions.php:1013
 #: bp-friends/bp-friends-functions.php:1076
-#: bp-groups/bp-groups-functions.php:2964
-#: bp-groups/bp-groups-functions.php:3034
-#: bp-groups/bp-groups-functions.php:3104
+#: bp-groups/bp-groups-functions.php:2966
+#: bp-groups/bp-groups-functions.php:3036
+#: bp-groups/bp-groups-functions.php:3106
 #: bp-messages/bp-messages-functions.php:708
 msgid "Date Sent"
 msgstr ""
@@ -4446,7 +4446,7 @@ msgstr ""
 msgid "Joined a group"
 msgstr ""
 
-#: bp-groups/bp-groups-activity.php:44 bp-groups/bp-groups-functions.php:2905
+#: bp-groups/bp-groups-activity.php:44 bp-groups/bp-groups-functions.php:2907
 msgid "Group Memberships"
 msgstr ""
 
@@ -4470,7 +4470,7 @@ msgstr ""
 msgid "%1$s created the group %2$s"
 msgstr ""
 
-#: bp-groups/bp-groups-activity.php:139 bp-groups/bp-groups-activity.php:706
+#: bp-groups/bp-groups-activity.php:139 bp-groups/bp-groups-activity.php:742
 msgid "%1$s joined the group %2$s"
 msgstr ""
 
@@ -4610,10 +4610,10 @@ msgstr ""
 msgid "Name and Description"
 msgstr ""
 
-#: bp-groups/bp-groups-admin.php:621 bp-groups/bp-groups-functions.php:2867
-#: bp-groups/bp-groups-functions.php:2956
-#: bp-groups/bp-groups-functions.php:3022
-#: bp-groups/bp-groups-functions.php:3092
+#: bp-groups/bp-groups-admin.php:621 bp-groups/bp-groups-functions.php:2869
+#: bp-groups/bp-groups-functions.php:2958
+#: bp-groups/bp-groups-functions.php:3024
+#: bp-groups/bp-groups-functions.php:3094
 #. translators: accessibility text
 msgid "Group Name"
 msgstr ""
@@ -4762,12 +4762,12 @@ msgid "Administrator"
 msgstr ""
 
 #: bp-groups/bp-groups-admin.php:1007 bp-groups/bp-groups-functions.php:1204
-#: bp-groups/bp-groups-functions.php:2888
+#: bp-groups/bp-groups-functions.php:2890
 msgid "Moderator"
 msgstr ""
 
 #: bp-groups/bp-groups-admin.php:1008 bp-groups/bp-groups-functions.php:1212
-#: bp-groups/bp-groups-functions.php:2890
+#: bp-groups/bp-groups-functions.php:2892
 #: bp-members/classes/class-bp-members-admin.php:819
 msgid "Member"
 msgstr ""
@@ -4871,63 +4871,63 @@ msgstr ""
 msgid "As the only admin, you cannot leave the group."
 msgstr ""
 
-#: bp-groups/bp-groups-functions.php:2079
-#: bp-groups/bp-groups-functions.php:2112
-#: bp-groups/bp-groups-functions.php:2149
+#: bp-groups/bp-groups-functions.php:2081
+#: bp-groups/bp-groups-functions.php:2114
+#: bp-groups/bp-groups-functions.php:2151
 msgid ""
 "Argument `membership_id` passed to %1$s  is deprecated. See the inline "
 "documentation at %2$s for more details."
 msgstr ""
 
-#: bp-groups/bp-groups-functions.php:2498
+#: bp-groups/bp-groups-functions.php:2500
 msgid "Group type already exists."
 msgstr ""
 
-#: bp-groups/bp-groups-functions.php:2525
+#: bp-groups/bp-groups-functions.php:2527
 msgid "You may not register a group type with this name."
 msgstr ""
 
-#: bp-groups/bp-groups-functions.php:2871
-#: bp-groups/bp-groups-functions.php:2960
-#: bp-groups/bp-groups-functions.php:3026
-#: bp-groups/bp-groups-functions.php:3096
+#: bp-groups/bp-groups-functions.php:2873
+#: bp-groups/bp-groups-functions.php:2962
+#: bp-groups/bp-groups-functions.php:3028
+#: bp-groups/bp-groups-functions.php:3098
 msgid "Group URL"
 msgstr ""
 
-#: bp-groups/bp-groups-functions.php:2878
-#: bp-groups/bp-groups-functions.php:3100
+#: bp-groups/bp-groups-functions.php:2880
+#: bp-groups/bp-groups-functions.php:3102
 msgid "Invited By"
 msgstr ""
 
-#: bp-groups/bp-groups-functions.php:2884
+#: bp-groups/bp-groups-functions.php:2886
 msgid "Creator"
 msgstr ""
 
-#: bp-groups/bp-groups-functions.php:2886
+#: bp-groups/bp-groups-functions.php:2888
 msgid "Admin"
 msgstr ""
 
-#: bp-groups/bp-groups-functions.php:2894
+#: bp-groups/bp-groups-functions.php:2896
 msgid "Group Role"
 msgstr ""
 
-#: bp-groups/bp-groups-functions.php:2899
+#: bp-groups/bp-groups-functions.php:2901
 msgid "Date Joined"
 msgstr ""
 
-#: bp-groups/bp-groups-functions.php:2971
+#: bp-groups/bp-groups-functions.php:2973
 msgid "Pending Group Membership Requests"
 msgstr ""
 
-#: bp-groups/bp-groups-functions.php:3030
+#: bp-groups/bp-groups-functions.php:3032
 msgid "Sent To"
 msgstr ""
 
-#: bp-groups/bp-groups-functions.php:3041
+#: bp-groups/bp-groups-functions.php:3043
 msgid "Pending Group Invitations (Sent)"
 msgstr ""
 
-#: bp-groups/bp-groups-functions.php:3111
+#: bp-groups/bp-groups-functions.php:3113
 msgid "Pending Group Invitations (Received)"
 msgstr ""
 
@@ -10315,7 +10315,7 @@ msgstr ""
 msgid "Add New Field Group"
 msgstr ""
 
-#: bp-xprofile/bp-xprofile-admin.php:191 bp-xprofile/bp-xprofile-admin.php:677
+#: bp-xprofile/bp-xprofile-admin.php:191 bp-xprofile/bp-xprofile-admin.php:679
 msgid "(Primary)"
 msgstr ""
 
@@ -10353,23 +10353,23 @@ msgstr ""
 msgid "The field was saved successfully."
 msgstr ""
 
-#: bp-xprofile/bp-xprofile-admin.php:569
+#: bp-xprofile/bp-xprofile-admin.php:571
 msgid "field"
 msgstr ""
 
-#: bp-xprofile/bp-xprofile-admin.php:569
+#: bp-xprofile/bp-xprofile-admin.php:571
 msgid "option"
 msgstr ""
 
-#: bp-xprofile/bp-xprofile-admin.php:573
+#: bp-xprofile/bp-xprofile-admin.php:575
 msgid "There was an error deleting the %s. Please try again."
 msgstr ""
 
-#: bp-xprofile/bp-xprofile-admin.php:576
+#: bp-xprofile/bp-xprofile-admin.php:578
 msgid "The %s was deleted successfully!"
 msgstr ""
 
-#: bp-xprofile/bp-xprofile-admin.php:679
+#: bp-xprofile/bp-xprofile-admin.php:681
 msgid "(Sign-up)"
 msgstr ""
 
@@ -11842,6 +11842,11 @@ msgctxt "Group WP Admin Bar delete link"
 msgid "%s Group"
 msgstr ""
 
+#: bp-groups/bp-groups-cssjs.php:62
+msgctxt "Group Manage Members dropdown default option"
+msgid "All members"
+msgstr ""
+
 #: bp-groups/bp-groups-filters.php:379
 msgctxt "BuddyPress Group Memberships data exporter friendly name"
 msgid "Group Memberships"
@@ -12386,17 +12391,17 @@ msgctxt "BuddyPress Settings Data data exporter friendly name"
 msgid "Personal settings"
 msgstr ""
 
-#: bp-settings/bp-settings-functions.php:326
+#: bp-settings/bp-settings-functions.php:328
 msgctxt "WP Comments data exporter friendly name"
 msgid "Comments"
 msgstr ""
 
-#: bp-settings/bp-settings-functions.php:327
+#: bp-settings/bp-settings-functions.php:329
 msgctxt "WP Media data exporter friendly name"
 msgid "Media"
 msgstr ""
 
-#: bp-settings/bp-settings-functions.php:328
+#: bp-settings/bp-settings-functions.php:330
 msgctxt "WP Media data exporter friendly name"
 msgid "Personal information"
 msgstr ""
@@ -12788,17 +12793,17 @@ msgctxt "Profile fields group was deleted successfully"
 msgid "The group was deleted successfully."
 msgstr ""
 
-#: bp-xprofile/bp-xprofile-admin.php:723
+#: bp-xprofile/bp-xprofile-admin.php:725
 msgctxt "Edit field link"
 msgid "Edit"
 msgstr ""
 
-#: bp-xprofile/bp-xprofile-admin.php:728
+#: bp-xprofile/bp-xprofile-admin.php:730
 msgctxt "Delete field link"
 msgid "Delete"
 msgstr ""
 
-#: bp-xprofile/bp-xprofile-admin.php:774
+#: bp-xprofile/bp-xprofile-admin.php:776
 msgctxt "xprofile field type category"
 msgid "Other"
 msgstr ""
