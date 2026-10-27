@@ -18,25 +18,24 @@ defined( 'ABSPATH' ) || exit;
 function bp_settings_slug() {
 	echo bp_get_settings_slug();
 }
-
-/**
- * Return the settings component slug.
- *
- * @since 1.5.0
- *
- * @return string
- */
-function bp_get_settings_slug() {
-
 	/**
-	 * Filters the Settings component slug.
+	 * Return the settings component slug.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @param string $slug Settings component slug.
+	 * @return string
 	 */
-	return apply_filters( 'bp_get_settings_slug', buddypress()->settings->slug );
-}
+	function bp_get_settings_slug() {
+
+		/**
+		 * Filters the Settings component slug.
+		 *
+		 * @since 1.5.0
+		 *
+		 * @param string $slug Settings component slug.
+		 */
+		return apply_filters( 'bp_get_settings_slug', buddypress()->settings->slug );
+	}
 
 /**
  * Output the settings component root slug.
@@ -46,25 +45,24 @@ function bp_get_settings_slug() {
 function bp_settings_root_slug() {
 	echo bp_get_settings_root_slug();
 }
-
-/**
- * Return the settings component root slug.
- *
- * @since 1.5.0
- *
- * @return string
- */
-function bp_get_settings_root_slug() {
-
 	/**
-	 * Filters the Settings component root slug.
+	 * Return the settings component root slug.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @param string $root_slug Settings component root slug.
+	 * @return string
 	 */
-	return apply_filters( 'bp_get_settings_root_slug', buddypress()->settings->root_slug );
-}
+	function bp_get_settings_root_slug() {
+
+		/**
+		 * Filters the Settings component root slug.
+		 *
+		 * @since 1.5.0
+		 *
+		 * @param string $root_slug Settings component root slug.
+		 */
+		return apply_filters( 'bp_get_settings_root_slug', buddypress()->settings->root_slug );
+	}
 
 /**
  * Add the 'pending email change' message to the settings page.

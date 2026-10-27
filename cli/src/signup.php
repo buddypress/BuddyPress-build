@@ -87,7 +87,7 @@ class Signup extends BuddyPressCommand {
 			)
 		);
 
-		$signup_args = array( 'meta' => array() );
+		$signup_args = array( 'meta' => '' );
 
 		$user_login = $r['user-login'];
 		if ( ! empty( $user_login ) ) {

@@ -1,1 +1,1 @@
-<?php return array('dependencies' => array('bp-dynamic-widget-block', 'wp-i18n'), 'version' => 'f27df4bc45c7c812d1a9');
+<?php return array('dependencies' => array('bp-dynamic-widget-block', 'wp-i18n'), 'version' => '86c938fd7a5540936871');
