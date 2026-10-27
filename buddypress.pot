@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later (license.txt).
 msgid ""
 msgstr ""
-"Project-Id-Version: BuddyPress 5.1.0-beta1\n"
+"Project-Id-Version: BuddyPress 5.1.1\n"
 "Report-Msgid-Bugs-To: https://buddypress.trac.wordpress.org\n"
-"POT-Creation-Date: 2019-11-06 02:01:17+00:00\n"
+"POT-Creation-Date: 2019-12-23 09:08:12+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -2044,7 +2044,7 @@ msgstr ""
 msgid "HTTP error."
 msgstr ""
 
-#: bp-core/bp-core-attachments.php:661 bp-core/bp-core-avatars.php:1060
+#: bp-core/bp-core-attachments.php:661 bp-core/bp-core-avatars.php:1073
 msgid "Upload failed."
 msgstr ""
 
@@ -2144,7 +2144,7 @@ msgid ""
 "wide, and %2$spx tall."
 msgstr ""
 
-#: bp-core/bp-core-attachments.php:1344 bp-core/bp-core-avatars.php:903
+#: bp-core/bp-core-attachments.php:1344 bp-core/bp-core-avatars.php:916
 msgid "Upload Failed! Error was: %s"
 msgstr ""
 
@@ -2156,12 +2156,12 @@ msgstr ""
 msgid "Profile Photo"
 msgstr ""
 
-#: bp-core/bp-core-avatars.php:931 bp-core/classes/trait-attachments.php:176
+#: bp-core/bp-core-avatars.php:944 bp-core/classes/trait-attachments.php:176
 #. translators: %s is replaced with error message.
 msgid "Upload failed! Error was: %s"
 msgstr ""
 
-#: bp-core/bp-core-avatars.php:937
+#: bp-core/bp-core-avatars.php:950
 msgid ""
 "You have selected an image that is smaller than recommended. For best "
 "results, upload a picture larger than %d x %d pixels."
@@ -9974,15 +9974,15 @@ msgid "Invitations sent."
 msgstr ""
 
 #: bp-templates/bp-nouveau/includes/groups/ajax.php:464
-#: bp-templates/bp-nouveau/includes/groups/ajax.php:503
+#: bp-templates/bp-nouveau/includes/groups/ajax.php:507
 msgid "Group invitation could not be removed."
 msgstr ""
 
-#: bp-templates/bp-nouveau/includes/groups/ajax.php:492
+#: bp-templates/bp-nouveau/includes/groups/ajax.php:496
 msgid "The member is already a member of the group."
 msgstr ""
 
-#: bp-templates/bp-nouveau/includes/groups/ajax.php:512
+#: bp-templates/bp-nouveau/includes/groups/ajax.php:516
 msgid "There are no more pending invitations for the group."
 msgstr ""
 
