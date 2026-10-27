@@ -321,6 +321,7 @@ class BP_REST_Members_Endpoint extends WP_REST_Users_Controller {
 	 * Check if a given request has access to update a member.
 	 *
 	 * @since 5.0.0
+	 * @since @since 11.6.3 Backport from 14.5.3. The 'types' parameter is a legacy alias for 'member_type'.
 	 *
 	 * @param  WP_REST_Request $request Full details about the request.
 	 * @return true|WP_Error
@@ -336,7 +337,9 @@ class BP_REST_Members_Endpoint extends WP_REST_Users_Controller {
 		$retval = $error;
 
 		$user             = bp_rest_get_user( $request->get_param( 'id' ) );
-		$member_type_edit = ! empty( $request->get_param( 'member_type' ) );
+		$types            = $request->get_param( 'types' );
+		$member_type      = $request->get_param( 'member_type' );
+		$member_type_edit = ! ( empty( $types ) && empty( $member_type ) );
 
 		if ( ! $user instanceof WP_User ) {
 			$retval = new WP_Error(
@@ -837,7 +840,7 @@ class BP_REST_Members_Endpoint extends WP_REST_Users_Controller {
 						'id'    => $item->id,
 						'value' => array(
 							'raw'          => $item->data->value,
-							'unserialized' => $fields_endpoint->get_profile_field_unserialized_value( $item->data->value ),
+							'unserialized' => $fields_endpoint->get_profile_field_unserialized_value( $item->data->value, $item ),
 							'rendered'     => $fields_endpoint->get_profile_field_rendered_value( $item->data->value, $item ),
 						),
 					);
