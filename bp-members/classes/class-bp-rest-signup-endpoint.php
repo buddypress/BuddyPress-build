@@ -194,12 +194,7 @@ class BP_REST_Signup_Endpoint extends WP_REST_Controller {
 			);
 		}
 
-		$capability = 'edit_users';
-		if ( is_multisite() ) {
-			$capability = 'manage_network_users';
-		}
-
-		if ( true === $retval && ! bp_current_user_can( $capability ) ) {
+		if ( true === $retval && ! bp_current_user_can( 'bp_moderate' ) ) {
 			$retval = new WP_Error(
 				'bp_rest_authorization_required',
 				__( 'Sorry, you are not authorized to perform this action.', 'buddypress' ),
@@ -263,20 +258,37 @@ class BP_REST_Signup_Endpoint extends WP_REST_Controller {
 	 * @return WP_Error|bool
 	 */
 	public function get_item_permissions_check( $request ) {
-		$retval = $this->get_items_permissions_check( $request );
+		$retval = true;
+		$signup = $this->get_signup_object( $request['id'] );
 
-		if ( ! is_wp_error( $retval ) ) {
-			$signup = $this->get_signup_object( $request['id'] );
+		if ( ! is_user_logged_in() ) {
+			$retval = new WP_Error(
+				'bp_rest_authorization_required',
+				__( 'Sorry, you need to be logged in to perform this action.', 'buddypress' ),
+				array(
+					'status' => rest_authorization_required_code(),
+				)
+			);
+		}
 
-			if ( empty( $signup ) ) {
-				$retval = new WP_Error(
-					'bp_rest_invalid_id',
-					__( 'Invalid signup id.', 'buddypress' ),
-					array(
-						'status' => 404,
-					)
-				);
-			}
+		if ( true === $retval && empty( $signup ) ) {
+			$retval = new WP_Error(
+				'bp_rest_invalid_id',
+				__( 'Invalid signup id.', 'buddypress' ),
+				array(
+					'status' => 404,
+				)
+			);
+		}
+
+		if ( true === $retval && ! bp_current_user_can( 'bp_moderate' ) ) {
+			$retval = new WP_Error(
+				'bp_rest_authorization_required',
+				__( 'Sorry, you are not authorized to perform this action.', 'buddypress' ),
+				array(
+					'status' => rest_authorization_required_code(),
+				)
+			);
 		}
 
 		/**
@@ -797,7 +809,7 @@ class BP_REST_Signup_Endpoint extends WP_REST_Controller {
 	public function is_blog_signup_allowed() {
 		$active_signup = get_network_option( get_main_network_id(), 'registration' );
 
-		return 'blog' === $active_signup || 'all' === $active_signup;
+		return ( 'blog' === $active_signup || 'all' === $active_signup );
 	}
 
 	/**
@@ -822,7 +834,7 @@ class BP_REST_Signup_Endpoint extends WP_REST_Controller {
 	 * @return array Endpoint arguments.
 	 */
 	public function get_endpoint_args_for_item_schema( $method = WP_REST_Server::CREATABLE ) {
-		$args = WP_REST_Controller::get_endpoint_args_for_item_schema( $method );
+		$args = parent::get_endpoint_args_for_item_schema( $method );
 		$key  = 'get_item';
 
 		if ( WP_REST_Server::CREATABLE === $method ) {
@@ -890,7 +902,7 @@ class BP_REST_Signup_Endpoint extends WP_REST_Controller {
 					'required'    => true,
 				),
 				'activation_key' => array(
-					'context'     => array(), // The activation key is sent to the user via email.
+					'context'     => array( 'edit' ),
 					'description' => __( 'Activation key of the signup.', 'buddypress' ),
 					'type'        => 'string',
 					'readonly'    => true,

@@ -191,26 +191,7 @@ class BP_REST_Group_Membership_Endpoint extends WP_REST_Controller {
 	 * @return bool|WP_Error
 	 */
 	public function get_items_permissions_check( $request ) {
-		$retval = new WP_Error(
-			'bp_rest_authorization_required',
-			__( 'Sorry, you cannot view the group.', 'buddypress' ),
-			array(
-				'status' => rest_authorization_required_code(),
-			)
-		);
-		$group  = $this->groups_endpoint->get_group_object( $request['group_id'] );
-
-		if ( empty( $group->id ) ) {
-			$retval = new WP_Error(
-				'bp_rest_group_invalid_id',
-				__( 'Invalid group ID.', 'buddypress' ),
-				array(
-					'status' => 404,
-				)
-			);
-		} elseif ( bp_current_user_can( 'bp_moderate' ) || 'public' === $group->status || groups_is_user_member( bp_loggedin_user_id(), $group->id ) ) {
-			$retval = true;
-		}
+		$retval = $this->groups_endpoint->get_item_permissions_check( $request );
 
 		/**
 		 * Filter the group members `get_items` permissions check.
@@ -707,7 +688,7 @@ class BP_REST_Group_Membership_Endpoint extends WP_REST_Controller {
 	public function prepare_item_for_response( $group_member, $request ) {
 		$user        = bp_rest_get_user( $group_member->user_id );
 		$context     = ! empty( $request['context'] ) ? $request['context'] : 'view';
-		$member_data = $this->members_endpoint->user_data( $user, $context );
+		$member_data = $this->members_endpoint->user_data( $user, $context, $request );
 
 		// Merge both info.
 		$data = array_merge(

@@ -131,7 +131,7 @@ class BP_REST_Friends_Endpoint extends WP_REST_Controller {
 				'bp_rest_friends_get_items_user_failed',
 				__( 'There was a problem confirming if user is valid.', 'buddypress' ),
 				array(
-					'status' => 500,
+					'status' => 404,
 				)
 			);
 		}
@@ -304,7 +304,7 @@ class BP_REST_Friends_Endpoint extends WP_REST_Controller {
 				'bp_rest_friends_create_item_failed',
 				__( 'There was a problem confirming if user is valid.', 'buddypress' ),
 				array(
-					'status' => 500,
+					'status' => 404,
 				)
 			);
 		}
@@ -320,30 +320,24 @@ class BP_REST_Friends_Endpoint extends WP_REST_Controller {
 			);
 		}
 
-		$is_moderator    = bp_current_user_can( 'bp_moderate' );
-		$current_user_id = bp_loggedin_user_id();
+		$is_moderator = bp_current_user_can( 'bp_moderate' );
 
-		/**
-		 * - Only admins can create friendship requests for other people.
-		 * - Admins can't create friendship requests to themselves from other people.
-		 * - Users can't create friendship requests to themselves from other people.
-		 */
-		if (
-			( $current_user_id !== $initiator_id->ID && ! $is_moderator )
-			|| ( $current_user_id === $friend_id->ID && $is_moderator )
-			|| ( ! in_array( $current_user_id, [ $initiator_id->ID, $friend_id->ID ], true ) && ! $is_moderator )
-		) {
+		// Only admins can create friendship requests for other people.
+		if ( ! in_array( bp_loggedin_user_id(), [ $initiator_id->ID, $friend_id->ID ], true ) && ! $is_moderator ) {
 			return new WP_Error(
 				'bp_rest_friends_create_item_failed',
 				__( 'You are not allowed to perform this action.', 'buddypress' ),
 				array(
-					'status' => 500,
+					'status' => 403,
 				)
 			);
 		}
 
 		// Only admins can force a friendship request.
-		$force = ( true === $request->get_param( 'force' ) && $is_moderator );
+		$force = false;
+		if ( true === $request->get_param( 'force' ) && $is_moderator ) {
+			$force = true;
+		}
 
 		// Adding friendship.
 		if ( ! friends_add_friend( $initiator_id->ID, $friend_id->ID, $force ) ) {
@@ -432,7 +426,7 @@ class BP_REST_Friends_Endpoint extends WP_REST_Controller {
 				'bp_rest_friends_update_item_failed',
 				__( 'There was a problem confirming if user is valid.', 'buddypress' ),
 				array(
-					'status' => 500,
+					'status' => 404,
 				)
 			);
 		}
@@ -527,7 +521,7 @@ class BP_REST_Friends_Endpoint extends WP_REST_Controller {
 				'bp_rest_friends_delete_item_failed',
 				__( 'There was a problem confirming if user is valid.', 'buddypress' ),
 				array(
-					'status' => 500,
+					'status' => 404,
 				)
 			);
 		}
@@ -713,7 +707,7 @@ class BP_REST_Friends_Endpoint extends WP_REST_Controller {
 	 * @return BP_Friends_Friendship
 	 */
 	public function get_friendship_object( $friendship_id ) {
-		return new BP_Friends_Friendship( $friendship_id );
+		return new BP_Friends_Friendship( (int) $friendship_id );
 	}
 
 	/**
@@ -725,7 +719,7 @@ class BP_REST_Friends_Endpoint extends WP_REST_Controller {
 	 * @return array Endpoint arguments.
 	 */
 	public function get_endpoint_args_for_item_schema( $method = WP_REST_Server::CREATABLE ) {
-		$args    = WP_REST_Controller::get_endpoint_args_for_item_schema( $method );
+		$args    = parent::get_endpoint_args_for_item_schema( $method );
 		$context = 'view';
 
 		$args['id']['required']    = true;
