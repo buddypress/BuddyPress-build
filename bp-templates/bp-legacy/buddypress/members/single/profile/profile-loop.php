@@ -4,7 +4,6 @@
  *
  * @package BuddyPress
  * @subpackage bp-legacy
- * @version 3.0.0
  */
 
 /** This action is documented in bp-templates/bp-legacy/buddypress/members/single/profile/profile-wp.php */

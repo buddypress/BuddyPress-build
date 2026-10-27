@@ -100,7 +100,7 @@ function bp_blogs_record_existing_blogs( $args = array() ) {
 
 	// Query for all sites in network.
 	$r = bp_parse_args( $args, array(
-		'offset'   => (int) bp_get_option( '_bp_record_blogs_offset' ),
+		'offset'   => false === bp_get_option( '_bp_record_blogs_offset' ) ? 0 : bp_get_option( '_bp_record_blogs_offset' ),
 		'limit'    => 50,
 		'blog_ids' => array(),
 		'site_id'  => $wpdb->siteid
@@ -175,7 +175,7 @@ function bp_blogs_record_existing_blogs( $args = array() ) {
 	foreach ( (array) $blogs as $blog ) {
 
 		// Ensure that the cache is clear after the table TRUNCATE above.
-		wp_cache_delete( $blog->blog_id, 'bp_blog_meta' );
+		wp_cache_delete( $blog->blog_id, 'blog_meta' );
 
 		// Get all users.
 		$users = get_users( array(
@@ -362,7 +362,6 @@ function bp_blogs_record_blog( $blog_id, $user_id, $no_activity = false ) {
 	$description     = get_blog_option( $blog_id, 'blogdescription' );
 	$close_old_posts = get_blog_option( $blog_id, 'close_comments_for_old_posts' );
 	$close_days_old  = get_blog_option( $blog_id, 'close_comments_days_old' );
-	$moderation      = get_blog_option( $blog_id, 'comment_moderation' );
 
 	$thread_depth = get_blog_option( $blog_id, 'thread_comments' );
 	if ( ! empty( $thread_depth ) ) {
@@ -385,7 +384,6 @@ function bp_blogs_record_blog( $blog_id, $user_id, $no_activity = false ) {
 	bp_blogs_update_blogmeta( $recorded_blog->blog_id, 'close_comments_for_old_posts', $close_old_posts );
 	bp_blogs_update_blogmeta( $recorded_blog->blog_id, 'close_comments_days_old', $close_days_old );
 	bp_blogs_update_blogmeta( $recorded_blog->blog_id, 'thread_comments_depth', $thread_depth );
-	bp_blogs_update_blogmeta( $recorded_blog->blog_id, 'comment_moderation', $moderation );
 
 	$is_private = !empty( $_POST['blog_public'] ) && (int) $_POST['blog_public'] ? false : true;
 
@@ -526,19 +524,6 @@ function bp_blogs_update_option_thread_comments_depth( $oldvalue, $newvalue ) {
 	}
 }
 add_action( 'update_option_thread_comments_depth', 'bp_blogs_update_option_thread_comments_depth', 10, 2 );
-
-/**
- * When updating comment moderation, mirror value in blogmeta table.
- *
- * @since 3.0.0
- *
- * @param string $oldvalue Value before save. Passed by do_action() but unused here.
- * @param string $newvalue Value to change meta to.
- */
-function bp_blogs_update_option_comment_moderation( $oldvalue, $newvalue ) {
-	bp_blogs_update_blogmeta( $GLOBALS['wpdb']->blogid, 'comment_moderation', $newvalue );
-}
-add_action( 'update_option_comment_moderation', 'bp_blogs_update_option_comment_moderation', 10, 2 );
 
 /**
  * Syncs site icon URLs to blogmeta.
@@ -1302,27 +1287,20 @@ function bp_blogs_delete_blogmeta( $blog_id, $meta_key = false, $meta_value = fa
 
 	// Legacy - if no meta_key is passed, delete all for the blog_id.
 	if ( empty( $meta_key ) ) {
-		$table_name = buddypress()->blogs->table_name_blogmeta;
-		$sql        = "SELECT meta_key FROM {$table_name} WHERE blog_id = %d";
-		$query      = $wpdb->prepare( $sql, $blog_id );
-		$keys       = $wpdb->get_col( $query );
-
-		// With no meta_key, ignore $delete_all.
+		$keys = $wpdb->get_col( $wpdb->prepare( "SELECT meta_key FROM {$wpdb->blogmeta} WHERE blog_id = %d", $blog_id ) );
 		$delete_all = false;
 	} else {
 		$keys = array( $meta_key );
 	}
 
 	add_filter( 'query', 'bp_filter_metaid_column_name' );
-	add_filter( 'sanitize_key', 'bp_blogs_filter_meta_column_name' );
 
 	$retval = false;
 	foreach ( $keys as $key ) {
-		$retval = delete_metadata( 'bp_blog', $blog_id, $key, $meta_value, $delete_all );
+		$retval = delete_metadata( 'blog', $blog_id, $key, $meta_value, $delete_all );
 	}
 
 	remove_filter( 'query', 'bp_filter_metaid_column_name' );
-	remove_filter( 'sanitize_key', 'bp_blogs_filter_meta_column_name' );
 
 	return $retval;
 }
@@ -1345,9 +1323,7 @@ function bp_blogs_delete_blogmeta( $blog_id, $meta_key = false, $meta_value = fa
  */
 function bp_blogs_get_blogmeta( $blog_id, $meta_key = '', $single = true ) {
 	add_filter( 'query', 'bp_filter_metaid_column_name' );
-	add_filter( 'sanitize_key', 'bp_blogs_filter_meta_column_name' );
-	$retval = get_metadata( 'bp_blog', $blog_id, $meta_key, $single );
-	remove_filter( 'sanitize_key', 'bp_blogs_filter_meta_column_name' );
+	$retval = get_metadata( 'blog', $blog_id, $meta_key, $single );
 	remove_filter( 'query', 'bp_filter_metaid_column_name' );
 
 	return $retval;
@@ -1370,9 +1346,7 @@ function bp_blogs_get_blogmeta( $blog_id, $meta_key = '', $single = true ) {
  */
 function bp_blogs_update_blogmeta( $blog_id, $meta_key, $meta_value, $prev_value = '' ) {
 	add_filter( 'query', 'bp_filter_metaid_column_name' );
-	add_filter( 'sanitize_key', 'bp_blogs_filter_meta_column_name' );
-	$retval = update_metadata( 'bp_blog', $blog_id, $meta_key, $meta_value, $prev_value );
-	remove_filter( 'sanitize_key', 'bp_blogs_filter_meta_column_name' );
+	$retval = update_metadata( 'blog', $blog_id, $meta_key, $meta_value, $prev_value );
 	remove_filter( 'query', 'bp_filter_metaid_column_name' );
 
 	return $retval;
@@ -1393,9 +1367,7 @@ function bp_blogs_update_blogmeta( $blog_id, $meta_key, $meta_value, $prev_value
  */
 function bp_blogs_add_blogmeta( $blog_id, $meta_key, $meta_value, $unique = false ) {
 	add_filter( 'query', 'bp_filter_metaid_column_name' );
-	add_filter( 'sanitize_key', 'bp_blogs_filter_meta_column_name' );
-	$retval = add_metadata( 'bp_blog', $blog_id, $meta_key, $meta_value, $unique );
-	remove_filter( 'sanitize_key', 'bp_blogs_filter_meta_column_name' );
+	$retval = add_metadata( 'blog', $blog_id, $meta_key, $meta_value, $unique );
 	remove_filter( 'query', 'bp_filter_metaid_column_name' );
 
 	return $retval;

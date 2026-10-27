@@ -206,7 +206,7 @@ class BP_Groups_Widget extends WP_Widget {
 			'group_default' => 'active',
 			'link_title'    => false
 		);
-		$instance = bp_parse_args( (array) $instance, $defaults, 'groups_widget_form' );
+		$instance = wp_parse_args( (array) $instance, $defaults );
 
 		$title 	       = strip_tags( $instance['title'] );
 		$max_groups    = strip_tags( $instance['max_groups'] );

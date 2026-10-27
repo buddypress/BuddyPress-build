@@ -175,7 +175,7 @@ class BP_Groups_Template {
 			'update_admin_cache' => false,
 		);
 
-		$r = bp_parse_args( $args, $defaults, 'groups_template' );
+		$r = wp_parse_args( $args, $defaults );
 		extract( $r );
 
 		$this->pag_arg  = sanitize_key( $r['page_arg'] );

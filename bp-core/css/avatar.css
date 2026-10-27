@@ -265,6 +265,7 @@ div.bp-avatar-nav {
 	margin-bottom: 0;
 	max-width: 100%;
 	width: 100%;
+	-webkit-transform: scaleX(-1);
 	transform: scaleX(-1);
 }
 

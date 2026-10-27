@@ -70,15 +70,6 @@ class BP_Email {
 	protected $from = null;
 
 	/**
-	 * Email preheader.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @var string
-	 */
-	protected $preheader = null;
-
-	/**
 	 * Email headers.
 	 *
 	 * @since 2.5.0
@@ -255,7 +246,7 @@ class BP_Email {
 		switch ( $transform ) {
 			// Special-case to fill the $template with the email $content.
 			case 'add-content':
-				$retval = str_replace( '{{{content}}}', wpautop( $this->get_content( 'replace-tokens' ) ), $retval );
+				$retval = str_replace( '{{{content}}}', nl2br( $this->get_content( 'replace-tokens' ) ), $retval );
 				// Fall through.
 
 			case 'replace-tokens':
@@ -279,40 +270,6 @@ class BP_Email {
 		 * @param BP_Email $this Current instance of the email type class.
 		 */
 		return apply_filters( 'bp_email_get_property', $retval, $property_name, $transform, $this );
-	}
-
-	/**
-	 * Get email preheader.
-	 *
-	 * @since 4.0.0
-	 */
-	public function get_preheader() {
-		if ( null !== $this->preheader ) {
-			return $this->preheader;
-		}
-
-		$preheader = '';
-
-		$post = $this->get_post_object();
-		if ( $post ) {
-			$switched = false;
-
-			// Switch to the root blog, where the email post lives.
-			if ( ! bp_is_root_blog() ) {
-				switch_to_blog( bp_get_root_blog_id() );
-				$switched = true;
-			}
-
-			$preheader = sanitize_text_field( get_post_meta( $post->ID, 'bp_email_preheader', true ) );
-
-			if ( $switched ) {
-				restore_current_blog();
-			}
-		}
-
-		$this->preheader = $preheader;
-
-		return $this->preheader;
 	}
 
 	/**

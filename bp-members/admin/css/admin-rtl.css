@@ -154,17 +154,8 @@ div#community-profile-page p.not-activated {
 	width: auto;
 }
 
-.field_type_checkbox .radio label,
-.field_type_radio .radio label {
-	margin-right: 0;
-}
-
-.field_type_datebox .datebox-selects {
-	margin-right: 200px;
-}
-
 .field_type_datebox select:nth-of-type(1) {
-	margin-right: 0;
+	margin-right: 200px;
 }
 
 .field_type_radio .radio .input-options label,
@@ -192,7 +183,6 @@ div#community-profile-page p.not-activated {
 .field-visibility-settings {  /* visibility settings go in the left column */
 	display: none;
 	margin-right: 200px;
-	margin-top: 1.5em;
 }
 
 .field-visibility-settings .button {  /* visibility setting close button */
@@ -264,16 +254,8 @@ div#community-profile-page p.not-activated {
 		margin-right: 50px;
 	}
 
-	.field_type_datebox .datebox-selects {
-		margin-right: 0;
-	}
-
 	.field-visibility-settings {
-		margin-right: 50px;
-	}
-
-	.field-visibility-settings input[type="radio"] {
-		margin-right: 0;
+		margin-right: 100px;
 	}
 
 	#your-profile .field_multiselectbox select {
@@ -299,6 +281,6 @@ div#community-profile-page p.not-activated {
 	}
 
 	.field-visibility-settings {
-		margin-right: 0;
+		margin-right: 50px;
 	}
 }

@@ -2118,34 +2118,6 @@ function bp_activation_page() {
 	}
 
 /**
- * Get the activation key from the current request URL.
- *
- * @since 3.0.0
- *
- * @return string
- */
-function bp_get_current_activation_key() {
-	$key = '';
-
-	if ( bp_is_current_component( 'activate' ) ) {
-		if ( isset( $_GET['key'] ) ) {
-			$key = wp_unslash( $_GET['key'] );
-		} else {
-			$key = bp_current_action();
-		}
-	}
-
-	/**
-	 * Filters the activation key from the current request URL.
-	 *
-	 * @since 3.0.0
-	 *
-	 * @param string $key Activation key.
-	 */
-	return apply_filters( 'bp_get_current_activation_key', $key );
-}
-
-/**
  * Output the username submitted during signup.
  *
  * @since 1.1.0
@@ -2408,28 +2380,6 @@ function bp_signup_avatar_dir_value() {
 		 */
 		return apply_filters( 'bp_get_signup_avatar_dir_value', $signup_avatar_dir );
 	}
-
-/**
- * Determines whether privacy policy acceptance is required for registration.
- *
- * @since 4.0.0
- *
- * @return bool
- */
-function bp_signup_requires_privacy_policy_acceptance() {
-	// Default to true when a published Privacy Policy page exists.
-	$privacy_policy_url = get_privacy_policy_url();
-	$required           = ! empty( $privacy_policy_url );
-
-	/**
-	 * Filters whether privacy policy acceptance is required for registration.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @param bool $required Whether privacy policy acceptance is required.
-	 */
-	return (bool) apply_filters( 'bp_signup_requires_privacy_policy_acceptance', $required );
-}
 
 /**
  * Output the current signup step.

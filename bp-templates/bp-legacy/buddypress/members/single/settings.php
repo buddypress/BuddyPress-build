@@ -4,7 +4,6 @@
  *
  * @package BuddyPress
  * @subpackage bp-legacy
- * @version 3.0.0
  */
 
 ?>
@@ -36,9 +35,6 @@ switch ( bp_current_action() ) :
 		break;
 	case 'profile'        :
 		bp_get_template_part( 'members/single/settings/profile'        );
-		break;
-	case 'data'           :
-		bp_get_template_part( 'members/single/settings/data'           );
 		break;
 	default:
 		bp_get_template_part( 'members/single/plugins'                 );

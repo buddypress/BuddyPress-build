@@ -28,12 +28,12 @@ window.bp = window.bp || {};
 		 * Default options for at.js; see https://github.com/ichord/At.js/.
 		 */
 		var suggestionsDefaults = {
-			delay:             200,
-			hideWithoutSuffix: true,
-			insertTpl:         '@${ID}',
-			limit:             10,
-			startWithSpace:    false,
-			suffix:            '',
+			delay:               200,
+			hide_without_suffix: true,
+			insert_tpl:          '</>${atwho-data-value}</>', // For contentEditable, the fake tags make jQuery insert a textNode.
+			limit:               10,
+			start_with_space:    false,
+			suffix:              '',
 
 			callbacks: {
 				/**
@@ -160,9 +160,8 @@ window.bp = window.bp || {};
 				 * @param {string} query Partial @mention to search for.
 				 * @param {function} render_view Render page callback function.
 				 * @since 2.1.0
-				 * @since 3.0.0. Renamed from "remote_filter" for at.js v1.5.4 support.
 				 */
-				remoteFilter: function( query, render_view ) {
+				remote_filter: function( query, render_view ) {
 					var self = $( this ),
 						params = {};
 
@@ -231,8 +230,8 @@ window.bp = window.bp || {};
 			),
 
 			at:         '@',
-			searchKey:  'search',
-			displayTpl: '<li data-value="@${ID}"><img src="${image}" /><span class="username">@${ID}</span><small>${name}</small></li>'
+			search_key: 'search',
+			tpl:        '<li data-value="@${ID}"><img src="${image}" /><span class="username">@${ID}</span><small>${name}</small></li>'
 		},
 
 		opts = $.extend( true, {}, suggestionsDefaults, mentionsDefaults, options );

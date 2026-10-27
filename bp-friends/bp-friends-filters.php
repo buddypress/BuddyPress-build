@@ -34,9 +34,6 @@ function bp_friends_filter_user_query_populate_extras( BP_User_Query $user_query
 
 	$maybe_friend_ids = wp_parse_id_list( $user_ids_sql );
 
-	// Bulk prepare the friendship cache.
-	BP_Friends_Friendship::update_bp_friends_cache( $user_id, $maybe_friend_ids );
-
 	foreach ( $maybe_friend_ids as $friend_id ) {
 		$status = BP_Friends_Friendship::check_is_friend( $user_id, $friend_id );
 		$user_query->results[ $friend_id ]->friendship_status = $status;
@@ -47,31 +44,3 @@ function bp_friends_filter_user_query_populate_extras( BP_User_Query $user_query
 
 }
 add_filter( 'bp_user_query_populate_extras', 'bp_friends_filter_user_query_populate_extras', 4, 2 );
-
-/**
- * Registers Friends personal data exporter.
- *
- * @since 4.0.0
- *
- * @param array $exporters  An array of personal data exporters.
- * @return array An array of personal data exporters.
- */
-function bp_friends_register_personal_data_exporters( $exporters ) {
-	$exporters['buddypress-friends'] = array(
-		'exporter_friendly_name' => __( 'BuddyPress Friends', 'buddypress' ),
-		'callback'               => 'bp_friends_personal_data_exporter',
-	);
-
-	$exporters['buddypress-friends-pending-sent-requests'] = array(
-		'exporter_friendly_name' => __( 'BuddyPress Friend Requests (Sent)', 'buddypress' ),
-		'callback'               => 'bp_friends_pending_sent_requests_personal_data_exporter',
-	);
-
-	$exporters['buddypress-friends-pending-received-requests'] = array(
-		'exporter_friendly_name' => __( 'BuddyPress Friend Requests (Received)', 'buddypress' ),
-		'callback'               => 'bp_friends_pending_received_requests_personal_data_exporter',
-	);
-
-	return $exporters;
-}
-add_filter( 'wp_privacy_personal_data_exporters', 'bp_friends_register_personal_data_exporters' );

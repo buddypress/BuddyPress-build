@@ -1,8 +1,6 @@
 /*--------------------------------------------------------------
 Hello, this is the BuddyPress Legacy stylesheet.
 
-@version 3.0.0
-
 ----------------------------------------------------------------
 >>> TABLE OF CONTENTS:
 ----------------------------------------------------------------
@@ -788,10 +786,6 @@ body.activity-permalink #buddypress div.activity-comments div.acomment-content {
 	width: auto;
 }
 
-#buddypress label.xprofile-field-label {
-	display: inline;
-}
-
 #buddypress .standard-form p label,
 #buddypress .standard-form #invite-list label {
 	font-weight: 400;
@@ -1045,7 +1039,9 @@ fieldset.create-site label {
 
 .bp-screen-reader-text:focus {
 	background-color: #f1f1f1;
+	-webkit-border-radius: 3px;
 	border-radius: 3px;
+	-webkit-box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.6);
 	box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.6);
 	clip: auto !important;
 	color: #21759b;
@@ -1071,6 +1067,36 @@ fieldset.create-site label {
 	-webkit-animation: loader-pulsate 0.5s infinite ease-in-out alternate;
 	-moz-animation: loader-pulsate 0.5s infinite ease-in-out alternate;
 	border-color: #aaa;
+}
+
+@-webkit-keyframes loader-pulsate {
+
+	from {
+		border-color: #aaa;
+		-webkit-box-shadow: 0 0 6px #ccc;
+		box-shadow: 0 0 6px #ccc;
+	}
+
+	to {
+		border-color: #ccc;
+		-webkit-box-shadow: 0 0 6px #f8f8f8;
+		box-shadow: 0 0 6px #f8f8f8;
+	}
+}
+
+@-moz-keyframes loader-pulsate {
+
+	from {
+		border-color: #aaa;
+		-moz-box-shadow: 0 0 6px #ccc;
+		box-shadow: 0 0 6px #ccc;
+	}
+
+	to {
+		border-color: #ccc;
+		-moz-box-shadow: 0 0 6px #f8f8f8;
+		box-shadow: 0 0 6px #f8f8f8;
+	}
 }
 
 #buddypress a.loading:hover,
@@ -2018,6 +2044,7 @@ body.register #buddypress div.page ul {
 .widget.buddypress .item-avatar a:focus,
 .widget.buddypress .item-avatar a:active,
 .widget.buddypress .item-avatar a img {
+	-webkit-box-shadow: none;
 	box-shadow: none;
 }
 
@@ -2098,7 +2125,11 @@ body.register #buddypress div.page ul {
 	text-shadow: none;
 	text-transform: none;
 	top: 100%;
+	-webkit-transform: translateX(-50%);
+	-ms-transform: translateX(-50%);
 	transform: translateX(-50%);
+	-webkit-transition: opacity 2s ease-out;
+	-ms-transition: opacity 2s ease-out;
 	transition: opacity 2s ease-out;
 	white-space: pre;
 	word-wrap: break-word;
@@ -2120,6 +2151,8 @@ body.register #buddypress div.page ul {
 .message-metadata .bp-tooltip:after {
 	left: 0;
 	text-align: left;
+	-webkit-transform: translateX(0);
+	-ms-transform: translateX(0);
 	transform: translateX(0);
 }
 
@@ -2129,6 +2162,8 @@ body.register #buddypress div.page ul {
 	right: 0;
 	left: auto;
 	text-align: right;
+	-webkit-transform: translateX(0);
+	-ms-transform: translateX(0);
 	transform: translateX(0);
 }
 

@@ -77,9 +77,6 @@ add_filter( 'xprofile_field_can_delete_before_save',   'absint' );
 add_filter( 'xprofile_field_options_before_save', 'bp_xprofile_sanitize_field_options' );
 add_filter( 'xprofile_field_default_before_save', 'bp_xprofile_sanitize_field_default' );
 
-// Personal data export.
-add_filter( 'wp_privacy_personal_data_exporters', 'bp_xprofile_register_personal_data_exporter' );
-
 /**
  * Sanitize each field option name for saving to the database.
  *
@@ -291,7 +288,7 @@ function xprofile_filter_format_field_value_by_field_id( $field_value, $field_id
  */
 function xprofile_filter_pre_validate_value_by_field_type( $value, $field, $field_type_obj ) {
 	if ( method_exists( $field_type_obj, 'pre_validate_filter' ) ) {
-		$value = call_user_func( array( $field_type_obj, 'pre_validate_filter' ), $value, $field->id );
+		$value = call_user_func( array( $field_type_obj, 'pre_validate_filter' ), $value );
 	}
 
 	return $value;
@@ -361,27 +358,11 @@ function xprofile_filter_link_profile_data( $field_value, $field_type = 'textbox
 	}
 
 	if ( strpos( $field_value, ',' ) !== false ) {
-		// Comma-separated lists.
 		$list_type = 'comma';
-		$values    = explode( ',', $field_value );
+		$values    = explode( ',', $field_value ); // Comma-separated lists.
 	} else {
-		/*
-		 * Semicolon-separated lists.
-		 *
-		 * bp_xprofile_escape_field_data() runs before this function, which often runs esc_html().
-		 * In turn, that encodes HTML entities in the string (";" becomes "&#039;").
-		 *
-		 * Before splitting on the ";" character, decode the HTML entities, and re-encode after.
-		 * This prevents input like "O'Hara" rendering as "O&#039; Hara" (with each of those parts
-		 * having a seperate HTML link).
-		 */
-		$list_type   = 'semicolon';
-		$field_value = wp_specialchars_decode( $field_value, ENT_QUOTES );
-		$values      = explode( ';', $field_value );
-
-		array_walk( $values, function( &$value, $key ) use ( $field_type, $field ) {
-			$value = bp_xprofile_escape_field_data( $value, $field_type, $field->id );
-		} );
+		$list_type = 'semicolon';
+		$values = explode( ';', $field_value ); // Semicolon-separated lists.
 	}
 
 	if ( ! empty( $values ) ) {
@@ -625,21 +606,4 @@ function bp_xprofile_filter_meta_query( $q ) {
 	}
 
 	return $q;
-}
-
-/**
- * Register XProfile personal data exporter.
- *
- * @since 4.0.0
- *
- * @param array $exporters  An array of personal data exporters.
- * @return array An array of personal data exporters.
- */
-function bp_xprofile_register_personal_data_exporter( $exporters ) {
-	$exporters['buddypress-xprofile'] = array(
-		'exporter_friendly_name' => __( 'BuddyPress Extended Profile Data', 'buddypress' ),
-		'callback'               => 'bp_xprofile_personal_data_exporter',
-	);
-
-	return $exporters;
 }

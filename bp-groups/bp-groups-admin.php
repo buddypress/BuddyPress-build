@@ -186,10 +186,12 @@ function bp_groups_admin_load() {
 		);
 
 		// Add accessible hidden heading and text for Groups screen pagination.
-		get_current_screen()->set_screen_reader_content( array(
-			/* translators: accessibility text */
-			'heading_pagination' => __( 'Groups list navigation', 'buddypress' ),
-		) );
+		if ( bp_get_major_wp_version() >= 4.4 ) {
+			get_current_screen()->set_screen_reader_content( array(
+				/* translators: accessibility text */
+				'heading_pagination' => __( 'Groups list navigation', 'buddypress' ),
+			) );
+		}
 	}
 
 	$bp = buddypress();
@@ -506,7 +508,7 @@ function bp_groups_admin() {
  */
 function bp_groups_admin_edit() {
 
-	if ( ! bp_current_user_can( 'bp_moderate' ) )
+	if ( ! current_user_can( 'bp_moderate' ) )
 		die( '-1' );
 
 	$messages = array();
@@ -578,27 +580,13 @@ function bp_groups_admin_edit() {
 	do_action_ref_array( 'bp_groups_admin_edit', array( &$group ) ); ?>
 
 	<div class="wrap">
-		<?php if ( version_compare( $GLOBALS['wp_version'], '4.8', '>=' ) ) : ?>
-
-			<h1 class="wp-heading-inline"><?php _e( 'Edit Group', 'buddypress' ); ?></h1>
+		<h1><?php _e( 'Edit Group', 'buddypress' ); ?>
 
 			<?php if ( is_user_logged_in() && bp_user_can_create_groups() ) : ?>
-				<a class="page-title-action" href="<?php echo trailingslashit( bp_get_groups_directory_permalink() . 'create' ); ?>"><?php _e( 'Add New', 'buddypress' ); ?></a>
+				<a class="add-new-h2" href="<?php echo trailingslashit( bp_get_groups_directory_permalink() . 'create' ); ?>"><?php _e( 'Add New', 'buddypress' ); ?></a>
 			<?php endif; ?>
 
-			<hr class="wp-header-end">
-
-		<?php else : ?>
-
-			<h1><?php _e( 'Edit Group', 'buddypress' ); ?>
-
-				<?php if ( is_user_logged_in() && bp_user_can_create_groups() ) : ?>
-					<a class="add-new-h2" href="<?php echo trailingslashit( bp_get_groups_directory_permalink() . 'create' ); ?>"><?php _e( 'Add New', 'buddypress' ); ?></a>
-				<?php endif; ?>
-
-			</h1>
-
-		<?php endif; ?>
+		</h1>
 
 		<?php // If the user has just made a change to an group, display the status messages. ?>
 		<?php if ( !empty( $messages ) ) : ?>
@@ -764,22 +752,6 @@ function bp_groups_admin_index() {
 	do_action( 'bp_groups_admin_index', $messages ); ?>
 
 	<div class="wrap">
-		<?php if ( version_compare( $GLOBALS['wp_version'], '4.8', '>=' ) ) : ?>
-
-			<h1 class="wp-heading-inline"><?php _e( 'Groups', 'buddypress' ); ?></h1>
-
-			<?php if ( is_user_logged_in() && bp_user_can_create_groups() ) : ?>
-				<a class="page-title-action" href="<?php echo trailingslashit( bp_get_groups_directory_permalink() . 'create' ); ?>"><?php _e( 'Add New', 'buddypress' ); ?></a>
-			<?php endif; ?>
-
-			<?php if ( !empty( $_REQUEST['s'] ) ) : ?>
-				<span class="subtitle"><?php printf( __( 'Search results for &#8220;%s&#8221;', 'buddypress' ), wp_html_excerpt( esc_html( stripslashes( $_REQUEST['s'] ) ), 50 ) ); ?></span>
-			<?php endif; ?>
-
-			<hr class="wp-header-end">
-
-		<?php else : ?>
-
 		<h1>
 			<?php _e( 'Groups', 'buddypress' ); ?>
 
@@ -791,8 +763,6 @@ function bp_groups_admin_index() {
 				<span class="subtitle"><?php printf( __( 'Search results for &#8220;%s&#8221;', 'buddypress' ), wp_html_excerpt( esc_html( stripslashes( $_REQUEST['s'] ) ), 50 ) ); ?></span>
 			<?php endif; ?>
 		</h1>
-
-		<?php endif; ?>
 
 		<?php // If the user has just made a change to an group, display the status messages. ?>
 		<?php if ( !empty( $messages ) ) : ?>
@@ -861,24 +831,13 @@ function bp_groups_admin_edit_metabox_settings( $item ) {
  * @param BP_Groups_Group $item The BP_Groups_Group object for the current group.
  */
 function bp_groups_admin_edit_metabox_add_new_members( $item ) {
-	if ( wp_is_large_network( 'users' ) ) {
-		$class  = '';
-		$notice = __( 'Enter a comma-separated list of user logins.', 'buddypress' );
-	} else {
-		$class  = 'bp-suggest-user';
-		$notice = '';
-	}
-
 	?>
 
 	<label for="bp-groups-new-members" class="screen-reader-text"><?php
 		/* translators: accessibility text */
 		_e( 'Add new members', 'buddypress' );
 	?></label>
-	<input name="bp-groups-new-members" type="text" id="bp-groups-new-members" class="<?php echo esc_attr( $class ); ?>" placeholder="" />
-	<?php if ( $notice ) : ?>
-		<p class="description"><?php echo esc_html( $notice ); ?></p>
-	<?php endif; ?>
+	<input name="bp-groups-new-members" type="text" id="bp-groups-new-members" class="bp-suggest-user" placeholder="<?php esc_attr_e( 'Enter a comma-separated list of user logins.', 'buddypress' ) ?>" />
 	<ul id="bp-groups-new-members-list"></ul>
 	<?php
 }
@@ -1137,7 +1096,7 @@ function bp_groups_process_group_type_update( $group_id ) {
 	check_admin_referer( 'bp-group-type-change-' . $group_id, 'bp-group-type-nonce' );
 
 	// Permission check.
-	if ( ! bp_current_user_can( 'bp_moderate' ) ) {
+	if ( ! current_user_can( 'bp_moderate' ) ) {
 		return;
 	}
 
@@ -1252,7 +1211,7 @@ function bp_groups_admin_get_usernames_from_ids( $user_ids = array() ) {
 function bp_groups_admin_autocomplete_handler() {
 
 	// Bail if user user shouldn't be here, or is a large network.
-	if ( ! bp_current_user_can( 'bp_moderate' ) || ( is_multisite() && wp_is_large_network( 'users' ) ) ) {
+	if ( ! current_user_can( 'bp_moderate' ) || ( is_multisite() && wp_is_large_network( 'users' ) ) ) {
 		wp_die( -1 );
 	}
 

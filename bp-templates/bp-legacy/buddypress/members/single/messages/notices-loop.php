@@ -4,7 +4,6 @@
  *
  * @package BuddyPress
  * @subpackage bp-legacy
- * @version 3.0.0
  */
 
 /**
@@ -75,7 +74,7 @@ do_action( 'bp_before_notices_loop' ); ?>
 
 				<td width="10%">
 					<a class="button" href="<?php bp_message_activate_deactivate_link(); ?>" class="confirm"><?php bp_message_activate_deactivate_text(); ?></a>
-					<a class="button" href="<?php bp_message_notice_delete_link(); ?>" class="confirm"><?php esc_html_e( "Delete Message", 'buddypress' ); ?></a>
+					<a class="button" href="<?php bp_message_notice_delete_link(); ?>" class="confirm" aria-label="<?php esc_attr_e( "Delete Message", 'buddypress' ); ?>">x</a>
 				</td>
 			</tr>
 		<?php endwhile; ?>

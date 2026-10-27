@@ -352,7 +352,7 @@ class BP_Core_Nav {
 	 *
 	 * @param array $args Filters to select the specific secondary items. See wp_list_filter().
 	 * @param bool  $sort True to sort the nav items. False otherwise.
-	 * @return bool|array The list of secondary objects nav, or false if none set.
+	 * @return array The list of secondary objects nav
 	 */
 	public function get_secondary( $args = array(), $sort = true ) {
 		$params = wp_parse_args( $args, array( 'parent_slug' => '' ) );

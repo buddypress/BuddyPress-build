@@ -288,6 +288,15 @@ function bp_core_activation_notice() {
 		}
 	}
 
+	// Special case: If the Forums component is orphaned, but the bbPress 1.x installation is
+	// not correctly set up, don't show a nag. (In these cases, it's probably the case that the
+	// user is using bbPress 2.x; see https://buddypress.trac.wordpress.org/ticket/4292.
+	if ( isset( $bp->forums->name ) && in_array( $bp->forums->name, $orphaned_components ) && !bp_forums_is_installed_correctly() ) {
+		$forum_key = array_search( $bp->forums->name, $orphaned_components );
+		unset( $orphaned_components[$forum_key] );
+		$orphaned_components = array_values( $orphaned_components );
+	}
+
 	if ( !empty( $orphaned_components ) ) {
 		$admin_url = bp_get_admin_url( add_query_arg( array( 'page' => 'bp-page-settings' ), 'admin.php' ) );
 		$notice    = sprintf(
@@ -357,14 +366,14 @@ function bp_do_activation_redirect() {
 		return;
 	}
 
-	$query_args = array();
+	$query_args = array( 'page' => 'bp-about' );
 	if ( get_transient( '_bp_is_new_install' ) ) {
 		$query_args['is_new_install'] = '1';
 		delete_transient( '_bp_is_new_install' );
 	}
 
-	// Redirect to dashboard and trigger the Hello screen.
-	wp_safe_redirect( add_query_arg( $query_args, bp_get_admin_url( '?hello=buddypress' ) ) );
+	// Redirect to BuddyPress about page.
+	wp_safe_redirect( add_query_arg( $query_args, bp_get_admin_url( 'index.php' ) ) );
 }
 
 /** UI/Styling ****************************************************************/
@@ -421,19 +430,28 @@ function bp_core_get_admin_tabs( $active_tab = '' ) {
 			'href' => bp_get_admin_url( add_query_arg( array( 'page' => 'bp-components' ), 'admin.php' ) ),
 			'name' => __( 'Components', 'buddypress' )
 		),
-		'2' => array(
-			'href' => bp_get_admin_url( add_query_arg( array( 'page' => 'bp-settings' ), 'admin.php' ) ),
-			'name' => __( 'Options', 'buddypress' )
-		),
 		'1' => array(
 			'href' => bp_get_admin_url( add_query_arg( array( 'page' => 'bp-page-settings' ), 'admin.php' ) ),
 			'name' => __( 'Pages', 'buddypress' )
 		),
-		'3' => array(
-			'href' => bp_get_admin_url( add_query_arg( array( 'page' => 'bp-credits' ), 'admin.php' ) ),
-			'name' => __( 'Credits', 'buddypress' )
+		'2' => array(
+			'href' => bp_get_admin_url( add_query_arg( array( 'page' => 'bp-settings' ), 'admin.php' ) ),
+			'name' => __( 'Options', 'buddypress' )
 		),
 	);
+
+	// If forums component is active, add additional tab.
+	if ( bp_is_active( 'forums' ) && class_exists( 'BP_Forums_Component' ) ) {
+
+		// Enqueue thickbox.
+		wp_enqueue_script( 'thickbox' );
+		wp_enqueue_style( 'thickbox' );
+
+		$tabs['3'] = array(
+			'href' => bp_get_admin_url( add_query_arg( array( 'page' => 'bb-forums-setup'  ), 'admin.php' ) ),
+			'name' => __( 'Forums', 'buddypress' )
+		);
+	}
 
 	/**
 	 * Filters the tab data used in our wp-admin screens.
@@ -845,7 +863,7 @@ function bp_admin_email_maybe_add_translation_notice() {
 
 	bp_core_add_admin_notice(
 		sprintf(
-			__( 'Are these emails not written in your site\'s language? Go to <a href="%s">BuddyPress Tools and try the "reinstall emails"</a> tool.', 'buddypress' ),
+			__( 'Are your emails in the wrong language? Go to <a href="%s">BuddyPress Tools and run the "reinstall emails"</a> tool.', 'buddypress' ),
 			esc_url( add_query_arg( 'page', 'bp-tools', bp_get_admin_url( $admin_page ) ) )
 		),
 		'updated'

@@ -17,13 +17,11 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 1.1.0
  * @since 2.6.0 Introduced the `$component` parameter.
- * @since 4.0.0 Introduced the `$component_id` argument.
  *
  * @param array|string $args {
  *     Array describing the new nav item.
  *     @type string      $name                    Display name for the nav item.
  *     @type string      $slug                    Unique URL slug for the nav item.
- *     @type string      $component_id            Optional. The ID of the component registering the nav item. Defaults to slug.
  *     @type bool|string $item_css_id             Optional. 'id' attribute for the nav item. Default: the value of `$slug`.
  *     @type bool        $show_for_displayed_user Optional. Whether the nav item should be visible when viewing a
  *                                                member profile other than your own. Default: true.
@@ -46,7 +44,6 @@ function bp_core_new_nav_item( $args, $component = 'members' ) {
 	$defaults = array(
 		'name'                    => false, // Display name for the nav item.
 		'slug'                    => false, // URL slug for the nav item.
-		'component_id'            => '',    // ID of the component registering the nav item.
 		'item_css_id'             => false, // The CSS ID to apply to the HTML of the nav item.
 		'show_for_displayed_user' => true,  // When viewing another user does this nav item show up?
 		'site_admin_only'         => false, // Can only site admins see this nav item?
@@ -93,14 +90,10 @@ function bp_core_new_nav_item( $args, $component = 'members' ) {
  * Add a link to the main BuddyPress navigation.
  *
  * @since 2.4.0
- * @since 2.6.0 Introduced the `$component` parameter. Began returning a BP_Core_Nav_Item
- *              object on success.
- * @since 4.0.0 Introduced `$component_id` argument.
+ * @since 2.6.0 Introduced the `$component` parameter. Began returning a BP_Core_Nav_Item object on success.
  *
  * @param array|string $args {
  *     Array describing the new nav item.
- *     @type string      $component_id            Optional. The ID of the component registering this nav item. Defaults to the
- *                                                the value of `$slug`.
  *     @type string      $name                    Display name for the nav item.
  *     @type string      $slug                    Unique URL slug for the nav item.
  *     @type bool|string $item_css_id             Optional. 'id' attribute for the nav item. Default: the value of `$slug`.
@@ -121,7 +114,6 @@ function bp_core_create_nav_link( $args = '', $component = 'members' ) {
 	$bp = buddypress();
 
 	$defaults = array(
-		'component_id'            => '',    // The component ID registering this nav item.
 		'name'                    => false, // Display name for the nav item.
 		'slug'                    => false, // URL slug for the nav item.
 		'item_css_id'             => false, // The CSS ID to apply to the HTML of the nav item.
@@ -144,16 +136,11 @@ function bp_core_create_nav_link( $args = '', $component = 'members' ) {
 		return false;
 	}
 
-	if ( empty( $r['component_id'] ) ) {
-		$r['component_id'] = $r['slug'];
-	}
-
 	if ( empty( $r['item_css_id'] ) ) {
 		$r['item_css_id'] = $r['slug'];
 	}
 
 	$nav_item = array(
-		'component_id'            => $r['component_id'],
 		'name'                    => $r['name'],
 		'slug'                    => $r['slug'],
 		'link'                    => trailingslashit( bp_loggedin_user_domain() . $r['slug'] ),
@@ -355,21 +342,6 @@ function bp_core_new_nav_default( $args = '' ) {
 		// No subnav item has been requested in the URL, so set a new nav default.
 		if ( empty( $unfiltered_action ) ) {
 			if ( ! bp_is_current_action( $r['subnav_slug'] ) ) {
-				/*
-				 * If the screen function isn't available, attempt to find it.
-				 *
-				 * This is due to our conditional-loading code since v3.0.0.
-				 */
-				if ( ! is_callable( $r['screen_function'] ) && ! empty( $parent_nav->component_id ) ) {
-					$file      = $bp->core->path . 'bp-' . $parent_nav->component_id . '/screens/' . $r['subnav_slug'] . '.php';
-					$file_path = realpath( $file );
-
-					// Found the file, so require it.
-					if ( $file === $file_path && file_exists( $file ) ) {
-						require_once $file;
-					}
-				}
-
 				if ( is_callable( $r['screen_function'] ) ) {
 					add_action( 'bp_screens', $r['screen_function'], 3 );
 				}
@@ -636,9 +608,6 @@ function bp_core_register_subnav_screen_function( $args = '', $component = 'memb
 	}
 
 	$parent_nav = $bp->{$component}->nav->get_primary( array( 'slug' => $r['parent_slug'] ), false );
-	if ( is_array( $parent_nav ) ) {
-		$parent_nav = reset( $parent_nav );
-	}
 
 	// If we *do* meet condition (2), then the added subnav item is currently being requested.
 	if ( ( bp_current_action() && bp_is_current_action( $r['slug'] ) ) || ( bp_is_user() && ! bp_current_action() && ! empty( $parent_nav->screen_function ) && $r['screen_function'] == $parent_nav->screen_function ) ) {
@@ -701,9 +670,10 @@ function bp_core_maybe_hook_new_subnav_screen_function( $subnav_item, $component
 
 			$bp = buddypress();
 
-			// If a redirect URL has been passed to the subnav item, respect it.
+			// If a redirect URL has been passed to the subnav
+			// item, respect it.
 			if ( ! empty( $subnav_item['no_access_url'] ) ) {
-				$message     = __( 'You do not have access to that page.', 'buddypress' );
+				$message     = __( 'You do not have access to this page.', 'buddypress' );
 				$redirect_to = trailingslashit( $subnav_item['no_access_url'] );
 
 			// In the case of a user page, we try to assume a
@@ -719,7 +689,7 @@ function bp_core_maybe_hook_new_subnav_screen_function( $subnav_item, $component
 				// component, as long as that component is
 				// publicly accessible.
 				if ( bp_is_my_profile() || ( isset( $parent_nav_default_item ) && $parent_nav_default_item->show_for_displayed_user ) ) {
-					$message     = __( 'You do not have access to that page.', 'buddypress' );
+					$message     = __( 'You do not have access to this page.', 'buddypress' );
 					$redirect_to = bp_displayed_user_domain();
 
 				// In some cases, the default tab is not accessible to
@@ -747,7 +717,6 @@ function bp_core_maybe_hook_new_subnav_screen_function( $subnav_item, $component
 				'message'  => $message,
 				'root'     => $redirect_to,
 				'redirect' => false,
-				'mode'     => 1
 			);
 
 		} else {

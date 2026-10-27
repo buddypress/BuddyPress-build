@@ -445,27 +445,6 @@ function bp_use_wp_admin_bar() {
 	return (bool) apply_filters( 'bp_use_wp_admin_bar', $use_admin_bar );
 }
 
-
-/**
- * Return the parent forum ID for the Legacy Forums abstraction layer.
- *
- * @since 1.5.0
- * @since 3.0.0 Supported for compatibility with bbPress 2.
- *
- * @return int Forum ID.
- */
-function bp_forums_parent_forum_id() {
-
-	/**
-	 * Filters the parent forum ID for the bbPress abstraction layer.
-	 *
-	 * @since 1.5.0
-	 *
-	 * @param int BP_FORUMS_PARENT_FORUM_ID The Parent forum ID constant.
-	 */
-	return apply_filters( 'bp_forums_parent_forum_id', BP_FORUMS_PARENT_FORUM_ID );
-}
-
 /** Directory *****************************************************************/
 
 /**
@@ -487,6 +466,12 @@ function bp_core_get_packaged_component_ids() {
 		'settings',
 		'notifications',
 	);
+
+	// Only add legacy forums if it is enabled
+	// prevents conflicts with bbPress, which also uses the same 'forums' id.
+	if ( class_exists( 'BP_Forums_Component' ) ) {
+		$components[] = 'forums';
+	}
 
 	return $components;
 }
@@ -1037,11 +1022,7 @@ function bp_core_redirect( $location = '', $status = 302 ) {
 	buddypress()->no_status_set = true;
 
 	wp_safe_redirect( $location, $status );
-
-	// If PHPUnit is running, do not kill execution.
-	if ( ! defined( 'BP_TESTS_DIR' ) ) {
-		die;
-	}
+	die;
 }
 
 /**
@@ -1749,6 +1730,26 @@ function bp_use_embed_in_activity_replies() {
 }
 
 /**
+ * Are oembeds allowed in forum posts?
+ *
+ * @since 1.5.0
+ *
+ * @return bool False when forum post embed support is disabled; true when
+ *              enabled. Default: true.
+ */
+function bp_use_embed_in_forum_posts() {
+
+	/**
+	 * Filters whether or not oEmbeds are allowed in forum posts.
+	 *
+	 * @since 1.5.0
+	 *
+	 * @param bool $value Whether or not oEmbeds are allowed.
+	 */
+	return apply_filters( 'bp_use_embed_in_forum_posts', !defined( 'BP_EMBED_DISABLE_FORUM_POSTS' ) || !BP_EMBED_DISABLE_FORUM_POSTS );
+}
+
+/**
  * Are oembeds allowed in private messages?
  *
  * @since 1.5.0
@@ -2354,6 +2355,11 @@ function bp_core_action_search_site( $slug = '' ) {
 				$slug = bp_is_active( 'blogs' )  ? bp_get_blogs_root_slug()  : '';
 				break;
 
+			case 'forums':
+				$slug = bp_is_active( 'forums' ) ? bp_get_forums_root_slug() : '';
+				$query_string = '/?fs=';
+				break;
+
 			case 'groups':
 				$slug = bp_is_active( 'groups' ) ? bp_get_groups_root_slug() : '';
 				break;
@@ -2457,6 +2463,10 @@ function bp_core_get_components( $type = 'all' ) {
 	);
 
 	$retired_components = array(
+		'forums' => array(
+			'title'       => __( 'Group Forums', 'buddypress' ),
+			'description' => sprintf( __( 'BuddyPress Forums are retired. Use %s.', 'buddypress' ), '<a href="https://bbpress.org/">bbPress</a>' )
+		),
 	);
 
 	$optional_components = array(
@@ -2487,6 +2497,10 @@ function bp_core_get_components( $type = 'all' ) {
 		'groups'   => array(
 			'title'       => __( 'User Groups', 'buddypress' ),
 			'description' => __( 'Groups allow your users to organize themselves into specific public, private or hidden sections with separate activity streams and member listings.', 'buddypress' )
+		),
+		'forums'   => array(
+			'title'       => __( 'Group Forums (Legacy)', 'buddypress' ),
+			'description' => __( 'Group forums allow for focused, bulletin-board style conversations.', 'buddypress' )
 		),
 		'blogs'    => array(
 			'title'       => __( 'Site Tracking', 'buddypress' ),
@@ -2548,15 +2562,14 @@ function bp_core_get_components( $type = 'all' ) {
  * @return mixed A URL or an array of dummy pages.
  */
 function bp_nav_menu_get_loggedin_pages() {
-	$bp = buddypress();
 
 	// Try to catch the cached version first.
-	if ( ! empty( $bp->wp_nav_menu_items->loggedin ) ) {
-		return $bp->wp_nav_menu_items->loggedin;
+	if ( ! empty( buddypress()->wp_nav_menu_items->loggedin ) ) {
+		return buddypress()->wp_nav_menu_items->loggedin;
 	}
 
 	// Pull up a list of items registered in BP's primary nav for the member.
-	$bp_menu_items = $bp->members->nav->get_primary();
+	$bp_menu_items = buddypress()->members->nav->get_primary();
 
 	// Some BP nav menu items will not be represented in bp_nav, because
 	// they are not real BP components. We add them manually here.
@@ -2591,11 +2604,11 @@ function bp_nav_menu_get_loggedin_pages() {
 		);
 	}
 
-	if ( empty( $bp->wp_nav_menu_items ) ) {
+	if ( empty( buddypress()->wp_nav_menu_items ) ) {
 		buddypress()->wp_nav_menu_items = new stdClass;
 	}
 
-	$bp->wp_nav_menu_items->loggedin = $page_args;
+	buddypress()->wp_nav_menu_items->loggedin = $page_args;
 
 	return $page_args;
 }
@@ -2615,11 +2628,10 @@ function bp_nav_menu_get_loggedin_pages() {
  * @return mixed A URL or an array of dummy pages.
  */
 function bp_nav_menu_get_loggedout_pages() {
-	$bp = buddypress();
 
 	// Try to catch the cached version first.
-	if ( ! empty( $bp->wp_nav_menu_items->loggedout ) ) {
-		return $bp->wp_nav_menu_items->loggedout;
+	if ( ! empty( buddypress()->wp_nav_menu_items->loggedout ) ) {
+		return buddypress()->wp_nav_menu_items->loggedout;
 	}
 
 	$bp_menu_items = array();
@@ -2666,11 +2678,11 @@ function bp_nav_menu_get_loggedout_pages() {
 		);
 	}
 
-	if ( empty( $bp->wp_nav_menu_items ) ) {
-		$bp->wp_nav_menu_items = new stdClass;
+	if ( empty( buddypress()->wp_nav_menu_items ) ) {
+		buddypress()->wp_nav_menu_items = new stdClass;
 	}
 
-	$bp->wp_nav_menu_items->loggedout = $page_args;
+	buddypress()->wp_nav_menu_items->loggedout = $page_args;
 
 	return $page_args;
 }
@@ -2768,40 +2780,6 @@ function bp_core_get_suggestions( $args ) {
 	 */
 	return apply_filters( 'bp_core_get_suggestions', $retval, $args );
 }
-
-/**
- * AJAX endpoint for Suggestions API lookups.
- *
- * @since 2.1.0
- * @since 4.0.0 Moved here to make sure this function is available
- *              even if the Activity component is not active.
- */
-function bp_ajax_get_suggestions() {
-	if ( ! bp_is_user_active() || empty( $_GET['term'] ) || empty( $_GET['type'] ) ) {
-		wp_send_json_error( 'missing_parameter' );
-		exit;
-	}
-
-	$args = array(
-		'term' => sanitize_text_field( $_GET['term'] ),
-		'type' => sanitize_text_field( $_GET['type'] ),
-	);
-
-	// Support per-Group suggestions.
-	if ( ! empty( $_GET['group-id'] ) ) {
-		$args['group_id'] = absint( $_GET['group-id'] );
-	}
-
-	$results = bp_core_get_suggestions( $args );
-
-	if ( is_wp_error( $results ) ) {
-		wp_send_json_error( $results->get_error_message() );
-		exit;
-	}
-
-	wp_send_json_success( $results );
-}
-add_action( 'wp_ajax_bp_get_suggestions', 'bp_ajax_get_suggestions' );
 
 /**
  * Set data from the BP root blog's upload directory.
@@ -3264,32 +3242,10 @@ function bp_send_email( $email_type, $to, $args = array() ) {
  * Return email appearance settings.
  *
  * @since 2.5.0
- * @since 3.0.0 Added "direction" parameter for LTR/RTL email support, and
- *              "link_text_color" to override that in the email body.
  *
  * @return array
  */
 function bp_email_get_appearance_settings() {
-	/* translators: This is the copyright text for email footers. 1. Copyright year, 2. Site name */
-	$footer_text = array(
-		sprintf(
-			_x( '&copy; %1$s %2$s', 'email', 'buddypress' ),
-			date_i18n( 'Y' ),
-			bp_get_option( 'blogname' )
-		)
-	);
-
-	if ( version_compare( $GLOBALS['wp_version'], '4.9.6', '>=' ) ) {
-		$privacy_policy_url = get_privacy_policy_url();
-		if ( $privacy_policy_url ) {
-			$footer_text[] = sprintf(
-				'<a href="%s">%s</a>',
-				esc_url( $privacy_policy_url ),
-				esc_html__( 'Privacy Policy', 'buddypress' )
-			);
-		}
-	}
-
 	$default_args = array(
 		'body_bg'           => '#FFFFFF',
 		'body_text_color'   => '#555555',
@@ -3302,23 +3258,20 @@ function bp_email_get_appearance_settings() {
 		'highlight_color'   => '#D84800',
 		'header_text_color' => '#000000',
 		'header_text_size'  => 30,
-		'direction'         => is_rtl() ? 'right' : 'left',
 
-		'footer_text' => implode( ' &middot; ', $footer_text ),
+		'footer_text' => sprintf(
+			/* translators: email disclaimer, e.g. "© 2016 Site Name". */
+			_x( '&copy; %s %s', 'email', 'buddypress' ),
+			date_i18n( 'Y' ),
+			bp_get_option( 'blogname' )
+		),
 	);
 
-	$options = bp_parse_args(
+	return bp_parse_args(
 		bp_get_option( 'bp_email_options', array() ),
 		$default_args,
 		'email_appearance_settings'
 	);
-
-	// Link text colour defaults to the highlight colour.
-	if ( ! isset( $options['link_text_color'] ) ) {
-		$options['link_text_color'] = $options['highlight_color'];
-	}
-
-	return $options;
 }
 
 /**
@@ -3341,7 +3294,6 @@ function bp_email_get_template( WP_Post $object ) {
 	 * @param WP_Post $object WP_Post object.
 	 */
 	return apply_filters( 'bp_email_get_template', array(
-		"assets/emails/{$single}-{$object->post_name}.php",
 		"{$single}-{$object->post_name}.php",
 		"{$single}.php",
 		"assets/emails/{$single}.php",
@@ -3436,9 +3388,9 @@ function bp_email_get_schema() {
 			/* translators: do not remove {} brackets or translate its contents. */
 			'post_title'   => __( '[{{{site.name}}}] Activate your account', 'buddypress' ),
 			/* translators: do not remove {} brackets or translate its contents. */
-			'post_content' => __( "Thanks for registering!\n\nTo complete the activation of your account, go to the following link and click on the <strong>Activate</strong> button:\n<a href=\"{{{activate.url}}}\">{{{activate.url}}}</a>\n\nIf the 'Activation Key' field is empty, copy and paste the following into the field - {{key}}", 'buddypress' ),
+			'post_content' => __( "Thanks for registering!\n\nTo complete the activation of your account, go to the following link: <a href=\"{{{activate.url}}}\">{{{activate.url}}}</a>", 'buddypress' ),
 			/* translators: do not remove {} brackets or translate its contents. */
-			'post_excerpt' => __( "Thanks for registering!\n\nTo complete the activation of your account, go to the following link and click on the 'Activate' button: {{{activate.url}}}\n\nIf the 'Activation Key' field is empty, copy and paste the following into the field - {{key}}", 'buddypress' )
+			'post_excerpt' => __( "Thanks for registering!\n\nTo complete the activation of your account, go to the following link: {{{activate.url}}}", 'buddypress' ),
 		),
 		'core-user-registration-with-blog' => array(
 			/* translators: do not remove {} brackets or translate its contents. */
@@ -3447,9 +3399,6 @@ function bp_email_get_schema() {
 			'post_content' => __( "Thanks for registering!\n\nTo complete the activation of your account and site, go to the following link: <a href=\"{{{activate-site.url}}}\">{{{activate-site.url}}}</a>.\n\nAfter you activate, you can visit your site at <a href=\"{{{user-site.url}}}\">{{{user-site.url}}}</a>.", 'buddypress' ),
 			/* translators: do not remove {} brackets or translate its contents. */
 			'post_excerpt' => __( "Thanks for registering!\n\nTo complete the activation of your account and site, go to the following link: {{{activate-site.url}}}\n\nAfter you activate, you can visit your site at {{{user-site.url}}}.", 'buddypress' ),
-			'args'         => array(
-				'multisite' => true,
-			),
 		),
 		'friends-request' => array(
 			/* translators: do not remove {} brackets or translate its contents. */
@@ -3619,11 +3568,27 @@ function bp_email_get_type_schema( $field = 'description' ) {
 		),
 	);
 
+	$groups_details_updated = array(
+		'description'	=> __( "A group's details were updated.", 'buddypress' ),
+		'unsubscribe'	=> array(
+			'meta_key'	=> 'notification_groups_group_updated',
+			'message'	=> __( 'You will no longer receive emails when one of your groups is updated.', 'buddypress' ),
+		),
+	);
+
 	$groups_invitation = array(
 		'description'	=> __( 'A member has sent a group invitation to the recipient.', 'buddypress' ),
 		'unsubscribe'	=> array(
 			'meta_key'	=> 'notification_groups_invite',
 			'message'	=> __( 'You will no longer receive emails when you are invited to join a group.', 'buddypress' ),
+		),
+	);
+
+	$groups_member_promoted = array(
+		'description'	=> __( "Recipient's status within a group has changed.", 'buddypress' ),
+		'unsubscribe'	=> array(
+			'meta_key'	=> 'notification_groups_admin_promotion',
+			'message'	=> __( 'You will no longer receive emails when you have been promoted in a group.', 'buddypress' ),
 		),
 	);
 
@@ -3712,13 +3677,13 @@ function bp_email_unsubscribe_handler() {
 
 	// Check required values.
 	if ( ! $raw_user_id || ! $raw_email_type || ! $raw_hash || ! array_key_exists( $raw_email_type, $emails ) ) {
-		$redirect_to = wp_login_url();
+		$redirect_to = site_url( 'wp-login.php' );
 		$result_msg  = __( 'Something has gone wrong.', 'buddypress' );
 		$unsub_msg   = __( 'Please log in and go to your settings to unsubscribe from notification emails.', 'buddypress' );
 
 	// Check valid hash.
 	} elseif ( ! hash_equals( $new_hash, $raw_hash ) ) {
-		$redirect_to = wp_login_url();
+		$redirect_to = site_url( 'wp-login.php' );
 		$result_msg  = __( 'Something has gone wrong.', 'buddypress' );
 		$unsub_msg   = __( 'Please log in and go to your settings to unsubscribe from notification emails.', 'buddypress' );
 
@@ -3788,7 +3753,7 @@ function bp_email_get_unsubscribe_link( $args ) {
 	$emails = bp_email_get_unsubscribe_type_schema();
 
 	if ( empty( $args['notification_type'] ) || ! array_key_exists( $args['notification_type'], $emails ) ) {
-		return wp_login_url();
+		return site_url( 'wp-login.php' );
 	}
 
 	$email_type  = $args['notification_type'];
@@ -3850,53 +3815,4 @@ function bp_email_get_unsubscribe_type_schema() {
 	 * @param array $emails The array of email types and their schema.
 	 */
 	return (array) apply_filters( 'bp_email_get_unsubscribe_type_schema', $emails );
-}
-
-/**
- * Get BuddyPress content allowed tags.
- *
- * @since  3.0.0
- *
- * @global array $allowedtags KSES allowed HTML elements.
- * @return array              BuddyPress content allowed tags.
- */
-function bp_get_allowedtags() {
-	global $allowedtags;
-
-	return array_merge_recursive( $allowedtags, array(
-		'a' => array(
-			'aria-label'      => array(),
-			'class'           => array(),
-			'data-bp-tooltip' => array(),
-			'id'              => array(),
-			'rel'             => array(),
-		),
-		'img' => array(
-			'src'    => array(),
-			'alt'    => array(),
-			'width'  => array(),
-			'height' => array(),
-			'class'  => array(),
-			'id'     => array(),
-		),
-		'span'=> array(
-			'class'          => array(),
-			'data-livestamp' => array(),
-		),
-		'ul' => array(),
-		'ol' => array(),
-		'li' => array(),
-	) );
-}
-
-/**
- * Remove script and style tags from a string.
- *
- * @since 3.0.1
- *
- * @param  string $string The string to strip tags from.
- * @return string         The stripped tags string.
- */
-function bp_strip_script_and_style_tags( $string ) {
-	return preg_replace( '@<(script|style)[^>]*?>.*?</\\1>@si', '', $string );
 }
