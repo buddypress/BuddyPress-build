@@ -3,7 +3,7 @@
  * Common template tags
  *
  * @since 3.0.0
- * @version 3.2.0
+ * @version 4.0.0
  */
 
 // Exit if accessed directly.
@@ -87,9 +87,10 @@ function bp_nouveau_friend_hook( $suffix = '' ) {
  * @since 3.0.0
  */
 function bp_nouveau_template_message_classes() {
-	$classes = array( 'bp-feedback', 'bp-messages' );
+	$bp_nouveau = bp_nouveau();
+	$classes    = array( 'bp-feedback', 'bp-messages' );
 
-	if ( ! empty( bp_nouveau()->template_message['message'] ) ) {
+	if ( ! empty( $bp_nouveau->template_message['message'] ) ) {
 		$classes[] = 'bp-template-notice';
 	}
 
@@ -712,12 +713,16 @@ function bp_nouveau_avatar_args() {
 function bp_nouveau_has_nav( $args = array() ) {
 	$bp_nouveau = bp_nouveau();
 
-	$n = wp_parse_args( $args, array(
-		'type'                    => 'primary',
-		'object'                  => '',
-		'user_has_access'         => true,
-		'show_for_displayed_user' => true,
-	) );
+	$n = bp_parse_args(
+		$args,
+		array(
+			'type'                    => 'primary',
+			'object'                  => '',
+			'user_has_access'         => true,
+			'show_for_displayed_user' => true,
+		),
+		'nouveau_has_nav'
+	);
 
 	if ( empty( $n['type'] ) ) {
 		return false;
@@ -2450,6 +2455,35 @@ function bp_nouveau_signup_form( $section = 'account_details' ) {
 	 * @since 1.9.0
 	 */
 	do_action( "bp_{$section}_fields" );
+}
+
+/**
+ * Outputs the Privacy Policy acceptance area on the registration page.
+ *
+ * @since 4.0.0
+ */
+function bp_nouveau_signup_privacy_policy_acceptance_section() {
+	$error = null;
+	if ( isset( buddypress()->signup->errors['signup_privacy_policy'] ) ) {
+		$error = buddypress()->signup->errors['signup_privacy_policy'];
+	}
+
+	?>
+
+	<div class="privacy-policy-accept">
+		<?php if ( $error ) : ?>
+			<?php nouveau_error_template( $error ); ?>
+		<?php endif; ?>
+
+		<label for="signup-privacy-policy-accept">
+			<input type="hidden" name="signup-privacy-policy-check" value="1" />
+
+			<?php /* translators: link to Privacy Policy */ ?>
+			<input type="checkbox" name="signup-privacy-policy-accept" id="signup-privacy-policy-accept" required /> <?php printf( esc_html__( 'I have read and agree to this site\'s %s.', 'buddypress' ), sprintf( '<a href="%s">%s</a>', esc_url( get_privacy_policy_url() ), esc_html__( 'Privacy Policy', 'buddypress' ) ) ); ?>
+		</label>
+	</div>
+
+	<?php
 }
 
 /**

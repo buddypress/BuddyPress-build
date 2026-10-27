@@ -358,11 +358,14 @@ function bp_nouveau_activity_secondary_avatars( $action, $activity ) {
 	switch ( $activity->component ) {
 		case 'groups':
 		case 'friends':
+			$secondary_avatar = bp_get_activity_secondary_avatar( array( 'linked' => false ) );
+
 			// Only insert avatar if one exists.
-			if ( $secondary_avatar = bp_get_activity_secondary_avatar() ) {
-				$reverse_content = strrev( $action );
-				$position        = strpos( $reverse_content, 'a<' );
-				$action          = substr_replace( $action, $secondary_avatar, -$position - 2, 0 );
+			if ( $secondary_avatar ) {
+				$link_close  = '">';
+				$first_link  = strpos( $action, $link_close );
+				$second_link = strpos( $action, $link_close, $first_link + strlen( $link_close ) );
+				$action      = substr_replace( $action, $secondary_avatar, $second_link + 2, 0 );
 			}
 			break;
 	}
@@ -419,7 +422,7 @@ function bp_nouveau_activity_scope_newest_class( $classes = '' ) {
 				$new_mentions = bp_get_user_meta( $user_id, 'bp_new_mentions', true );
 
 				// The current activity is one of the new mentions
-				if ( is_array( $new_mentions ) && in_array( bp_get_activity_id(), $new_mentions ) ) {
+				if ( is_array( $new_mentions ) && in_array( bp_get_activity_id(), $new_mentions, true ) ) {
 					$my_classes[] = 'bp-my-mentions';
 				}
 			}

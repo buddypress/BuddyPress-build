@@ -3,7 +3,7 @@
  * BuddyPress - Members/Blogs Registration forms
  *
  * @since 3.0.0
- * @version 3.1.0
+ * @version 4.0.0
  */
 
 ?>
@@ -109,6 +109,10 @@
 			<?php bp_nouveau_signup_hook( 'custom', 'steps' ); ?>
 
 			<?php if ( 'request-details' === bp_get_current_signup_step() ) : ?>
+
+				<?php if ( bp_signup_requires_privacy_policy_acceptance() ) : ?>
+					<?php bp_nouveau_signup_privacy_policy_acceptance_section(); ?>
+				<?php endif; ?>
 
 				<?php bp_nouveau_submit_button( 'register' ); ?>
 
