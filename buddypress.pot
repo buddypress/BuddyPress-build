@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later (license.txt).
 msgid ""
 msgstr ""
-"Project-Id-Version: BuddyPress 5.0.0-beta2\n"
+"Project-Id-Version: BuddyPress 5.1.0\n"
 "Report-Msgid-Bugs-To: https://buddypress.trac.wordpress.org\n"
-"POT-Creation-Date: 2019-09-10 16:53:11+00:00\n"
+"POT-Creation-Date: 2019-12-09 20:58:56+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -561,7 +561,7 @@ msgstr ""
 #: bp-activity/bp-activity-notifications.php:389
 #: bp-activity/classes/class-bp-activity-oembed-extension.php:138
 #: bp-activity/classes/class-bp-activity-theme-compat.php:161
-#: bp-core/classes/class-bp-admin.php:574
+#: bp-core/classes/class-bp-admin.php:578
 msgid "Activity"
 msgstr ""
 
@@ -772,8 +772,8 @@ msgstr ""
 #: bp-activity/classes/class-bp-activity-activity.php:367
 #: bp-activity/classes/class-bp-activity-template.php:146
 #: bp-groups/bp-groups-functions.php:246 bp-groups/bp-groups-functions.php:697
-#: bp-groups/bp-groups-functions.php:1675
-#: bp-groups/bp-groups-functions.php:2012
+#: bp-groups/bp-groups-functions.php:1674
+#: bp-groups/bp-groups-functions.php:2011
 #: bp-groups/classes/class-bp-groups-group-members-template.php:100
 #: bp-groups/classes/class-bp-groups-group.php:1058
 #: bp-groups/classes/class-bp-groups-invite-template.php:85
@@ -1061,7 +1061,7 @@ msgid "Whether the activity object has been favorited by the current user."
 msgstr ""
 
 #: bp-activity/classes/class-bp-rest-activity-endpoint.php:1395
-#: bp-groups/classes/class-bp-rest-groups-endpoint.php:1059
+#: bp-groups/classes/class-bp-rest-groups-endpoint.php:1064
 #: bp-members/classes/class-bp-rest-members-endpoint.php:694
 #. translators: Full image size for the member Avatar
 #. translators: Full image size for the group Avatar
@@ -1070,7 +1070,7 @@ msgid "Avatar URL with full image size (%1$d x %2$d pixels)."
 msgstr ""
 
 #: bp-activity/classes/class-bp-rest-activity-endpoint.php:1403
-#: bp-groups/classes/class-bp-rest-groups-endpoint.php:1067
+#: bp-groups/classes/class-bp-rest-groups-endpoint.php:1072
 #: bp-members/classes/class-bp-rest-members-endpoint.php:702
 #. translators: Thumb imaze size for the member Avatar
 #. translators: Thumb imaze size for the group Avatar
@@ -1093,7 +1093,7 @@ msgid "Ensure result set includes specific IDs."
 msgstr ""
 
 #: bp-activity/classes/class-bp-rest-activity-endpoint.php:1455
-#: bp-groups/classes/class-bp-rest-groups-endpoint.php:1111
+#: bp-groups/classes/class-bp-rest-groups-endpoint.php:1116
 #: bp-notifications/classes/class-bp-rest-notifications-endpoint.php:834
 msgid "Order sort attribute ascending or descending."
 msgstr ""
@@ -1395,7 +1395,7 @@ msgstr ""
 #: bp-core/admin/bp-core-admin-components.php:24
 #: bp-core/admin/bp-core-admin-settings.php:267
 #: bp-core/admin/bp-core-admin-slugs.php:24
-#: bp-core/classes/class-bp-admin.php:741
+#: bp-core/classes/class-bp-admin.php:830
 msgid "BuddyPress Settings"
 msgstr ""
 
@@ -1580,7 +1580,7 @@ msgid "Pages"
 msgstr ""
 
 #: bp-core/admin/bp-core-admin-functions.php:434
-#: bp-core/classes/class-bp-admin.php:743
+#: bp-core/classes/class-bp-admin.php:832
 msgid "Credits"
 msgstr ""
 
@@ -3091,33 +3091,41 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:557
+#: bp-core/classes/class-bp-admin.php:544
+msgid "Sorry, the page you requested was not found."
+msgstr ""
+
+#: bp-core/classes/class-bp-admin.php:545
+msgid "Hello BuddyPress"
+msgstr ""
+
+#: bp-core/classes/class-bp-admin.php:561
 msgid "Suggested text:"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:562
+#: bp-core/classes/class-bp-admin.php:566
 msgid "What personal data we collect and why we collect it"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:563
+#: bp-core/classes/class-bp-admin.php:567
 msgid ""
 "Sites powered by BuddyPress rely heavily on user-provided data. In this "
 "section, you should note what data you collect, from both registered users "
 "and anonymous visitors."
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:566
+#: bp-core/classes/class-bp-admin.php:570
 msgid "Profile Data"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:567
+#: bp-core/classes/class-bp-admin.php:571
 msgid ""
 "In this section you should note what information is collected on user "
 "profiles. The suggested text gives an overview of the kinds of profile data "
 "collected by BuddyPress."
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:569
+#: bp-core/classes/class-bp-admin.php:573
 msgid ""
 "When you register for the site, you may be asked to provide certain "
 "personal data for display on your profile. The \"Name\" field is required "
@@ -3126,7 +3134,7 @@ msgid ""
 "administrator."
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:570
+#: bp-core/classes/class-bp-admin.php:574
 msgid ""
 "User information provided during account registration can be modified or "
 "removed on the Profile > Edit panel. In most cases, users also have control "
@@ -3136,14 +3144,14 @@ msgid ""
 "for all users."
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:575
+#: bp-core/classes/class-bp-admin.php:579
 msgid ""
 "In this section you should describe the kinds of information collected in "
 "the activity stream, how and whether it can be edited or deleted, and to "
 "whom the activity is visible."
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:577
+#: bp-core/classes/class-bp-admin.php:581
 msgid ""
 "This site records certain user actions, in the form of \"activity\" data. "
 "Activity includes updates and comments posted directly to activity streams, "
@@ -3151,7 +3159,7 @@ msgid ""
 "such as new friendships, newly joined groups, and profile updates."
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:578
+#: bp-core/classes/class-bp-admin.php:582
 msgid ""
 "The content of activity items obey the same privacy rules as the contexts "
 "in which the activity items are created. For example, activity updates "
@@ -3160,26 +3168,26 @@ msgid ""
 "Site administrators can view all activity items, regardless of context."
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:579
+#: bp-core/classes/class-bp-admin.php:583
 msgid ""
 "Activity items may be deleted at any time by users who created them. Site "
 "administrators can edit all activity items."
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:583
+#: bp-core/classes/class-bp-admin.php:587
 #: bp-messages/bp-messages-notifications.php:263
 #: bp-messages/classes/class-bp-messages-component.php:223
 #: bp-messages/classes/class-bp-messages-component.php:331
 msgid "Messages"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:584
+#: bp-core/classes/class-bp-admin.php:588
 msgid ""
 "In this section you should describe any personal data related to private "
 "messages."
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:586
+#: bp-core/classes/class-bp-admin.php:590
 msgid ""
 "The content of private messages is visible only to the sender and the "
 "recipients of the message. With the exception of site administrators, who "
@@ -3188,24 +3196,24 @@ msgid ""
 "any message."
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:589
+#: bp-core/classes/class-bp-admin.php:593
 msgid "Cookies"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:590
+#: bp-core/classes/class-bp-admin.php:594
 msgid ""
 "In this section you should describe the BuddyPress-specific cookies that "
 "your site collects. The suggested text describes the default cookies."
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:592
+#: bp-core/classes/class-bp-admin.php:596
 msgid ""
 "We use a cookie to show success and failure messages to logged-in users, in "
 "response to certain actions, like joining a group. These cookies contain no "
 "personal data, and are deleted immediately after the next page load."
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:594
+#: bp-core/classes/class-bp-admin.php:598
 msgid ""
 "We use cookies on group, member, and activity directories to keep track of "
 "a user's browsing preferences. These preferences include the last-selected "
@@ -3213,7 +3221,7 @@ msgid ""
 "These cookies contain no personal data, and are deleted after 24 hours."
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:597
+#: bp-core/classes/class-bp-admin.php:601
 msgid ""
 "When a logged-in user creates a new group, we use a number of cookies to "
 "keep track of the group creation process. These cookies contain no personal "
@@ -3221,163 +3229,269 @@ msgid ""
 "after 24 hours."
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:628
-#: bp-core/classes/class-bp-admin.php:629
-msgid "Close pop-up"
+#: bp-core/classes/class-bp-admin.php:637
+#. translators: %s is the placehoder for the BuddyPress version number.
+msgid "BuddyPress %s"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:639
-msgid "New tools for data control and privacy"
+#: bp-core/classes/class-bp-admin.php:643
+msgid "What's new?"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:641
-msgid ""
-"BuddyPress boasts a proud history of letting community members and managers "
-"control their data, independent of third-party, commercial entities. In "
-"this spirit, as well as the spirit of recent regulations like the EU's "
-"General Data Protection Regulation (GDPR), BuddyPress 4.0 introduces a "
-"suite of tools allowing users and site admins to manage member data and "
-"privacy."
+#: bp-core/classes/class-bp-admin.php:644
+msgid "Changelog"
 msgstr ""
 
 #: bp-core/classes/class-bp-admin.php:645
-msgid "Screenshot of Export Data settings panel"
-msgstr ""
-
-#: bp-core/classes/class-bp-admin.php:647
-msgid "Improved user control over data exports"
+msgid "Get involved"
 msgstr ""
 
 #: bp-core/classes/class-bp-admin.php:651
-msgid ""
-"The new \"Export Data\" Settings panel lets users request an export of all "
-"BuddyPress data they've created. BuddyPress integrates seamlessly with the "
-"data export functionality introduced in WordPress 4.9.8, and BP data is "
-"included in exports that are initiated either from the Export Data panel or "
-"via WP's Tools > Export Personal Data interface."
-msgstr ""
-
-#: bp-core/classes/class-bp-admin.php:653
-msgid ""
-"BuddyPress 4.0 also integrates with WordPress 4.9.8's Privacy Policy tools. "
-"When you create or update your Privacy Policy, BP will suggest text that's "
-"specifically tailored to the kinds of social data generated on a BuddyPress "
-"site. And will prompt registering users to agree to the Privacy Policy, if "
-"your theme supports it."
-msgstr ""
-
-#: bp-core/classes/class-bp-admin.php:655
-msgid "Nouveau template improvements"
+msgid "Introducing the BP REST API"
 msgstr ""
 
 #: bp-core/classes/class-bp-admin.php:656
 msgid ""
-"BuddyPress 3.0 introduced a new set of default templates, which we call "
-"\"Nouveau\". In 4.0, we've fixed bugs and smoothed the edges in these "
-"templates, including more accessible markup and improved appearance on "
-"mobile devices."
-msgstr ""
-
-#: bp-core/classes/class-bp-admin.php:658
-msgid "BuddyPress: leaner, faster, stronger"
+"BuddyPress 5.0.0 comes with REST API endpoints for members, groups, "
+"activities, users, private messages, screen notifications and extended "
+"profiles."
 msgstr ""
 
 #: bp-core/classes/class-bp-admin.php:659
 msgid ""
-"With every BuddyPress version, we strive to make internal improvements to "
-"performance and code quality in addition to introducing new features and "
-"fixes. In BuddyPress 4.0, we've improved PHP compatibility both in our "
-"codebase and in our automated testing tools; we've reworked some automated "
-"tests for faster performance; we've ensured compatibility with upcoming "
-"changes in WordPress; and we've fixed a number of bugs in the formatting "
-"and sending of emails."
+"BuddyPress endpoints provide machine-readable external access to your "
+"WordPress site with a clear, standards-driven interface, paving the way for "
+"new and innovative methods of interacting with your community through "
+"plugins, themes, apps, and beyond."
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:664
+#: bp-core/classes/class-bp-admin.php:662
+#. translators: %s is the placehoder for the link to the BP REST API
+#. documentation site.
+msgid "Ready to get started with development? Check out the %s."
+msgstr ""
+
+#: bp-core/classes/class-bp-admin.php:666
+msgid "BP REST API reference"
+msgstr ""
+
+#: bp-core/classes/class-bp-admin.php:673
+msgid "A new interface for managing group members."
+msgstr ""
+
+#: bp-core/classes/class-bp-admin.php:675
 msgid ""
-"To read the full list of features, fixes, and changes in this version of "
-"BuddyPress, <a href=\"%s\">visit Trac</a>."
+"The best way to show the power of the BP REST API is to start using it for "
+"one of our Core features."
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:674
+#: bp-core/classes/class-bp-admin.php:678
 msgid ""
-" How are you using BuddyPress? Receiving your feedback and suggestions for "
-"future versions of BuddyPress genuinely motivates and encourages our "
-"contributors. Please <a href=\"%s\">share your feedback</a> about this "
-"version of BuddyPress on our website. "
+"Screenshot of the Group Members management interface in the administration "
+"and on the front-end of your site."
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:679
-msgid "Thank you for using BuddyPress! 😊"
+#: bp-core/classes/class-bp-admin.php:681
+msgid ""
+"Group administrators will love our new interface for managing group "
+"membership. Whether you're working as a group admin on the front-end Manage "
+"tab, or as the site admin on the Dashboard, the new REST API-based tools "
+"are faster, easier to use, and more consistent."
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:689
-msgid "Built by <a href=\"%s\">%s volunteer</a>."
-msgid_plural "Built by <a href=\"%s\">%s volunteers</a>."
-msgstr[0] ""
-msgstr[1] ""
+#: bp-core/classes/class-bp-admin.php:686
+msgid "Improved Group invites and membership requests."
+msgstr ""
+
+#: bp-core/classes/class-bp-admin.php:691
+msgid ""
+"Thanks to the new BP Invitations API, Group invites and membership requests "
+"are now managed in a more consistent way."
+msgstr ""
+
+#: bp-core/classes/class-bp-admin.php:694
+msgid ""
+"The BP Invitations API abstracts how these two actions are handled and "
+"allows developers to use them for any object on your site (e.g., Sites of a "
+"WordPress network)."
+msgstr ""
+
+#: bp-core/classes/class-bp-admin.php:697
+#. translators: %s is the placehoder for the link to the BP Invitations API
+#. development note.
+msgid "Read more about the %s."
+msgstr ""
+
+#: bp-core/classes/class-bp-admin.php:701
+msgid "BP Invitations API"
+msgstr ""
+
+#: bp-core/classes/class-bp-admin.php:708
+msgid "Help our support volunteers help you."
+msgstr ""
+
+#: bp-core/classes/class-bp-admin.php:710
+msgid ""
+"Knowing your WordPress and BuddyPress configuration is very important when "
+"one of our beloved support volunteers tries to help you fix an issue. "
+"That's why we added a BuddyPress section to the Site Health Info "
+"Administration screen."
+msgstr ""
+
+#: bp-core/classes/class-bp-admin.php:713
+msgid ""
+"Screenshot of the BuddyPress section of the Site Health Info Administration "
+"screen."
+msgstr ""
+
+#: bp-core/classes/class-bp-admin.php:716
+msgid ""
+"The panel is displayed at the bottom of the screen. It includes the "
+"BuddyPress version, active components, active template pack, and a list of "
+"other component-specific settings information."
+msgstr ""
+
+#: bp-core/classes/class-bp-admin.php:721
+msgid "Improved integrations with WordPress"
+msgstr ""
+
+#: bp-core/classes/class-bp-admin.php:723
+msgid ""
+"Screenshot of the BuddyPress members directory & Password control in Twenty "
+"Ninteen."
+msgstr ""
+
+#: bp-core/classes/class-bp-admin.php:727
+msgid ""
+"In BuddyPress 5.0.0, the BP Nouveau template pack looks better than ever "
+"with the Twenty Nineteen theme."
+msgstr ""
+
+#: bp-core/classes/class-bp-admin.php:728
+msgid ""
+"Nouveau also now uses the same password control as the one used in "
+"WordPress Core, for better consistency between BuddyPress and WordPress "
+"spaces."
+msgstr ""
+
+#: bp-core/classes/class-bp-admin.php:732
+msgid "BuddyPress Blocks now have their own category into the Block Editor."
+msgstr ""
+
+#: bp-core/classes/class-bp-admin.php:735
+msgid "Screenshot of the BuddyPress block category."
+msgstr ""
+
+#: bp-core/classes/class-bp-admin.php:738
+msgid ""
+"Developers building tools for the Block Editor can now add their blocks to "
+"the BuddyPress category. This change provides a foundation for organizing "
+"custom BuddyPress blocks."
+msgstr ""
+
+#: bp-core/classes/class-bp-admin.php:741
+#. translators: %s is the placehoder for the link to the blocks category
+#. development note.
+msgid "Read more about this feature in the %s."
+msgstr ""
 
 #: bp-core/classes/class-bp-admin.php:745
-msgid "Meet the contributors behind BuddyPress:"
-msgstr ""
-
-#: bp-core/classes/class-bp-admin.php:747
-msgid "Project Leaders"
-msgstr ""
-
-#: bp-core/classes/class-bp-admin.php:752
-msgid "Project Lead"
+msgid "development note"
 msgstr ""
 
 #: bp-core/classes/class-bp-admin.php:757
-#: bp-core/classes/class-bp-admin.php:762
-msgid "Lead Developer"
+#. translators: %s is the placehoder for the link to BuddyPress support forums.
+msgid ""
+" How are you using BuddyPress? Receiving your feedback and suggestions for "
+"future versions of BuddyPress genuinely motivates and encourages our "
+"contributors. Please %s about this version of BuddyPress on our website. "
+msgstr ""
+
+#: bp-core/classes/class-bp-admin.php:761
+msgid "share your feedback"
 msgstr ""
 
 #: bp-core/classes/class-bp-admin.php:766
+msgid "Thank you for using BuddyPress! 😊"
+msgstr ""
+
+#: bp-core/classes/class-bp-admin.php:777
+msgid "Built with %1$s by <a href=\"%2$s\">%3$d volunteer</a>."
+msgid_plural "Built with %1$s by <a href=\"%2$s\">%3$d volunteers</a>."
+msgstr[0] ""
+msgstr[1] ""
+
+#: bp-core/classes/class-bp-admin.php:792
+#: bp-core/classes/class-bp-admin.php:794
+msgid "Follow BuddyPress on Twitter"
+msgstr ""
+
+#: bp-core/classes/class-bp-admin.php:803
+#: bp-core/classes/class-bp-admin.php:805
+msgid "Visit the Support Forums"
+msgstr ""
+
+#: bp-core/classes/class-bp-admin.php:834
+msgid "Meet the contributors behind BuddyPress:"
+msgstr ""
+
+#: bp-core/classes/class-bp-admin.php:836
+msgid "Project Leaders"
+msgstr ""
+
+#: bp-core/classes/class-bp-admin.php:841
+msgid "Project Lead"
+msgstr ""
+
+#: bp-core/classes/class-bp-admin.php:846
+#: bp-core/classes/class-bp-admin.php:851
+msgid "Lead Developer"
+msgstr ""
+
+#: bp-core/classes/class-bp-admin.php:855
 msgid "BuddyPress Team"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:771
-#: bp-core/classes/class-bp-admin.php:776
-#: bp-core/classes/class-bp-admin.php:781
-#: bp-core/classes/class-bp-admin.php:791
-#: bp-core/classes/class-bp-admin.php:796
-#: bp-core/classes/class-bp-admin.php:816
-#: bp-core/classes/class-bp-admin.php:821
-#: bp-core/classes/class-bp-admin.php:826
-#: bp-core/classes/class-bp-admin.php:831
+#: bp-core/classes/class-bp-admin.php:860
+#: bp-core/classes/class-bp-admin.php:865
+#: bp-core/classes/class-bp-admin.php:870
+#: bp-core/classes/class-bp-admin.php:880
+#: bp-core/classes/class-bp-admin.php:885
+#: bp-core/classes/class-bp-admin.php:905
+#: bp-core/classes/class-bp-admin.php:910
+#: bp-core/classes/class-bp-admin.php:915
+#: bp-core/classes/class-bp-admin.php:920
 msgid "Core Developer"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:786
+#: bp-core/classes/class-bp-admin.php:875
 msgid "Navigator"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:801
-#: bp-core/classes/class-bp-admin.php:806
-#: bp-core/classes/class-bp-admin.php:811
-#: bp-core/classes/class-bp-admin.php:836
+#: bp-core/classes/class-bp-admin.php:890
+#: bp-core/classes/class-bp-admin.php:895
+#: bp-core/classes/class-bp-admin.php:900
+#: bp-core/classes/class-bp-admin.php:925
 msgid "Community Support"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:840
+#: bp-core/classes/class-bp-admin.php:929
 msgid "Recent Rockstars"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:864
+#: bp-core/classes/class-bp-admin.php:953
 msgid "Contributors to BuddyPress %s"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:904
+#: bp-core/classes/class-bp-admin.php:985
 msgid "With our thanks to these Open Source projects"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:918
+#: bp-core/classes/class-bp-admin.php:999
 msgid "Contributor Emeriti"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:923
+#: bp-core/classes/class-bp-admin.php:1004
 msgid "Project Founder"
 msgstr ""
 
@@ -3571,7 +3685,7 @@ msgstr[1] ""
 #: bp-groups/classes/class-bp-rest-group-membership-endpoint.php:63
 #: bp-groups/classes/class-bp-rest-group-membership-endpoint.php:89
 #: bp-groups/classes/class-bp-rest-groups-endpoint.php:60
-#: bp-groups/classes/class-bp-rest-groups-endpoint.php:935
+#: bp-groups/classes/class-bp-rest-groups-endpoint.php:940
 msgid "A unique numeric ID for the Group."
 msgstr ""
 
@@ -4072,9 +4186,9 @@ msgstr ""
 
 #: bp-friends/bp-friends-functions.php:1013
 #: bp-friends/bp-friends-functions.php:1076
-#: bp-groups/bp-groups-functions.php:2965
-#: bp-groups/bp-groups-functions.php:3035
-#: bp-groups/bp-groups-functions.php:3105
+#: bp-groups/bp-groups-functions.php:2964
+#: bp-groups/bp-groups-functions.php:3034
+#: bp-groups/bp-groups-functions.php:3104
 #: bp-messages/bp-messages-functions.php:708
 msgid "Date Sent"
 msgstr ""
@@ -4332,7 +4446,7 @@ msgstr ""
 msgid "Joined a group"
 msgstr ""
 
-#: bp-groups/bp-groups-activity.php:44 bp-groups/bp-groups-functions.php:2906
+#: bp-groups/bp-groups-activity.php:44 bp-groups/bp-groups-functions.php:2905
 msgid "Group Memberships"
 msgstr ""
 
@@ -4496,10 +4610,10 @@ msgstr ""
 msgid "Name and Description"
 msgstr ""
 
-#: bp-groups/bp-groups-admin.php:621 bp-groups/bp-groups-functions.php:2868
-#: bp-groups/bp-groups-functions.php:2957
-#: bp-groups/bp-groups-functions.php:3023
-#: bp-groups/bp-groups-functions.php:3093
+#: bp-groups/bp-groups-admin.php:621 bp-groups/bp-groups-functions.php:2867
+#: bp-groups/bp-groups-functions.php:2956
+#: bp-groups/bp-groups-functions.php:3022
+#: bp-groups/bp-groups-functions.php:3092
 #. translators: accessibility text
 msgid "Group Name"
 msgstr ""
@@ -4643,22 +4757,22 @@ msgstr ""
 msgid "Roles"
 msgstr ""
 
-#: bp-groups/bp-groups-admin.php:1006 bp-groups/bp-groups-functions.php:1197
+#: bp-groups/bp-groups-admin.php:1006 bp-groups/bp-groups-functions.php:1196
 msgid "Administrator"
 msgstr ""
 
-#: bp-groups/bp-groups-admin.php:1007 bp-groups/bp-groups-functions.php:1205
-#: bp-groups/bp-groups-functions.php:2889
+#: bp-groups/bp-groups-admin.php:1007 bp-groups/bp-groups-functions.php:1204
+#: bp-groups/bp-groups-functions.php:2888
 msgid "Moderator"
 msgstr ""
 
-#: bp-groups/bp-groups-admin.php:1008 bp-groups/bp-groups-functions.php:1213
-#: bp-groups/bp-groups-functions.php:2891
+#: bp-groups/bp-groups-admin.php:1008 bp-groups/bp-groups-functions.php:1212
+#: bp-groups/bp-groups-functions.php:2890
 #: bp-members/classes/class-bp-members-admin.php:819
 msgid "Member"
 msgstr ""
 
-#: bp-groups/bp-groups-admin.php:1010 bp-groups/bp-groups-functions.php:1221
+#: bp-groups/bp-groups-admin.php:1010 bp-groups/bp-groups-functions.php:1220
 msgid "Banned"
 msgstr ""
 
@@ -4757,63 +4871,63 @@ msgstr ""
 msgid "As the only admin, you cannot leave the group."
 msgstr ""
 
-#: bp-groups/bp-groups-functions.php:2080
-#: bp-groups/bp-groups-functions.php:2113
-#: bp-groups/bp-groups-functions.php:2150
+#: bp-groups/bp-groups-functions.php:2079
+#: bp-groups/bp-groups-functions.php:2112
+#: bp-groups/bp-groups-functions.php:2149
 msgid ""
 "Argument `membership_id` passed to %1$s  is deprecated. See the inline "
 "documentation at %2$s for more details."
 msgstr ""
 
-#: bp-groups/bp-groups-functions.php:2499
+#: bp-groups/bp-groups-functions.php:2498
 msgid "Group type already exists."
 msgstr ""
 
-#: bp-groups/bp-groups-functions.php:2526
+#: bp-groups/bp-groups-functions.php:2525
 msgid "You may not register a group type with this name."
 msgstr ""
 
-#: bp-groups/bp-groups-functions.php:2872
-#: bp-groups/bp-groups-functions.php:2961
-#: bp-groups/bp-groups-functions.php:3027
-#: bp-groups/bp-groups-functions.php:3097
+#: bp-groups/bp-groups-functions.php:2871
+#: bp-groups/bp-groups-functions.php:2960
+#: bp-groups/bp-groups-functions.php:3026
+#: bp-groups/bp-groups-functions.php:3096
 msgid "Group URL"
 msgstr ""
 
-#: bp-groups/bp-groups-functions.php:2879
-#: bp-groups/bp-groups-functions.php:3101
+#: bp-groups/bp-groups-functions.php:2878
+#: bp-groups/bp-groups-functions.php:3100
 msgid "Invited By"
 msgstr ""
 
-#: bp-groups/bp-groups-functions.php:2885
+#: bp-groups/bp-groups-functions.php:2884
 msgid "Creator"
 msgstr ""
 
-#: bp-groups/bp-groups-functions.php:2887
+#: bp-groups/bp-groups-functions.php:2886
 msgid "Admin"
 msgstr ""
 
-#: bp-groups/bp-groups-functions.php:2895
+#: bp-groups/bp-groups-functions.php:2894
 msgid "Group Role"
 msgstr ""
 
-#: bp-groups/bp-groups-functions.php:2900
+#: bp-groups/bp-groups-functions.php:2899
 msgid "Date Joined"
 msgstr ""
 
-#: bp-groups/bp-groups-functions.php:2972
+#: bp-groups/bp-groups-functions.php:2971
 msgid "Pending Group Membership Requests"
 msgstr ""
 
-#: bp-groups/bp-groups-functions.php:3031
+#: bp-groups/bp-groups-functions.php:3030
 msgid "Sent To"
 msgstr ""
 
-#: bp-groups/bp-groups-functions.php:3042
+#: bp-groups/bp-groups-functions.php:3041
 msgid "Pending Group Invitations (Sent)"
 msgstr ""
 
-#: bp-groups/bp-groups-functions.php:3112
+#: bp-groups/bp-groups-functions.php:3111
 msgid "Pending Group Invitations (Received)"
 msgstr ""
 
@@ -5618,109 +5732,109 @@ msgstr ""
 msgid "Sorry, you are not allowed to delete this group."
 msgstr ""
 
-#: bp-groups/classes/class-bp-rest-groups-endpoint.php:941
+#: bp-groups/classes/class-bp-rest-groups-endpoint.php:946
 msgid "The ID of the user who created the Group."
 msgstr ""
 
-#: bp-groups/classes/class-bp-rest-groups-endpoint.php:947
+#: bp-groups/classes/class-bp-rest-groups-endpoint.php:952
 msgid "The name of the Group."
 msgstr ""
 
-#: bp-groups/classes/class-bp-rest-groups-endpoint.php:956
+#: bp-groups/classes/class-bp-rest-groups-endpoint.php:961
 msgid "The URL-friendly slug for the Group."
 msgstr ""
 
-#: bp-groups/classes/class-bp-rest-groups-endpoint.php:964
+#: bp-groups/classes/class-bp-rest-groups-endpoint.php:969
 msgid "The permalink to the Group on the site."
 msgstr ""
 
-#: bp-groups/classes/class-bp-rest-groups-endpoint.php:971
+#: bp-groups/classes/class-bp-rest-groups-endpoint.php:976
 msgid "The description of the Group."
 msgstr ""
 
-#: bp-groups/classes/class-bp-rest-groups-endpoint.php:980
+#: bp-groups/classes/class-bp-rest-groups-endpoint.php:985
 msgid "Content for the description of the Group, as it exists in the database."
 msgstr ""
 
-#: bp-groups/classes/class-bp-rest-groups-endpoint.php:985
+#: bp-groups/classes/class-bp-rest-groups-endpoint.php:990
 msgid "HTML content for the description of the Group, transformed for display."
 msgstr ""
 
-#: bp-groups/classes/class-bp-rest-groups-endpoint.php:994
+#: bp-groups/classes/class-bp-rest-groups-endpoint.php:999
 msgid "The status of the Group."
 msgstr ""
 
-#: bp-groups/classes/class-bp-rest-groups-endpoint.php:1004
-#: bp-groups/classes/class-bp-rest-groups-endpoint.php:1194
+#: bp-groups/classes/class-bp-rest-groups-endpoint.php:1009
+#: bp-groups/classes/class-bp-rest-groups-endpoint.php:1199
 msgid "Whether the Group has a forum enabled or not."
 msgstr ""
 
-#: bp-groups/classes/class-bp-rest-groups-endpoint.php:1009
+#: bp-groups/classes/class-bp-rest-groups-endpoint.php:1014
 msgid "ID of the parent Group."
 msgstr ""
 
-#: bp-groups/classes/class-bp-rest-groups-endpoint.php:1014
+#: bp-groups/classes/class-bp-rest-groups-endpoint.php:1019
 msgid "The date the Group was created, in the site's timezone."
 msgstr ""
 
-#: bp-groups/classes/class-bp-rest-groups-endpoint.php:1021
+#: bp-groups/classes/class-bp-rest-groups-endpoint.php:1026
 msgid "Group administrators."
 msgstr ""
 
-#: bp-groups/classes/class-bp-rest-groups-endpoint.php:1030
+#: bp-groups/classes/class-bp-rest-groups-endpoint.php:1035
 msgid "Group moderators."
 msgstr ""
 
-#: bp-groups/classes/class-bp-rest-groups-endpoint.php:1039
+#: bp-groups/classes/class-bp-rest-groups-endpoint.php:1044
 msgid "Count of all Group members."
 msgstr ""
 
-#: bp-groups/classes/class-bp-rest-groups-endpoint.php:1045
+#: bp-groups/classes/class-bp-rest-groups-endpoint.php:1050
 msgid "The date the Group was last active, in the site's timezone."
 msgstr ""
 
-#: bp-groups/classes/class-bp-rest-groups-endpoint.php:1074
+#: bp-groups/classes/class-bp-rest-groups-endpoint.php:1079
 msgid "Avatar URLs for the group."
 msgstr ""
 
-#: bp-groups/classes/class-bp-rest-groups-endpoint.php:1102
+#: bp-groups/classes/class-bp-rest-groups-endpoint.php:1107
 #: bp-members/classes/class-bp-rest-members-endpoint.php:744
 msgid "Shorthand for certain orderby/order combinations."
 msgstr ""
 
-#: bp-groups/classes/class-bp-rest-groups-endpoint.php:1120
+#: bp-groups/classes/class-bp-rest-groups-endpoint.php:1125
 msgid "Order Groups by which attribute."
 msgstr ""
 
-#: bp-groups/classes/class-bp-rest-groups-endpoint.php:1129
+#: bp-groups/classes/class-bp-rest-groups-endpoint.php:1134
 msgid "Group statuses to limit results to."
 msgstr ""
 
-#: bp-groups/classes/class-bp-rest-groups-endpoint.php:1141
+#: bp-groups/classes/class-bp-rest-groups-endpoint.php:1146
 msgid "Pass a user_id to limit to only Groups that this user is a member of."
 msgstr ""
 
-#: bp-groups/classes/class-bp-rest-groups-endpoint.php:1149
+#: bp-groups/classes/class-bp-rest-groups-endpoint.php:1154
 msgid "Get Groups that are children of the specified Group(s) IDs."
 msgstr ""
 
-#: bp-groups/classes/class-bp-rest-groups-endpoint.php:1159
+#: bp-groups/classes/class-bp-rest-groups-endpoint.php:1164
 msgid "Get Groups based on their meta data information."
 msgstr ""
 
-#: bp-groups/classes/class-bp-rest-groups-endpoint.php:1167
+#: bp-groups/classes/class-bp-rest-groups-endpoint.php:1172
 msgid "Ensure result set includes Groups with specific IDs."
 msgstr ""
 
-#: bp-groups/classes/class-bp-rest-groups-endpoint.php:1176
+#: bp-groups/classes/class-bp-rest-groups-endpoint.php:1181
 msgid "Ensure result set excludes Groups with specific IDs"
 msgstr ""
 
-#: bp-groups/classes/class-bp-rest-groups-endpoint.php:1185
+#: bp-groups/classes/class-bp-rest-groups-endpoint.php:1190
 msgid "Limit results set to a certain Group type."
 msgstr ""
 
-#: bp-groups/classes/class-bp-rest-groups-endpoint.php:1202
+#: bp-groups/classes/class-bp-rest-groups-endpoint.php:1207
 msgid "Whether results should include hidden Groups."
 msgstr ""
 
@@ -6880,6 +6994,7 @@ msgstr ""
 
 #: bp-messages/bp-messages-template.php:1036
 #: bp-notifications/bp-notifications-template.php:1027
+#: bp-templates/bp-nouveau/includes/notifications/template-tags.php:107
 msgid "Bulk Actions"
 msgstr ""
 
@@ -8201,6 +8316,7 @@ msgid "You are requesting to become a member of the group \"%s\"."
 msgstr ""
 
 #: bp-templates/bp-legacy/buddypress/groups/single/request-membership.php:33
+#: bp-templates/bp-nouveau/buddypress/groups/single/request-membership.php:25
 msgid "Comments (optional)"
 msgstr ""
 
@@ -9858,15 +9974,15 @@ msgid "Invitations sent."
 msgstr ""
 
 #: bp-templates/bp-nouveau/includes/groups/ajax.php:464
-#: bp-templates/bp-nouveau/includes/groups/ajax.php:503
+#: bp-templates/bp-nouveau/includes/groups/ajax.php:507
 msgid "Group invitation could not be removed."
 msgstr ""
 
-#: bp-templates/bp-nouveau/includes/groups/ajax.php:492
+#: bp-templates/bp-nouveau/includes/groups/ajax.php:496
 msgid "The member is already a member of the group."
 msgstr ""
 
-#: bp-templates/bp-nouveau/includes/groups/ajax.php:512
+#: bp-templates/bp-nouveau/includes/groups/ajax.php:516
 msgid "There are no more pending invitations for the group."
 msgstr ""
 
@@ -11222,7 +11338,7 @@ msgctxt "screen heading"
 msgid "Emails"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:670
+#: bp-core/classes/class-bp-admin.php:752
 msgctxt "screen heading"
 msgid "Your feedback"
 msgstr ""
@@ -11547,12 +11663,7 @@ msgctxt "Colloquial alternative to \"learn about BuddyPress\""
 msgid "Hello, BuddyPress!"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:634
-msgctxt "section heading"
-msgid "New in BuddyPress"
-msgstr ""
-
-#: bp-core/classes/class-bp-admin.php:959
+#: bp-core/classes/class-bp-admin.php:1040
 msgctxt "Email post type"
 msgid "Situations"
 msgstr ""
