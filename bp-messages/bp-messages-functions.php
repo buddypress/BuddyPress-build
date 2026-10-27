@@ -198,12 +198,10 @@ function messages_new_message( $args = '' ) {
 	 * Fires after a message has been successfully sent.
 	 *
 	 * @since 1.1.0
-	 * @since 11.0.0 Added the `$r` parameter.
 	 *
 	 * @param BP_Messages_Message $message Message object. Passed by reference.
-	 * @param array               $r       Parsed function arguments.
 	 */
-	do_action_ref_array( 'messages_message_sent', array( &$message, $r ) );
+	do_action_ref_array( 'messages_message_sent', array( &$message ) );
 
 	// Return the thread ID.
 	return $message->thread_id;

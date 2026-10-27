@@ -37,7 +37,8 @@ class BP_XProfile_Field_Type_Datebox extends BP_XProfile_Field_Type {
 		 *
 		 * @since 2.0.0
 		 *
-		 * @param BP_XProfile_Field_Type_Datebox $field_type Current instance of the field type class.
+		 * @param BP_XProfile_Field_Type_Datebox $this Current instance of
+		 *                                             the field type datebox.
 		 */
 		do_action( 'bp_xprofile_field_type_datebox', $this );
 	}

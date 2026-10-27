@@ -77,8 +77,8 @@ function bp_core_check_for_moderation( $user_id = 0, $title = '', $content = '',
 	}
 
 	// Define local variable(s).
-	$_post   = array();
-	$matches = '';
+	$_post     = array();
+	$match_out = '';
 
 	/** User Data ************************************************************
 	 */
@@ -90,10 +90,9 @@ function bp_core_check_for_moderation( $user_id = 0, $title = '', $content = '',
 
 		// If data exists, map it.
 		if ( ! empty( $user ) ) {
-			$_post['user_id'] = $user->ID;
-			$_post['author']  = $user->display_name;
-			$_post['email']   = $user->user_email;
-			$_post['url']     = $user->user_url;
+			$_post['author'] = $user->display_name;
+			$_post['email']  = $user->user_email;
+			$_post['url']    = $user->user_url;
 		}
 	}
 
@@ -112,32 +111,20 @@ function bp_core_check_for_moderation( $user_id = 0, $title = '', $content = '',
 	if ( ! empty( $max_links ) ) {
 
 		// How many links?
-		$num_links = preg_match_all( '/(http|ftp|https):\/\/(.+?)([\s\'"])/i', $content, $matches );
+		$num_links = preg_match_all( '/(http|ftp|https):\/\//i', $content, $match_out );
 
-		// Neutralize the current site's URL.
-		if ( isset( $matches[0] ) && is_array( $matches[0] ) ) {
-			foreach ( $matches[0] as $found_url ) {
-				if ( 0 === strpos( $found_url, home_url() ) ) {
-					$num_links -=1;
-				}
-			}
-		}
-
-		// Allow for bumping the max according to the user's URL or content data.
+		// Allow for bumping the max to include the user's URL.
 		if ( ! empty( $_post['url'] ) ) {
-			$user_url = $_post['url'];
 
 			/**
 			 * Filters the maximum amount of links allowed to include the user's URL.
 			 *
 			 * @since 1.6.0
-			 * @since 11.0.0 Introduced the $content parameter as WordPress did the same in 4.7.0.
 			 *
-			 * @param string $num_links    How many links found.
-			 * @param string $user_url     User's url.
-			 * @param array  $content      The content being moderated.
+			 * @param string $num_links How many links found.
+			 * @param string $value     User's url.
 			 */
-			$num_links = apply_filters( 'comment_max_links_url', $num_links, $user_url, $content );
+			$num_links = apply_filters( 'comment_max_links_url', $num_links, $_post['url'] );
 		}
 
 		// Das ist zu viele links!

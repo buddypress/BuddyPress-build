@@ -39,7 +39,8 @@ class BP_XProfile_Field_Type_Checkbox extends BP_XProfile_Field_Type {
 		 *
 		 * @since 2.0.0
 		 *
-		 * @param BP_XProfile_Field_Type_Checkbox $field_type Current instance of the field type class.
+		 * @param BP_XProfile_Field_Type_Checkbox $this Current instance of
+		 *                                              the field type checkbox.
 		 */
 		do_action( 'bp_xprofile_field_type_checkbox', $this );
 	}

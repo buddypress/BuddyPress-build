@@ -37,7 +37,8 @@ class BP_XProfile_Field_Type_Selectbox extends BP_XProfile_Field_Type {
 		 *
 		 * @since 2.0.0
 		 *
-		 * @param BP_XProfile_Field_Type_Selectbox $field_type Current instance of the field type class.
+		 * @param BP_XProfile_Field_Type_Selectbox $this Current instance of
+		 *                                               the field type select box.
 		 */
 		do_action( 'bp_xprofile_field_type_selectbox', $this );
 	}
