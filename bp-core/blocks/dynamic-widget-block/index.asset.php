@@ -1,1 +1,1 @@
-<?php return array('dependencies' => array('lodash', 'wp-url'), 'version' => 'b2336a3232a09eb7e62c');
+<?php return array('dependencies' => array('lodash', 'wp-url'), 'version' => 'c3f133309411487675f3');
