@@ -1,4 +1,4 @@
-# Copyright (C) 2020 The BuddyPress Community
+# Copyright (C) 2021 The BuddyPress Community
 # This file is distributed under the same license as the BuddyPress plugin.
 msgid ""
 msgstr ""
@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2020-12-21T21:01:27+00:00\n"
+"POT-Creation-Date: 2021-02-17T21:39:05+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.4.0\n"
 "X-Domain: buddypress\n"
@@ -3164,7 +3164,7 @@ msgstr ""
 
 #. translators: link to Privacy Policy
 #: bp-core/bp-core-functions.php:3564
-#: bp-templates/bp-nouveau/includes/template-tags.php:2583
+#: bp-templates/bp-nouveau/includes/template-tags.php:2592
 msgid "Privacy Policy"
 msgstr ""
 
@@ -6550,7 +6550,7 @@ msgstr ""
 #: bp-templates/bp-legacy/buddypress/members/single/blogs.php:19
 #: bp-templates/bp-legacy/buddypress/members/single/friends.php:20
 #: bp-templates/bp-legacy/buddypress/members/single/groups.php:20
-#: bp-templates/bp-nouveau/includes/template-tags.php:2180
+#: bp-templates/bp-nouveau/includes/template-tags.php:2189
 msgid "Order By:"
 msgstr ""
 
@@ -10302,7 +10302,7 @@ msgstr ""
 #: bp-templates/bp-legacy/buddypress/activity/index.php:204
 #: bp-templates/bp-legacy/buddypress/groups/single/activity.php:25
 #: bp-templates/bp-legacy/buddypress/members/single/activity.php:18
-#: bp-templates/bp-nouveau/includes/template-tags.php:2183
+#: bp-templates/bp-nouveau/includes/template-tags.php:2192
 msgid "Show:"
 msgstr ""
 
@@ -10945,7 +10945,7 @@ msgstr ""
 #: bp-templates/bp-legacy/buddypress/members/register.php:119
 #: bp-templates/bp-legacy/buddypress/members/register.php:281
 #: bp-templates/bp-legacy/buddypress/members/register.php:297
-#: bp-templates/bp-nouveau/includes/template-tags.php:2429
+#: bp-templates/bp-nouveau/includes/template-tags.php:2438
 #: bp-xprofile/bp-xprofile-template.php:1439
 msgid "(required)"
 msgstr ""
@@ -12942,33 +12942,33 @@ msgctxt "button"
 msgid "Mark unread"
 msgstr ""
 
-#: bp-templates/bp-nouveau/includes/template-tags.php:2385
+#: bp-templates/bp-nouveau/includes/template-tags.php:2394
 msgid "Choose a Password (required)"
 msgstr ""
 
-#: bp-templates/bp-nouveau/includes/template-tags.php:2394
+#: bp-templates/bp-nouveau/includes/template-tags.php:2403
 msgid "Strength indicator"
 msgstr ""
 
-#: bp-templates/bp-nouveau/includes/template-tags.php:2399
+#: bp-templates/bp-nouveau/includes/template-tags.php:2408
 msgid "Confirm use of weak password"
 msgstr ""
 
-#: bp-templates/bp-nouveau/includes/template-tags.php:2407
+#: bp-templates/bp-nouveau/includes/template-tags.php:2416
 msgid "Confirm new password"
 msgstr ""
 
 #. translators: Do not translate placeholders. 2 = form field name, 3 = "(required)".
-#: bp-templates/bp-nouveau/includes/template-tags.php:2423
+#: bp-templates/bp-nouveau/includes/template-tags.php:2432
 msgid "<label for=\"%1$s\">%2$s %3$s</label>"
 msgstr ""
 
-#: bp-templates/bp-nouveau/includes/template-tags.php:2442
+#: bp-templates/bp-nouveau/includes/template-tags.php:2451
 msgid "I would like my site to appear in search engines, and in public listings around this network."
 msgstr ""
 
 #. translators: link to Privacy Policy
-#: bp-templates/bp-nouveau/includes/template-tags.php:2583
+#: bp-templates/bp-nouveau/includes/template-tags.php:2592
 msgid "I have read and agree to this site's %s."
 msgstr ""
 
