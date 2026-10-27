@@ -10,11 +10,6 @@
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
-/**
- * Set up the displayed user's Members Invitations nav.
- *
- * @since 8.0.0
- */
 function bp_members_invitations_setup_nav() {
 	if ( ! bp_get_members_invitations_allowed() ) {
 		return;
@@ -67,17 +62,14 @@ add_action( 'bp_setup_nav', 'bp_members_invitations_setup_nav' );
 /**
  * When a user joins the network via an invitation, skip sending the activation email.
  *
- * @since 8.0.0
- *
  * @param bool   $send           Whether or not to send the activation key.
  * @param int    $user_id        User ID to send activation key to.
  * @param string $user_email     User email to send activation key to.
  * @param string $activation_key Activation key to be sent.
  * @param array  $usermeta       Miscellaneous metadata about the user (blog-specific
  *                               signup data, xprofile data, etc).
- * @return bool Whether or not to send the activation key.
  */
-function bp_members_invitations_cancel_activation_email( $send, $user_id = 0, $user_email = '', $activation_key = '', $usermeta = array() ) {
+function bp_members_invitations_cancel_activation_email( $send, $user_id, $user_email, $activation_key, $usermeta ) {
 	$invite = bp_members_invitations_get_invites(
 		array(
 			'invitee_email' => $user_email,
@@ -98,14 +90,12 @@ add_filter( 'bp_core_signup_send_activation_key', 'bp_members_invitations_cancel
  * - mark all invitations and requests as accepted
  * - activate the user upon signup
  *
- * @since 8.0.0
- *
  * @param bool|WP_Error   $user_id       True on success, WP_Error on failure.
  * @param string          $user_login    Login name requested by the user.
  * @param string          $user_password Password requested by the user.
  * @param string          $user_email    Email address requested by the user.
  */
-function bp_members_invitations_complete_signup( $user_id, $user_login = '', $user_password = '', $user_email = '' ) {
+function bp_members_invitations_complete_signup( $user_id, $user_login, $user_password, $user_email ) {
 	if ( ! $user_id ) {
 		return;
 	}
