@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-07-12T05:39:40+00:00\n"
+"POT-Creation-Date: 2024-07-05T03:46:47+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.10.0\n"
 "X-Domain: buddypress\n"
@@ -417,7 +417,7 @@ msgstr ""
 #: bp-activity/classes/class-bp-activity-list-table.php:698
 #: bp-activity/classes/class-bp-akismet.php:219
 #: bp-activity/classes/class-bp-akismet.php:262
-#: bp-core/admin/bp-core-admin-functions.php:1527
+#: bp-core/admin/bp-core-admin-functions.php:1498
 msgid "Spam"
 msgstr ""
 
@@ -961,7 +961,7 @@ msgid "Delete"
 msgstr ""
 
 #: bp-activity/bp-activity-template.php:3213
-#: bp-core/admin/bp-core-admin-functions.php:1533
+#: bp-core/admin/bp-core-admin-functions.php:1504
 #: bp-core/admin/bp-core-admin-rewrites.php:222
 #: bp-groups/classes/class-bp-groups-list-table.php:619
 #: bp-members/bp-members-template.php:1188
@@ -1153,7 +1153,7 @@ msgstr ""
 
 #: bp-activity/classes/class-bp-activity-list-table.php:412
 #: bp-activity/classes/class-bp-activity-list-table.php:696
-#: bp-core/admin/bp-core-admin-functions.php:1515
+#: bp-core/admin/bp-core-admin-functions.php:1486
 msgid "Not Spam"
 msgstr ""
 
@@ -1952,7 +1952,7 @@ msgstr ""
 #: bp-core/admin/bp-core-admin-rewrites.php:152
 #: bp-core/admin/bp-core-admin-settings.php:402
 #: bp-core/classes/class-bp-admin.php:1024
-#: bp-core/classes/class-bp-admin.php:1676
+#: bp-core/classes/class-bp-admin.php:1674
 msgid "BuddyPress Settings"
 msgstr ""
 
@@ -1992,7 +1992,7 @@ msgstr ""
 #: bp-core/admin/bp-core-admin-components.php:72
 #: bp-core/admin/bp-core-admin-functions.php:562
 #: bp-core/bp-core-functions.php:2821
-#: bp-core/classes/class-bp-admin.php:1676
+#: bp-core/classes/class-bp-admin.php:1674
 #: bp-notifications/bp-notifications-functions.php:978
 #: bp-notifications/classes/class-bp-notifications-component.php:296
 #: bp-templates/bp-legacy/buddypress/members/single/notifications/read.php:17
@@ -2255,71 +2255,71 @@ msgstr ""
 msgid "This is the administration screen to help you perform an assortment of repair tasks when your BuddyPress relationships are out of sync or conduct other bulk operations."
 msgstr ""
 
-#: bp-core/admin/bp-core-admin-functions.php:1163
+#: bp-core/admin/bp-core-admin-functions.php:1134
 #: bp-members/blocks/member/index.js:1
 msgid "BuddyPress Member"
 msgstr ""
 
-#: bp-core/admin/bp-core-admin-functions.php:1212
+#: bp-core/admin/bp-core-admin-functions.php:1183
 msgid "Search BuddyPress member menu items"
 msgstr ""
 
-#: bp-core/admin/bp-core-admin-functions.php:1213
-#: bp-core/admin/bp-core-admin-functions.php:1238
+#: bp-core/admin/bp-core-admin-functions.php:1184
+#: bp-core/admin/bp-core-admin-functions.php:1209
 msgid "All BuddyPress Member menu items"
 msgstr ""
 
-#: bp-core/admin/bp-core-admin-functions.php:1249
+#: bp-core/admin/bp-core-admin-functions.php:1220
 msgid "Logged-In"
 msgstr ""
 
-#: bp-core/admin/bp-core-admin-functions.php:1250
+#: bp-core/admin/bp-core-admin-functions.php:1221
 msgid "Logged-Out"
 msgstr ""
 
-#: bp-core/admin/bp-core-admin-functions.php:1251
+#: bp-core/admin/bp-core-admin-functions.php:1222
 #: bp-members/classes/class-bp-members-invitations-list-table.php:143
 msgid "All"
 msgstr ""
 
 #. Translators: %s is the url to the BuddyPress tools administration screen.
-#: bp-core/admin/bp-core-admin-functions.php:1357
+#: bp-core/admin/bp-core-admin-functions.php:1328
 msgid "Are these emails not written in your site's language? Go to <a href=\"%s\">BuddyPress Tools and try the \"reinstall emails\"</a> tool."
 msgstr ""
 
-#: bp-core/admin/bp-core-admin-functions.php:1402
+#: bp-core/admin/bp-core-admin-functions.php:1373
 msgid "Choose when this email will be sent."
 msgstr ""
 
 #. translators: accessibility text
-#: bp-core/admin/bp-core-admin-functions.php:1416
-#: bp-core/admin/bp-core-admin-functions.php:1435
+#: bp-core/admin/bp-core-admin-functions.php:1387
+#: bp-core/admin/bp-core-admin-functions.php:1406
 msgid "Plain text email content"
 msgstr ""
 
-#: bp-core/admin/bp-core-admin-functions.php:1445
+#: bp-core/admin/bp-core-admin-functions.php:1416
 msgid "Most email clients support HTML email. However, some people prefer to receive plain text email. Enter a plain text alternative version of your email here."
 msgstr ""
 
-#: bp-core/admin/bp-core-admin-functions.php:1586
+#: bp-core/admin/bp-core-admin-functions.php:1557
 #: bp-core/deprecated/3.0.php:136
 #: bp-members/classes/class-bp-members-admin.php:536
 msgid "User marked as spammer. Spam users are visible only to site admins."
 msgstr ""
 
-#: bp-core/admin/bp-core-admin-functions.php:1588
+#: bp-core/admin/bp-core-admin-functions.php:1559
 msgid "User removed from spam."
 msgstr ""
 
-#: bp-core/admin/bp-core-admin-functions.php:1699
+#: bp-core/admin/bp-core-admin-functions.php:1670
 msgid "Community blocks"
 msgstr ""
 
-#: bp-core/admin/bp-core-admin-functions.php:1720
+#: bp-core/admin/bp-core-admin-functions.php:1691
 msgid "Dismiss the notification"
 msgstr ""
 
-#: bp-core/admin/bp-core-admin-functions.php:1720
+#: bp-core/admin/bp-core-admin-functions.php:1691
 #: bp-core/bp-core-attachments.php:695
 msgid "Dismiss"
 msgstr ""
@@ -5114,32 +5114,32 @@ msgid "Noteworthy Contributors to %s"
 msgstr ""
 
 #. translators: %s: BuddyPress version number
-#: bp-core/classes/class-bp-admin.php:1162
+#: bp-core/classes/class-bp-admin.php:1154
 msgid "All Contributors to BuddyPress %s"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:1217
+#: bp-core/classes/class-bp-admin.php:1215
 msgid "With our thanks to these Open Source projects"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:1230
+#: bp-core/classes/class-bp-admin.php:1228
 msgid "Contributor Emeriti"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:1235
+#: bp-core/classes/class-bp-admin.php:1233
 msgid "Project Founder"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:1275
+#: bp-core/classes/class-bp-admin.php:1273
 msgctxt "Email post type"
 msgid "Situations"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:1609
+#: bp-core/classes/class-bp-admin.php:1607
 msgid "BuddyPress Add-ons"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:1689
+#: bp-core/classes/class-bp-admin.php:1687
 msgid "No new Admin Notfications"
 msgstr ""
 
