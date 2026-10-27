@@ -1575,7 +1575,7 @@ add_action( 'wp_head', 'bp_core_record_activity' );
  * @since 1.0.0
  *
  * @param int|string $last_activity_date The date of last activity.
- * @param string     $string             A sprintf()-able statement of the form 'Active %s'.
+ * @param string     $string             A sprintf()-able statement of the form 'active %s'.
  * @return string $last_active A string of the form '3 years ago'.
  */
 function bp_core_get_last_activity( $last_activity_date = '', $string = '' ) {
@@ -1597,7 +1597,7 @@ function bp_core_get_last_activity( $last_activity_date = '', $string = '' ) {
 	 *
 	 * @param string $last_active        Last activity string based on time since date given.
 	 * @param string $last_activity_date The date of last activity.
-	 * @param string $string             A sprintf()-able statement of the form 'Active %s'.
+	 * @param string $string             A sprintf()-able statement of the form 'active %s'.
 	 */
 	return apply_filters( 'bp_core_get_last_activity', $last_active, $last_activity_date, $string );
 }
@@ -2977,9 +2977,9 @@ function bp_get_taxonomy_common_args() {
  */
 function bp_get_taxonomy_common_labels() {
 	return array(
-		'bp_type_name'           => _x( 'Plural Name', 'BP Type name label', 'buddypress' ),
+		'bp_type_name'           => _x( 'Name', 'BP Type name label', 'buddypress' ),
 		'bp_type_singular_name'  => _x( 'Singular name', 'BP Type singular name label', 'buddypress' ),
-		'bp_type_has_directory'  => _x( 'Has Directory View', 'BP Type has directory checkbox label', 'buddypress' ),
+		'bp_type_has_directory'  => _x( 'Add Type-Filtered Directory View', 'BP Type has directory checkbox label', 'buddypress' ),
 		'bp_type_directory_slug' => _x( 'Custom type directory slug', 'BP Type slug label', 'buddypress' ),
 	);
 }
@@ -3086,27 +3086,27 @@ function bp_get_email_tax_type_args() {
  */
 function bp_get_type_metadata_schema( $suppress_filters = false, $type_taxonomy = '' ) {
 	$schema = array(
-		'bp_type_singular_name' => array(
-			'description'       => __( 'The name of this type in singular form. ', 'buddypress' ),
+		'bp_type_name' => array(
+			'description'       => __( 'The name of your type, at the plural form.', 'buddypress' ),
 			'type'              => 'string',
 			'single'            => true,
 			'sanitize_callback' => 'sanitize_text_field',
 		),
-		'bp_type_name' => array(
-			'description'       => __( 'The name of this type in plural form.', 'buddypress' ),
+		'bp_type_singular_name' => array(
+			'description'       => __( 'The name of your type, at the singular form.', 'buddypress' ),
 			'type'              => 'string',
 			'single'            => true,
 			'sanitize_callback' => 'sanitize_text_field',
 		),
 		'bp_type_has_directory' => array(
-			'description'       => __( 'Make a list matching this type available on the directory.', 'buddypress' ),
+			'description'       => __( 'Add a list of members matching the member type available on the Members Directory page (e.g. site.url/members/type/teacher/).', 'buddypress' ),
 			'type'              => 'boolean',
 			'single'            => true,
 			'sanitize_callback' => 'absint',
 		),
 		'bp_type_directory_slug' => array(
-			'label'             => __( 'Type slug', 'buddypress' ),
-			'description'       => __( 'Enter if you want the type slug to be different from its ID.', 'buddypress' ),
+			'label'             => __( 'Custom type directory slug', 'buddypress' ),
+			'description'       => __( 'If you want to use a slug that is different from the Member Type ID above, enter it here.', 'buddypress' ),
 			'type'              => 'string',
 			'single'            => true,
 			'sanitize_callback' => 'sanitize_title',
@@ -3231,10 +3231,6 @@ function bp_get_taxonomy_types( $taxonomy = '', $types = array() ) {
 					} else {
 						$db_types[ $type_name ]->{$type_key} = get_term_meta( $term->term_id, $meta_key, true );
 					}
-				}
-
-				if ( ! empty( $db_types[ $type_name ]->has_directory ) && empty( $db_types[ $type_name ]->directory_slug ) ) {
-					$db_types[ $type_name ]->directory_slug = $term->slug;
 				}
 			}
 		}

@@ -1,40 +1,20 @@
 // BP Single User Specific Header Styles
-// @since 3.0.0
-// @version 7.0.0
+// @version 3.0.0
 
-body.buddypress.bp-user {
+.bp-user {
 
-	.buddypress-wrap {
+	.users-header {
 
-		.users-header {
-
-			h2.user-nicename {
-				margin-top: 0;
-				margin-bottom: $marg-xsml;
-			}
-
-			.bp-member-type-list {
-				padding-bottom: 0.5em;
-
-				@include font-size(18);
-				margin: 0;
-				color: $black;
-				display: flex;
-
-				strong {
-					padding-right: $pad-med;
-					white-space: nowrap;
-				}
-			}
+		.user-nicename {
+			margin-bottom: $marg-xsml;
 		}
+	}
 
-		.member-header-actions {
-			overflow: hidden;
-			padding-left: 0;
+	.member-header-actions {
+		overflow: hidden;
 
-			* > * {
-				display: block;
-			}
+		* > * {
+			display: block;
 		}
 	}
 }

@@ -412,7 +412,7 @@ class BP_Signup {
 					if ( isset( $usermeta[ $key ] ) ) {
 						$visibility_level = $usermeta[ $key ];
 					} else {
-						$vfield           = xprofile_get_field( $field_id, null, false );
+						$vfield           = xprofile_get_field( $field_id );
 						$visibility_level = isset( $vfield->default_visibility ) ? $vfield->default_visibility : 'public';
 					}
 					xprofile_set_field_visibility_level( $field_id, $user_id, $visibility_level );

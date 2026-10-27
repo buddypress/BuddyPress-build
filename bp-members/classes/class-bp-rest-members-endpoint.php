@@ -65,7 +65,7 @@ class BP_REST_Members_Endpoint extends WP_REST_Users_Controller {
 					'methods'             => WP_REST_Server::EDITABLE,
 					'callback'            => array( $this, 'update_item' ),
 					'permission_callback' => array( $this, 'update_item_permissions_check' ),
-					'args'                => $this->get_endpoint_args_for_item_schema( WP_REST_Server::EDITABLE ),
+					'args'                => parent::get_endpoint_args_for_item_schema( WP_REST_Server::EDITABLE ),
 				),
 				array(
 					'methods'             => WP_REST_Server::DELETABLE,
@@ -458,11 +458,7 @@ class BP_REST_Members_Endpoint extends WP_REST_Users_Controller {
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return array
 	 */
-	public function user_data( $user, $context, $request ) {
-		if ( ! $context ) {
-			$context = 'view';
-		}
-
+	public function user_data( $user, $context = 'view', $request ) {
 		$data = array(
 			'id'                     => $user->ID,
 			'name'                   => $user->display_name,
@@ -582,15 +578,6 @@ class BP_REST_Members_Endpoint extends WP_REST_Users_Controller {
 		// The parent class uses username instead of user_login.
 		if ( ! isset( $prepared_user->user_login ) && isset( $request['user_login'] ) ) {
 			$prepared_user->user_login = $request['user_login'];
-		}
-
-		/**
-		 * Until BP REST version 0.3.0 the `types` parameter was used into the schema
-		 * but not used to actually assign the member type to the user.
-		 */
-		$types = $request->get_param( 'types' );
-		if ( $types ) {
-			$request->set_param( 'member_type', bp_rest_sanitize_member_types( $types ) );
 		}
 
 		// Set member type.
@@ -718,7 +705,7 @@ class BP_REST_Members_Endpoint extends WP_REST_Users_Controller {
 
 		// Add member type args.
 		$member_type_args = array(
-			'description'       => __( 'Assign a member type to a member, use a comma separated list of member types to assign more than one.', 'buddypress' ),
+			'description'       => __( 'Set type(s) for a member.', 'buddypress' ),
 			'type'              => 'string',
 			'enum'              => bp_get_member_types(),
 			'context'           => array( 'edit' ),
@@ -733,7 +720,7 @@ class BP_REST_Members_Endpoint extends WP_REST_Users_Controller {
 			unset( $args['mention_name'] );
 
 			// Add member type args.
-			$args['member_type'] = $member_type_args;
+			$args['types'] = $member_type_args;
 
 			// But we absolutely need the email.
 			$args['email'] = array(
@@ -753,7 +740,7 @@ class BP_REST_Members_Endpoint extends WP_REST_Users_Controller {
 			unset( $args['mention_name'], $args['user_login'], $args['password'] );
 
 			// Add member type args.
-			$args['member_type'] = $member_type_args;
+			$args['types'] = $member_type_args;
 		} elseif ( WP_REST_Server::DELETABLE === $method ) {
 			$key = 'delete_item';
 		}
@@ -803,7 +790,6 @@ class BP_REST_Members_Endpoint extends WP_REST_Users_Controller {
 					'arg_options' => array(
 						'sanitize_callback' => 'sanitize_text_field',
 					),
-					'readonly'    => true,
 				),
 				'link'               => array(
 					'description' => __( 'Profile URL of the member.', 'buddypress' ),
@@ -823,11 +809,7 @@ class BP_REST_Members_Endpoint extends WP_REST_Users_Controller {
 				),
 				'member_types'       => array(
 					'description' => __( 'Member types associated with the member.', 'buddypress' ),
-					'enum'        => bp_get_member_types(),
-					'type'        => 'array',
-					'items'       => array(
-						'type' => 'string',
-					),
+					'type'        => 'object',
 					'context'     => array( 'embed', 'view', 'edit' ),
 					'readonly'    => true,
 				),
@@ -883,7 +865,6 @@ class BP_REST_Members_Endpoint extends WP_REST_Users_Controller {
 					'description' => __( 'Slug of the friendship status with current logged in user.', 'buddypress' ),
 					'enum'        => array( 'is_friend', 'not_friends', 'pending', 'awaiting_response' ),
 					'type'        => 'string',
-					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
 				'last_activity'          => array(
@@ -915,7 +896,7 @@ class BP_REST_Members_Endpoint extends WP_REST_Users_Controller {
 						'raw'      => array(
 							'description' => __( 'Content for the activity, as it exists in the database.', 'buddypress' ),
 							'type'        => 'string',
-							'context'     => array( 'view', 'edit' ),
+							'context'     => array( 'edit' ),
 						),
 						'rendered' => array(
 							'description' => __( 'HTML content for the activity, transformed for display.', 'buddypress' ),
@@ -924,7 +905,6 @@ class BP_REST_Members_Endpoint extends WP_REST_Users_Controller {
 							'readonly'    => true,
 						),
 					),
-					'readonly'    => true,
 				),
 				'total_friend_count'     => array(
 					'context'     => array( 'view', 'edit' ),

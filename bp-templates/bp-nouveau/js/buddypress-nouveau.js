@@ -1,8 +1,7 @@
 /* global wp, bp, BP_Nouveau, JSON */
 /* jshint devel: true */
 /* jshint browser: true */
-/* @since 3.0.0 */
-/* @version 7.0.0 */
+/* @version 3.2.0 */
 window.wp = window.wp || {};
 window.bp = window.bp || {};
 
@@ -465,22 +464,26 @@ window.bp = window.bp || {};
 		/** Event Callbacks ***********************************************************/
 
 		/**
-		 * Toggle the availability of Delete My account button.
-		 *
-		 * @param  {Object} event The change event.
+		 * [enableDisabledInput description]
+		 * @param  {[type]} event [description]
+		 * @param  {[type]} data  [description]
+		 * @return {[type]}       [description]
 		 */
-		toggleDisabledInput: function( event ) {
-			var target = $( event.currentTarget ), disabledControl = '#' + target.data( 'bp-disable-input' ),
-				isChecked = target.prop( 'checked' );
+		toggleDisabledInput: function() {
 
-			target.removeClass( 'enabled disabled' );
+			// Fetch the data attr value (id)
+			// This a pro tem approach due to current conditions see
+			// https://github.com/buddypress/next-template-packs/issues/180.
+			var disabledControl = $(this).attr('data-bp-disable-input');
 
-			if ( isChecked ) {
-				target.addClass( 'enabled' );
-				$( disabledControl ).prop( 'disabled', false );
-			} else {
-				$( disabledControl ).prop( 'disabled', true );
-				target.addClass( 'disabled' );
+			if ( $( disabledControl ).prop( 'disabled', true ) && !$(this).hasClass('enabled') ) {
+				$(this).addClass('enabled').removeClass('disabled');
+				$( disabledControl ).removeProp( 'disabled' );
+
+			} else if( $( disabledControl ).prop( 'disabled', false ) && $(this).hasClass('enabled') ) {
+				$(this).removeClass('enabled').addClass('disabled');
+				// Set using attr not .prop else DOM renders as 'disable=""' CSS needs 'disable="disable"'.
+				$( disabledControl ).attr( 'disabled', 'disabled' );
 			}
 		},
 

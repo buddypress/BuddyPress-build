@@ -298,14 +298,11 @@ function bp_blog_avatar( $args = '' ) {
 	/**
 	 * Get a blog's avatar.
 	 *
-	 * At the moment, unless the blog has a site icon, the blog's avatar defaults
-	 * to the /bp-core/images/mystery-blog.png image or the Blog's Admin user avatar
-	 * if the `admin_user_id` argument contains the Blog's Admin user ID.
+	 * At the moment, blog avatars are simply the user avatars of the blog
+	 * admin. Filter 'bp_get_blog_avatar_' . $blog_id to customize.
 	 *
 	 * @since 2.4.0 Introduced `$title` argument.
 	 * @since 6.0.0 Introduced the `$blog_id`, `$admin_user_id` and `html` arguments.
-	 * @since 7.0.0 Introduced the Blog's default avatar {@see bp_blogs_default_avatar()}.
-	 *              Removed the `'bp_get_blog_avatar_' . $blog_id` filter (it was deprecated since 1.5).
 	 *
 	 * @see bp_core_fetch_avatar() For a description of arguments and
 	 *      return values.
@@ -336,44 +333,40 @@ function bp_blog_avatar( $args = '' ) {
 			return false;
 		}
 
-		// Set default value for the `alt` attribute.
-		$alt_attribute = __( 'Site icon for the blog', 'buddypress' );
+		// Set default values.
+		$author_displayname = '';
+		$admin_user_id      = 0;
+		$blog_id            = 0;
+
+		if ( ! $blogs_template && isset( $args['admin_user_id'] ) && $args['admin_user_id'] ) {
+			$admin_user_id      = (int) $args['admin_user_id'];
+			$author_displayname = bp_core_get_user_displayname( $admin_user_id );
+		} else {
+			$admin_user_id      = $blogs_template->blog->admin_user_id;
+			$author_displayname = bp_core_get_user_displayname( $blogs_template->blog->admin_user_id );
+		}
 
 		if ( ! $blogs_template && isset( $args['blog_id'] ) && $args['blog_id'] ) {
 			$blog_id = (int) $args['blog_id'];
 		} else {
 			$blog_id = bp_get_blog_id();
-
-			/* translators: %s is the blog name */
-			$alt_attribute = sprintf( __( 'Site icon for %s', 'buddypress' ), bp_get_blog_name() );
 		}
 
 		// Parse the arguments.
 		$r = bp_parse_args( $args, array(
-			'item_id'    => $blog_id,
-			'avatar_dir' => 'blog-avatars',
-			'object'     => 'blog',
-			'type'       => 'full',
-			'width'      => false,
-			'height'     => false,
-			'class'      => 'avatar',
-			'id'         => false,
-			'alt'        => $alt_attribute,
-			'no_grav'    => false,
-			'html'       => true,
-		), 'blog_avatar' );
-
-		/**
-		 * If the `admin_user_id` was provided, make the Blog avatar
-		 * defaults to the Blog's Admin user one.
-		 */
-		if ( isset( $r['admin_user_id'] ) && $r['admin_user_id'] ) {
-			$r['item_id']    = (int) $r['admin_user_id'];
-			$r['avatar_dir'] = 'avatars';
-			$r['object']     = 'user';
-		} elseif ( ! $r['no_grav'] ) {
-			$r['no_grav'] = true;
-		}
+			'type'    => 'full',
+			'width'   => false,
+			'height'  => false,
+			'class'   => 'avatar',
+			'id'      => false,
+			'alt'     => sprintf(
+				/* translators: %s: the author display name */
+				__( 'Profile picture of site author %s', 'buddypress' ),
+				esc_attr( $author_displayname )
+			),
+			'no_grav' => false,
+			'html'    => true,
+		) );
 
 		// Use site icon if available.
 		$avatar = '';
@@ -382,6 +375,8 @@ function bp_blog_avatar( $args = '' ) {
 
 			// Never attempted to fetch site icon before; do it now!
 			if ( '' === $site_icon ) {
+				switch_to_blog( $blog_id );
+
 				// Fetch the other size first.
 				if ( 'full' === $r['type'] ) {
 					$size      = bp_core_avatar_thumb_width();
@@ -391,8 +386,7 @@ function bp_blog_avatar( $args = '' ) {
 					$save_size = 'full';
 				}
 
-				$site_icon = bp_blogs_get_site_icon_url( $blog_id, $size );
-
+				$site_icon = get_site_icon_url( $size );
 				// Empty site icons get saved as integer 0.
 				if ( empty( $site_icon ) ) {
 					$site_icon = 0;
@@ -404,11 +398,13 @@ function bp_blog_avatar( $args = '' ) {
 				// Now, fetch the size we want.
 				if ( 0 !== $site_icon ) {
 					$size      = 'full' === $r['type'] ? bp_core_avatar_full_width() : bp_core_avatar_thumb_width();
-					$site_icon = bp_blogs_get_site_icon_url( $blog_id, $size );
+					$site_icon = get_site_icon_url( $size );
 				}
 
 				// Sync site icon to blogmeta.
 				bp_blogs_update_blogmeta( $blog_id, "site_icon_url_{$r['type']}", $site_icon );
+
+				restore_current_blog();
 			}
 
 			// We have a site icon.
@@ -424,6 +420,12 @@ function bp_blog_avatar( $args = '' ) {
 					$size = (int) $r['width'];
 				}
 
+				$alt_attribute = __( 'Site icon for the blog', 'buddypress' );
+				if ( $blogs_template ) {
+					/* translators: %s is the placeholder for the name of the blog */
+					$alt_attribute = sprintf( __( 'Site icon for %s', 'buddypress' ), bp_get_blog_name() );
+				}
+
 				$avatar = sprintf( '<img src="%1$s" class="%2$s" width="%3$s" height="%3$s" alt="%4$s" />',
 					esc_url( $site_icon ),
 					esc_attr( "{$r['class']} avatar-{$size}" ),
@@ -433,10 +435,32 @@ function bp_blog_avatar( $args = '' ) {
 			}
 		}
 
-		// Fallback to Default blog avatar.
+		// Fallback to user ID avatar.
 		if ( '' === $avatar ) {
-			$avatar = bp_core_fetch_avatar( $r );
+			$avatar = bp_core_fetch_avatar( array(
+				'item_id' => $admin_user_id,
+				// 'avatar_dir' => 'blog-avatars',
+				// 'object'     => 'blog',
+				'type'    => $r['type'],
+				'alt'     => $r['alt'],
+				'css_id'  => $r['id'],
+				'class'   => $r['class'],
+				'width'   => $r['width'],
+				'height'  => $r['height'],
+				'no_grav' => $r['no_grav'],
+				'html'    => $r['html'],
+			) );
 		}
+
+		/**
+		 * In future BuddyPress versions you will be able to set the avatar for a blog.
+		 * Right now you can use a filter with the ID of the blog to change it if you wish.
+		 * By default it will return the avatar for the primary blog admin.
+		 *
+		 * This filter is deprecated as of BuddyPress 1.5 and may be removed in a future version.
+		 * Use the 'bp_get_blog_avatar' filter instead.
+		 */
+		$avatar = apply_filters( 'bp_get_blog_avatar_' . $blog_id, $avatar );
 
 		/**
 		 * Filters a blog's avatar.
@@ -638,7 +662,7 @@ function bp_blog_last_active( $args = array() ) {
 		// Backwards compatibility for anyone forcing a 'true' active_format.
 		if ( true === $r['active_format'] ) {
 			/* translators: %s: human time diff of the last time the site was active. */
-			$r['active_format'] = _x( 'Active %s', 'last time the site was active', 'buddypress' );
+			$r['active_format'] = _x( 'active %s', 'last time the site was active', 'buddypress' );
 		}
 
 		// Blog has been posted to at least once.

@@ -70,13 +70,13 @@ function bp_groups_admin_types_menu() {
 		$group_type_admin_url = add_query_arg( 'taxonomy', 'bp_group_type', get_admin_url( bp_get_root_blog_id(), 'edit-tags.php' ) );
 		add_submenu_page(
 			'bp-groups',
-			__( 'Group Types', 'buddypress' ),
-			__( 'Group Types', 'buddypress' ),
+			__( 'Group types', 'buddypress' ),
+			__( 'Group types', 'buddypress' ),
 			'bp_moderate',
 			esc_url( $group_type_admin_url )
 		);
 	} elseif ( ! is_network_admin() ) {
-		if ( bp_is_network_activated() ) {
+		if ( is_multisite() && bp_is_root_blog( get_current_network_id() ) ) {
 			// Adds a 'bp-groups' menu to the root blog menu.
 			$redirect_hook = add_menu_page(
 				_x( 'Groups', 'Admin Groups page title', 'buddypress' ),
@@ -93,8 +93,8 @@ function bp_groups_admin_types_menu() {
 		// Add the submenu to manage Group Types.
 		add_submenu_page(
 			'bp-groups',
-			__( 'Group Types', 'buddypress' ),
-			__( 'Group Types', 'buddypress' ),
+			__( 'Group types', 'buddypress' ),
+			__( 'Group types', 'buddypress' ),
 			'bp_moderate',
 			basename( add_query_arg( 'taxonomy', 'bp_group_type', bp_get_admin_url( 'edit-tags.php' ) ) )
 		);
@@ -1382,21 +1382,24 @@ function bp_groups_admin_process_group_type_bulk_changes( $doaction ) {
 			$group_id = (int) $group_id;
 
 			// Get the old group type to check against.
-			$current_types = bp_groups_get_group_type( $group_id, false );
+			$group_type = bp_groups_get_group_type( $group_id );
 
-			if ( $current_types && 'remove_group_type' === $new_type ) {
-				$group_types = array();
-			} elseif ( ! $current_types || 1 !== count( $current_types ) || $new_type !== $current_types[0] ) {
-				$group_types = array( $new_type );
-			}
-
-			// Set the new group type.
-			if ( isset( $group_types ) ) {
-				$set = bp_groups_set_group_type( $group_id, $group_types );
-				if ( false === $set || is_wp_error( $set ) ) {
-					$error = true;
+			if ( 'remove_group_type' === $new_type ) {
+				// Remove the current group type, if there's one to remove.
+				if ( $group_type ) {
+					$removed = bp_groups_remove_group_type( $group_id, $group_type );
+					if ( false === $removed || is_wp_error( $removed ) ) {
+						$error = true;
+					}
 				}
-				unset( $group_types );
+			} else {
+				// Set the new group type.
+				if ( $new_type !== $group_type ) {
+					$set = bp_groups_set_group_type( $group_id, $new_type );
+					if ( false === $set || is_wp_error( $set ) ) {
+						$error = true;
+					}
+				}
 			}
 		}
 	}

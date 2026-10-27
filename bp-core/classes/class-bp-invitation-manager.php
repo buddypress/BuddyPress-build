@@ -50,7 +50,16 @@ abstract class BP_Invitation_Manager {
 	 * @return string
 	 */
 	public static function get_table_name() {
-		return buddypress()->members->table_name_invitations;
+		/**
+		 * Filter the invitations table name.
+		 *
+		 * @since 7.0.0
+		 *
+		 * @var string $table_name Name of the invitations table.
+		 */
+		$table_name = apply_filters( 'bp_invitations_table_name', 'bp_invitations' );
+
+		return buddypress()->table_prefix . $table_name;
 	}
 
 	/** Create ********************************************************************/
@@ -611,7 +620,7 @@ abstract class BP_Invitation_Manager {
 	 * @param int $id The ID of the invitation to mark as sent.
 	 * @return bool True on success, false on failure.
 	 */
-	abstract public function run_acceptance_action( $type, $r  );
+	abstract public function run_acceptance_action( $type = 'invite', $r  );
 
 	/**
 	 * Mark invitation as accepted by invitation ID.

@@ -83,9 +83,7 @@ class BP_REST_Attachments_Blog_Avatar_Endpoint extends WP_REST_Controller {
 	 * @return WP_REST_Response|WP_Error
 	 */
 	public function get_item( $request ) {
-		$no_user_grav = (bool) $request->get_param( 'no_user_gravatar' );
-
-		if ( empty( $this->blog->admin_user_id ) && ! $no_user_grav ) {
+		if ( empty( $this->blog->admin_user_id ) ) {
 			return new WP_Error(
 				'bp_rest_blog_avatar_get_item_user_failed',
 				__( 'There was a problem confirming the blog\'s user admin is valid.', 'buddypress' ),
@@ -95,29 +93,20 @@ class BP_REST_Attachments_Blog_Avatar_Endpoint extends WP_REST_Controller {
 			);
 		}
 
-		// Set the requested args.
-		$requested_args = array(
-			'blog_id' => $request['id'],
-			'no_grav' => $no_user_grav,
-			'html'    => (bool) $request['html'],
-		);
-
-		if ( $request['alt'] ) {
-			$requested_args['alt'] = $request['alt'];
-		}
-
-		if ( ! $no_user_grav ) {
-			$requested_args['admin_user_id'] = (int) $this->blog->admin_user_id;
-
-			if ( ! isset( $requested_args['alt'] ) ) {
-				$requested_args['alt'] = '';
-			}
-		}
+		$admin_user_admin = (int) $this->blog->admin_user_id;
 
 		$args = array();
 		foreach ( array( 'full', 'thumb' ) as $type ) {
-			$requested_args['type'] = $type;
-			$args[ $type ]          = bp_get_blog_avatar( $requested_args );
+			$args[ $type ] = bp_get_blog_avatar(
+				array(
+					'type'          => $type,
+					'blog_id'       => $request['id'],
+					'admin_user_id' => $admin_user_admin,
+					'html'          => (bool) $request['html'],
+					'alt'           => $request['alt'],
+					'no_grav'       => (bool) $request['no_user_gravatar'],
+				)
+			);
 		}
 
 		// Get the avatar object.

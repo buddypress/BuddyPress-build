@@ -1,6 +1,6 @@
 // BP Generic elements, Typography and Images.
 // @since 3.0.0
-// @version 7.0.0
+// @version 5.0.0
 
 // ========= Generic Sitewide elements ========
 body {
@@ -59,10 +59,7 @@ body.buddypress {
 		.entry-header,
 		.site-content .entry-header,
 		.entry-content {
-
-			&:not(.alignwide):not(.alignfull) {
-				max-width: none;
-			}
+			max-width: none;
 		}
 
 		.entry-header {
@@ -169,7 +166,7 @@ body.buddypress {
 			margin-bottom: 2em;
 			padding: 0;
 
-			&:not(.alignwide):not(.alignfull) .entry-title {
+			.entry-title {
 
 				@include responsive-font(34);
 				font-weight: inherit;

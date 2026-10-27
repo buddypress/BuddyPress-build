@@ -67,11 +67,7 @@ class BP_Groups_Invitation_Manager extends BP_Invitation_Manager {
 	 * @param array  $r    Parameters that describe the invitation being accepted.
 	 * @return bool True on success, false on failure.
 	 */
-	public function run_acceptance_action( $type, $r ) {
-		if ( ! $type || ! in_array( $type, array( 'request', 'invite' ), true ) ) {
-			return false;
-		}
-
+	public function run_acceptance_action( $type = 'invite', $r  ) {
 		// If the user is already a member (because BP at one point allowed two invitations to
 		// slip through), return early.
 		if ( groups_is_user_member( $r['user_id'], $r['item_id'] ) ) {
