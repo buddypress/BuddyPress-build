@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2022-01-20T18:06:18+00:00\n"
+"POT-Creation-Date: 2022-01-07T00:15:34+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.5.0\n"
 "X-Domain: buddypress\n"
@@ -115,7 +115,7 @@ msgid "Activity feed of %s's favorites."
 msgstr ""
 
 #: bp-activity/actions/post.php:60
-#: bp-activity/bp-activity-functions.php:2117
+#: bp-activity/bp-activity-functions.php:2084
 #: bp-activity/classes/class-bp-activity-activity.php:294
 #: bp-templates/bp-legacy/buddypress-functions.php:973
 #: bp-templates/bp-nouveau/includes/activity/ajax.php:512
@@ -625,104 +625,104 @@ msgctxt "Post Type generic comments activity front filter"
 msgid "Item comments"
 msgstr ""
 
-#: bp-activity/bp-activity-functions.php:938
+#: bp-activity/bp-activity-functions.php:905
 #: bp-friends/bp-friends-activity.php:110
 #: bp-friends/bp-friends-activity.php:119
 #: bp-friends/classes/class-bp-friends-component.php:305
 msgid "Friendships"
 msgstr ""
 
-#: bp-activity/bp-activity-functions.php:1572
+#: bp-activity/bp-activity-functions.php:1539
 msgid "Posted a status update"
 msgstr ""
 
-#: bp-activity/bp-activity-functions.php:1574
+#: bp-activity/bp-activity-functions.php:1541
 msgid "Updates"
 msgstr ""
 
-#: bp-activity/bp-activity-functions.php:1581
+#: bp-activity/bp-activity-functions.php:1548
 msgid "Replied to a status update"
 msgstr ""
 
-#: bp-activity/bp-activity-functions.php:1583
+#: bp-activity/bp-activity-functions.php:1550
 msgid "Activity Comments"
 msgstr ""
 
 #. translators: %s: the activity author user link
-#: bp-activity/bp-activity-functions.php:1653
+#: bp-activity/bp-activity-functions.php:1620
 msgid "%s posted an update"
 msgstr ""
 
 #. translators: %s: the activity author user link
-#: bp-activity/bp-activity-functions.php:1680
+#: bp-activity/bp-activity-functions.php:1647
 msgid "%s posted a new activity comment"
 msgstr ""
 
-#: bp-activity/bp-activity-functions.php:1725
-#: bp-activity/bp-activity-functions.php:1779
+#: bp-activity/bp-activity-functions.php:1692
+#: bp-activity/bp-activity-functions.php:1746
 msgctxt "Default text for the post type name"
 msgid "item"
 msgstr ""
 
 #. translators: 1: the activity author user link. 2: the post link. 3: the blog link.
-#: bp-activity/bp-activity-functions.php:1734
+#: bp-activity/bp-activity-functions.php:1701
 msgctxt "Activity Custom Post Type post action"
 msgid "%1$s wrote a new %2$s, on the site %3$s"
 msgstr ""
 
 #. translators: 1: the activity author user link. 2: the post link.
-#: bp-activity/bp-activity-functions.php:1741
+#: bp-activity/bp-activity-functions.php:1708
 msgctxt "Activity Custom Post Type post action"
 msgid "%1$s wrote a new %2$s"
 msgstr ""
 
 #. translators: 1: the activity author user link. 2: the post link. 3: the blog link.
-#: bp-activity/bp-activity-functions.php:1788
+#: bp-activity/bp-activity-functions.php:1755
 msgctxt "Activity Custom Post Type comment action"
 msgid "%1$s commented on the %2$s, on the site %3$s"
 msgstr ""
 
 #. translators: 1: the activity author user link. 2: the post link.
-#: bp-activity/bp-activity-functions.php:1795
+#: bp-activity/bp-activity-functions.php:1762
 msgctxt "Activity Custom Post Type post comment action"
 msgid "%1$s commented on the %2$s"
 msgstr ""
 
-#: bp-activity/bp-activity-functions.php:2125
+#: bp-activity/bp-activity-functions.php:2092
 msgid "User account has not yet been activated."
 msgstr ""
 
-#: bp-activity/bp-activity-functions.php:2768
+#: bp-activity/bp-activity-functions.php:2735
 #: bp-templates/bp-legacy/buddypress-functions.php:1062
 #: bp-templates/bp-nouveau/includes/activity/ajax.php:356
 msgid "There was an error posting your reply. Please try again."
 msgstr ""
 
-#: bp-activity/bp-activity-functions.php:2796
+#: bp-activity/bp-activity-functions.php:2763
 msgid "The item you were replying to no longer exists."
 msgstr ""
 
-#: bp-activity/bp-activity-functions.php:3404
+#: bp-activity/bp-activity-functions.php:3371
 msgid "Thumbnail"
 msgstr ""
 
-#: bp-activity/bp-activity-functions.php:4375
+#: bp-activity/bp-activity-functions.php:4342
 msgid "Activity Date"
 msgstr ""
 
-#: bp-activity/bp-activity-functions.php:4379
+#: bp-activity/bp-activity-functions.php:4346
 msgid "Activity Description"
 msgstr ""
 
-#: bp-activity/bp-activity-functions.php:4383
+#: bp-activity/bp-activity-functions.php:4350
 msgid "Activity URL"
 msgstr ""
 
-#: bp-activity/bp-activity-functions.php:4390
+#: bp-activity/bp-activity-functions.php:4357
 msgid "Activity Content"
 msgstr ""
 
-#: bp-activity/bp-activity-functions.php:4411
+#: bp-activity/bp-activity-functions.php:4378
 #: bp-activity/bp-activity-notifications.php:401
 #: bp-activity/classes/class-bp-activity-oembed-extension.php:138
 #: bp-activity/classes/class-bp-activity-theme-compat.php:161
@@ -914,17 +914,17 @@ msgstr ""
 msgid "Profile picture of the author of the site %s"
 msgstr ""
 
-#: bp-activity/bp-activity-template.php:1773
+#: bp-activity/bp-activity-template.php:1756
 msgid "View Discussion"
 msgstr ""
 
 #. translators: 1: the name of the function. 2: the name of the file.
-#: bp-activity/bp-activity-template.php:2456
+#: bp-activity/bp-activity-template.php:2439
 #: bp-groups/classes/class-bp-groups-group.php:210
 msgid "%1$s no longer accepts arguments. See the inline documentation at %2$s for more details."
 msgstr ""
 
-#: bp-activity/bp-activity-template.php:2932
+#: bp-activity/bp-activity-template.php:2915
 #: bp-core/bp-core-attachments.php:812
 #: bp-core/classes/class-bp-optouts-list-table.php:288
 #: bp-groups/classes/class-bp-groups-component.php:801
@@ -950,7 +950,7 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
-#: bp-activity/bp-activity-template.php:3044
+#: bp-activity/bp-activity-template.php:3027
 #: bp-core/admin/bp-core-admin-functions.php:1331
 #: bp-core/admin/bp-core-admin-slugs.php:146
 #: bp-groups/classes/class-bp-groups-list-table.php:611
@@ -960,19 +960,19 @@ msgstr ""
 msgid "View"
 msgstr ""
 
-#: bp-activity/bp-activity-template.php:3156
+#: bp-activity/bp-activity-template.php:3139
 msgid "Clear Filter"
 msgstr ""
 
-#: bp-activity/bp-activity-template.php:3466
+#: bp-activity/bp-activity-template.php:3449
 msgid "a user"
 msgstr ""
 
-#: bp-activity/bp-activity-template.php:3525
+#: bp-activity/bp-activity-template.php:3508
 msgid "Public Message"
 msgstr ""
 
-#: bp-activity/bp-activity-template.php:4124
+#: bp-activity/bp-activity-template.php:4107
 msgid "Site Wide Activity RSS Feed"
 msgstr ""
 
@@ -2919,7 +2919,7 @@ msgid "Upload stopped."
 msgstr ""
 
 #: bp-core/bp-core-attachments.php:689
-#: bp-core/classes/class-bp-admin.php:1543
+#: bp-core/classes/class-bp-admin.php:1542
 msgid "Dismiss"
 msgstr ""
 
@@ -2944,61 +2944,61 @@ msgstr ""
 msgid "Upload"
 msgstr ""
 
-#: bp-core/bp-core-attachments.php:833
+#: bp-core/bp-core-attachments.php:832
 #: bp-templates/bp-legacy/buddypress/assets/_attachments/avatars/recycle.php:27
 #: bp-templates/bp-nouveau/buddypress/assets/_attachments/avatars/recycle.php:27
 msgid "Recycle"
 msgstr ""
 
-#: bp-core/bp-core-attachments.php:844
+#: bp-core/bp-core-attachments.php:843
 msgid "Take Photo"
 msgstr ""
 
-#: bp-core/bp-core-attachments.php:850
+#: bp-core/bp-core-attachments.php:849
 msgid "Please allow us to access to your camera."
 msgstr ""
 
-#: bp-core/bp-core-attachments.php:851
+#: bp-core/bp-core-attachments.php:850
 msgid "Please wait as we access your camera."
 msgstr ""
 
-#: bp-core/bp-core-attachments.php:852
+#: bp-core/bp-core-attachments.php:851
 msgid "Camera loaded. Click on the \"Capture\" button to take your photo."
 msgstr ""
 
-#: bp-core/bp-core-attachments.php:853
+#: bp-core/bp-core-attachments.php:852
 msgid "It looks like you do not have a webcam or we were unable to get permission to use your webcam. Please upload a photo instead."
 msgstr ""
 
-#: bp-core/bp-core-attachments.php:854
+#: bp-core/bp-core-attachments.php:853
 msgid "Your browser is not supported. Please upload a photo instead."
 msgstr ""
 
-#: bp-core/bp-core-attachments.php:855
+#: bp-core/bp-core-attachments.php:854
 msgid "Video error. Please upload a photo instead."
 msgstr ""
 
-#: bp-core/bp-core-attachments.php:856
+#: bp-core/bp-core-attachments.php:855
 msgid "Your profile photo is ready. Click on the \"Save\" button to use this photo."
 msgstr ""
 
-#: bp-core/bp-core-attachments.php:857
+#: bp-core/bp-core-attachments.php:856
 msgid "No photo was captured. Click on the \"Capture\" button to take your photo."
 msgstr ""
 
 #. translators: 1: the advised width size in pixels. 2: the advised height size in pixels.
-#: bp-core/bp-core-attachments.php:905
+#: bp-core/bp-core-attachments.php:904
 msgid "For better results, make sure to upload an image that is larger than %1$spx wide, and %2$spx tall."
 msgstr ""
 
 #. translators: %s: the upload error message
-#: bp-core/bp-core-attachments.php:1438
+#: bp-core/bp-core-attachments.php:1437
 #: bp-core/bp-core-avatars.php:971
 #: bp-core/classes/trait-attachments.php:51
 msgid "Upload Failed! Error was: %s"
 msgstr ""
 
-#: bp-core/bp-core-attachments.php:1444
+#: bp-core/bp-core-attachments.php:1443
 #: bp-core/classes/trait-attachments.php:110
 msgid "There was a problem uploading the cover image."
 msgstr ""
@@ -3028,15 +3028,15 @@ msgstr ""
 msgid "You have selected an image that is smaller than recommended. For best results, upload a picture larger than %1$d x %2$d pixels."
 msgstr ""
 
-#: bp-core/bp-core-avatars.php:2352
+#: bp-core/bp-core-avatars.php:2332
 msgid "The profile photo you want to recycle cannot be found."
 msgstr ""
 
-#: bp-core/bp-core-avatars.php:2402
+#: bp-core/bp-core-avatars.php:2382
 msgid "An unexpected error occured while recycling the previous profile photo."
 msgstr ""
 
-#: bp-core/bp-core-avatars.php:2542
+#: bp-core/bp-core-avatars.php:2522
 msgid "The profile photo you want to delete cannot be found."
 msgstr ""
 
@@ -4752,7 +4752,7 @@ msgid "The BP Search Block is a first example of this second category of add-ons
 msgstr ""
 
 #: bp-core/classes/class-bp-admin.php:845
-#: bp-core/classes/class-bp-admin.php:1497
+#: bp-core/classes/class-bp-admin.php:1496
 msgid "BuddyPress Add-ons"
 msgstr ""
 
@@ -4871,36 +4871,36 @@ msgstr ""
 msgid "All Contributors to BuddyPress %s"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:1129
+#: bp-core/classes/class-bp-admin.php:1128
 msgid "With our thanks to these Open Source projects"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:1143
+#: bp-core/classes/class-bp-admin.php:1142
 msgid "Contributor Emeriti"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:1148
+#: bp-core/classes/class-bp-admin.php:1147
 msgid "Project Founder"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:1188
+#: bp-core/classes/class-bp-admin.php:1187
 msgctxt "Email post type"
 msgid "Situations"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:1543
+#: bp-core/classes/class-bp-admin.php:1542
 msgid "Dismiss the welcome panel"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:1545
+#: bp-core/classes/class-bp-admin.php:1544
 msgid "Hello BuddyPress Add-ons!"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:1547
+#: bp-core/classes/class-bp-admin.php:1546
 msgid "Add-ons are features as Plugins or Blocks maintained by the BuddyPress development team & hosted on the WordPress.org plugins directory."
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:1548
+#: bp-core/classes/class-bp-admin.php:1547
 msgid "Thanks to this new tab inside your Dashboard screen to add plugins, you’ll be able to find them faster and eventually contribute to beta features early to give the BuddyPress development team your feedbacks."
 msgstr ""
 
@@ -4923,59 +4923,59 @@ msgctxt "avatar types separator"
 msgid ","
 msgstr ""
 
-#: bp-core/classes/class-bp-attachment-avatar.php:430
+#: bp-core/classes/class-bp-attachment-avatar.php:417
 #: bp-members/screens/change-avatar.php:68
 msgid "There was a problem cropping your profile photo."
 msgstr ""
 
-#: bp-core/classes/class-bp-attachment-avatar.php:431
+#: bp-core/classes/class-bp-attachment-avatar.php:418
 #: bp-members/screens/change-avatar.php:87
 msgid "Your new profile photo was uploaded successfully."
 msgstr ""
 
-#: bp-core/classes/class-bp-attachment-avatar.php:432
+#: bp-core/classes/class-bp-attachment-avatar.php:419
 #: bp-members/actions/delete-avatar.php:34
 msgid "There was a problem deleting your profile photo. Please try again."
 msgstr ""
 
-#: bp-core/classes/class-bp-attachment-avatar.php:433
+#: bp-core/classes/class-bp-attachment-avatar.php:420
 #: bp-members/actions/delete-avatar.php:32
 msgid "Your profile photo was deleted successfully!"
 msgstr ""
 
-#: bp-core/classes/class-bp-attachment-avatar.php:434
+#: bp-core/classes/class-bp-attachment-avatar.php:421
 msgid "Your profile photo was recycled successfully!"
 msgstr ""
 
-#: bp-core/classes/class-bp-attachment-avatar.php:435
+#: bp-core/classes/class-bp-attachment-avatar.php:422
 msgid "The profile photo was permanently deleted successfully!"
 msgstr ""
 
-#: bp-core/classes/class-bp-attachment-avatar.php:450
+#: bp-core/classes/class-bp-attachment-avatar.php:437
 #: bp-groups/screens/single/admin/group-avatar.php:80
 msgid "There was a problem cropping the group profile photo."
 msgstr ""
 
-#: bp-core/classes/class-bp-attachment-avatar.php:451
+#: bp-core/classes/class-bp-attachment-avatar.php:438
 #: bp-groups/actions/create.php:291
 msgid "The group profile photo was uploaded successfully."
 msgstr ""
 
-#: bp-core/classes/class-bp-attachment-avatar.php:452
+#: bp-core/classes/class-bp-attachment-avatar.php:439
 #: bp-groups/screens/single/admin/group-avatar.php:35
 msgid "There was a problem deleting the group profile photo. Please try again."
 msgstr ""
 
-#: bp-core/classes/class-bp-attachment-avatar.php:453
+#: bp-core/classes/class-bp-attachment-avatar.php:440
 #: bp-groups/screens/single/admin/group-avatar.php:33
 msgid "The group profile photo was deleted successfully!"
 msgstr ""
 
-#: bp-core/classes/class-bp-attachment-avatar.php:454
+#: bp-core/classes/class-bp-attachment-avatar.php:441
 msgid "The group profile photo was recycled successfully!"
 msgstr ""
 
-#: bp-core/classes/class-bp-attachment-avatar.php:455
+#: bp-core/classes/class-bp-attachment-avatar.php:442
 msgid "The group profile photo was permanently deleted successfully!"
 msgstr ""
 
@@ -10850,7 +10850,7 @@ msgid "Dat of the latest message of the Thread, in the site's timezone."
 msgstr ""
 
 #: bp-messages/classes/class-bp-rest-messages-endpoint.php:1285
-msgid "Date of the latest message of the Thread, as GMT."
+msgid "Dat of the latest message of the Thread, as GMT."
 msgstr ""
 
 #: bp-messages/classes/class-bp-rest-messages-endpoint.php:1292
@@ -11478,8 +11478,8 @@ msgstr ""
 #: bp-templates/bp-legacy/buddypress-functions.php:1303
 #: bp-templates/bp-legacy/buddypress/activity/entry.php:86
 #: bp-templates/bp-nouveau/includes/activity/ajax.php:111
-#: bp-templates/bp-nouveau/includes/activity/template-tags.php:422
-#: bp-templates/bp-nouveau/includes/activity/template-tags.php:423
+#: bp-templates/bp-nouveau/includes/activity/template-tags.php:410
+#: bp-templates/bp-nouveau/includes/activity/template-tags.php:411
 msgid "Remove Favorite"
 msgstr ""
 
@@ -11594,8 +11594,8 @@ msgid "<a href=\"%1$s\">%2$s</a> replied <a href=\"%3$s\" class=\"activity-time-
 msgstr ""
 
 #: bp-templates/bp-legacy/buddypress/activity/entry.php:61
-#: bp-templates/bp-nouveau/includes/activity/template-tags.php:343
-#: bp-templates/bp-nouveau/includes/activity/template-tags.php:347
+#: bp-templates/bp-nouveau/includes/activity/template-tags.php:331
+#: bp-templates/bp-nouveau/includes/activity/template-tags.php:335
 msgid "View Conversation"
 msgstr ""
 
@@ -12883,7 +12883,7 @@ msgctxt "heading"
 msgid "Comment"
 msgstr ""
 
-#: bp-templates/bp-nouveau/buddypress/activity/post-form.php:18
+#: bp-templates/bp-nouveau/buddypress/activity/post-form.php:17
 msgctxt "heading"
 msgid "Post Update"
 msgstr ""
@@ -13490,8 +13490,8 @@ msgid "Select who may see your profile details."
 msgstr ""
 
 #: bp-templates/bp-nouveau/includes/activity/ajax.php:151
-#: bp-templates/bp-nouveau/includes/activity/template-tags.php:410
-#: bp-templates/bp-nouveau/includes/activity/template-tags.php:411
+#: bp-templates/bp-nouveau/includes/activity/template-tags.php:398
+#: bp-templates/bp-nouveau/includes/activity/template-tags.php:399
 msgid "Mark as Favorite"
 msgstr ""
 
@@ -13563,46 +13563,46 @@ msgstr ""
 msgid "Use tab styling for Activity directory navigation."
 msgstr ""
 
-#: bp-templates/bp-nouveau/includes/activity/template-tags.php:375
+#: bp-templates/bp-nouveau/includes/activity/template-tags.php:363
 msgctxt "button"
 msgid "Comment"
 msgstr ""
 
-#: bp-templates/bp-nouveau/includes/activity/template-tags.php:380
+#: bp-templates/bp-nouveau/includes/activity/template-tags.php:368
 msgctxt "link"
 msgid "Comment"
 msgstr ""
 
-#: bp-templates/bp-nouveau/includes/activity/template-tags.php:493
-#: bp-templates/bp-nouveau/includes/activity/template-tags.php:494
+#: bp-templates/bp-nouveau/includes/activity/template-tags.php:481
+#: bp-templates/bp-nouveau/includes/activity/template-tags.php:482
 #: bp-templates/bp-nouveau/includes/notifications/template-tags.php:114
 msgctxt "button"
 msgid "Delete"
 msgstr ""
 
-#: bp-templates/bp-nouveau/includes/activity/template-tags.php:539
-#: bp-templates/bp-nouveau/includes/activity/template-tags.php:544
+#: bp-templates/bp-nouveau/includes/activity/template-tags.php:527
+#: bp-templates/bp-nouveau/includes/activity/template-tags.php:532
 msgctxt "button"
 msgid "Spam"
 msgstr ""
 
 #. translators: 1: user profile link, 2: user name, 3: activity permalink, 4: activity recorded date, 5: activity timestamp, 6: activity human time since
-#: bp-templates/bp-nouveau/includes/activity/template-tags.php:718
+#: bp-templates/bp-nouveau/includes/activity/template-tags.php:706
 msgid "<a href=\"%1$s\">%2$s</a> replied <a href=\"%3$s\" class=\"activity-time-since\"><time class=\"time-since\" datetime=\"%4$s\" data-bp-timestamp=\"%5$d\">%6$s</time></a>"
 msgstr ""
 
-#: bp-templates/bp-nouveau/includes/activity/template-tags.php:827
+#: bp-templates/bp-nouveau/includes/activity/template-tags.php:815
 msgctxt "link"
 msgid "Reply"
 msgstr ""
 
-#: bp-templates/bp-nouveau/includes/activity/template-tags.php:841
+#: bp-templates/bp-nouveau/includes/activity/template-tags.php:829
 #: bp-templates/bp-nouveau/includes/notifications/functions.php:248
 msgctxt "link"
 msgid "Delete"
 msgstr ""
 
-#: bp-templates/bp-nouveau/includes/activity/template-tags.php:868
+#: bp-templates/bp-nouveau/includes/activity/template-tags.php:856
 msgctxt "link"
 msgid "Spam"
 msgstr ""

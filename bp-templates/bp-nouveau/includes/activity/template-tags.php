@@ -64,15 +64,6 @@ function bp_nouveau_after_activity_directory_content() {
 }
 
 /**
- * Prints the JS Templates used to render the Activity Post Form.
- *
- * @since 10.0.0
- */
-function bp_nouveau_activity_print_post_form_templates() {
-	bp_get_template_part( 'common/js-templates/activity/form' );
-}
-
-/**
  * Enqueue needed scripts for the Activity Post Form
  *
  * @since 3.0.0
@@ -81,13 +72,6 @@ function bp_nouveau_activity_print_post_form_templates() {
 function bp_nouveau_before_activity_post_form() {
 	if ( bp_nouveau_current_user_can( 'publish_activity' ) ) {
 		wp_enqueue_script( 'bp-nouveau-activity-post-form' );
-
-		/**
-		 * Get the templates to manage Group Members using the BP REST API.
-		 *
-		 * @since 10.0.0 Hook to the `wp_footer` action to print the JS templates.
-		 */
-		add_action( 'wp_footer', 'bp_nouveau_activity_print_post_form_templates' );
 	}
 }
 
@@ -97,6 +81,10 @@ function bp_nouveau_before_activity_post_form() {
  * @since 3.0.0
  */
 function bp_nouveau_after_activity_post_form() {
+	if ( bp_nouveau_current_user_can( 'publish_activity' ) ) {
+		bp_get_template_part( 'common/js-templates/activity/form' );
+	}
+
 	/**
 	 * Fires after the activity post form.
 	 *

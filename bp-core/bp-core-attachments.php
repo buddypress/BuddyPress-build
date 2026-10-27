@@ -815,8 +815,7 @@ function bp_attachments_enqueue_scripts( $class = '' ) {
 			),
 		);
 
-		// Add the recycle view if avatar history is enabled.
-		if ( 'user' === $object && ! bp_avatar_history_is_disabled() ) {
+		if ( 'user' === $object ) {
 			// Look inside history to see if the user previously uploaded avatars.
 			$avatars_history = bp_avatar_get_avatars_history( $item_id, $object );
 
