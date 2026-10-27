@@ -3,6 +3,8 @@
 This is the BuddyPress companion stylesheet for
 the WordPress twentyseventeen theme.
 
+@version 3.2.0
+
 This sheet supports the primary BuddyPress styles in buddypress.css
 
 If you are running as a child theme of twentyseventeen this stylesheet will be
@@ -1808,12 +1810,6 @@ body.colors-light #buddypress div#invite-list {
 	text-align: right;
 }
 
-.bp-user #buddypress #message-threads.sitewide-notices td:last-child a:last-child {
-	line-height: 0;
-	margin-left: 0.7em;
-	text-indent: -999em;
-}
-
 .bp-user #buddypress #message-threads.sitewide-notices td:last-child a:last-child:after {
 	content: attr(title);
 	display: block;
@@ -1942,6 +1938,7 @@ body.colors-light #buddypress div#invite-list {
 #buddypress div.message-search form,
 #buddypress li.groups-members-search form {
 	border: 1px solid rgba(190, 190, 190, 0.6);
+	position: relative;
 	-webkit-border-radius: 2px;
 	-moz-border-radius: 2px;
 	-ms-border-radius: 2px;

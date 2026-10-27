@@ -315,10 +315,6 @@ function messages_delete_thread( $thread_ids, $user_id = 0 ) {
  * @return int|null Message ID if the user has access, otherwise null.
  */
 function messages_check_thread_access( $thread_id, $user_id = 0 ) {
-	if ( empty( $user_id ) ) {
-		$user_id = bp_loggedin_user_id();
-	}
-
 	return BP_Messages_Thread::check_access( $thread_id, $user_id );
 }
 
@@ -584,6 +580,12 @@ function messages_notification_new_message( $raw_args = array() ) {
 	}
 
 	$sender_name = bp_core_get_user_displayname( $sender_id );
+
+	if ( isset( $message ) ) {
+		$message = wpautop( $message );
+	} else {
+		$message = '';
+	}
 
 	// Send an email to each recipient.
 	foreach ( $recipients as $recipient ) {

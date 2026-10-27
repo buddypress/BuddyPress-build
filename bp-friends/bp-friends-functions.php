@@ -115,9 +115,6 @@ function friends_remove_friend( $initiator_userid, $friend_userid ) {
 	 */
 	do_action( 'friends_before_friendship_delete', $friendship_id, $initiator_userid, $friend_userid );
 
-	// Remove the activity stream items about the friendship id.
-	friends_delete_activity( array( 'item_id' => $friendship_id, 'type' => 'friendship_created', 'user_id' => 0 ) );
-
 	/**
 	 * Fires before the friendship connection is removed.
 	 *
@@ -788,7 +785,7 @@ function bp_friends_prime_mentions_results() {
 		return;
 	}
 
-	if ( friends_get_total_friend_count( get_current_user_id() ) > 150 ) {
+	if ( friends_get_total_friend_count( get_current_user_id() ) > 30 ) {
 		return;
 	}
 

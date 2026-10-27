@@ -1,4 +1,5 @@
 /* jshint undef: false, unused:false */
+/* @version 3.0.0 */
 // AJAX Functions
 var jq = jQuery;
 
@@ -10,19 +11,14 @@ var newest_activities = '';
 var activity_last_recorded  = 0;
 
 jq(document).ready( function() {
-	/**** Page Load Actions *******************************************************/
+	var activity_oldestpage = 1;
 
-	/* Hide Forums Post Form */
-	if ( '-1' === window.location.search.indexOf('new') && jq('div.forums').length ) {
-		jq('#new-topic-post').hide();
-	} else {
-		jq('#new-topic-post').show();
-	}
+	/**** Page Load Actions *******************************************************/
 
 	/* Activity filter and scope set */
 	bp_init_activity();
 
-	var objects  = [ 'members', 'groups', 'blogs', 'forums', 'group_members' ],
+	var objects  = [ 'members', 'groups', 'blogs', 'group_members' ],
 		$whats_new = jq('#whats-new');
 
 	/* Object filter and scope set. */
@@ -263,12 +259,6 @@ jq(document).ready( function() {
 			return false;
 		}
 
-		/* Reset the page */
-		jq.cookie( 'bp-activity-oldestpage', 1, {
-			path: '/',
-			secure: ( 'https:' === window.location.protocol )
-		} );
-
 		/* Activity Stream Tabs */
 		scope  = target.attr('id').substr( 9, target.attr('id').length );
 		filter = jq('#activity-filter-select select').val();
@@ -444,14 +434,7 @@ jq(document).ready( function() {
 
 			jq('#buddypress li.load-more').addClass('loading');
 
-			if ( null === jq.cookie('bp-activity-oldestpage') ) {
-				jq.cookie('bp-activity-oldestpage', 1, {
-					path: '/',
-					secure: ( 'https:' === window.location.protocol )
-				} );
-			}
-
-			oldest_page = ( jq.cookie('bp-activity-oldestpage') * 1 ) + 1;
+			oldest_page = activity_oldestpage + 1;
 			just_posted = [];
 
 			jq('.activity-list li.just-posted').each( function(){
@@ -475,10 +458,7 @@ jq(document).ready( function() {
 			function(response)
 			{
 				jq('#buddypress li.load-more').removeClass('loading');
-				jq.cookie( 'bp-activity-oldestpage', oldest_page, {
-					path: '/',
-					secure: ( 'https:' === window.location.protocol )
-				} );
+				activity_oldestpage = oldest_page;
 				jq('#buddypress ul.activity-list').append(response.contents);
 
 				target.parent().hide();
@@ -1046,41 +1026,6 @@ jq(document).ready( function() {
 
 	});
 
-	/**** New Forum Directory Post **************************************/
-
-	/* Hit the "New Topic" button on the forums directory page */
-	jq('a.show-hide-new').on( 'click', function() {
-		if ( !jq('#new-topic-post').length ) {
-			return false;
-		}
-
-		if ( jq('#new-topic-post').is(':visible') ) {
-			jq('#new-topic-post').slideUp(200);
-		} else {
-			jq('#new-topic-post').slideDown(200, function() {
-				jq('#topic_title').focus();
-			} );
-		}
-
-		return false;
-	});
-
-	/* Cancel the posting of a new forum topic */
-	jq('#submit_topic_cancel').on( 'click', function() {
-		if ( !jq('#new-topic-post').length ) {
-			return false;
-		}
-
-		jq('#new-topic-post').slideUp(200);
-		return false;
-	});
-
-	/* Clicking a forum tag */
-	jq('#forum-directory-tags a').on( 'click', function() {
-		bp_filter_request( 'forums', 'tags', jq.cookie('bp-forums-scope'), 'div.forums', jq(this).html().replace( /&nbsp;/g, '-' ), 1, jq.cookie('bp-forums-extras') );
-		return false;
-	});
-
 	/** Invite Friends Interface ****************************************/
 
 	/* Select a user from the list of friends and add them to the invite list */
@@ -1462,7 +1407,7 @@ jq(document).ready( function() {
 				offset  = jq('#message-recipients').offset(),
 				button  = jq('#send_reply_button');
 
-			jq(button).addClass('loading');
+			jq(button).addClass('loading').prop( 'disabled', true );
 
 			jq.post( ajaxurl, {
 				action: 'messages_send_reply',
@@ -1493,7 +1438,7 @@ jq(document).ready( function() {
 						jq('.new-message').removeClass('new-message');
 					});
 				}
-				jq(button).removeClass('loading');
+				jq(button).removeClass('loading').prop( 'disabled', false );
 			});
 
 			return false;
@@ -1780,12 +1725,6 @@ jq(document).ready( function() {
 
 /* Setup activity scope and filter based on the current cookie settings. */
 function bp_init_activity() {
-	/* Reset the page */
-	jq.cookie( 'bp-activity-oldestpage', 1, {
-		path: '/',
-		secure: ( 'https:' === window.location.protocol )
-	} );
-
 	if ( undefined !== jq.cookie('bp-activity-filter') && jq('#activity-filter-select').length ) {
 		jq('#activity-filter-select select option[value="' + jq.cookie('bp-activity-filter') + '"]').prop( 'selected', true );
 	}
@@ -1904,10 +1843,6 @@ function bp_activity_request(scope, filter) {
 			secure: ( 'https:' === window.location.protocol )
 		} );
 	}
-	jq.cookie( 'bp-activity-oldestpage', 1, {
-		path: '/',
-		secure: ( 'https:' === window.location.protocol )
-	} );
 
 	/* Remove selected and loading classes from tabs */
 	jq('.item-list-tabs li').each( function() {
