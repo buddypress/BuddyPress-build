@@ -3,7 +3,7 @@
  * Groups Ajax functions
  *
  * @since 3.0.0
- * @version 6.3.0
+ * @version 12.0.0
  */
 
 // Exit if accessed directly.
@@ -307,8 +307,6 @@ function bp_nouveau_ajax_get_users_to_invite() {
 		'nouveau_ajax_get_users_to_invite'
 	);
 
-	$request                   = array_intersect_key( $request, array( 'scope' => '', 'group_id' => '' ) );
-	$request['group_id']       = empty( $request['group_id'] ) ? 0 : (int) $request['group_id'];
 	$bp->groups->invites_scope = 'members';
 	$message = __( 'Select members to invite by clicking the + button. Once you\'ve made your selection, use the "Send Invites" navigation item to continue.', 'buddypress' );
 
@@ -379,8 +377,6 @@ function bp_nouveau_ajax_get_users_to_invite() {
  * @since 3.0.0
  */
 function bp_nouveau_ajax_send_group_invites() {
-	$bp = buddypress();
-
 	$response = array(
 		'feedback' => __( 'Invites could not be sent. Please try again.', 'buddypress' ),
 		'type'     => 'error',

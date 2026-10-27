@@ -3,7 +3,7 @@
  * Common functions only loaded on AJAX requests.
  *
  * @since 3.0.0
- * @version 10.0.0
+ * @version 12.0.0
  */
 
 // Exit if accessed directly.
@@ -17,15 +17,8 @@ defined( 'ABSPATH' ) || exit;
  * @return string Template loop for the specified object
  */
 function bp_nouveau_ajax_object_template_loader() {
-	$response = array(
-		'feedback' => sprintf(
-			'<div class="bp-feedback bp-messages error">%s</div>',
-			esc_html__( 'There was a problem displaying the content. Please try again.', 'buddypress' )
-		),
-	);
-
 	if ( ! bp_is_post_request() ) {
-		wp_send_json_error( $response );
+		wp_send_json_error();
 	}
 
 	$post_vars = bp_parse_args(
@@ -44,12 +37,12 @@ function bp_nouveau_ajax_object_template_loader() {
 
 	// Bail if object is not an active component to prevent arbitrary file inclusion.
 	if ( ! bp_is_active( $object ) ) {
-		wp_send_json_error( $response );
+		wp_send_json_error();
 	}
 
 	// Nonce check!
 	if ( ! $post_vars['nonce'] || ! wp_verify_nonce( $post_vars['nonce'], 'bp_nouveau_' . $object ) ) {
-		wp_send_json_error( $response );
+		wp_send_json_error();
 	}
 
 	$result = array();
@@ -63,16 +56,16 @@ function bp_nouveau_ajax_object_template_loader() {
 		// We need to calculate and return the feed URL for each scope.
 		switch ( $scope ) {
 			case 'friends':
-				$feed_url = bp_loggedin_user_domain() . bp_nouveau_get_component_slug( 'activity' ) . '/friends/feed/';
+				$feed_url = bp_loggedin_user_url( bp_members_get_path_chunks( array( bp_nouveau_get_component_slug( 'activity' ), 'friends', array( 'feed' ) ) ) );
 				break;
 			case 'groups':
-				$feed_url = bp_loggedin_user_domain() . bp_nouveau_get_component_slug( 'activity' ) . '/groups/feed/';
+				$feed_url = bp_loggedin_user_url( bp_members_get_path_chunks( array( bp_nouveau_get_component_slug( 'activity' ), 'groups', array( 'feed' ) ) ) );
 				break;
 			case 'favorites':
-				$feed_url = bp_loggedin_user_domain() . bp_nouveau_get_component_slug( 'activity' ) . '/favorites/feed/';
+				$feed_url = bp_loggedin_user_url( bp_members_get_path_chunks( array( bp_nouveau_get_component_slug( 'activity' ), 'favorites', array( 'feed' ) ) ) );
 				break;
 			case 'mentions':
-				$feed_url = bp_loggedin_user_domain() . bp_nouveau_get_component_slug( 'activity' ) . '/mentions/feed/';
+				$feed_url = bp_loggedin_user_url( bp_members_get_path_chunks( array( bp_nouveau_get_component_slug( 'activity' ), 'mentions', array( 'feed' ) ) ) );
 
 				// Get user new mentions
 				$new_mentions = bp_get_user_meta( bp_loggedin_user_id(), 'bp_new_mentions', true );
@@ -110,24 +103,6 @@ function bp_nouveau_ajax_object_template_loader() {
 	 */
 	if ( ! bp_current_action() ) {
 		bp_update_is_directory( true, bp_current_component() );
-	}
-
-	if ( 'activity' === $object && (int) bp_current_action() ) {
-		$activity_array = bp_activity_get_specific(
-			array(
-				'activity_ids'     => bp_current_action(),
-				'display_comments' => 'stream',
-			)
-		);
-
-		if ( ! empty( $activity_array['activities'][0] ) ) {
-			$activity = $activity_array['activities'][0];
-
-			// Ensure that the user is allowed to read the activity item.
-			if ( ! bp_activity_user_can_read( $activity ) ) {
-				wp_send_json_error( $response );
-			}
-		}
 	}
 
 	// Get the template path based on the 'template' variable via the AJAX request.

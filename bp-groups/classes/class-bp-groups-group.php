@@ -15,6 +15,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 1.6.0
  */
+#[AllowDynamicProperties]
 class BP_Groups_Group {
 
 	/**
@@ -754,13 +755,10 @@ class BP_Groups_Group {
 	 *
 	 * @since 2.9.0
 	 *
-	 * @param string      $slug       Slug to check.
-	 *
-	 * @return int|null|false Group ID if found; null if not; false if missing parameters.
+	 * @param  string         $slug Slug to check.
+	 * @return int|null|false       Group ID if found; null if not; false if missing parameters.
 	 */
 	public static function get_id_by_previous_slug( $slug ) {
-		global $wpdb;
-
 		if ( empty( $slug ) ) {
 			return false;
 		}
@@ -1024,7 +1022,6 @@ class BP_Groups_Group {
 	 * @since 2.8.0 Changed `$search_terms` parameter handling and added `$search_columns` parameter.
 	 * @since 2.9.0 Added `$slug` parameter.
 	 * @since 10.0.0 Added `$date_query` parameter.
-	 * @since 11.6.3 Backported from 14.5.3 Added `$status__not_in` parameter.
 	 *
 	 * @param array $args {
 	 *     Array of parameters. All items are optional.
@@ -1075,8 +1072,6 @@ class BP_Groups_Group {
 	 *     @type bool         $show_hidden        Whether to include hidden groups in results. Default: false.
  	 *     @type array|string $status             Optional. Array or comma-separated list of group statuses to limit
  	 *                                            results to. If specified, $show_hidden is ignored.
- 	 *     @type array|string $status__not_in     Optional. Array or comma-separated list of group statuses to exclude
-	 *                                            from results. Default: empty array.
 	 *                                            Default: empty array.
  	 *     @type string       $fields             Which fields to return. Specify 'ids' to fetch a list of IDs.
  	 *                                            Default: 'all' (return BP_Groups_Group objects).
@@ -1144,7 +1139,6 @@ class BP_Groups_Group {
 			'exclude'            => false,
 			'show_hidden'        => false,
 			'status'             => array(),
-			'status__not_in'     => array(),
 			'fields'             => 'all',
 		);
 
@@ -1177,16 +1171,7 @@ class BP_Groups_Group {
 			$r['status'] = array_map( 'sanitize_title', $r['status'] );
 			$status_in = "'" . implode( "','", $r['status'] ) . "'";
 			$where_conditions['status'] = "g.status IN ({$status_in})";
-		}
-
-		if ( ! empty( $r['status__not_in'] ) ) {
-			if ( ! is_array( $r['status__not_in'] ) ) {
-				$r['status__not_in'] = preg_split( '/[\s,]+/', $r['status__not_in'] );
-			}
-			$r['status__not_in']                = array_map( 'sanitize_title', $r['status__not_in'] );
-			$status_not_in                      = "'" . implode( "','", $r['status__not_in'] ) . "'";
-			$where_conditions['status__not_in'] = "g.status NOT IN ({$status_not_in})";
-		} elseif ( empty( $r['status'] ) && empty( $r['show_hidden'] ) ) {
+		} elseif ( empty( $r['show_hidden'] ) ) {
 			$where_conditions['hidden'] = "g.status != 'hidden'";
 		}
 
@@ -1760,8 +1745,7 @@ class BP_Groups_Group {
 	 * @since 1.6.0
 	 * @since 10.0.0 Added the `$skip_cache` parameter.
 	 *
-	 * @global BuddyPress $bp   The one true BuddyPress instance.
-	 * @global wpdb       $wpdb WordPress database object.
+	 * @global wpdb $wpdb WordPress database object.
 	 *
 	 * @param bool $skip_cache Optional. Skip getting count from cache.
 	 *                         Defaults to false.

@@ -189,16 +189,27 @@ class BP_REST_XProfile_Fields_Endpoint extends WP_REST_Controller {
 	 * @return true|WP_Error
 	 */
 	public function get_items_permissions_check( $request ) {
+		$retval = new WP_Error(
+			'bp_rest_authorization_required',
+			__( 'Sorry, you are not allowed to perform this action.', 'buddypress' ),
+			array(
+				'status' => rest_authorization_required_code(),
+			)
+		);
+
+		if ( bp_current_user_can( 'bp_view', array( 'bp_component' => 'xprofile' ) ) ) {
+			$retval = true;
+		}
 
 		/**
 		 * Filter the XProfile fields `get_items` permissions check.
 		 *
 		 * @since 5.0.0
 		 *
-		 * @param true|WP_Error   $retval  Returned value.
+		 * @param true|WP_Error   $retval  Whether the user has access to xprofile fields.
 		 * @param WP_REST_Request $request The request sent to the API.
 		 */
-		return apply_filters( 'bp_rest_xprofile_fields_get_items_permissions_check', true, $request );
+		return apply_filters( 'bp_rest_xprofile_fields_get_items_permissions_check', $retval, $request );
 	}
 
 	/**
@@ -267,16 +278,27 @@ class BP_REST_XProfile_Fields_Endpoint extends WP_REST_Controller {
 	 * @return true|WP_Error
 	 */
 	public function get_item_permissions_check( $request ) {
+		$retval = new WP_Error(
+			'bp_rest_authorization_required',
+			__( 'Sorry, you are not allowed to perform this action.', 'buddypress' ),
+			array(
+				'status' => rest_authorization_required_code(),
+			)
+		);
+
+		if ( bp_current_user_can( 'bp_view', array( 'bp_component' => 'xprofile' ) ) ) {
+			$retval = true;
+		}
 
 		/**
 		 * Filter the XProfile fields `get_item` permissions check.
 		 *
 		 * @since 5.0.0
 		 *
-		 * @param true|WP_Error   $retval  Returned value.
+		 * @param true|WP_Error   $retval  Whether the user has access to xprofile fields.
 		 * @param WP_REST_Request $request The request sent to the API.
 		 */
-		return apply_filters( 'bp_rest_xprofile_fields_get_item_permissions_check', true, $request );
+		return apply_filters( 'bp_rest_xprofile_fields_get_item_permissions_check', $retval, $request );
 	}
 
 	/**
@@ -729,7 +751,7 @@ class BP_REST_XProfile_Fields_Endpoint extends WP_REST_Controller {
 
 			$data['data']['value'] = array(
 				'raw'          => $field->data->value,
-				'unserialized' => $this->get_profile_field_unserialized_value( $field->data->value, $field ),
+				'unserialized' => $this->get_profile_field_unserialized_value( $field->data->value ),
 				'rendered'     => $this->get_profile_field_rendered_value( $field->data->value, $field ),
 			);
 		}
@@ -834,10 +856,8 @@ class BP_REST_XProfile_Fields_Endpoint extends WP_REST_Controller {
 			return '';
 		}
 
-		if ( (bool) $profile_field->type_obj->supports_multiple_defaults ) {
-			// Unserialize the BuddyPress way.
-			$value = bp_unserialize_profile_field( $value );
-		}
+		// Unserialize the BuddyPress way.
+		$value = bp_unserialize_profile_field( $value );
 
 		global $field;
 		$reset_global = $field;
@@ -866,25 +886,16 @@ class BP_REST_XProfile_Fields_Endpoint extends WP_REST_Controller {
 	 * Retrieve the unserialized value of a profile field.
 	 *
 	 * @since 5.0.0
-	 * @since 14.5.3 Only unserialize fields that suppor multiple defaults.
 	 *
-	 * @param  string                    $value         The raw value of the field.
-	 * @param  integer|BP_XProfile_Field $profile_field The ID or the full object for the field.
-	 * @return array                                    The maybe unserialized field value.
+	 * @param  string $value The raw value of the field.
+	 * @return array The unserialized field value.
 	 */
-	public function get_profile_field_unserialized_value( $value = '', $profile_field = null ) {
+	public function get_profile_field_unserialized_value( $value = '' ) {
 		if ( empty( $value ) ) {
 			return array();
 		}
 
-		$profile_field = xprofile_get_field( $profile_field );
-
-		if ( (bool) $profile_field->type_obj->supports_multiple_defaults ) {
-			$unserialized_value = maybe_unserialize( $value );
-		} else {
-			$unserialized_value = $value;
-		}
-
+		$unserialized_value = maybe_unserialize( $value );
 		if ( ! is_array( $unserialized_value ) ) {
 			$unserialized_value = (array) $unserialized_value;
 		}
@@ -905,7 +916,8 @@ class BP_REST_XProfile_Fields_Endpoint extends WP_REST_Controller {
 		$key  = 'get_item';
 
 		if ( WP_REST_Server::CREATABLE === $method || WP_REST_Server::EDITABLE === $method ) {
-			$args['description']['type'] = 'string';
+			$args['description']['type']    = 'string';
+			$args['description']['default'] = '';
 			unset( $args['description']['properties'] );
 
 			// Add specific properties to the edit context.

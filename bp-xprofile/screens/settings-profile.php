@@ -74,7 +74,7 @@ function bp_xprofile_action_settings() {
 	if ( ! empty( $_POST['field_ids'] ) ) {
 
 		// Get the POST'ed field ID's.
-		$posted_field_ids = wp_parse_id_list( $_POST['field_ids'] );
+		$posted_field_ids = explode( ',', $_POST['field_ids'] );
 
 		// Backward compatibility: a bug in BP 2.0 caused only a single
 		// group's field IDs to be submitted. Look for values submitted
@@ -92,8 +92,8 @@ function bp_xprofile_action_settings() {
 
 			$visibility_level = 'public';
 
-			if ( !empty( $_POST['field_' . $field_id . '_visibility'] ) ) {
-				$visibility_level = $_POST['field_' . $field_id . '_visibility'];
+			if ( ! empty( $_POST[ 'field_' . $field_id . '_visibility' ] ) ) {
+				$visibility_level = $_POST[ 'field_' . $field_id . '_visibility' ];
 			}
 
 			xprofile_set_field_visibility_level( $field_id, bp_displayed_user_id(), $visibility_level );
@@ -109,7 +109,9 @@ function bp_xprofile_action_settings() {
 	 */
 	do_action( 'bp_xprofile_settings_after_save' );
 
-	// Redirect to the root domain.
-	bp_core_redirect( bp_displayed_user_domain() . bp_get_settings_slug() . '/profile' );
+	// Redirect to the User's profile settings.
+	bp_core_redirect(
+		bp_displayed_user_url( bp_members_get_path_chunks( array( bp_get_settings_slug(), 'profile' ) ) )
+	);
 }
 add_action( 'bp_actions', 'bp_xprofile_action_settings' );
