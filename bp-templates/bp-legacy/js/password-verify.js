@@ -1,17 +1,12 @@
 /* jshint undef: false */
 /* @since 1.7.0 */
-/* @version 10.0.0 */
+/* @version 8.0.0 */
 /* Password Verify */
 ( function( $ ){
-	function check_pass_strength( event ) {
+	function check_pass_strength() {
 		var pass1 = $( '.password-entry' ).val(),
 		    pass2 = $( '.password-entry-confirm' ).val(),
-		    currentForm = $( '.password-entry' ).closest( 'form' ),
-		    strength, requiredStrength;
-
-		if ( 'undefined' !== typeof window.bpPasswordVerify && window.bpPasswordVerify.requiredPassStrength ) {
-			requiredStrength = parseInt( window.bpPasswordVerify.requiredPassStrength, 10 );
-		}
+		    strength;
 
 		// Reset classes and result text
 		$( '#pass-strength-result' ).removeClass( 'short bad good strong' );
@@ -43,35 +38,6 @@
 			default:
 				$( '#pass-strength-result' ).addClass( 'short' ).html( pwsL10n['short'] );
 				break;
-		}
-
-		if ( requiredStrength && 4 >= requiredStrength ) {
-			var passwordWarningContainer = $( currentForm ).find( '#password-warning' );
-
-				if ( strength < requiredStrength ) {
-					if ( ! $( passwordWarningContainer ).length ) {
-						$( event.currentTarget ).before(
-							$( '<p></p>' ).prop( 'id', 'password-warning' )
-										  .addClass( 'description' )
-						);
-					}
-
-					$( passwordWarningContainer ).html( bpPasswordVerify.tooWeakPasswordWarning );
-				} else if ( $( passwordWarningContainer ).length ) {
-					$( passwordWarningContainer ).remove();
-				}
-
-			if ( ! $( currentForm ).find( '#password-strength-score' ).length ) {
-				$( currentForm ).prepend(
-					$('<input></input>').prop( {
-						id: 'password-strength-score',
-						type: 'hidden',
-						'name': '_password_strength_score'
-					} )
-				);
-			}
-
-			$( '#password-strength-score' ).val( strength );
 		}
 	}
 

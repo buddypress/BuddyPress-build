@@ -936,8 +936,7 @@ function bp_groups_admin_edit_metabox_members( $item ) {
 			bp_groups_get_group_manage_members_script_data( $item->id )
 		);
 
-		// Inject the Group Manage Members interface.
-		bp_groups_manage_group_members_interface( 'admin_footer' );
+		bp_get_template_part( 'common/js-templates/group-members/index' );
 
 		/**
 		 * Echo out the JavaScript variable.

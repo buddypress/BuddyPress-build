@@ -364,8 +364,14 @@ class BP_Groups_Component extends BP_Component {
 			return;
 		}
 
-		// Set default Group creation steps.
-		$group_creation_steps = array(
+		/**
+		 * Filters the preconfigured groups creation steps.
+		 *
+		 * @since 1.1.0
+		 *
+		 * @param array $value Array of preconfigured group creation steps.
+		 */
+		$this->group_creation_steps = apply_filters( 'groups_create_group_steps', array(
 			'group-details'  => array(
 				'name'       => _x( 'Details', 'Group screen nav', 'buddypress' ),
 				'position'   => 0
@@ -374,19 +380,19 @@ class BP_Groups_Component extends BP_Component {
 				'name'       => _x( 'Settings', 'Group screen nav', 'buddypress' ),
 				'position'   => 10
 			)
-		);
+		) );
 
 		// If avatar uploads are not disabled, add avatar option.
 		$disabled_avatar_uploads = (int) bp_disable_group_avatar_uploads();
 		if ( ! $disabled_avatar_uploads && $bp->avatar->show_avatars ) {
-			$group_creation_steps['group-avatar'] = array(
+			$this->group_creation_steps['group-avatar'] = array(
 				'name'     => _x( 'Photo', 'Group screen nav', 'buddypress' ),
 				'position' => 20
 			);
 		}
 
 		if ( bp_group_use_cover_image_header() ) {
-			$group_creation_steps['group-cover-image'] = array(
+			$this->group_creation_steps['group-cover-image'] = array(
 				'name'     => _x( 'Cover Image', 'Group screen nav', 'buddypress' ),
 				'position' => 25
 			);
@@ -394,20 +400,11 @@ class BP_Groups_Component extends BP_Component {
 
 		// If invitations are enabled, add invitations.
 		if ( bp_is_active( 'groups', 'invitations' ) ) {
-			$group_creation_steps['group-invites'] = array(
+			$this->group_creation_steps['group-invites'] = array(
 				'name'     => _x( 'Invites',  'Group screen nav', 'buddypress' ),
 				'position' => 30
 			);
 		}
-
-		/**
-		 * Filters the preconfigured groups creation steps.
-		 *
-		 * @since 1.1.0
-		 *
-		 * @param array $value Array of preconfigured group creation steps.
-		 */
-		$this->group_creation_steps = apply_filters( 'groups_create_group_steps', $group_creation_steps );
 
 		/**
 		 * Filters the list of valid groups statuses.

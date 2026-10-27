@@ -8,12 +8,11 @@
  * @since 3.0.0
  * @version 10.0.0
  */
-
-// Backward Compatibility for plugins still needing the placeholders to be located into this file.
-if ( ! did_action( '_bp_nouveau_messages_print_placeholders' ) ) {
-	bp_nouveau_messages_print_placeholders();
-}
 ?>
+<div class="subnav-filters filters user-subnav bp-messages-filters" id="subsubnav"></div>
+
+<div class="bp-messages-feedback"></div>
+<div class="bp-messages-content"></div>
 
 <script type="text/html" id="tmpl-bp-messages-feedback">
 	<div class="bp-feedback {{data.type}}">
@@ -190,12 +189,6 @@ if ( ! did_action( '_bp_nouveau_messages_print_placeholders' ) ) {
 						<span class="bp-screen-reader-text"><?php esc_html_e( 'Delete conversation.', 'buddypress' ); ?></span>
 					</button>
 
-					<# if ( undefined !== data.recipients && data.recipients.length > 2 ) { #>
-						<button type="button" class="message-action-exit bp-tooltip bp-icons" data-bp-action="exit" data-bp-tooltip="<?php esc_attr_e( 'Exit conversation.', 'buddypress' ); ?>">
-							<span class="bp-screen-reader-text"><?php esc_html_e( 'Exit conversation.', 'buddypress' ); ?></span>
-						</button>
-					<# } #>
-
 					<# if ( undefined !== data.star_link ) { #>
 
 						<# if ( false !== data.is_starred ) { #>
@@ -257,12 +250,6 @@ if ( ! did_action( '_bp_nouveau_messages_print_placeholders' ) ) {
 			<button type="button" class="message-action-delete bp-tooltip bp-icons" data-bp-action="delete" data-bp-tooltip="<?php esc_attr_e( 'Delete conversation.', 'buddypress' ); ?>">
 				<span class="bp-screen-reader-text"><?php esc_html_e( 'Delete conversation.', 'buddypress' ); ?></span>
 			</button>
-
-			<# if ( undefined !== data.recipients && data.recipients.length > 2 ) { #>
-				<button type="button" class="message-action-exit bp-tooltip bp-icons" data-bp-action="exit" data-bp-tooltip="<?php esc_attr_e( 'Exit conversation.', 'buddypress' ); ?>">
-					<span class="bp-screen-reader-text"><?php esc_html_e( 'Exit conversation.', 'buddypress' ); ?></span>
-				</button>
-			<# } #>
 		</div>
 	</header>
 </script>

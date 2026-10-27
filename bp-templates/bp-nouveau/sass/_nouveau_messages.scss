@@ -7,8 +7,7 @@
 .message-action-star:before,
 .message-action-unstar:before,
 .message-action-view:before,
-.message-action-delete:before,
-.message-action-exit:before {
+.message-action-delete:before {
 	font-family: dashicons;
 	font-size: 18px;
 }
@@ -29,10 +28,6 @@
 
 .message-action-delete:before {
 	content: "\f153";
-}
-
-.message-action-exit:before {
-	content: "\f14a";
 }
 
 .message-action-delete:hover:before {

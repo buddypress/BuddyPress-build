@@ -102,7 +102,7 @@ class BP_Messages_Component extends BP_Component {
 
 			// Authenticated action variables.
 			if ( is_user_logged_in() && bp_action_variable( 0 ) &&
-				in_array( bp_action_variable( 0 ), array( 'delete', 'read', 'unread', 'bulk-manage', 'bulk-delete', 'exit' ), true )
+				in_array( bp_action_variable( 0 ), array( 'delete', 'read', 'unread', 'bulk-manage', 'bulk-delete' ), true )
 			) {
 				require $this->path . 'bp-messages/actions/' . bp_action_variable( 0 ) . '.php';
 			}
