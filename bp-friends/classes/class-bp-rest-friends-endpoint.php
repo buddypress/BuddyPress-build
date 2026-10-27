@@ -60,7 +60,7 @@ class BP_REST_Friends_Endpoint extends WP_REST_Controller {
 			array(
 				'args'   => array(
 					'id' => array(
-						'description' => __( 'Identifier for a user ID.', 'buddypress' ),
+						'description' => __( 'Numeric identifier of a user ID.', 'buddypress' ),
 						'type'        => 'integer',
 					),
 				),
@@ -303,6 +303,17 @@ class BP_REST_Friends_Endpoint extends WP_REST_Controller {
 			return new WP_Error(
 				'bp_rest_friends_create_item_failed',
 				__( 'There was a problem confirming if user is valid.', 'buddypress' ),
+				array(
+					'status' => 500,
+				)
+			);
+		}
+
+		// Check if users are friends or if there is a friendship request.
+		if ( 'not_friends' !== friends_check_friendship_status( $initiator_id->ID, $friend_id->ID ) ) {
+			return new WP_Error(
+				'bp_rest_friends_create_item_failed',
+				__( 'Those users are already friends or have sent friendship request(s) recently.', 'buddypress' ),
 				array(
 					'status' => 500,
 				)
@@ -731,7 +742,7 @@ class BP_REST_Friends_Endpoint extends WP_REST_Controller {
 
 			// This one is optional.
 			$args['force'] = array(
-				'description'       => __( 'Whether to force friendship acceptance.', 'buddypress' ),
+				'description'       => __( 'Whether to force the friendship agreement.', 'buddypress' ),
 				'default'           => false,
 				'type'              => 'boolean',
 				'sanitize_callback' => 'rest_sanitize_boolean',
@@ -803,17 +814,17 @@ class BP_REST_Friends_Endpoint extends WP_REST_Controller {
 			'properties' => array(
 				'id'           => array(
 					'context'     => array( 'view', 'edit' ),
-					'description' => __( 'A unique numeric ID for the friendship.', 'buddypress' ),
+					'description' => __( 'Unique numeric identifier of the friendship.', 'buddypress' ),
 					'type'        => 'integer',
 				),
 				'initiator_id' => array(
 					'context'     => array( 'view', 'edit' ),
-					'description' => __( 'User ID of the friendship initiator.', 'buddypress' ),
+					'description' => __( 'The ID of the user who is requesting the Friendship.', 'buddypress' ),
 					'type'        => 'integer',
 				),
 				'friend_id'    => array(
 					'context'     => array( 'view', 'edit' ),
-					'description' => __( 'User ID of the `friend` - the one invited to the friendship.', 'buddypress' ),
+					'description' => __( 'The ID of the user who is invited to agree to the Friendship request.', 'buddypress' ),
 					'type'        => 'integer',
 				),
 				'is_confirmed' => array(
@@ -856,7 +867,7 @@ class BP_REST_Friends_Endpoint extends WP_REST_Controller {
 		unset( $params['search'] );
 
 		$params['user_id'] = array(
-			'description'       => __( 'ID of the user whose friends are being retrieved.', 'buddypress' ),
+			'description'       => __( 'ID of the member whose friendships are being retrieved.', 'buddypress' ),
 			'default'           => bp_loggedin_user_id(),
 			'type'              => 'integer',
 			'required'          => true,
@@ -873,7 +884,7 @@ class BP_REST_Friends_Endpoint extends WP_REST_Controller {
 		);
 
 		$params['id'] = array(
-			'description'       => __( 'ID of a specific friendship to retrieve.', 'buddypress' ),
+			'description'       => __( 'Unique numeric identifier of the friendship.', 'buddypress' ),
 			'default'           => 0,
 			'type'              => 'integer',
 			'sanitize_callback' => 'absint',
@@ -881,7 +892,7 @@ class BP_REST_Friends_Endpoint extends WP_REST_Controller {
 		);
 
 		$params['initiator_id'] = array(
-			'description'       => __( 'ID of the friendship initiator.', 'buddypress' ),
+			'description'       => __( 'The ID of the user who is requesting the Friendship.', 'buddypress' ),
 			'default'           => 0,
 			'type'              => 'integer',
 			'sanitize_callback' => 'absint',
@@ -889,7 +900,7 @@ class BP_REST_Friends_Endpoint extends WP_REST_Controller {
 		);
 
 		$params['friend_id'] = array(
-			'description'       => __( 'ID of a specific friendship to retrieve.', 'buddypress' ),
+			'description'       => __( 'The ID of the user who is invited to agree to the Friendship request.', 'buddypress' ),
 			'default'           => 0,
 			'type'              => 'integer',
 			'sanitize_callback' => 'absint',
