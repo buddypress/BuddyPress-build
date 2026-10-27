@@ -198,11 +198,6 @@ function bp_members_render_members_block( $attributes = array() ) {
 		return '';
 	}
 
-	// Make sure the avatar size exists.
-	if ( ! in_array( $block_args['avatarSize'], array( 'thumb', 'full' ), true ) ) {
-		$block_args['avatarSize'] = 'none';
-	}
-
 	$container_classes = sprintf( 'bp-block-members avatar-%s', $block_args['avatarSize'] );
 	if ( 'grid' === $block_args['layoutPreference'] ) {
 		$container_classes .= sprintf( ' is-grid columns-%d', (int) $block_args['columns'] );
@@ -246,7 +241,7 @@ function bp_members_render_members_block( $attributes = array() ) {
 				</div>',
 				esc_url( $member_link ),
 				/* translators: %s: member name */
-				esc_attr( sprintf( __( 'Profile photo of %s', 'buddypress' ), $member->display_name ) ),
+				sprintf( esc_attr__( 'Profile photo of %s', 'buddypress' ), $member->display_name ),
 				esc_url(
 					bp_core_fetch_avatar(
 						array(
@@ -531,7 +526,7 @@ function bp_members_render_dynamic_members_block( $attributes = array() ) {
 		);
 
 		// Only enqueue common/specific scripts and data once per page load.
-		if ( ! has_action( 'wp_footer', 'bp_members_blocks_add_script_data', 1 ) ) {
+		if ( ! has_action( 'wp_footer', 'bp_members_blocks_add_script_data' ) ) {
 			wp_set_script_translations( 'bp-dynamic-members-script', 'buddypress' );
 			wp_enqueue_script( 'bp-dynamic-members-script' );
 
