@@ -1,14 +1,14 @@
-# Copyright (C) 2019 The BuddyPress Community
+# Copyright (C) 2021 The BuddyPress Community
 # This file is distributed under the GPLv2 or later (license.txt).
 msgid ""
 msgstr ""
-"Project-Id-Version: BuddyPress 4.4.0\n"
+"Project-Id-Version: BuddyPress 4.4.1\n"
 "Report-Msgid-Bugs-To: https://buddypress.trac.wordpress.org\n"
-"POT-Creation-Date: 2019-07-23 05:07:35+00:00\n"
+"POT-Creation-Date: 2021-08-17 21:37:44+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2019-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2021-MO-DA HO:MI+ZONE\n"
 "Last-Translator: JOHN JAMES JACOBY <jjj@buddypress.org>\n"
 "Language-Team: ENGLISH <jjj@buddypress.org>\n"
 "X-Generator: grunt-wp-i18n 1.0.3\n"
@@ -8869,7 +8869,7 @@ msgstr ""
 msgid "Add New Field Group"
 msgstr ""
 
-#: bp-xprofile/bp-xprofile-admin.php:191 bp-xprofile/bp-xprofile-admin.php:677
+#: bp-xprofile/bp-xprofile-admin.php:191 bp-xprofile/bp-xprofile-admin.php:679
 msgid "(Primary)"
 msgstr ""
 
@@ -8907,23 +8907,23 @@ msgstr ""
 msgid "The field was saved successfully."
 msgstr ""
 
-#: bp-xprofile/bp-xprofile-admin.php:569
+#: bp-xprofile/bp-xprofile-admin.php:571
 msgid "field"
 msgstr ""
 
-#: bp-xprofile/bp-xprofile-admin.php:569
+#: bp-xprofile/bp-xprofile-admin.php:571
 msgid "option"
 msgstr ""
 
-#: bp-xprofile/bp-xprofile-admin.php:573
+#: bp-xprofile/bp-xprofile-admin.php:575
 msgid "There was an error deleting the %s. Please try again."
 msgstr ""
 
-#: bp-xprofile/bp-xprofile-admin.php:576
+#: bp-xprofile/bp-xprofile-admin.php:578
 msgid "The %s was deleted successfully!"
 msgstr ""
 
-#: bp-xprofile/bp-xprofile-admin.php:679
+#: bp-xprofile/bp-xprofile-admin.php:681
 msgid "(Sign-up)"
 msgstr ""
 
@@ -10890,17 +10890,17 @@ msgctxt "Profile fields group was deleted successfully"
 msgid "The group was deleted successfully."
 msgstr ""
 
-#: bp-xprofile/bp-xprofile-admin.php:723
+#: bp-xprofile/bp-xprofile-admin.php:725
 msgctxt "Edit field link"
 msgid "Edit"
 msgstr ""
 
-#: bp-xprofile/bp-xprofile-admin.php:728
+#: bp-xprofile/bp-xprofile-admin.php:730
 msgctxt "Delete field link"
 msgid "Delete"
 msgstr ""
 
-#: bp-xprofile/bp-xprofile-admin.php:774
+#: bp-xprofile/bp-xprofile-admin.php:776
 msgctxt "xprofile field type category"
 msgid "Other"
 msgstr ""
