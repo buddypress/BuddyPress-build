@@ -689,6 +689,7 @@ function bp_core_add_contextual_help( $screen = '' ) {
 
 		// Component page.
 		case 'settings_page_bp-components':
+		case 'settings_page_bp-components-network':
 			// Help tabs.
 			$screen->add_help_tab(
 				array(
@@ -700,7 +701,7 @@ function bp_core_add_contextual_help( $screen = '' ) {
 
 			$manage_components = sprintf(
 				'<a href="%1$s">%2$s</a>',
-				esc_url( 'https://codex.buddypress.org/getting-started/configure-components/' ),
+				esc_url( 'https://github.com/buddypress/buddypress/blob/master/docs/user/administration/settings/components.md' ),
 				esc_html__( 'Managing Components', 'buddypress' )
 			);
 
@@ -714,6 +715,7 @@ function bp_core_add_contextual_help( $screen = '' ) {
 
 		// Component page.
 		case 'settings_page_bp-rewrites':
+		case 'settings_page_bp-rewrites-network':
 			// Help tabs.
 			$screen->add_help_tab(
 				array(
@@ -732,6 +734,7 @@ function bp_core_add_contextual_help( $screen = '' ) {
 
 		// Settings page.
 		case 'settings_page_bp-settings':
+		case 'settings_page_bp-settings-network':
 			// Help tabs.
 			$screen->add_help_tab(
 				array(
@@ -743,7 +746,7 @@ function bp_core_add_contextual_help( $screen = '' ) {
 
 			$manage_settings = sprintf(
 				'<a href="%1$s">%2$s</a>',
-				esc_url( 'https://codex.buddypress.org/getting-started/configure-components/#settings-buddypress-settings' ),
+				esc_url( 'https://github.com/buddypress/buddypress/blob/master/docs/user/administration/settings/options.md' ),
 				esc_html__( 'Managing Settings', 'buddypress' )
 			);
 
@@ -758,6 +761,7 @@ function bp_core_add_contextual_help( $screen = '' ) {
 
 		// Profile fields page.
 		case 'users_page_bp-profile-setup':
+		case 'users_page_bp-profile-setup-network':
 			// Help tabs.
 			$screen->add_help_tab(
 				array(
@@ -769,7 +773,7 @@ function bp_core_add_contextual_help( $screen = '' ) {
 
 			$manage_profile_fields = sprintf(
 				'<a href="%1$s">%2$s</a>',
-				esc_url( 'https://codex.buddypress.org/administrator-guide/extended-profiles/' ),
+				esc_url( 'https://github.com/buddypress/buddypress/blob/master/docs/user/administration/users/xprofile.md' ),
 				esc_html__( 'Managing Profile Fields', 'buddypress' )
 			);
 
