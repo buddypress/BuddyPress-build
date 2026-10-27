@@ -27,16 +27,6 @@ class BP_REST_Attachments_Blog_Avatar_Endpoint extends WP_REST_Controller {
 	protected $blogs_endpoint;
 
 	/**
-	 * This variable is used to query for the requested blog only once.
-	 * It is set during the permission check methods.
-	 *
-	 * @since 6.0.0
-	 *
-	 * @var BP_Blogs_Blog
-	 */
-	protected $blog;
-
-	/**
 	 * Constructor.
 	 *
 	 * @since 6.0.0
@@ -83,17 +73,23 @@ class BP_REST_Attachments_Blog_Avatar_Endpoint extends WP_REST_Controller {
 	 * @return WP_REST_Response|WP_Error
 	 */
 	public function get_item( $request ) {
-		if ( empty( $this->blog->admin_user_id ) ) {
-			return new WP_Error(
-				'bp_rest_blog_avatar_get_item_user_failed',
-				__( 'There was a problem confirming the blog\'s user admin is valid.', 'buddypress' ),
-				array(
-					'status' => 500,
-				)
-			);
-		}
 
-		$admin_user_admin = (int) $this->blog->admin_user_id;
+		// Check if user exists and it is valid.
+		$admin_user_admin = $request['user_id'];
+		if ( 0 !== $admin_user_admin ) {
+			$user = get_user_by( 'id', $admin_user_admin );
+			if ( ! $user instanceof WP_User ) {
+				return new WP_Error(
+					'bp_rest_blog_avatar_get_item_user_failed',
+					__( 'There was a problem confirming if the user ID provided is valid.', 'buddypress' ),
+					array(
+						'status' => 500,
+					)
+				);
+			}
+
+			$admin_user_admin = $user->ID;
+		}
 
 		$args = array();
 		foreach ( array( 'full', 'thumb' ) as $type ) {
@@ -102,9 +98,8 @@ class BP_REST_Attachments_Blog_Avatar_Endpoint extends WP_REST_Controller {
 					'type'          => $type,
 					'blog_id'       => $request['id'],
 					'admin_user_id' => $admin_user_admin,
-					'html'          => (bool) $request['html'],
 					'alt'           => $request['alt'],
-					'no_grav'       => (bool) $request['no_user_gravatar'],
+					'no_grav'       => (bool) $request['no_grav'],
 				)
 			);
 		}
@@ -153,10 +148,10 @@ class BP_REST_Attachments_Blog_Avatar_Endpoint extends WP_REST_Controller {
 	 * @return bool|WP_Error
 	 */
 	public function get_item_permissions_check( $request ) {
-		$retval     = true;
-		$this->blog = $this->blogs_endpoint->get_blog_object( $request['id'] );
+		$retval = true;
+		$blog   = $this->blogs_endpoint->get_blog_object( $request['id'] );
 
-		if ( true === $retval && ! is_object( $this->blog ) ) {
+		if ( true === $retval && ! is_object( $blog ) ) {
 			$retval = new WP_Error(
 				'bp_rest_blog_invalid_id',
 				__( 'Invalid group ID.', 'buddypress' ),
@@ -271,14 +266,6 @@ class BP_REST_Attachments_Blog_Avatar_Endpoint extends WP_REST_Controller {
 		// Removing unused params.
 		unset( $params['search'], $params['page'], $params['per_page'] );
 
-		$params['html'] = array(
-			'description'       => __( 'Whether to return an <img> HTML element, vs a raw URL to an avatar.', 'buddypress' ),
-			'default'           => false,
-			'type'              => 'boolean',
-			'sanitize_callback' => 'rest_sanitize_boolean',
-			'validate_callback' => 'rest_validate_request_arg',
-		);
-
 		$params['alt'] = array(
 			'description'       => __( 'The alt attribute for the <img> element.', 'buddypress' ),
 			'default'           => '',
@@ -287,8 +274,16 @@ class BP_REST_Attachments_Blog_Avatar_Endpoint extends WP_REST_Controller {
 			'validate_callback' => 'rest_validate_request_arg',
 		);
 
-		$params['no_user_gravatar'] = array(
-			'description'       => __( 'Whether to disable the default Gravatar Admin user fallback.', 'buddypress' ),
+		$params['user_id'] = array(
+			'description'       => __( 'The Blog admin user ID to avatar fallback.', 'buddypress' ),
+			'default'           => 0,
+			'type'              => 'integer',
+			'sanitize_callback' => 'absint',
+			'validate_callback' => 'rest_validate_request_arg',
+		);
+
+		$params['no_grav'] = array(
+			'description'       => __( 'Whether to disable the default Gravatar fallback.', 'buddypress' ),
 			'default'           => false,
 			'type'              => 'boolean',
 			'sanitize_callback' => 'rest_sanitize_boolean',

@@ -410,9 +410,11 @@ class BP_REST_Attachments_Member_Avatar_Endpoint extends WP_REST_Controller {
 			'thumb' => $avatar->thumb,
 		);
 
-		$context  = ! empty( $request['context'] ) ? $request['context'] : 'view';
-		$data     = $this->add_additional_fields_to_object( $data, $request );
-		$data     = $this->filter_response_by_context( $data, $context );
+		$context = ! empty( $request['context'] ) ? $request['context'] : 'view';
+		$data    = $this->add_additional_fields_to_object( $data, $request );
+		$data    = $this->filter_response_by_context( $data, $context );
+
+		// @todo add prepare_links
 		$response = rest_ensure_response( $data );
 
 		/**
@@ -495,7 +497,7 @@ class BP_REST_Attachments_Member_Avatar_Endpoint extends WP_REST_Controller {
 			'validate_callback' => 'rest_validate_request_arg',
 		);
 
-		$params['no_gravatar'] = array(
+		$params['no_grav'] = array(
 			'description'       => __( 'Whether to disable the default Gravatar fallback.', 'buddypress' ),
 			'default'           => false,
 			'type'              => 'boolean',

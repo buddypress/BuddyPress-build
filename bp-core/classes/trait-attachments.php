@@ -30,7 +30,6 @@ trait BP_REST_Attachments {
 		switch ( $this->object ) {
 			case 'group':
 				$bp->groups->current_group = $this->group;
-				$bp->current_component     = 'groups';
 				break;
 			case 'user':
 			default:
@@ -132,7 +131,7 @@ trait BP_REST_Attachments {
 		}
 
 		return sprintf(
-			'%1$s/%2$s/%3$s',
+			'%1$/%2$/%3$',
 			$bp_attachments_uploads_dir['baseurl'],
 			$cover_subdir,
 			$cover['cover_basename']
@@ -368,6 +367,8 @@ trait BP_REST_Attachments {
 	 * Delete group's existing avatar if one exists.
 	 *
 	 * @since 5.0.0
+	 *
+	 * @return void
 	 */
 	protected function delete_existing_image() {
 		// Get existing avatar.

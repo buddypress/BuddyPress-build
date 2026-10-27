@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2020-05-03T03:38:59+00:00\n"
+"POT-Creation-Date: 2020-03-31T21:43:38+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.4.0\n"
 "X-Domain: buddypress\n"
@@ -17,7 +17,7 @@ msgstr ""
 #. Plugin Name of the plugin
 #: bp-core/admin/bp-core-admin-functions.php:758
 #: bp-core/admin/bp-core-admin-functions.php:1229
-#: bp-core/admin/bp-core-admin-tools.php:620
+#: bp-core/admin/bp-core-admin-tools.php:557
 #: bp-core/classes/class-bp-admin.php:210
 #: bp-core/classes/class-bp-admin.php:211
 #: bp-core/classes/class-bp-admin.php:231
@@ -696,8 +696,8 @@ msgid "%1$s replied to one of your activity comments"
 msgstr ""
 
 #: bp-activity/bp-activity-notifications.php:402
-#: bp-blogs/bp-blogs-template.php:1159
-#: bp-core/admin/bp-core-admin-tools.php:600
+#: bp-blogs/bp-blogs-template.php:1151
+#: bp-core/admin/bp-core-admin-tools.php:537
 #: bp-friends/bp-friends-functions.php:962
 #: bp-friends/bp-friends-notifications.php:256
 #: bp-groups/bp-groups-notifications.php:1138
@@ -709,8 +709,8 @@ msgid "Yes"
 msgstr ""
 
 #: bp-activity/bp-activity-notifications.php:403
-#: bp-blogs/bp-blogs-template.php:1163
-#: bp-core/admin/bp-core-admin-tools.php:602
+#: bp-blogs/bp-blogs-template.php:1155
+#: bp-core/admin/bp-core-admin-tools.php:539
 #: bp-friends/bp-friends-functions.php:962
 #: bp-friends/bp-friends-notifications.php:257
 #: bp-groups/bp-groups-notifications.php:1139
@@ -823,11 +823,11 @@ msgid "View Discussion"
 msgstr ""
 
 #. translators: 1: the name of the function. 2: the name of the file.
-#: bp-activity/bp-activity-template.php:2193
+#: bp-activity/bp-activity-template.php:2188
 msgid "%1$s no longer accepts arguments. See the inline documentation at %2$s for more details."
 msgstr ""
 
-#: bp-activity/bp-activity-template.php:2667
+#: bp-activity/bp-activity-template.php:2662
 #: bp-core/bp-core-attachments.php:778
 #: bp-groups/classes/class-bp-groups-component.php:751
 #: bp-groups/classes/class-bp-groups-list-table.php:441
@@ -846,7 +846,7 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
-#: bp-activity/bp-activity-template.php:2772
+#: bp-activity/bp-activity-template.php:2767
 #: bp-core/admin/bp-core-admin-functions.php:1073
 #: bp-core/admin/bp-core-admin-slugs.php:149
 #: bp-core/admin/bp-core-admin-slugs.php:232
@@ -856,19 +856,19 @@ msgstr ""
 msgid "View"
 msgstr ""
 
-#: bp-activity/bp-activity-template.php:2881
+#: bp-activity/bp-activity-template.php:2876
 msgid "Clear Filter"
 msgstr ""
 
-#: bp-activity/bp-activity-template.php:3191
+#: bp-activity/bp-activity-template.php:3186
 msgid "a user"
 msgstr ""
 
-#: bp-activity/bp-activity-template.php:3248
+#: bp-activity/bp-activity-template.php:3243
 msgid "Public Message"
 msgstr ""
 
-#: bp-activity/bp-activity-template.php:3840
+#: bp-activity/bp-activity-template.php:3835
 msgid "Site Wide Activity RSS Feed"
 msgstr ""
 
@@ -1169,7 +1169,7 @@ msgstr ""
 
 #: bp-activity/classes/class-bp-rest-activity-endpoint.php:71
 #: bp-activity/classes/class-bp-rest-activity-endpoint.php:109
-#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1284
+#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1287
 msgid "A unique numeric ID for the activity."
 msgstr ""
 
@@ -1224,76 +1224,76 @@ msgstr ""
 msgid "Sorry, you cannot add the activity to your favorites."
 msgstr ""
 
-#: bp-activity/classes/class-bp-rest-activity-endpoint.php:839
+#: bp-activity/classes/class-bp-rest-activity-endpoint.php:842
 msgid "Sorry, you are not allowed to update favorites."
 msgstr ""
 
-#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1290
+#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1293
 msgid "The ID of some other object primarily associated with this one."
 msgstr ""
 
-#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1295
+#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1298
 msgid "The ID of some other object also associated with this one."
 msgstr ""
 
-#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1300
+#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1303
 msgid "The ID for the author of the activity."
 msgstr ""
 
-#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1305
+#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1308
 msgid "The permalink to this activity on the site."
 msgstr ""
 
-#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1311
+#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1314
 msgid "The active BuddyPress component the activity relates to."
 msgstr ""
 
-#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1320
+#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1323
 msgid "The activity type of the activity."
 msgstr ""
 
-#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1329
+#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1332
 msgid "The description of the activity's type (eg: Username posted an update)"
 msgstr ""
 
-#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1338
+#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1341
 msgid "Allowed HTML content for the activity."
 msgstr ""
 
-#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1346
+#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1349
 msgid "Content for the activity, as it exists in the database."
 msgstr ""
 
-#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1351
+#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1354
 msgid "HTML content for the activity, transformed for display."
 msgstr ""
 
-#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1360
+#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1363
 msgid "The date the activity was published, in the site's timezone."
 msgstr ""
 
-#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1366
+#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1369
 msgid "Whether the activity has been marked as spam or not."
 msgstr ""
 
-#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1376
+#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1379
 msgid "A list of objects children of the activity object."
 msgstr ""
 
-#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1382
+#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1385
 msgid "Total number of comments of the activity object."
 msgstr ""
 
-#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1388
+#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1391
 msgid "Whether the activity object should be sitewide hidden or not."
 msgstr ""
 
-#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1393
+#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1396
 msgid "Whether the activity object has been favorited by the current user."
 msgstr ""
 
 #. translators: 1: Full avatar width in pixels. 2: Full avatar height in pixels
-#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1407
+#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1410
 #: bp-blogs/classes/class-bp-rest-blogs-endpoint.php:460
 #: bp-groups/classes/class-bp-rest-groups-endpoint.php:1126
 #: bp-members/classes/class-bp-rest-members-endpoint.php:741
@@ -1301,78 +1301,78 @@ msgid "Avatar URL with full image size (%1$d x %2$d pixels)."
 msgstr ""
 
 #. translators: 1: Thumb avatar width in pixels. 2: Thumb avatar height in pixels
-#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1415
+#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1418
 #: bp-blogs/classes/class-bp-rest-blogs-endpoint.php:468
 #: bp-groups/classes/class-bp-rest-groups-endpoint.php:1134
 #: bp-members/classes/class-bp-rest-members-endpoint.php:749
 msgid "Avatar URL with thumb image size (%1$d x %2$d pixels)."
 msgstr ""
 
-#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1422
+#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1425
 msgid "Avatar URLs for the author of the activity."
 msgstr ""
 
-#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1449
+#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1452
 #: bp-members/classes/class-bp-rest-members-endpoint.php:826
 msgid "Ensure result set excludes specific IDs."
 msgstr ""
 
-#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1458
+#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1461
 #: bp-blogs/classes/class-bp-rest-blogs-endpoint.php:513
 #: bp-members/classes/class-bp-rest-members-endpoint.php:817
-#: bp-members/classes/class-bp-rest-signup-endpoint.php:1026
+#: bp-members/classes/class-bp-rest-signup-endpoint.php:770
 msgid "Ensure result set includes specific IDs."
 msgstr ""
 
-#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1467
+#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1470
 #: bp-groups/classes/class-bp-rest-groups-endpoint.php:1178
-#: bp-members/classes/class-bp-rest-signup-endpoint.php:1044
+#: bp-members/classes/class-bp-rest-signup-endpoint.php:779
 #: bp-notifications/classes/class-bp-rest-notifications-endpoint.php:834
 msgid "Order sort attribute ascending or descending."
 msgstr ""
 
-#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1476
+#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1479
 msgid "Limit result set to items published after a given ISO8601 compliant date."
 msgstr ""
 
-#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1483
+#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1486
 msgid "Limit result set to items created by a specific user (ID)."
 msgstr ""
 
-#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1491
-#: bp-core/classes/class-bp-rest-components-endpoint.php:480
+#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1494
+#: bp-core/classes/class-bp-rest-components-endpoint.php:513
 msgid "Limit result set to items with a specific status."
 msgstr ""
 
-#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1500
+#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1503
 msgid "Limit result set to items with a specific scope."
 msgstr ""
 
-#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1508
+#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1511
 msgid "Limit result set to items created by a specific group."
 msgstr ""
 
-#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1516
+#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1519
 msgid "Limit result set to items created by a specific site."
 msgstr ""
 
-#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1524
+#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1527
 msgid "Limit result set to items with a specific prime association ID."
 msgstr ""
 
-#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1532
+#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1535
 msgid "Limit result set to items with a specific secondary association ID."
 msgstr ""
 
-#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1540
+#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1543
 msgid "Limit result set to items with a specific active BuddyPress component."
 msgstr ""
 
-#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1548
+#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1551
 msgid "Limit result set to items with a specific activity type."
 msgstr ""
 
-#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1556
+#: bp-activity/classes/class-bp-rest-activity-endpoint.php:1559
 msgid "No comments by default, stream for within stream display, threaded for below each activity item."
 msgstr ""
 
@@ -1449,99 +1449,99 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. translators: %s: the author display name
-#: bp-blogs/bp-blogs-template.php:364
+#: bp-blogs/bp-blogs-template.php:363
 msgid "Profile picture of site author %s"
 msgstr ""
 
-#: bp-blogs/bp-blogs-template.php:423
+#: bp-blogs/bp-blogs-template.php:416
 msgid "Site icon for the blog"
 msgstr ""
 
 #. translators: %s is the placeholder for the name of the blog
-#: bp-blogs/bp-blogs-template.php:426
+#: bp-blogs/bp-blogs-template.php:419
 msgid "Site icon for %s"
 msgstr ""
 
 #. translators: %s: human time diff of the last time the site was active.
-#: bp-blogs/bp-blogs-template.php:665
+#: bp-blogs/bp-blogs-template.php:657
 msgctxt "last time the site was active"
 msgid "active %s"
 msgstr ""
 
-#: bp-blogs/bp-blogs-template.php:678
+#: bp-blogs/bp-blogs-template.php:670
 #: bp-members/bp-members-template.php:985
 msgid "Never active"
 msgstr ""
 
 #. translators: %s: the title of the latest post
-#: bp-blogs/bp-blogs-template.php:732
+#: bp-blogs/bp-blogs-template.php:724
 msgid "Latest Post: %s"
 msgstr ""
 
-#: bp-blogs/bp-blogs-template.php:1071
+#: bp-blogs/bp-blogs-template.php:1063
 msgid "There was a problem; please correct the form below and try again."
 msgstr ""
 
-#: bp-blogs/bp-blogs-template.php:1074
+#: bp-blogs/bp-blogs-template.php:1066
 msgid "By filling out the form below, you can <strong>add a site to your account</strong>. There is no limit to the number of sites that you can have, so create to your heart's content, but blog responsibly!"
 msgstr ""
 
-#: bp-blogs/bp-blogs-template.php:1076
+#: bp-blogs/bp-blogs-template.php:1068
 msgid "If you&#8217;re not going to use a great domain, leave it for a new user. Now have at it!"
 msgstr ""
 
-#: bp-blogs/bp-blogs-template.php:1092
+#: bp-blogs/bp-blogs-template.php:1084
 msgid "Create Site"
 msgstr ""
 
-#: bp-blogs/bp-blogs-template.php:1114
+#: bp-blogs/bp-blogs-template.php:1106
 msgid "Site Name:"
 msgstr ""
 
-#: bp-blogs/bp-blogs-template.php:1116
+#: bp-blogs/bp-blogs-template.php:1108
 msgid "Site Domain:"
 msgstr ""
 
-#: bp-blogs/bp-blogs-template.php:1130
+#: bp-blogs/bp-blogs-template.php:1122
 msgid "Your address will be "
 msgstr ""
 
-#: bp-blogs/bp-blogs-template.php:1133
+#: bp-blogs/bp-blogs-template.php:1125
 msgid "blogname"
 msgstr ""
 
-#: bp-blogs/bp-blogs-template.php:1135
+#: bp-blogs/bp-blogs-template.php:1127
 msgid "domain."
 msgstr ""
 
-#: bp-blogs/bp-blogs-template.php:1138
+#: bp-blogs/bp-blogs-template.php:1130
 msgid "Must be at least 4 characters, letters and numbers only. It cannot be changed so choose carefully!)"
 msgstr ""
 
-#: bp-blogs/bp-blogs-template.php:1144
+#: bp-blogs/bp-blogs-template.php:1136
 msgid "Site Title:"
 msgstr ""
 
-#: bp-blogs/bp-blogs-template.php:1155
+#: bp-blogs/bp-blogs-template.php:1147
 msgid "Privacy: I would like my site to appear in search engines, and in public listings around this network"
 msgstr ""
 
-#: bp-blogs/bp-blogs-template.php:1267
+#: bp-blogs/bp-blogs-template.php:1259
 msgid "Congratulations! You have successfully registered a new site."
 msgstr ""
 
 #. translators: %s: the link of the new site
-#: bp-blogs/bp-blogs-template.php:1273
+#: bp-blogs/bp-blogs-template.php:1265
 msgid "%s is your new site."
 msgstr ""
 
 #. translators: 1: Login URL, 2: User name
-#: bp-blogs/bp-blogs-template.php:1278
+#: bp-blogs/bp-blogs-template.php:1270
 msgid "<a href=\"%1$s\">Log in</a> as \"%2$s\" using your existing password."
 msgstr ""
 
-#: bp-blogs/bp-blogs-template.php:1315
-#: bp-blogs/bp-blogs-template.php:1422
+#: bp-blogs/bp-blogs-template.php:1307
+#: bp-blogs/bp-blogs-template.php:1414
 #: bp-blogs/classes/class-bp-blogs-component.php:302
 #: bp-blogs/classes/class-bp-blogs-theme-compat.php:175
 #: bp-core/bp-core-template.php:3149
@@ -1550,21 +1550,21 @@ msgid "Create a Site"
 msgstr ""
 
 #. translators: %s: the User Display Name
-#: bp-blogs/bp-blogs-template.php:1335
+#: bp-blogs/bp-blogs-template.php:1327
 msgid "%s's Sites"
 msgstr ""
 
 #. translators: %s: the User Display Name
-#: bp-blogs/bp-blogs-template.php:1343
+#: bp-blogs/bp-blogs-template.php:1335
 msgid "%s's Recent Posts"
 msgstr ""
 
 #. translators: %s: the User Display Name
-#: bp-blogs/bp-blogs-template.php:1351
+#: bp-blogs/bp-blogs-template.php:1343
 msgid "%s's Recent Comments"
 msgstr ""
 
-#: bp-blogs/bp-blogs-template.php:1382
+#: bp-blogs/bp-blogs-template.php:1374
 #: bp-core/deprecated/1.5.php:423
 #: bp-groups/bp-groups-template.php:5155
 #: bp-members/bp-members-template.php:1279
@@ -1573,12 +1573,12 @@ msgstr ""
 msgid "Search"
 msgstr ""
 
-#: bp-blogs/bp-blogs-template.php:1538
+#: bp-blogs/bp-blogs-template.php:1530
 msgid "Visit Site"
 msgstr ""
 
 #. translators: %s: the number of blogs
-#: bp-blogs/bp-blogs-template.php:1601
+#: bp-blogs/bp-blogs-template.php:1593
 msgid "%s site"
 msgid_plural "%s sites"
 msgstr[0] ""
@@ -1652,20 +1652,20 @@ msgctxt "Blog pagination next text"
 msgid "&rarr;"
 msgstr ""
 
-#: bp-blogs/classes/class-bp-rest-attachments-blog-avatar-endpoint.php:62
+#: bp-blogs/classes/class-bp-rest-attachments-blog-avatar-endpoint.php:52
 #: bp-blogs/classes/class-bp-rest-blogs-endpoint.php:401
 msgid "A unique numeric ID for the blog."
 msgstr ""
 
-#: bp-blogs/classes/class-bp-rest-attachments-blog-avatar-endpoint.php:89
-msgid "There was a problem confirming the blog's user admin is valid."
+#: bp-blogs/classes/class-bp-rest-attachments-blog-avatar-endpoint.php:84
+msgid "There was a problem confirming if the user ID provided is valid."
 msgstr ""
 
-#: bp-blogs/classes/class-bp-rest-attachments-blog-avatar-endpoint.php:118
+#: bp-blogs/classes/class-bp-rest-attachments-blog-avatar-endpoint.php:113
 msgid "Sorry, there was a problem fetching the blog avatar."
 msgstr ""
 
-#: bp-blogs/classes/class-bp-rest-attachments-blog-avatar-endpoint.php:162
+#: bp-blogs/classes/class-bp-rest-attachments-blog-avatar-endpoint.php:157
 #: bp-groups/classes/class-bp-rest-attachments-group-avatar-endpoint.php:178
 #: bp-groups/classes/class-bp-rest-group-invites-endpoint.php:211
 #: bp-groups/classes/class-bp-rest-group-invites-endpoint.php:461
@@ -1680,37 +1680,37 @@ msgstr ""
 msgid "Invalid group ID."
 msgstr ""
 
-#: bp-blogs/classes/class-bp-rest-attachments-blog-avatar-endpoint.php:172
+#: bp-blogs/classes/class-bp-rest-attachments-blog-avatar-endpoint.php:167
 msgid "Sorry, blog avatar is disabled."
 msgstr ""
 
-#: bp-blogs/classes/class-bp-rest-attachments-blog-avatar-endpoint.php:237
-#: bp-groups/classes/class-bp-rest-attachments-group-avatar-endpoint.php:439
-#: bp-groups/classes/class-bp-rest-attachments-group-cover-endpoint.php:415
-#: bp-members/classes/class-bp-rest-attachments-member-avatar-endpoint.php:445
+#: bp-blogs/classes/class-bp-rest-attachments-blog-avatar-endpoint.php:232
+#: bp-groups/classes/class-bp-rest-attachments-group-avatar-endpoint.php:441
+#: bp-groups/classes/class-bp-rest-attachments-group-cover-endpoint.php:417
+#: bp-members/classes/class-bp-rest-attachments-member-avatar-endpoint.php:447
 #: bp-members/classes/class-bp-rest-attachments-member-cover-endpoint.php:415
 msgid "Full size of the image file."
 msgstr ""
 
-#: bp-blogs/classes/class-bp-rest-attachments-blog-avatar-endpoint.php:244
-#: bp-groups/classes/class-bp-rest-attachments-group-avatar-endpoint.php:445
-#: bp-members/classes/class-bp-rest-attachments-member-avatar-endpoint.php:452
+#: bp-blogs/classes/class-bp-rest-attachments-blog-avatar-endpoint.php:239
+#: bp-groups/classes/class-bp-rest-attachments-group-avatar-endpoint.php:447
+#: bp-members/classes/class-bp-rest-attachments-member-avatar-endpoint.php:454
 msgid "Thumb size of the image file."
 msgstr ""
 
-#: bp-blogs/classes/class-bp-rest-attachments-blog-avatar-endpoint.php:275
-#: bp-members/classes/class-bp-rest-attachments-member-avatar-endpoint.php:483
-msgid "Whether to return an <img> HTML element, vs a raw URL to an avatar."
-msgstr ""
-
-#: bp-blogs/classes/class-bp-rest-attachments-blog-avatar-endpoint.php:283
-#: bp-groups/classes/class-bp-rest-attachments-group-avatar-endpoint.php:483
-#: bp-members/classes/class-bp-rest-attachments-member-avatar-endpoint.php:491
+#: bp-blogs/classes/class-bp-rest-attachments-blog-avatar-endpoint.php:270
+#: bp-groups/classes/class-bp-rest-attachments-group-avatar-endpoint.php:485
+#: bp-members/classes/class-bp-rest-attachments-member-avatar-endpoint.php:493
 msgid "The alt attribute for the <img> element."
 msgstr ""
 
-#: bp-blogs/classes/class-bp-rest-attachments-blog-avatar-endpoint.php:291
-msgid "Whether to disable the default Gravatar Admin user fallback."
+#: bp-blogs/classes/class-bp-rest-attachments-blog-avatar-endpoint.php:278
+msgid "The Blog admin user ID to avatar fallback."
+msgstr ""
+
+#: bp-blogs/classes/class-bp-rest-attachments-blog-avatar-endpoint.php:286
+#: bp-members/classes/class-bp-rest-attachments-member-avatar-endpoint.php:501
+msgid "Whether to disable the default Gravatar fallback."
 msgstr ""
 
 #: bp-blogs/classes/class-bp-rest-blogs-endpoint.php:57
@@ -1762,14 +1762,14 @@ msgid "ID of the user whose blogs user can post to."
 msgstr ""
 
 #: bp-blogs/classes/class-bp-rest-blogs-endpoint.php:522
-#: bp-core/classes/class-bp-rest-components-endpoint.php:489
+#: bp-core/classes/class-bp-rest-components-endpoint.php:522
 msgid "Limit result set to items with a specific type."
 msgstr ""
 
 #: bp-core/admin/bp-core-admin-components.php:24
 #: bp-core/admin/bp-core-admin-settings.php:275
 #: bp-core/admin/bp-core-admin-slugs.php:24
-#: bp-core/classes/class-bp-admin.php:831
+#: bp-core/classes/class-bp-admin.php:836
 msgid "BuddyPress Settings"
 msgstr ""
 
@@ -1952,7 +1952,7 @@ msgid "Pages"
 msgstr ""
 
 #: bp-core/admin/bp-core-admin-functions.php:449
-#: bp-core/classes/class-bp-admin.php:833
+#: bp-core/classes/class-bp-admin.php:838
 msgid "Credits"
 msgstr ""
 
@@ -2052,12 +2052,12 @@ msgstr ""
 msgid "User removed from spam."
 msgstr ""
 
-#: bp-core/admin/bp-core-admin-schema.php:321
+#: bp-core/admin/bp-core-admin-schema.php:318
 msgctxt "First field-group name"
 msgid "General"
 msgstr ""
 
-#: bp-core/admin/bp-core-admin-schema.php:325
+#: bp-core/admin/bp-core-admin-schema.php:322
 msgctxt "Display name field"
 msgid "Display Name"
 msgstr ""
@@ -2154,8 +2154,8 @@ msgid "Registration is currently disabled.  Before associating a page is allowed
 msgstr ""
 
 #: bp-core/admin/bp-core-admin-tools.php:22
-#: bp-core/admin/bp-core-admin-tools.php:474
-#: bp-core/admin/bp-core-admin-tools.php:481
+#: bp-core/admin/bp-core-admin-tools.php:411
+#: bp-core/admin/bp-core-admin-tools.php:418
 #: bp-core/classes/class-bp-admin.php:294
 msgid "BuddyPress Tools"
 msgstr ""
@@ -2204,108 +2204,78 @@ msgstr ""
 msgid "Reinstall emails (delete and restore from defaults)."
 msgstr ""
 
-#: bp-core/admin/bp-core-admin-tools.php:154
-msgid "Create the database table for Invitations and migrate existing group invitations if needed."
-msgstr ""
-
 #. translators: %s: the result of the action performed by the repair tool
-#: bp-core/admin/bp-core-admin-tools.php:185
+#: bp-core/admin/bp-core-admin-tools.php:177
 msgid "Counting the number of friends for each user&hellip; %s"
 msgstr ""
 
-#: bp-core/admin/bp-core-admin-tools.php:186
-#: bp-core/admin/bp-core-admin-tools.php:245
-#: bp-core/admin/bp-core-admin-tools.php:290
+#: bp-core/admin/bp-core-admin-tools.php:178
+#: bp-core/admin/bp-core-admin-tools.php:237
+#: bp-core/admin/bp-core-admin-tools.php:282
 msgid "Failed!"
 msgstr ""
 
-#: bp-core/admin/bp-core-admin-tools.php:226
-#: bp-core/admin/bp-core-admin-tools.php:274
-#: bp-core/admin/bp-core-admin-tools.php:302
-#: bp-core/admin/bp-core-admin-tools.php:319
-#: bp-core/admin/bp-core-admin-tools.php:333
+#: bp-core/admin/bp-core-admin-tools.php:218
+#: bp-core/admin/bp-core-admin-tools.php:266
+#: bp-core/admin/bp-core-admin-tools.php:294
+#: bp-core/admin/bp-core-admin-tools.php:311
+#: bp-core/admin/bp-core-admin-tools.php:325
 msgid "Complete!"
 msgstr ""
 
 #. translators: %s: the result of the action performed by the repair tool
-#: bp-core/admin/bp-core-admin-tools.php:244
+#: bp-core/admin/bp-core-admin-tools.php:236
 msgid "Counting the number of groups for each user&hellip; %s"
 msgstr ""
 
 #. translators: %s: the result of the action performed by the repair tool
-#: bp-core/admin/bp-core-admin-tools.php:287
+#: bp-core/admin/bp-core-admin-tools.php:279
 msgid "Repopulating Blogs records&hellip; %s"
 msgstr ""
 
 #. translators: %s: the result of the action performed by the repair tool
-#: bp-core/admin/bp-core-admin-tools.php:316
+#: bp-core/admin/bp-core-admin-tools.php:308
 msgid "Counting the number of active members on the site&hellip; %s"
 msgstr ""
 
 #. translators: %s: the result of the action performed by the repair tool
-#: bp-core/admin/bp-core-admin-tools.php:331
+#: bp-core/admin/bp-core-admin-tools.php:323
 msgid "Determining last activity dates for each user&hellip; %s"
 msgstr ""
 
-#. translators: %s: the result of the action performed by the repair tool
-#: bp-core/admin/bp-core-admin-tools.php:351
-msgid "Creating the Invitations database table if it does not exist&hellip; %s"
-msgstr ""
-
-#: bp-core/admin/bp-core-admin-tools.php:352
-msgid "Failed to create table!"
-msgstr ""
-
-#: bp-core/admin/bp-core-admin-tools.php:364
-msgid "Created invitations table!"
-msgstr ""
-
-#. translators: %s: the result of the action performed by the repair tool
-#: bp-core/admin/bp-core-admin-tools.php:372
-msgid "Migrating group invitations&hellip; %s"
-msgstr ""
-
-#: bp-core/admin/bp-core-admin-tools.php:373
-msgid "Failed to migrate invitations!"
-msgstr ""
-
-#: bp-core/admin/bp-core-admin-tools.php:380
-msgid "Migrated invitations!"
-msgstr ""
-
-#: bp-core/admin/bp-core-admin-tools.php:445
+#: bp-core/admin/bp-core-admin-tools.php:382
 #: bp-core/classes/class-bp-admin.php:271
 #: bp-core/classes/class-bp-admin.php:272
 msgid "Tools"
 msgstr ""
 
-#: bp-core/admin/bp-core-admin-tools.php:476
+#: bp-core/admin/bp-core-admin-tools.php:413
 msgid "BuddyPress keeps track of various relationships between users, groups, and activity items. Occasionally these relationships become out of sync, most often after an import, update, or migration."
 msgstr ""
 
 #. translators: %s: the link to the BuddyPress repair tools
-#: bp-core/admin/bp-core-admin-tools.php:480
+#: bp-core/admin/bp-core-admin-tools.php:417
 msgctxt "buddypress tools intro"
 msgid "Use the %s to repair these relationships."
 msgstr ""
 
-#: bp-core/admin/bp-core-admin-tools.php:541
+#: bp-core/admin/bp-core-admin-tools.php:478
 msgid "Emails have been successfully reinstalled."
 msgstr ""
 
-#: bp-core/admin/bp-core-admin-tools.php:561
+#: bp-core/admin/bp-core-admin-tools.php:498
 msgid "It looks like you have more sites to record. Resume recording by checking the \"Repopulate site tracking records\" option."
 msgstr ""
 
-#: bp-core/admin/bp-core-admin-tools.php:624
+#: bp-core/admin/bp-core-admin-tools.php:561
 msgid "Version"
 msgstr ""
 
-#: bp-core/admin/bp-core-admin-tools.php:628
+#: bp-core/admin/bp-core-admin-tools.php:565
 msgid "Active components"
 msgstr ""
 
-#: bp-core/admin/bp-core-admin-tools.php:632
+#: bp-core/admin/bp-core-admin-tools.php:569
 msgid "Active template pack"
 msgstr ""
 
@@ -2514,12 +2484,12 @@ msgstr ""
 #. translators: %s: the upload error message
 #: bp-core/bp-core-attachments.php:1367
 #: bp-core/bp-core-avatars.php:915
-#: bp-core/classes/trait-attachments.php:51
+#: bp-core/classes/trait-attachments.php:50
 msgid "Upload Failed! Error was: %s"
 msgstr ""
 
 #: bp-core/bp-core-attachments.php:1373
-#: bp-core/classes/trait-attachments.php:107
+#: bp-core/classes/trait-attachments.php:106
 msgid "There was a problem uploading the cover image."
 msgstr ""
 
@@ -2529,7 +2499,7 @@ msgstr ""
 
 #. translators: %s: the upload error message
 #: bp-core/bp-core-avatars.php:944
-#: bp-core/classes/trait-attachments.php:279
+#: bp-core/classes/trait-attachments.php:278
 msgid "Upload failed! Error was: %s"
 msgstr ""
 
@@ -2997,7 +2967,7 @@ msgstr ""
 
 #. translators: link to Privacy Policy
 #: bp-core/bp-core-functions.php:3289
-#: bp-templates/bp-nouveau/includes/template-tags.php:2563
+#: bp-templates/bp-nouveau/includes/template-tags.php:2536
 msgid "Privacy Policy"
 msgstr ""
 
@@ -3610,22 +3580,22 @@ msgctxt "recipient salutation"
 msgid "Hi %s,"
 msgstr ""
 
-#: bp-core/bp-core-update.php:654
+#: bp-core/bp-core-update.php:655
 msgctxt "component directory title"
 msgid "Site-Wide Activity"
 msgstr ""
 
-#: bp-core/bp-core-update.php:655
+#: bp-core/bp-core-update.php:656
 msgctxt "component directory title"
 msgid "Sites"
 msgstr ""
 
-#: bp-core/bp-core-update.php:656
+#: bp-core/bp-core-update.php:657
 msgctxt "component directory title"
 msgid "Groups"
 msgstr ""
 
-#: bp-core/bp-core-update.php:657
+#: bp-core/bp-core-update.php:658
 msgctxt "component directory title"
 msgid "Members"
 msgstr ""
@@ -3757,8 +3727,6 @@ msgstr ""
 #: bp-settings/classes/class-bp-settings-component.php:28
 #: bp-settings/classes/class-bp-settings-component.php:142
 #: bp-settings/classes/class-bp-settings-component.php:243
-#: bp-groups/js/blocks/group.js:70
-#: bp-members/js/blocks/member.js:69
 msgid "Settings"
 msgstr ""
 
@@ -3867,203 +3835,217 @@ msgid "Get involved"
 msgstr ""
 
 #: bp-core/classes/class-bp-admin.php:656
-msgid "Say hello to the first two BuddyPress blocks!"
-msgstr ""
-
-#: bp-core/classes/class-bp-admin.php:658
-msgid "Gif Animation showing how to insert the BuddyPress Group Block."
+msgid "Introducing the BP REST API"
 msgstr ""
 
 #: bp-core/classes/class-bp-admin.php:661
-msgid "BuddyPress 6.0.0 comes with two awesome blocks for your WordPress Editor: the BP Member and BP Group Blocks."
+msgid "BuddyPress 5.0.0 comes with REST API endpoints for members, groups, activities, users, private messages, screen notifications and extended profiles."
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:662
-msgid "Available from the BuddyPress blocks category of your WordPress Block menu, these lovely blocks let you insert a rich content block featuring a specific member or group from your community site in a WordPress post or page."
+#: bp-core/classes/class-bp-admin.php:664
+msgid "BuddyPress endpoints provide machine-readable external access to your WordPress site with a clear, standards-driven interface, paving the way for new and innovative methods of interacting with your community through plugins, themes, apps, and beyond."
 msgstr ""
 
-#. translators: %s is the placeholder for the link to the Advanced section of the BP Blocks development note.
-#: bp-core/classes/class-bp-admin.php:666
-msgid "If you're an Advanced BuddyPresser and wish to fine tune the BuddyPress blocks for your community site, learn more in %s about the new BP Blocks."
+#. translators: %s is the placeholder for the link to the BP REST API documentation site.
+#: bp-core/classes/class-bp-admin.php:667
+msgid "Ready to get started with development? Check out the %s."
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:670
-msgid "this section of our development note"
+#: bp-core/classes/class-bp-admin.php:671
+msgid "BP REST API reference"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:677
-msgid "The BP REST API is now completed!"
+#: bp-core/classes/class-bp-admin.php:678
+msgid "A new interface for managing group members."
 msgstr ""
 
-#. translators: %s is the placeholder for the link to the BP REST API documentation.
-#: bp-core/classes/class-bp-admin.php:684
-msgid "In 5.0.0, we introduced the first endpoints and provided %s for them."
+#: bp-core/classes/class-bp-admin.php:680
+msgid "The best way to show the power of the BP REST API is to start using it for one of our Core features."
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:688
-msgid "reference documentation"
+#: bp-core/classes/class-bp-admin.php:683
+msgid "Screenshot of the Group Members management interface in the administration and on the front-end of your site."
+msgstr ""
+
+#: bp-core/classes/class-bp-admin.php:686
+msgid "Group administrators will love our new interface for managing group membership. Whether you're working as a group admin on the front-end Manage tab, or as the site admin on the Dashboard, the new REST API-based tools are faster, easier to use, and more consistent."
 msgstr ""
 
 #: bp-core/classes/class-bp-admin.php:691
-msgid "In 6.0.0, we are adding the 6 remaining endpoints you were waiting for: Blogs, Blog avatar, Friends, Group Cover Image, Member Cover Image and User Signups. You can now build full-featured BuddyPress Apps!"
+msgid "Improved Group invites and membership requests."
 msgstr ""
 
 #: bp-core/classes/class-bp-admin.php:696
-msgid "BP Nouveau has been improved"
+msgid "Thanks to the new BP Invitations API, Group invites and membership requests are now managed in a more consistent way."
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:698
-msgid "Your active theme supports wide layouts? Awesome! BP Nouveau now supports wide (and really, really wide) content areas, too!"
+#: bp-core/classes/class-bp-admin.php:699
+msgid "The BP Invitations API abstracts how these two actions are handled and allows developers to use them for any object on your site (e.g., Sites of a WordPress network)."
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:701
-msgid "Screenshot of the BP Nouveau customizer setting to take advantage of wide layouts"
+#. translators: %s is the placeholder for the link to the BP Invitations API development note.
+#: bp-core/classes/class-bp-admin.php:702
+msgid "Read more about the %s."
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:704
-msgid "This is the first of the many improvements we are bringing to our default Template Pack. It never looked so beautiful in your theme."
+#: bp-core/classes/class-bp-admin.php:706
+msgid "BP Invitations API"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:709
-msgid "Under the hood"
+#: bp-core/classes/class-bp-admin.php:713
+msgid "Help our support volunteers help you."
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:714
-msgid "6.0.0 includes more than 80 changes to improve your BuddyPress experience as users, as contributors to our code and as contributors to our translations."
+#: bp-core/classes/class-bp-admin.php:715
+msgid "Knowing your WordPress and BuddyPress configuration is very important when one of our beloved support volunteers tries to help you fix an issue. That's why we added a BuddyPress section to the Site Health Info Administration screen."
 msgstr ""
 
-#. translators: %s is the placeholder for the link to the Avatar changes development note.
-#: bp-core/classes/class-bp-admin.php:719
-msgid "The biggest change moves local avatar management to the Members component. Read more about it in %s."
+#: bp-core/classes/class-bp-admin.php:718
+msgid "Screenshot of the BuddyPress section of the Site Health Info Administration screen."
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:723
-msgid "this development note"
+#: bp-core/classes/class-bp-admin.php:721
+msgid "The panel is displayed at the bottom of the screen. It includes the BuddyPress version, active components, active template pack, and a list of other component-specific settings information."
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:730
-msgid "We want to hear your voice"
+#: bp-core/classes/class-bp-admin.php:726
+msgid "Improved integrations with WordPress"
 msgstr ""
 
-#. translators: %s is the placeholder for the link to the 2020 BuddyPress survey.
+#: bp-core/classes/class-bp-admin.php:728
+msgid "Screenshot of the BuddyPress members directory & Password control in Twenty Ninteen."
+msgstr ""
+
+#: bp-core/classes/class-bp-admin.php:732
+msgid "In BuddyPress 5.0.0, the BP Nouveau template pack looks better than ever with the Twenty Nineteen theme."
+msgstr ""
+
+#: bp-core/classes/class-bp-admin.php:733
+msgid "Nouveau also now uses the same password control as the one used in WordPress Core, for better consistency between BuddyPress and WordPress spaces."
+msgstr ""
+
 #: bp-core/classes/class-bp-admin.php:737
-msgid "Take the %s."
+msgid "BuddyPress Blocks now have their own category into the Block Editor."
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:741
-msgid "2020 BuddyPress Survey"
+#: bp-core/classes/class-bp-admin.php:740
+msgid "Screenshot of the BuddyPress block category."
 msgstr ""
 
+#: bp-core/classes/class-bp-admin.php:743
+msgid "Developers building tools for the Block Editor can now add their blocks to the BuddyPress category. This change provides a foundation for organizing custom BuddyPress blocks."
+msgstr ""
+
+#. translators: %s is the placeholder for the link to the blocks category development note.
 #: bp-core/classes/class-bp-admin.php:746
-msgid "Knowing how you use BuddyPress and getting your point of view about future BuddyPress development is very important to us."
+msgid "Read more about this feature in the %s."
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:747
-msgid "Please, take some time to help us decide what's best for the BuddyPress project."
+#: bp-core/classes/class-bp-admin.php:750
+msgid "development note"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:752
+#: bp-core/classes/class-bp-admin.php:757
 msgctxt "screen heading"
 msgid "Your feedback"
 msgstr ""
 
 #. translators: %s is the placeholder for the link to BuddyPress support forums.
-#: bp-core/classes/class-bp-admin.php:757
+#: bp-core/classes/class-bp-admin.php:762
 msgid " How are you using BuddyPress? Receiving your feedback and suggestions for future versions of BuddyPress genuinely motivates and encourages our contributors. Please %s about this version of BuddyPress on our website. "
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:761
+#: bp-core/classes/class-bp-admin.php:766
 msgid "share your feedback"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:766
+#: bp-core/classes/class-bp-admin.php:771
 msgid "Thank you for using BuddyPress! 😊"
 msgstr ""
 
 #. translators: 1: heart dashicons. 2: BP Credits screen url. 3: number of BuddyPress contributors to this version.
-#: bp-core/classes/class-bp-admin.php:778
+#: bp-core/classes/class-bp-admin.php:783
 msgid "Built with %1$s by <a href=\"%2$s\">%3$d volunteer</a>."
 msgid_plural "Built with %1$s by <a href=\"%2$s\">%3$d volunteers</a>."
 msgstr[0] ""
 msgstr[1] ""
 
-#: bp-core/classes/class-bp-admin.php:793
-#: bp-core/classes/class-bp-admin.php:795
+#: bp-core/classes/class-bp-admin.php:798
+#: bp-core/classes/class-bp-admin.php:800
 msgid "Follow BuddyPress on Twitter"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:804
-#: bp-core/classes/class-bp-admin.php:806
+#: bp-core/classes/class-bp-admin.php:809
+#: bp-core/classes/class-bp-admin.php:811
 msgid "Visit the Support Forums"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:835
+#: bp-core/classes/class-bp-admin.php:840
 msgid "Meet the contributors behind BuddyPress:"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:837
+#: bp-core/classes/class-bp-admin.php:842
 msgid "Project Leaders"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:842
+#: bp-core/classes/class-bp-admin.php:847
 msgid "Project Lead"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:847
 #: bp-core/classes/class-bp-admin.php:852
+#: bp-core/classes/class-bp-admin.php:857
 msgid "Lead Developer"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:856
+#: bp-core/classes/class-bp-admin.php:861
 msgid "BuddyPress Team"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:861
 #: bp-core/classes/class-bp-admin.php:866
 #: bp-core/classes/class-bp-admin.php:871
-#: bp-core/classes/class-bp-admin.php:881
+#: bp-core/classes/class-bp-admin.php:876
 #: bp-core/classes/class-bp-admin.php:886
-#: bp-core/classes/class-bp-admin.php:906
+#: bp-core/classes/class-bp-admin.php:891
 #: bp-core/classes/class-bp-admin.php:911
 #: bp-core/classes/class-bp-admin.php:916
 #: bp-core/classes/class-bp-admin.php:921
+#: bp-core/classes/class-bp-admin.php:926
 msgid "Core Developer"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:876
+#: bp-core/classes/class-bp-admin.php:881
 msgid "Navigator"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:891
 #: bp-core/classes/class-bp-admin.php:896
 #: bp-core/classes/class-bp-admin.php:901
-#: bp-core/classes/class-bp-admin.php:926
+#: bp-core/classes/class-bp-admin.php:906
+#: bp-core/classes/class-bp-admin.php:931
 msgid "Community Support"
 msgstr ""
 
-#. translators: %s: BuddyPress version number
-#: bp-core/classes/class-bp-admin.php:934
-msgid "Noteworthy Contributors to %s"
+#: bp-core/classes/class-bp-admin.php:935
+msgid "Recent Rockstars"
 msgstr ""
 
 #. translators: %s: BuddyPress version number
-#: bp-core/classes/class-bp-admin.php:966
-msgid "All Contributors to BuddyPress %s"
+#: bp-core/classes/class-bp-admin.php:963
+msgid "Contributors to BuddyPress %s"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:1002
+#: bp-core/classes/class-bp-admin.php:999
 msgid "With our thanks to these Open Source projects"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:1016
+#: bp-core/classes/class-bp-admin.php:1013
 msgid "Contributor Emeriti"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:1021
+#: bp-core/classes/class-bp-admin.php:1018
 msgid "Project Founder"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:1057
+#: bp-core/classes/class-bp-admin.php:1054
 msgctxt "Email post type"
 msgid "Situations"
 msgstr ""
@@ -4316,80 +4298,83 @@ msgstr ""
 msgid "Name of the component."
 msgstr ""
 
-#: bp-core/classes/class-bp-rest-components-endpoint.php:55
+#: bp-core/classes/class-bp-rest-components-endpoint.php:58
 msgid "Whether to activate or deactivate the component."
 msgstr ""
 
-#: bp-core/classes/class-bp-rest-components-endpoint.php:167
-#: bp-messages/classes/class-bp-rest-messages-endpoint.php:188
-msgid "Sorry, you are not allowed to perform this action."
+#: bp-core/classes/class-bp-rest-components-endpoint.php:173
+msgid "Sorry, you do not have access to list components."
 msgstr ""
 
-#: bp-core/classes/class-bp-rest-components-endpoint.php:199
+#: bp-core/classes/class-bp-rest-components-endpoint.php:205
 msgid "Sorry, this component does not exist."
 msgstr ""
 
-#: bp-core/classes/class-bp-rest-components-endpoint.php:210
+#: bp-core/classes/class-bp-rest-components-endpoint.php:216
+msgid "Sorry, this is not a valid action."
+msgstr ""
+
+#: bp-core/classes/class-bp-rest-components-endpoint.php:227
 msgid "Sorry, this component is already active."
 msgstr ""
 
-#: bp-core/classes/class-bp-rest-components-endpoint.php:222
+#: bp-core/classes/class-bp-rest-components-endpoint.php:239
 msgid "Sorry, this component is not active."
 msgstr ""
 
-#: bp-core/classes/class-bp-rest-components-endpoint.php:232
+#: bp-core/classes/class-bp-rest-components-endpoint.php:249
 msgid "Sorry, you cannot deactivate a required component."
 msgstr ""
 
-#: bp-core/classes/class-bp-rest-components-endpoint.php:323
+#: bp-core/classes/class-bp-rest-components-endpoint.php:344
 msgid "active"
 msgstr ""
 
-#: bp-core/classes/class-bp-rest-components-endpoint.php:326
+#: bp-core/classes/class-bp-rest-components-endpoint.php:347
 msgid "inactive"
 msgstr ""
 
-#: bp-core/classes/class-bp-rest-components-endpoint.php:438
+#: bp-core/classes/class-bp-rest-components-endpoint.php:459
 msgid "Name of the object."
 msgstr ""
 
-#: bp-core/classes/class-bp-rest-components-endpoint.php:443
+#: bp-core/classes/class-bp-rest-components-endpoint.php:467
 msgid "Whether the object is active or inactive."
 msgstr ""
 
-#: bp-core/classes/class-bp-rest-components-endpoint.php:449
+#: bp-core/classes/class-bp-rest-components-endpoint.php:476
 msgid "HTML title of the object."
 msgstr ""
 
-#: bp-core/classes/class-bp-rest-components-endpoint.php:454
+#: bp-core/classes/class-bp-rest-components-endpoint.php:484
 msgid "HTML description of the object."
 msgstr ""
 
-#: bp-core/classes/trait-attachments.php:73
+#: bp-core/classes/trait-attachments.php:72
 msgid "The BuddyPress attachments uploads directory is not set."
 msgstr ""
 
-#: bp-core/classes/trait-attachments.php:87
+#: bp-core/classes/trait-attachments.php:86
 msgid "The cover image directory is not valid."
 msgstr ""
 
 #. translators: %$1s and %$2s is replaced with the correct sizes.
-#: bp-core/classes/trait-attachments.php:124
+#: bp-core/classes/trait-attachments.php:123
 msgid "You have selected an image that is smaller than recommended. For better results, make sure to upload an image that is larger than %1$spx wide, and %2$spx tall."
 msgstr ""
 
 #. translators: %s: the upload error message
-#: bp-core/classes/trait-attachments.php:176
+#: bp-core/classes/trait-attachments.php:175
 msgid "Upload failed! Error was: %s."
 msgstr ""
 
 #. translators: %1$s and %2$s is replaced with the correct sizes.
-#: bp-core/classes/trait-attachments.php:197
+#: bp-core/classes/trait-attachments.php:196
 msgid "You have selected an image that is smaller than recommended. For best results, upload a picture larger than %1$s x %2$s pixels."
 msgstr ""
 
 #. translators: %s is replaced with object type.
-#: bp-core/classes/trait-attachments.php:355
+#: bp-core/classes/trait-attachments.php:354
 msgid "There was a problem cropping your %s photo."
 msgstr ""
 
@@ -4977,15 +4962,11 @@ msgid "Friendships"
 msgstr ""
 
 #: bp-friends/classes/class-bp-rest-friends-endpoint.php:63
-msgid "Numeric identifier of a user ID."
+msgid "Identifier for a user ID."
 msgstr ""
 
 #: bp-friends/classes/class-bp-rest-friends-endpoint.php:132
-#: bp-friends/classes/class-bp-rest-friends-endpoint.php:213
-#: bp-friends/classes/class-bp-rest-friends-endpoint.php:305
-#: bp-friends/classes/class-bp-rest-friends-endpoint.php:416
-#: bp-friends/classes/class-bp-rest-friends-endpoint.php:511
-msgid "There was a problem confirming if user is valid."
+msgid "There was a problem confirming if user is a valid one."
 msgstr ""
 
 #: bp-friends/classes/class-bp-rest-friends-endpoint.php:180
@@ -4993,9 +4974,17 @@ msgstr ""
 #: bp-groups/classes/class-bp-rest-attachments-group-cover-endpoint.php:341
 #: bp-members/classes/class-bp-rest-attachments-member-avatar-endpoint.php:261
 #: bp-members/classes/class-bp-rest-attachments-member-cover-endpoint.php:340
-#: bp-members/classes/class-bp-rest-signup-endpoint.php:190
-#: bp-members/classes/class-bp-rest-signup-endpoint.php:267
+#: bp-members/classes/class-bp-rest-signup-endpoint.php:189
+#: bp-members/classes/class-bp-rest-signup-endpoint.php:266
+#: bp-members/classes/class-bp-rest-signup-endpoint.php:390
 msgid "Sorry, you need to be logged in to perform this action."
+msgstr ""
+
+#: bp-friends/classes/class-bp-rest-friends-endpoint.php:213
+#: bp-friends/classes/class-bp-rest-friends-endpoint.php:305
+#: bp-friends/classes/class-bp-rest-friends-endpoint.php:416
+#: bp-friends/classes/class-bp-rest-friends-endpoint.php:511
+msgid "There was a problem confirming if user is valid."
 msgstr ""
 
 #: bp-friends/classes/class-bp-rest-friends-endpoint.php:228
@@ -5030,7 +5019,7 @@ msgid "A unique numeric ID of a user."
 msgstr ""
 
 #: bp-friends/classes/class-bp-rest-friends-endpoint.php:734
-msgid "Whether to force the friendship agreement."
+msgid "Whether to force friendship acceptance."
 msgstr ""
 
 #: bp-friends/classes/class-bp-rest-friends-endpoint.php:746
@@ -5038,18 +5027,15 @@ msgid "Whether to force friendship removal."
 msgstr ""
 
 #: bp-friends/classes/class-bp-rest-friends-endpoint.php:806
-#: bp-friends/classes/class-bp-rest-friends-endpoint.php:876
-msgid "Unique numeric identifier of the friendship."
+msgid "A unique numeric ID for the friendship."
 msgstr ""
 
 #: bp-friends/classes/class-bp-rest-friends-endpoint.php:811
-#: bp-friends/classes/class-bp-rest-friends-endpoint.php:884
-msgid "The ID of the user who is requesting the Friendship."
+msgid "User ID of the friendship initiator."
 msgstr ""
 
 #: bp-friends/classes/class-bp-rest-friends-endpoint.php:816
-#: bp-friends/classes/class-bp-rest-friends-endpoint.php:892
-msgid "The ID of the user who is invited to agree to the Friendship request."
+msgid "User ID of the `friend` - the one invited to the friendship."
 msgstr ""
 
 #: bp-friends/classes/class-bp-rest-friends-endpoint.php:821
@@ -5061,11 +5047,20 @@ msgid "The date the friendship was created, in the site's timezone."
 msgstr ""
 
 #: bp-friends/classes/class-bp-rest-friends-endpoint.php:859
-msgid "ID of the member whose friendships are being retrieved."
+msgid "ID of the user whose friends are being retrieved."
 msgstr ""
 
 #: bp-friends/classes/class-bp-rest-friends-endpoint.php:868
 msgid "Wether the friendship has been accepted."
+msgstr ""
+
+#: bp-friends/classes/class-bp-rest-friends-endpoint.php:876
+#: bp-friends/classes/class-bp-rest-friends-endpoint.php:892
+msgid "ID of a specific friendship to retrieve."
+msgstr ""
+
+#: bp-friends/classes/class-bp-rest-friends-endpoint.php:884
+msgid "ID of the friendship initiator."
 msgstr ""
 
 #: bp-friends/classes/class-bp-rest-friends-endpoint.php:900
@@ -5215,7 +5210,7 @@ msgstr ""
 
 #. translators: 1: the user link. 2: the group link.
 #: bp-groups/bp-groups-activity.php:141
-#: bp-groups/bp-groups-activity.php:753
+#: bp-groups/bp-groups-activity.php:717
 msgid "%1$s joined the group %2$s"
 msgstr ""
 
@@ -5569,7 +5564,7 @@ msgstr ""
 #: bp-groups/bp-groups-functions.php:1213
 #: bp-groups/bp-groups-functions.php:2916
 #: bp-members/classes/class-bp-members-admin.php:836
-#: bp-members/js/blocks/member.js:143
+#: bp-members/js/blocks/member.js:254
 msgid "Member"
 msgstr ""
 
@@ -5925,7 +5920,7 @@ msgid "Private Group"
 msgstr ""
 
 #: bp-groups/bp-groups-template.php:690
-#: bp-groups/js/blocks/group.js:142
+#: bp-groups/js/blocks/group.js:254
 msgid "Group"
 msgstr ""
 
@@ -6076,7 +6071,7 @@ msgstr ""
 #: bp-templates/bp-legacy/buddypress/members/single/blogs.php:19
 #: bp-templates/bp-legacy/buddypress/members/single/friends.php:20
 #: bp-templates/bp-legacy/buddypress/members/single/groups.php:20
-#: bp-templates/bp-nouveau/includes/template-tags.php:2160
+#: bp-templates/bp-nouveau/includes/template-tags.php:2133
 msgid "Order By:"
 msgstr ""
 
@@ -6518,8 +6513,9 @@ msgstr ""
 #: bp-groups/classes/class-bp-rest-attachments-group-cover-endpoint.php:351
 #: bp-members/classes/class-bp-rest-attachments-member-avatar-endpoint.php:281
 #: bp-members/classes/class-bp-rest-attachments-member-cover-endpoint.php:350
-#: bp-members/classes/class-bp-rest-signup-endpoint.php:200
-#: bp-members/classes/class-bp-rest-signup-endpoint.php:287
+#: bp-members/classes/class-bp-rest-signup-endpoint.php:199
+#: bp-members/classes/class-bp-rest-signup-endpoint.php:286
+#: bp-members/classes/class-bp-rest-signup-endpoint.php:400
 msgid "Sorry, you are not authorized to perform this action."
 msgstr ""
 
@@ -6531,7 +6527,7 @@ msgstr ""
 msgid "Sorry, there was a problem deleting this group avatar."
 msgstr ""
 
-#: bp-groups/classes/class-bp-rest-attachments-group-avatar-endpoint.php:475
+#: bp-groups/classes/class-bp-rest-attachments-group-avatar-endpoint.php:477
 msgid "Whether to return an <img> HTML element, vs a raw URL to a group avatar."
 msgstr ""
 
@@ -7300,7 +7296,6 @@ msgstr ""
 
 #: bp-members/bp-members-functions.php:1926
 #: bp-members/bp-members-functions.php:1953
-#: bp-members/classes/class-bp-rest-signup-endpoint.php:666
 msgid "Invalid activation key."
 msgstr ""
 
@@ -8000,8 +7995,8 @@ msgstr ""
 msgid "Sorry, there was a problem deleting the avatar."
 msgstr ""
 
-#: bp-members/classes/class-bp-rest-attachments-member-avatar-endpoint.php:499
-msgid "Whether to disable the default Gravatar fallback."
+#: bp-members/classes/class-bp-rest-attachments-member-avatar-endpoint.php:485
+msgid "Whether to return an <img> HTML element, vs a raw URL to an avatar."
 msgstr ""
 
 #: bp-members/classes/class-bp-rest-attachments-member-cover-endpoint.php:72
@@ -8122,106 +8117,78 @@ msgid "Limit results set to a certain XProfile field."
 msgstr ""
 
 #: bp-members/classes/class-bp-rest-signup-endpoint.php:64
-msgid "Identifier for the signup. Can be a signup ID, an email address, or an activation key."
-msgstr ""
-
 #: bp-members/classes/class-bp-rest-signup-endpoint.php:99
-#: bp-members/classes/class-bp-rest-signup-endpoint.php:906
-msgid "Activation key of the signup."
+msgid "Identifier for the signup. Can be a signup ID, an email address, or a user_login."
 msgstr ""
 
-#: bp-members/classes/class-bp-rest-signup-endpoint.php:277
+#: bp-members/classes/class-bp-rest-signup-endpoint.php:276
+#: bp-members/classes/class-bp-rest-signup-endpoint.php:551
 msgid "Invalid signup id."
 msgstr ""
 
-#: bp-members/classes/class-bp-rest-signup-endpoint.php:447
+#: bp-members/classes/class-bp-rest-signup-endpoint.php:340
 msgid "Cannot create new signup."
 msgstr ""
 
-#: bp-members/classes/class-bp-rest-signup-endpoint.php:545
+#: bp-members/classes/class-bp-rest-signup-endpoint.php:437
 msgid "Could not delete signup."
 msgstr ""
 
-#: bp-members/classes/class-bp-rest-signup-endpoint.php:618
+#: bp-members/classes/class-bp-rest-signup-endpoint.php:507
 msgid "Fail to activate the signup."
 msgstr ""
 
-#: bp-members/classes/class-bp-rest-signup-endpoint.php:794
-msgid "Passwords cannot be empty or contain the \"\\\" character."
+#: bp-members/classes/class-bp-rest-signup-endpoint.php:655
+msgid "New user domain."
 msgstr ""
 
-#: bp-members/classes/class-bp-rest-signup-endpoint.php:845
-#: bp-members/classes/class-bp-rest-signup-endpoint.php:936
-msgid "Password for the new user (never included)."
+#: bp-members/classes/class-bp-rest-signup-endpoint.php:662
+msgid "New user title."
 msgstr ""
 
-#: bp-members/classes/class-bp-rest-signup-endpoint.php:888
+#: bp-members/classes/class-bp-rest-signup-endpoint.php:669
+msgid "New user path."
+msgstr ""
+
+#: bp-members/classes/class-bp-rest-signup-endpoint.php:706
 msgid "A unique numeric ID for the signup."
 msgstr ""
 
-#: bp-members/classes/class-bp-rest-signup-endpoint.php:894
+#: bp-members/classes/class-bp-rest-signup-endpoint.php:712
 msgid "The username of the user the signup is for."
 msgstr ""
 
-#: bp-members/classes/class-bp-rest-signup-endpoint.php:900
+#: bp-members/classes/class-bp-rest-signup-endpoint.php:719
+msgid "The full name of the user the signup is for."
+msgstr ""
+
+#: bp-members/classes/class-bp-rest-signup-endpoint.php:728
 msgid "The email for the user the signup is for."
 msgstr ""
 
-#: bp-members/classes/class-bp-rest-signup-endpoint.php:912
+#: bp-members/classes/class-bp-rest-signup-endpoint.php:734
+msgid "Activation key of the signup."
+msgstr ""
+
+#: bp-members/classes/class-bp-rest-signup-endpoint.php:740
 msgid "The registered date for the user, in the site's timezone."
 msgstr ""
 
-#: bp-members/classes/class-bp-rest-signup-endpoint.php:919
-msgid "The date the activation email was sent to the user, in the site's timezone."
-msgstr ""
-
-#: bp-members/classes/class-bp-rest-signup-endpoint.php:925
-msgid "The number of times the activation email was sent to the user."
-msgstr ""
-
-#: bp-members/classes/class-bp-rest-signup-endpoint.php:932
-msgid "The signup meta information"
-msgstr ""
-
-#: bp-members/classes/class-bp-rest-signup-endpoint.php:948
-msgid "The new user's full name."
-msgstr ""
-
-#: bp-members/classes/class-bp-rest-signup-endpoint.php:960
-msgid "Unique site name (slug) of the new user's child site."
-msgstr ""
-
-#: bp-members/classes/class-bp-rest-signup-endpoint.php:967
-msgid "Title of the new user's child site."
-msgstr ""
-
-#: bp-members/classes/class-bp-rest-signup-endpoint.php:974
-msgid "Search engine visibility of the new user's  site."
-msgstr ""
-
-#: bp-members/classes/class-bp-rest-signup-endpoint.php:981
-msgid "Language to use for the new user's  site."
-msgstr ""
-
-#: bp-members/classes/class-bp-rest-signup-endpoint.php:1010
+#: bp-members/classes/class-bp-rest-signup-endpoint.php:788
 msgid "Total number of signups to return."
 msgstr ""
 
-#: bp-members/classes/class-bp-rest-signup-endpoint.php:1018
-msgid "Offset the result set by a specific number of items."
-msgstr ""
-
-#: bp-members/classes/class-bp-rest-signup-endpoint.php:1035
+#: bp-members/classes/class-bp-rest-signup-endpoint.php:796
 msgid "Order by a specific parameter (default: signup_id)."
 msgstr ""
 
-#: bp-members/classes/class-bp-rest-signup-endpoint.php:1053
+#: bp-members/classes/class-bp-rest-signup-endpoint.php:804
 msgid "Specific user login to return."
 msgstr ""
 
-#: bp-members/classes/class-bp-signup.php:639
-#: bp-members/classes/class-bp-signup.php:731
-#: bp-members/classes/class-bp-signup.php:808
+#: bp-members/classes/class-bp-signup.php:633
+#: bp-members/classes/class-bp-signup.php:725
+#: bp-members/classes/class-bp-signup.php:802
 msgid "the sign-up has already been activated."
 msgstr ""
 
@@ -8765,6 +8732,10 @@ msgstr ""
 msgid "ID of one of the message of the Thread."
 msgstr ""
 
+#: bp-messages/classes/class-bp-rest-messages-endpoint.php:188
+msgid "Sorry, you are not allowed to perform this action."
+msgstr ""
+
 #: bp-messages/classes/class-bp-rest-messages-endpoint.php:210
 msgid "Sorry, you cannot view the messages."
 msgstr ""
@@ -8790,139 +8761,139 @@ msgstr ""
 msgid "There was an error trying to update the message."
 msgstr ""
 
-#: bp-messages/classes/class-bp-rest-messages-endpoint.php:534
+#: bp-messages/classes/class-bp-rest-messages-endpoint.php:537
 msgid "Sorry, this message does not exist."
 msgstr ""
 
-#: bp-messages/classes/class-bp-rest-messages-endpoint.php:544
+#: bp-messages/classes/class-bp-rest-messages-endpoint.php:547
 msgid "Sorry, you cannot add the message to your starred box."
 msgstr ""
 
-#: bp-messages/classes/class-bp-rest-messages-endpoint.php:548
+#: bp-messages/classes/class-bp-rest-messages-endpoint.php:551
 msgid "Sorry, you cannot remove the message from your starred box."
 msgstr ""
 
-#: bp-messages/classes/class-bp-rest-messages-endpoint.php:609
+#: bp-messages/classes/class-bp-rest-messages-endpoint.php:612
 msgid "Sorry, you are not allowed to star/unstar messages."
 msgstr ""
 
-#: bp-messages/classes/class-bp-rest-messages-endpoint.php:655
+#: bp-messages/classes/class-bp-rest-messages-endpoint.php:658
 msgid "There was an error trying to delete the thread."
 msgstr ""
 
-#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1012
+#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1015
 msgid "ID of the Messages Thread."
 msgstr ""
 
-#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1018
+#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1021
 msgid "ID of the Messages Thread. Required when replying to an existing Thread."
 msgstr ""
 
-#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1023
+#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1026
 msgid "The user ID of the Message sender."
 msgstr ""
 
-#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1034
+#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1037
 msgid "Subject of the Message initializing the Thread."
 msgstr ""
 
-#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1038
+#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1041
 msgid "Content of the Message to add to the Thread."
 msgstr ""
 
-#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1045
+#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1048
 msgid "The list of the recipients user IDs of the Message."
 msgstr ""
 
-#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1057
+#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1060
 msgid "By default the latest message of the thread will be updated. Specify this message ID to edit another message of the thread."
 msgstr ""
 
-#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1069
+#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1072
 msgid "The user ID to remove from the thread"
 msgstr ""
 
-#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1105
+#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1108
 msgid "A unique numeric ID for the Thread."
 msgstr ""
 
-#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1110
+#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1113
 msgid "The ID of the latest message of the Thread."
 msgstr ""
 
-#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1116
+#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1119
 msgid "The ID of latest sender of the Thread."
 msgstr ""
 
-#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1122
+#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1125
 msgid "Title of the latest message of the Thread."
 msgstr ""
 
-#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1130
+#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1133
 msgid "Title of the latest message of the Thread, as it exists in the database."
 msgstr ""
 
-#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1136
+#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1139
 msgid "Title of the latest message of the Thread, transformed for display."
 msgstr ""
 
-#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1146
+#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1149
 msgid "Summary of the latest message of the Thread."
 msgstr ""
 
-#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1155
+#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1158
 msgid "Summary for the latest message of the Thread, as it exists in the database."
 msgstr ""
 
-#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1160
+#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1163
 msgid "HTML summary for the latest message of the Thread, transformed for display."
 msgstr ""
 
-#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1168
+#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1171
 msgid "Content of the latest message of the Thread."
 msgstr ""
 
-#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1177
+#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1180
 msgid "Content for the latest message of the Thread, as it exists in the database."
 msgstr ""
 
-#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1182
+#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1185
 msgid "HTML content for the latest message of the Thread, transformed for display."
 msgstr ""
 
-#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1191
+#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1194
 msgid "The date the latest message of the Thread, in the site's timezone."
 msgstr ""
 
-#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1198
+#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1201
 msgid "Total count of unread messages into the Thread for the requested user."
 msgstr ""
 
-#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1204
+#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1207
 msgid "The list of user IDs for all messages in the Thread."
 msgstr ""
 
-#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1213
+#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1216
 msgid "The list of recipient User Objects involved into the Thread."
 msgstr ""
 
-#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1221
+#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1224
 msgid "List of message objects for the thread."
 msgstr ""
 
-#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1230
+#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1233
 msgid "List of starred message IDs."
 msgstr ""
 
-#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1268
+#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1271
 msgid "Filter the result by box."
 msgstr ""
 
-#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1277
+#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1280
 msgid "Filter the result by thread status."
 msgstr ""
 
-#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1286
+#: bp-messages/classes/class-bp-rest-messages-endpoint.php:1289
 msgid "Limit result to messages created by a specific user."
 msgstr ""
 
@@ -9321,17 +9292,17 @@ msgstr ""
 msgid "Receive group invitations from my friends only?"
 msgstr ""
 
-#: bp-settings/bp-settings-functions.php:328
+#: bp-settings/bp-settings-functions.php:326
 msgctxt "WP Comments data exporter friendly name"
 msgid "Comments"
 msgstr ""
 
-#: bp-settings/bp-settings-functions.php:329
+#: bp-settings/bp-settings-functions.php:327
 msgctxt "WP Media data exporter friendly name"
 msgid "Media"
 msgstr ""
 
-#: bp-settings/bp-settings-functions.php:330
+#: bp-settings/bp-settings-functions.php:328
 msgctxt "WP Media data exporter friendly name"
 msgid "Personal information"
 msgstr ""
@@ -9603,7 +9574,7 @@ msgstr ""
 #: bp-templates/bp-legacy/buddypress/activity/index.php:204
 #: bp-templates/bp-legacy/buddypress/groups/single/activity.php:25
 #: bp-templates/bp-legacy/buddypress/members/single/activity.php:18
-#: bp-templates/bp-nouveau/includes/template-tags.php:2163
+#: bp-templates/bp-nouveau/includes/template-tags.php:2136
 msgid "Show:"
 msgstr ""
 
@@ -10252,7 +10223,7 @@ msgstr ""
 #: bp-templates/bp-legacy/buddypress/members/register.php:119
 #: bp-templates/bp-legacy/buddypress/members/register.php:281
 #: bp-templates/bp-legacy/buddypress/members/register.php:297
-#: bp-templates/bp-nouveau/includes/template-tags.php:2409
+#: bp-templates/bp-nouveau/includes/template-tags.php:2382
 #: bp-xprofile/bp-xprofile-template.php:1439
 msgid "(required)"
 msgstr ""
@@ -12234,33 +12205,33 @@ msgctxt "button"
 msgid "Mark unread"
 msgstr ""
 
-#: bp-templates/bp-nouveau/includes/template-tags.php:2365
+#: bp-templates/bp-nouveau/includes/template-tags.php:2338
 msgid "Choose a Password (required)"
 msgstr ""
 
-#: bp-templates/bp-nouveau/includes/template-tags.php:2374
+#: bp-templates/bp-nouveau/includes/template-tags.php:2347
 msgid "Strength indicator"
 msgstr ""
 
-#: bp-templates/bp-nouveau/includes/template-tags.php:2379
+#: bp-templates/bp-nouveau/includes/template-tags.php:2352
 msgid "Confirm use of weak password"
 msgstr ""
 
-#: bp-templates/bp-nouveau/includes/template-tags.php:2387
+#: bp-templates/bp-nouveau/includes/template-tags.php:2360
 msgid "Confirm new password"
 msgstr ""
 
 #. translators: Do not translate placeholders. 2 = form field name, 3 = "(required)".
-#: bp-templates/bp-nouveau/includes/template-tags.php:2403
+#: bp-templates/bp-nouveau/includes/template-tags.php:2376
 msgid "<label for=\"%1$s\">%2$s %3$s</label>"
 msgstr ""
 
-#: bp-templates/bp-nouveau/includes/template-tags.php:2422
+#: bp-templates/bp-nouveau/includes/template-tags.php:2395
 msgid "I would like my site to appear in search engines, and in public listings around this network."
 msgstr ""
 
 #. translators: link to Privacy Policy
-#: bp-templates/bp-nouveau/includes/template-tags.php:2563
+#: bp-templates/bp-nouveau/includes/template-tags.php:2536
 msgid "I have read and agree to this site's %s."
 msgstr ""
 
@@ -12314,7 +12285,7 @@ msgid "Add New Field Group"
 msgstr ""
 
 #: bp-xprofile/bp-xprofile-admin.php:191
-#: bp-xprofile/bp-xprofile-admin.php:681
+#: bp-xprofile/bp-xprofile-admin.php:679
 msgid "(Primary)"
 msgstr ""
 
@@ -12382,39 +12353,39 @@ msgstr ""
 msgid "The field was saved successfully."
 msgstr ""
 
-#: bp-xprofile/bp-xprofile-admin.php:571
+#: bp-xprofile/bp-xprofile-admin.php:569
 msgid "field"
 msgstr ""
 
-#: bp-xprofile/bp-xprofile-admin.php:571
+#: bp-xprofile/bp-xprofile-admin.php:569
 msgid "option"
 msgstr ""
 
 #. translators: %s: the field type
-#: bp-xprofile/bp-xprofile-admin.php:576
+#: bp-xprofile/bp-xprofile-admin.php:574
 msgid "There was an error deleting the %s. Please try again."
 msgstr ""
 
 #. translators: %s: the field type
-#: bp-xprofile/bp-xprofile-admin.php:580
+#: bp-xprofile/bp-xprofile-admin.php:578
 msgid "The %s was deleted successfully!"
 msgstr ""
 
-#: bp-xprofile/bp-xprofile-admin.php:683
+#: bp-xprofile/bp-xprofile-admin.php:681
 msgid "(Sign-up)"
 msgstr ""
 
-#: bp-xprofile/bp-xprofile-admin.php:727
+#: bp-xprofile/bp-xprofile-admin.php:725
 msgctxt "Edit field link"
 msgid "Edit"
 msgstr ""
 
-#: bp-xprofile/bp-xprofile-admin.php:732
+#: bp-xprofile/bp-xprofile-admin.php:730
 msgctxt "Delete field link"
 msgid "Delete"
 msgstr ""
 
-#: bp-xprofile/bp-xprofile-admin.php:778
+#: bp-xprofile/bp-xprofile-admin.php:776
 msgctxt "xprofile field type category"
 msgid "Other"
 msgstr ""
@@ -13245,152 +13216,173 @@ msgstr ""
 msgid "BuddyPress Nouveau"
 msgstr ""
 
-#: bp-core/js/block-components.js:167
+#: bp-core/js/block-components.js:355
 msgid "Item's name"
 msgstr ""
 
-#: bp-core/js/block-components.js:171
+#: bp-core/js/block-components.js:359
 msgid "Enter Item's name here…"
 msgstr ""
 
-#: bp-groups/js/blocks/group.js:20
-#: bp-members/js/blocks/member.js:20
+#: bp-groups/js/blocks/group.js:149
+#: bp-members/js/blocks/member.js:149
 msgid "None"
 msgstr ""
 
-#: bp-groups/js/blocks/group.js:24
-#: bp-members/js/blocks/member.js:24
+#: bp-groups/js/blocks/group.js:152
+#: bp-members/js/blocks/member.js:152
 msgid "Thumb"
 msgstr ""
 
-#: bp-groups/js/blocks/group.js:28
-#: bp-members/js/blocks/member.js:28
+#: bp-groups/js/blocks/group.js:155
+#: bp-members/js/blocks/member.js:155
 msgid "Full"
 msgstr ""
 
-#: bp-groups/js/blocks/group.js:41
+#: bp-groups/js/blocks/group.js:173
 msgid "BuddyPress Group"
 msgstr ""
 
-#: bp-groups/js/blocks/group.js:42
+#: bp-groups/js/blocks/group.js:174
 msgid "Start typing the name of the group you want to feature into this post."
 msgstr ""
 
-#: bp-groups/js/blocks/group.js:47
+#: bp-groups/js/blocks/group.js:178
 msgid "Group's name"
 msgstr ""
 
-#: bp-groups/js/blocks/group.js:48
+#: bp-groups/js/blocks/group.js:179
 msgid "Enter Group's name here…"
 msgstr ""
 
-#: bp-groups/js/blocks/group.js:62
+#: bp-groups/js/blocks/group.js:187
 msgid "Select another group"
 msgstr ""
 
-#: bp-groups/js/blocks/group.js:72
+#: bp-groups/js/blocks/group.js:194
+msgid "Group's home button settings"
+msgstr ""
+
+#: bp-groups/js/blocks/group.js:197
 msgid "Display Group's home button"
 msgstr ""
 
-#: bp-groups/js/blocks/group.js:79
+#: bp-groups/js/blocks/group.js:204
 msgid "Include a link to the group's home page under their name."
 msgstr ""
 
-#: bp-groups/js/blocks/group.js:80
+#: bp-groups/js/blocks/group.js:204
 msgid "Toggle to display a link to the group's home page under their name."
 msgstr ""
 
-#: bp-groups/js/blocks/group.js:85
+#: bp-groups/js/blocks/group.js:206
+msgid "Description settings"
+msgstr ""
+
+#: bp-groups/js/blocks/group.js:209
 msgid "Display group's description"
 msgstr ""
 
-#: bp-groups/js/blocks/group.js:92
+#: bp-groups/js/blocks/group.js:216
 msgid "Include the group's description under their name."
 msgstr ""
 
-#: bp-groups/js/blocks/group.js:93
+#: bp-groups/js/blocks/group.js:216
 msgid "Toggle to display the group's description under their name."
 msgstr ""
 
-#: bp-groups/js/blocks/group.js:99
-#: bp-members/js/blocks/member.js:85
-msgid "Avatar size"
+#: bp-groups/js/blocks/group.js:218
+#: bp-members/js/blocks/member.js:206
+msgid "Avatar settings"
 msgstr ""
 
-#: bp-groups/js/blocks/group.js:102
-#: bp-members/js/blocks/member.js:88
-msgid "Select \"None\" to disable the avatar."
+#: bp-groups/js/blocks/group.js:221
+#: bp-members/js/blocks/member.js:209
+msgid "Size"
 msgstr ""
 
-#: bp-groups/js/blocks/group.js:111
-#: bp-members/js/blocks/member.js:97
+#: bp-groups/js/blocks/group.js:230
+#: bp-members/js/blocks/member.js:218
+msgid "Cover image settings"
+msgstr ""
+
+#: bp-groups/js/blocks/group.js:233
+#: bp-members/js/blocks/member.js:221
 msgid "Display Cover Image"
 msgstr ""
 
-#: bp-groups/js/blocks/group.js:118
+#: bp-groups/js/blocks/group.js:240
 msgid "Include the group's cover image over their name."
 msgstr ""
 
-#: bp-groups/js/blocks/group.js:119
+#: bp-groups/js/blocks/group.js:240
 msgid "Toggle to display the group's cover image over their name."
 msgstr ""
 
-#: bp-groups/js/blocks/group.js:144
+#: bp-groups/js/blocks/group.js:255
 msgid "BuddyPress Group."
 msgstr ""
 
-#: bp-members/js/blocks/member.js:41
+#: bp-members/js/blocks/member.js:174
 msgid "BuddyPress Member"
 msgstr ""
 
-#: bp-members/js/blocks/member.js:42
+#: bp-members/js/blocks/member.js:175
 msgid "Start typing the name of the member you want to feature into this post."
 msgstr ""
 
-#: bp-members/js/blocks/member.js:46
+#: bp-members/js/blocks/member.js:178
 msgid "Member's username"
 msgstr ""
 
-#: bp-members/js/blocks/member.js:47
+#: bp-members/js/blocks/member.js:179
 msgid "Enter Member's username here…"
 msgstr ""
 
-#: bp-members/js/blocks/member.js:61
+#: bp-members/js/blocks/member.js:187
 msgid "Select another member"
 msgstr ""
 
-#: bp-members/js/blocks/member.js:71
+#: bp-members/js/blocks/member.js:194
+msgid "Profile button settings"
+msgstr ""
+
+#: bp-members/js/blocks/member.js:197
 msgid "Display Profile button"
 msgstr ""
 
-#: bp-members/js/blocks/member.js:78
+#: bp-members/js/blocks/member.js:204
 msgid "Include a link to the user's profile page under their display name."
 msgstr ""
 
-#: bp-members/js/blocks/member.js:79
+#: bp-members/js/blocks/member.js:204
 msgid "Toggle to display a link to the user's profile page under their display name."
 msgstr ""
 
-#: bp-members/js/blocks/member.js:104
+#: bp-members/js/blocks/member.js:228
 msgid "Include the user's cover image over their display name."
 msgstr ""
 
-#: bp-members/js/blocks/member.js:105
+#: bp-members/js/blocks/member.js:228
 msgid "Toggle to display the user's cover image over their display name."
 msgstr ""
 
-#: bp-members/js/blocks/member.js:112
+#: bp-members/js/blocks/member.js:230
+msgid "Mention settings"
+msgstr ""
+
+#: bp-members/js/blocks/member.js:233
 msgid "Display Mention slug"
 msgstr ""
 
-#: bp-members/js/blocks/member.js:119
+#: bp-members/js/blocks/member.js:240
 msgid "Include the user's mention name under their display name."
 msgstr ""
 
-#: bp-members/js/blocks/member.js:120
+#: bp-members/js/blocks/member.js:240
 msgid "Toggle to display the user's mention name under their display name."
 msgstr ""
 
-#: bp-members/js/blocks/member.js:145
+#: bp-members/js/blocks/member.js:255
 msgid "BuddyPress Member."
 msgstr ""
