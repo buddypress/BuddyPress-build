@@ -2,9 +2,9 @@
 # This file is distributed under the GPLv2 or later (license.txt).
 msgid ""
 msgstr ""
-"Project-Id-Version: BuddyPress 4.3.0\n"
+"Project-Id-Version: BuddyPress 4.4.0\n"
 "Report-Msgid-Bugs-To: https://buddypress.trac.wordpress.org\n"
-"POT-Creation-Date: 2019-04-25 16:09:52+00:00\n"
+"POT-Creation-Date: 2019-07-23 05:07:35+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -486,19 +486,19 @@ msgstr ""
 msgid "Your browser does not support HTML5 audio"
 msgstr ""
 
-#: bp-activity/bp-activity-filters.php:435
+#: bp-activity/bp-activity-filters.php:434
 msgid "[Read more]"
 msgstr ""
 
-#: bp-activity/bp-activity-filters.php:439
+#: bp-activity/bp-activity-filters.php:438
 msgid "&hellip;"
 msgstr ""
 
-#: bp-activity/bp-activity-filters.php:645
+#: bp-activity/bp-activity-filters.php:644
 msgid "Load Newest"
 msgstr ""
 
-#: bp-activity/bp-activity-filters.php:828
+#: bp-activity/bp-activity-filters.php:827
 msgid "BuddyPress Activity Data"
 msgstr ""
 
@@ -526,37 +526,37 @@ msgstr ""
 msgid "%s posted a new activity comment"
 msgstr ""
 
-#: bp-activity/bp-activity-functions.php:2592
+#: bp-activity/bp-activity-functions.php:2596
 #: bp-templates/bp-legacy/buddypress-functions.php:1049
 #: bp-templates/bp-nouveau/includes/activity/ajax.php:334
 msgid "There was an error posting your reply. Please try again."
 msgstr ""
 
-#: bp-activity/bp-activity-functions.php:2620
+#: bp-activity/bp-activity-functions.php:2624
 msgid "The item you were replying to no longer exists."
 msgstr ""
 
-#: bp-activity/bp-activity-functions.php:3229
+#: bp-activity/bp-activity-functions.php:3233
 msgid "Thumbnail"
 msgstr ""
 
-#: bp-activity/bp-activity-functions.php:4187
+#: bp-activity/bp-activity-functions.php:4191
 msgid "Activity Date"
 msgstr ""
 
-#: bp-activity/bp-activity-functions.php:4191
+#: bp-activity/bp-activity-functions.php:4195
 msgid "Activity Description"
 msgstr ""
 
-#: bp-activity/bp-activity-functions.php:4195
+#: bp-activity/bp-activity-functions.php:4199
 msgid "Activity URL"
 msgstr ""
 
-#: bp-activity/bp-activity-functions.php:4202
+#: bp-activity/bp-activity-functions.php:4206
 msgid "Activity Content"
 msgstr ""
 
-#: bp-activity/bp-activity-functions.php:4223
+#: bp-activity/bp-activity-functions.php:4227
 #: bp-activity/bp-activity-notifications.php:389
 #: bp-activity/classes/class-bp-activity-oembed-extension.php:138
 #: bp-activity/classes/class-bp-activity-theme-compat.php:161
@@ -3486,7 +3486,7 @@ msgstr ""
 #: bp-core/deprecated/2.1.php:391 bp-groups/bp-groups-admin.php:1065
 #: bp-templates/bp-legacy/buddypress/groups/single/admin/delete-group.php:12
 #: bp-templates/bp-legacy/buddypress/groups/single/admin/delete-group.php:39
-#: bp-templates/bp-nouveau/includes/groups/template-tags.php:367
+#: bp-templates/bp-nouveau/includes/groups/template-tags.php:373
 msgid "Delete Group"
 msgstr ""
 
@@ -4245,7 +4245,7 @@ msgstr ""
 #: bp-templates/bp-nouveau/includes/functions.php:1301
 #: bp-templates/bp-nouveau/includes/functions.php:1312
 #: bp-templates/bp-nouveau/includes/functions.php:1323
-#: bp-templates/bp-nouveau/includes/groups/template-tags.php:359
+#: bp-templates/bp-nouveau/includes/groups/template-tags.php:365
 msgid "Save Changes"
 msgstr ""
 
@@ -4500,7 +4500,7 @@ msgstr ""
 #: bp-templates/bp-legacy/buddypress/groups/single/admin/manage-members.php:168
 #: bp-templates/bp-legacy/buddypress/groups/single/admin/manage-members.php:277
 #: bp-templates/bp-nouveau/buddypress/groups/single/admin/manage-members.php:64
-#: bp-templates/bp-nouveau/includes/groups/template-tags.php:895
+#: bp-templates/bp-nouveau/includes/groups/template-tags.php:901
 msgid "Promote to Admin"
 msgstr ""
 
@@ -6764,22 +6764,22 @@ msgid ""
 msgstr ""
 
 #: bp-templates/bp-legacy/buddypress/groups/create.php:441
-#: bp-templates/bp-nouveau/includes/groups/template-tags.php:388
+#: bp-templates/bp-nouveau/includes/groups/template-tags.php:394
 msgid "Back to Previous Step"
 msgstr ""
 
 #: bp-templates/bp-legacy/buddypress/groups/create.php:448
-#: bp-templates/bp-nouveau/includes/groups/template-tags.php:396
+#: bp-templates/bp-nouveau/includes/groups/template-tags.php:402
 msgid "Next Step"
 msgstr ""
 
 #: bp-templates/bp-legacy/buddypress/groups/create.php:455
-#: bp-templates/bp-nouveau/includes/groups/template-tags.php:403
+#: bp-templates/bp-nouveau/includes/groups/template-tags.php:409
 msgid "Create Group and Continue"
 msgstr ""
 
 #: bp-templates/bp-legacy/buddypress/groups/create.php:462
-#: bp-templates/bp-nouveau/includes/groups/template-tags.php:410
+#: bp-templates/bp-nouveau/includes/groups/template-tags.php:416
 msgid "Finish"
 msgstr ""
 
@@ -6832,7 +6832,7 @@ msgid "Manage Group Details"
 msgstr ""
 
 #: bp-templates/bp-legacy/buddypress/groups/single/admin/edit-details.php:40
-#: bp-templates/bp-nouveau/includes/groups/template-tags.php:1415
+#: bp-templates/bp-nouveau/includes/groups/template-tags.php:1421
 msgid "Notify group members of these changes via email"
 msgstr ""
 
@@ -6859,22 +6859,22 @@ msgid "(banned)"
 msgstr ""
 
 #: bp-templates/bp-legacy/buddypress/groups/single/admin/manage-members.php:271
-#: bp-templates/bp-nouveau/includes/groups/template-tags.php:838
+#: bp-templates/bp-nouveau/includes/groups/template-tags.php:844
 msgid "Remove Ban"
 msgstr ""
 
 #: bp-templates/bp-legacy/buddypress/groups/single/admin/manage-members.php:275
-#: bp-templates/bp-nouveau/includes/groups/template-tags.php:857
+#: bp-templates/bp-nouveau/includes/groups/template-tags.php:863
 msgid "Kick &amp; Ban"
 msgstr ""
 
 #: bp-templates/bp-legacy/buddypress/groups/single/admin/manage-members.php:276
-#: bp-templates/bp-nouveau/includes/groups/template-tags.php:886
+#: bp-templates/bp-nouveau/includes/groups/template-tags.php:892
 msgid "Promote to Mod"
 msgstr ""
 
 #: bp-templates/bp-legacy/buddypress/groups/single/admin/manage-members.php:281
-#: bp-templates/bp-nouveau/includes/groups/template-tags.php:915
+#: bp-templates/bp-nouveau/includes/groups/template-tags.php:921
 msgid "Remove from group"
 msgstr ""
 
@@ -6928,16 +6928,16 @@ msgstr ""
 #: bp-templates/bp-legacy/buddypress/groups/single/requests-loop.php:58
 #: bp-templates/bp-legacy/buddypress/members/single/friends/requests.php:63
 #: bp-templates/bp-legacy/buddypress/members/single/groups/invites.php:51
-#: bp-templates/bp-nouveau/includes/groups/template-tags.php:721
-#: bp-templates/bp-nouveau/includes/groups/template-tags.php:777
+#: bp-templates/bp-nouveau/includes/groups/template-tags.php:727
+#: bp-templates/bp-nouveau/includes/groups/template-tags.php:783
 msgid "Accept"
 msgstr ""
 
 #: bp-templates/bp-legacy/buddypress/groups/single/requests-loop.php:60
 #: bp-templates/bp-legacy/buddypress/members/single/friends/requests.php:64
 #: bp-templates/bp-legacy/buddypress/members/single/groups/invites.php:52
-#: bp-templates/bp-nouveau/includes/groups/template-tags.php:748
-#: bp-templates/bp-nouveau/includes/groups/template-tags.php:804
+#: bp-templates/bp-nouveau/includes/groups/template-tags.php:754
+#: bp-templates/bp-nouveau/includes/groups/template-tags.php:810
 msgid "Reject"
 msgstr ""
 
@@ -8532,27 +8532,27 @@ msgstr ""
 msgid "You are not allowed to send invitations for this group."
 msgstr ""
 
-#: bp-templates/bp-nouveau/includes/groups/ajax.php:419
+#: bp-templates/bp-nouveau/includes/groups/ajax.php:430
 #. translators: count of users affected
 msgid "Invitation failed for %s user."
 msgid_plural "Invitation failed for %s users."
 msgstr[0] ""
 msgstr[1] ""
 
-#: bp-templates/bp-nouveau/includes/groups/ajax.php:438
+#: bp-templates/bp-nouveau/includes/groups/ajax.php:449
 msgid "Invitations sent."
 msgstr ""
 
-#: bp-templates/bp-nouveau/includes/groups/ajax.php:452
-#: bp-templates/bp-nouveau/includes/groups/ajax.php:491
+#: bp-templates/bp-nouveau/includes/groups/ajax.php:463
+#: bp-templates/bp-nouveau/includes/groups/ajax.php:502
 msgid "Group invitation could not be removed."
 msgstr ""
 
-#: bp-templates/bp-nouveau/includes/groups/ajax.php:480
+#: bp-templates/bp-nouveau/includes/groups/ajax.php:491
 msgid "The member is already a member of the group."
 msgstr ""
 
-#: bp-templates/bp-nouveau/includes/groups/ajax.php:500
+#: bp-templates/bp-nouveau/includes/groups/ajax.php:511
 msgid "There are no more pending invitations for the group."
 msgstr ""
 
@@ -8680,11 +8680,11 @@ msgstr ""
 msgid "Group Moderator promotions"
 msgstr ""
 
-#: bp-templates/bp-nouveau/includes/groups/template-tags.php:1301
+#: bp-templates/bp-nouveau/includes/groups/template-tags.php:1307
 msgid "Groups default front page"
 msgstr ""
 
-#: bp-templates/bp-nouveau/includes/groups/template-tags.php:1319
+#: bp-templates/bp-nouveau/includes/groups/template-tags.php:1325
 #: bp-templates/bp-nouveau/includes/members/template-tags.php:711
 msgid "(BuddyPress) Widgets"
 msgstr ""
@@ -9367,24 +9367,30 @@ msgctxt "Post Type generic comments activity front filter"
 msgid "Item comments"
 msgstr ""
 
-#: bp-activity/bp-activity-functions.php:1598
-msgctxt "Activity Custom Post Type post action"
-msgid "%1$s wrote a new <a href=\"%2$s\">item</a>, on the site %3$s"
+#: bp-activity/bp-activity-functions.php:1592
+#: bp-activity/bp-activity-functions.php:1645
+msgctxt "Default text for the post type name"
+msgid "item"
 msgstr ""
 
-#: bp-activity/bp-activity-functions.php:1604
+#: bp-activity/bp-activity-functions.php:1601
 msgctxt "Activity Custom Post Type post action"
-msgid "%1$s wrote a new <a href=\"%2$s\">item</a>"
+msgid "%1$s wrote a new %2$s, on the site %3$s"
 msgstr ""
 
-#: bp-activity/bp-activity-functions.php:1649
+#: bp-activity/bp-activity-functions.php:1607
+msgctxt "Activity Custom Post Type post action"
+msgid "%1$s wrote a new %2$s"
+msgstr ""
+
+#: bp-activity/bp-activity-functions.php:1653
 msgctxt "Activity Custom Post Type comment action"
-msgid "%1$s commented on the <a href=\"%2$s\">item</a>, on the site %3$s"
+msgid "%1$s commented on the %2$s, on the site %3$s"
 msgstr ""
 
-#: bp-activity/bp-activity-functions.php:1655
+#: bp-activity/bp-activity-functions.php:1659
 msgctxt "Activity Custom Post Type post comment action"
-msgid "%1$s commented on the <a href=\"%2$s\">item</a>"
+msgid "%1$s commented on the %2$s"
 msgstr ""
 
 #: bp-activity/classes/class-bp-activity-component.php:224
