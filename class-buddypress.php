@@ -460,7 +460,7 @@ class BuddyPress {
 
 		/** Versions */
 
-		$this->version    = '12.0.0-beta3';
+		$this->version    = '12.0.0-beta4';
 		$this->db_version = 13422;
 
 		/** Loading */
@@ -766,6 +766,7 @@ class BuddyPress {
 			'BP_REST_Signup_Endpoint'                    => 'members',
 			'BP_Members_Invitation_Manager'              => 'members',
 			'BP_Members_Invitations_Template'            => 'members',
+			'BP_Members_Invitations_Component'           => 'members',
 
 			'BP_REST_Messages_Endpoint'                  => 'messages',
 			'BP_REST_Sitewide_Notices_Endpoint'          => 'messages',
