@@ -140,6 +140,7 @@ class BP_REST_Activity_Endpoint extends WP_REST_Controller {
 			'display_comments'  => $request['display_comments'],
 			'site_id'           => $request['site_id'],
 			'group_id'          => $request['group_id'],
+			'scope'             => $request['scope'],
 			'count_total'       => true,
 			'fields'            => 'all',
 			'show_hidden'       => false,
@@ -191,6 +192,10 @@ class BP_REST_Activity_Endpoint extends WP_REST_Controller {
 				$item_id                      = $request['primary_id'];
 				$args['filter']['primary_id'] = $item_id;
 			}
+		}
+
+		if ( empty( $request['scope'] ) ) {
+			$args['scope'] = false;
 		}
 
 		if ( isset( $request['type'] ) ) {
@@ -277,6 +282,16 @@ class BP_REST_Activity_Endpoint extends WP_REST_Controller {
 	 */
 	public function get_item( $request ) {
 		$activity = $this->get_activity_object( $request );
+
+		if ( empty( $activity->id ) ) {
+			return new WP_Error(
+				'bp_rest_invalid_id',
+				__( 'Invalid activity ID.', 'buddypress' ),
+				array(
+					'status' => 404,
+				)
+			);
+		}
 
 		$retval = array(
 			$this->prepare_response_for_collection(
@@ -445,34 +460,33 @@ class BP_REST_Activity_Endpoint extends WP_REST_Controller {
 	 * @since 5.0.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
-	 * @return true|WP_Error
+	 * @return bool|WP_Error
 	 */
 	public function create_item_permissions_check( $request ) {
-		$error = new WP_Error(
-			'bp_rest_authorization_required',
-			__( 'Sorry, you are not allowed to create activities.', 'buddypress' ),
-			array(
-				'status' => rest_authorization_required_code(),
-			)
-		);
+		$retval = true;
 
-		$retval = $error;
+		if ( ! is_user_logged_in() ) {
+			$retval = new WP_Error(
+				'bp_rest_authorization_required',
+				__( 'Sorry, you are not allowed to create activities.', 'buddypress' ),
+				array(
+					'status' => rest_authorization_required_code(),
+				)
+			);
+		}
 
-		if ( is_user_logged_in() ) {
-			$user_id = $request->get_param( 'user_id' );
+		$item_id   = $request['primary_item_id'];
+		$component = $request['component'];
 
-			if ( empty( $user_id ) || (int) bp_loggedin_user_id() === (int) $user_id ) {
-				$item_id   = $request->get_param( 'primary_item_id' );
-				$component = $request->get_param( 'component' );
-
-				// The current user can create an activity.
-				$retval = true;
-
-				if ( bp_is_active( 'groups' ) && buddypress()->groups->id === $component && ! is_null( $item_id ) ) {
-					if ( ! $this->show_hidden( $component, $item_id ) ) {
-						$retval = $error;
-					}
-				}
+		if ( true === $retval && bp_is_active( 'groups' ) && buddypress()->groups->id === $component && ! is_null( $item_id ) ) {
+			if ( ! $this->show_hidden( $component, $item_id ) ) {
+				$retval = new WP_Error(
+					'bp_rest_authorization_required',
+					__( 'Sorry, you are not allowed to create activities.', 'buddypress' ),
+					array(
+						'status' => rest_authorization_required_code(),
+					)
+				);
 			}
 		}
 
@@ -481,7 +495,7 @@ class BP_REST_Activity_Endpoint extends WP_REST_Controller {
 		 *
 		 * @since 5.0.0
 		 *
-		 * @param true|WP_Error   $retval  Returned value.
+		 * @param bool|WP_Error   $retval  Returned value.
 		 * @param WP_REST_Request $request The request sent to the API.
 		 */
 		return apply_filters( 'bp_rest_activity_create_item_permissions_check', $retval, $request );
@@ -784,9 +798,6 @@ class BP_REST_Activity_Endpoint extends WP_REST_Controller {
 			);
 		}
 
-		// Setting context.
-		$request->set_param( 'context', 'edit' );
-
 		// Prepare the response now the user favorites has been updated.
 		$retval = array(
 			$this->prepare_response_for_collection(
@@ -877,7 +888,7 @@ class BP_REST_Activity_Endpoint extends WP_REST_Controller {
 			// Set up activity oEmbed cache.
 			bp_activity_embed();
 
-			$rendered = apply_filters( 'bp_get_activity_content_body', $activity->content );
+			$rendered = apply_filters( 'bp_get_activity_content_body', $activity->content, $activity );
 
 			// Restore the `activities_template` global.
 			$GLOBALS['activities_template'] = $activities_template;
@@ -1024,8 +1035,8 @@ class BP_REST_Activity_Endpoint extends WP_REST_Controller {
 		}
 
 		// Activity author ID.
-		if ( ! empty( $activity->user_id ) ) {
-			$prepared_activity->user_id = (int) $activity->user_id;
+		if ( ! empty( $schema['properties']['user_id'] ) && isset( $request['user_id'] ) ) {
+			$prepared_activity->user_id = (int) $request['user_id'];
 		} else {
 			$prepared_activity->user_id = get_current_user_id();
 		}
@@ -1287,7 +1298,6 @@ class BP_REST_Activity_Endpoint extends WP_REST_Controller {
 				'user_id'           => array(
 					'context'     => array( 'view', 'edit' ),
 					'description' => __( 'The ID for the author of the activity.', 'buddypress' ),
-					'readonly'    => true,
 					'type'        => 'integer',
 				),
 				'link'              => array(
@@ -1393,7 +1403,7 @@ class BP_REST_Activity_Endpoint extends WP_REST_Controller {
 
 			$avatar_properties['full'] = array(
 				'context'     => array( 'view', 'edit' ),
-				/* translators: Full image size for the member Avatar */
+				/* translators: 1: Full avatar width in pixels. 2: Full avatar height in pixels */
 				'description' => sprintf( __( 'Avatar URL with full image size (%1$d x %2$d pixels).', 'buddypress' ), number_format_i18n( bp_core_avatar_full_width() ), number_format_i18n( bp_core_avatar_full_height() ) ),
 				'type'        => 'string',
 				'format'      => 'uri',
@@ -1401,7 +1411,7 @@ class BP_REST_Activity_Endpoint extends WP_REST_Controller {
 
 			$avatar_properties['thumb'] = array(
 				'context'     => array( 'view', 'edit' ),
-				/* translators: Thumb imaze size for the member Avatar */
+				/* translators: 1: Thumb avatar width in pixels. 2: Thumb avatar height in pixels */
 				'description' => sprintf( __( 'Avatar URL with thumb image size (%1$d x %2$d pixels).', 'buddypress' ), number_format_i18n( bp_core_avatar_thumb_width() ), number_format_i18n( bp_core_avatar_thumb_height() ) ),
 				'type'        => 'string',
 				'format'      => 'uri',
@@ -1483,6 +1493,14 @@ class BP_REST_Activity_Endpoint extends WP_REST_Controller {
 			'type'              => 'string',
 			'enum'              => array( 'ham_only', 'spam_only', 'all' ),
 			'sanitize_callback' => 'sanitize_key',
+			'validate_callback' => 'rest_validate_request_arg',
+		);
+
+		$params['scope'] = array(
+			'description'       => __( 'Limit result set to items with a specific scope.', 'buddypress' ),
+			'type'              => 'string',
+			'enum'              => array( 'just-me', 'friends', 'groups', 'favorites', 'mentions' ),
+			'sanitize_callback' => 'sanitize_text_field',
 			'validate_callback' => 'rest_validate_request_arg',
 		);
 

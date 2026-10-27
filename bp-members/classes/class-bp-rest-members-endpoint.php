@@ -191,7 +191,17 @@ class BP_REST_Members_Endpoint extends WP_REST_Users_Controller {
 	 * @return bool|WP_Error
 	 */
 	public function create_item_permissions_check( $request ) {
-		$retval = parent::create_item_permissions_check( $request );
+		$retval = true;
+
+		if ( ! ( is_user_logged_in() && current_user_can( 'bp_moderate' ) ) ) {
+			$retval = new WP_Error(
+				'bp_rest_authorization_required',
+				__( 'Sorry, you are not allowed to view members.', 'buddypress' ),
+				array(
+					'status' => rest_authorization_required_code(),
+				)
+			);
+		}
 
 		/**
 		 * Filter or override the members `create_item` permissions check.
@@ -213,17 +223,8 @@ class BP_REST_Members_Endpoint extends WP_REST_Users_Controller {
 	 * @return bool|WP_Error
 	 */
 	public function update_item_permissions_check( $request ) {
-		$error = new WP_Error(
-			'bp_rest_authorization_required',
-			__( 'Sorry, you are not allowed to perform this action.', 'buddypress' ),
-			array(
-				'status' => rest_authorization_required_code(),
-			)
-		);
-		$retval = $error;
-
-		$user             = bp_rest_get_user( $request['id'] );
-		$member_type_edit = isset( $request['member_type'] );
+		$retval = true;
+		$user   = bp_rest_get_user( $request['id'] );
 
 		if ( ! $user instanceof WP_User ) {
 			$retval = new WP_Error(
@@ -233,30 +234,21 @@ class BP_REST_Members_Endpoint extends WP_REST_Users_Controller {
 					'status' => 404,
 				)
 			);
-		} else {
-			$action = 'delete';
+		}
 
-			if ( 'DELETE' !== $request->get_method() ) {
-				$action = 'update';
-			}
+		$action = 'delete';
+		if ( 'DELETE' !== $request->get_method() ) {
+			$action = 'update';
+		}
 
-			if ( get_current_user_id() === $user->ID ) {
-				if ( $member_type_edit && ! bp_current_user_can( 'bp_moderate' ) ) {
-					$retval = $error;
-				} else {
-					$retval = parent::update_item_permissions_check( $request );
-				}
-			} elseif ( ! $this->can_manage_member( $user, $action ) ) {
-				$retval = new WP_Error(
-					'bp_rest_authorization_required',
-					__( 'Sorry, you are not allowed to view members.', 'buddypress' ),
-					array(
-						'status' => rest_authorization_required_code(),
-					)
-				);
-			} else {
-				$retval = true;
-			}
+		if ( true === $retval && ! $this->can_manage_member( $user, $action ) ) {
+			$retval = new WP_Error(
+				'bp_rest_authorization_required',
+				__( 'Sorry, you are not allowed to view members.', 'buddypress' ),
+				array(
+					'status' => rest_authorization_required_code(),
+				)
+			);
 		}
 
 		/**
@@ -264,7 +256,7 @@ class BP_REST_Members_Endpoint extends WP_REST_Users_Controller {
 		 *
 		 * @since 5.0.0
 		 *
-		 * @param true|WP_Error   $retval  Returned value.
+		 * @param bool|WP_Error   $retval  Returned value.
 		 * @param WP_REST_Request $request The request sent to the API.
 		 */
 		return apply_filters( 'bp_rest_members_update_item_permissions_check', $retval, $request );
@@ -387,7 +379,13 @@ class BP_REST_Members_Endpoint extends WP_REST_Users_Controller {
 			'extra_capabilities' => array(),
 			'registered_date'    => '',
 			'xprofile'           => $this->xprofile_data( $user->ID ),
+			'friendship_status' => false,
 		);
+
+		// Check if user is friends with current logged in user.
+		if ( bp_is_active( 'friends' ) && get_current_user_id() !== $user->ID ) {
+			$data['friendship_status'] = ( 'is_friend' === friends_check_friendship_status( get_current_user_id(), $user->ID ) );
+		}
 
 		if ( 'edit' === $context ) {
 			$data['registered_date']    = bp_rest_prepare_date_response( $user->data->user_registered );
@@ -401,22 +399,28 @@ class BP_REST_Members_Endpoint extends WP_REST_Users_Controller {
 			$data['mention_name'] = bp_activity_get_user_mentionname( $user->ID );
 		}
 
+		// Get item schema.
+		$schema = $this->get_item_schema();
+
 		// Avatars.
-		$data['avatar_urls'] = array(
-			'full'  => bp_core_fetch_avatar(
-				array(
-					'item_id' => $user->ID,
-					'html'    => false,
-					'type'    => 'full',
-				)
-			),
-			'thumb' => bp_core_fetch_avatar(
-				array(
-					'item_id' => $user->ID,
-					'html'    => false,
-				)
-			),
-		);
+		if ( ! empty( $schema['properties']['avatar_urls'] ) ) {
+			$data['avatar_urls'] = array(
+				'full'  => bp_core_fetch_avatar(
+					array(
+						'item_id' => $user->ID,
+						'html'    => false,
+						'type'    => 'full',
+					)
+				),
+				'thumb' => bp_core_fetch_avatar(
+					array(
+						'item_id' => $user->ID,
+						'html'    => false,
+						'type'    => 'thumb',
+					)
+				),
+			);
+		}
 
 		// Fallback.
 		if ( false === $data['member_types'] ) {
@@ -442,6 +446,15 @@ class BP_REST_Members_Endpoint extends WP_REST_Users_Controller {
 		// The parent class uses username instead of user_login.
 		if ( ! isset( $prepared_user->user_login ) && isset( $request['user_login'] ) ) {
 			$prepared_user->user_login = $request['user_login'];
+		}
+
+		// Set member type.
+		if ( isset( $prepared_user->ID ) && isset( $request['member_type'] ) ) {
+
+			// Append on update. Add on creation.
+			$append = WP_REST_Server::EDITABLE === $request->get_method();
+
+			bp_set_member_type( $prepared_user->ID, $request['member_type'], $append );
 		}
 
 		/**
@@ -512,11 +525,12 @@ class BP_REST_Members_Endpoint extends WP_REST_Users_Controller {
 	 */
 	protected function can_manage_member( $user, $action = 'delete' ) {
 		$capability = 'delete_user';
+
 		if ( 'update' === $action ) {
 			$capability = 'edit_user';
 		}
 
-		return current_user_can( $capability, $user->ID );
+		return ( current_user_can( 'bp_moderate' ) || current_user_can( $capability, $user->ID ) );
 	}
 
 	/**
@@ -533,7 +547,10 @@ class BP_REST_Members_Endpoint extends WP_REST_Users_Controller {
 	 */
 	protected function update_additional_fields_for_object( $object, $request ) {
 		if ( ! isset( $object->data ) ) {
-			return new WP_Error( 'invalid_user', __( 'The data for the user was not found.', 'buddypress' ) );
+			return new WP_Error(
+				'invalid_user',
+				__( 'The data for the user was not found.', 'buddypress' )
+			);
 		}
 
 		$member     = $object->data;
@@ -554,11 +571,24 @@ class BP_REST_Members_Endpoint extends WP_REST_Users_Controller {
 		$args = WP_REST_Controller::get_endpoint_args_for_item_schema( $method );
 		$key  = 'get_item';
 
+		// Add member type args.
+		$member_type_args = array(
+			'description'       => __( 'Set type(s) for a member.', 'buddypress' ),
+			'type'              => 'string',
+			'enum'              => bp_get_member_types(),
+			'context'           => array( 'edit' ),
+			'sanitize_callback' => 'bp_rest_sanitize_member_types',
+			'validate_callback' => 'bp_rest_sanitize_member_types',
+		);
+
 		if ( WP_REST_Server::CREATABLE === $method ) {
 			$key = 'create_item';
 
 			// We don't need the mention name to create a user.
 			unset( $args['mention_name'] );
+
+			// Add member type args.
+			$args['types'] = $member_type_args;
 
 			// But we absolutely need the email.
 			$args['email'] = array(
@@ -576,6 +606,9 @@ class BP_REST_Members_Endpoint extends WP_REST_Users_Controller {
 			 * 2. The password belongs to the Settings endpoint parameter.
 			 */
 			unset( $args['mention_name'], $args['user_login'], $args['password'] );
+
+			// Add member type args.
+			$args['types'] = $member_type_args;
 		} elseif ( WP_REST_Server::DELETABLE === $method ) {
 			$key = 'delete_item';
 		}
@@ -690,6 +723,12 @@ class BP_REST_Members_Endpoint extends WP_REST_Users_Controller {
 					'context'     => array( 'view', 'edit' ),
 					'readonly'    => true,
 				),
+				'friendship_status'  => array(
+					'description' => __( 'Friendship relation with, current, logged in user.', 'buddypress' ),
+					'type'        => 'bool',
+					'context'     => array( 'view', 'edit' ),
+					'readonly'    => true,
+				),
 			),
 		);
 
@@ -698,7 +737,7 @@ class BP_REST_Members_Endpoint extends WP_REST_Users_Controller {
 			$avatar_properties = array();
 
 			$avatar_properties['full'] = array(
-				/* translators: Full image size for the member Avatar */
+				/* translators: 1: Full avatar width in pixels. 2: Full avatar height in pixels */
 				'description' => sprintf( __( 'Avatar URL with full image size (%1$d x %2$d pixels).', 'buddypress' ), number_format_i18n( bp_core_avatar_full_width() ), number_format_i18n( bp_core_avatar_full_height() ) ),
 				'type'        => 'string',
 				'format'      => 'uri',
@@ -706,7 +745,7 @@ class BP_REST_Members_Endpoint extends WP_REST_Users_Controller {
 			);
 
 			$avatar_properties['thumb'] = array(
-				/* translators: Thumb imaze size for the member Avatar */
+				/* translators: 1: Thumb avatar width in pixels. 2: Thumb avatar height in pixels */
 				'description' => sprintf( __( 'Avatar URL with thumb image size (%1$d x %2$d pixels).', 'buddypress' ), number_format_i18n( bp_core_avatar_thumb_width() ), number_format_i18n( bp_core_avatar_thumb_height() ) ),
 				'type'        => 'string',
 				'format'      => 'uri',

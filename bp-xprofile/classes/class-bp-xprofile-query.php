@@ -355,7 +355,7 @@ class BP_XProfile_Query {
 
 		$sql_chunks = array(
 			'where' => array(),
-			'join' => array(),
+			'join'  => array(),
 		);
 
 		if ( isset( $clause['compare'] ) ) {
@@ -522,7 +522,7 @@ class BP_XProfile_Query {
 			$clause_compare  = strtoupper( $clause['compare'] );
 			$sibling_compare = strtoupper( $sibling['compare'] );
 			if ( in_array( $clause_compare, $compatible_compares ) && in_array( $sibling_compare, $compatible_compares ) ) {
-				$alias = preg_replace( '/\W/', '_', $sibling['alias'] );
+				$alias = $sibling['alias'];
 				break;
 			}
 		}
