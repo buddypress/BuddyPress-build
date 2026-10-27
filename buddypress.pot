@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2021-07-15T21:35:03+02:00\n"
+"POT-Creation-Date: 2021-08-18T02:26:36+02:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.4.0\n"
 "X-Domain: buddypress\n"
@@ -129,18 +129,18 @@ msgstr ""
 msgid "There was an error when posting your update. Please try again."
 msgstr ""
 
-#: bp-activity/actions/reply.php:43
+#: bp-activity/actions/reply.php:54
 #: bp-templates/bp-legacy/buddypress-functions.php:1055
 #: bp-templates/bp-nouveau/includes/activity/ajax.php:361
 msgid "Please do not leave the comment area blank."
 msgstr ""
 
-#: bp-activity/actions/reply.php:49
-#: bp-activity/actions/reply.php:62
+#: bp-activity/actions/reply.php:60
+#: bp-activity/actions/reply.php:75
 msgid "There was an error posting that reply. Please try again."
 msgstr ""
 
-#: bp-activity/actions/reply.php:60
+#: bp-activity/actions/reply.php:73
 msgid "Reply Posted!"
 msgstr ""
 
@@ -561,7 +561,7 @@ msgstr ""
 msgid "Latest updates"
 msgstr ""
 
-#: bp-activity/bp-activity-blocks.php:82
+#: bp-activity/bp-activity-blocks.php:94
 #: bp-templates/bp-legacy/buddypress/activity/activity-loop.php:48
 #: bp-templates/bp-nouveau/includes/activity/ajax.php:157
 #: bp-templates/bp-nouveau/includes/functions.php:978
@@ -4638,19 +4638,19 @@ msgstr ""
 msgid "All Contributors to BuddyPress %s"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:968
+#: bp-core/classes/class-bp-admin.php:973
 msgid "With our thanks to these Open Source projects"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:982
+#: bp-core/classes/class-bp-admin.php:987
 msgid "Contributor Emeriti"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:987
+#: bp-core/classes/class-bp-admin.php:992
 msgid "Project Founder"
 msgstr ""
 
-#: bp-core/classes/class-bp-admin.php:1027
+#: bp-core/classes/class-bp-admin.php:1032
 msgctxt "Email post type"
 msgid "Situations"
 msgstr ""
@@ -6286,7 +6286,7 @@ msgstr ""
 
 #. Translators: %s is the group's name.
 #: bp-groups/bp-groups-blocks.php:96
-#: bp-groups/bp-groups-blocks.php:249
+#: bp-groups/bp-groups-blocks.php:259
 #: bp-groups/bp-groups-blocks.php:462
 #: bp-groups/js/dynamic-groups.js:51
 msgid "Group Profile photo of %s"
@@ -10745,55 +10745,59 @@ msgstr ""
 msgid "%s was successfully deleted."
 msgstr ""
 
-#: bp-settings/actions/general.php:147
+#: bp-settings/actions/general.php:148
 msgid "The new password must be different from the current password."
 msgstr ""
 
-#: bp-settings/actions/general.php:157
+#: bp-settings/actions/general.php:158
 msgid "One of the password fields was empty."
 msgstr ""
 
-#: bp-settings/actions/general.php:182
+#: bp-settings/actions/general.php:175
 msgid "Your current password is invalid."
 msgstr ""
 
-#: bp-settings/actions/general.php:188
+#: bp-settings/actions/general.php:181
 msgid "That email address is invalid. Check the formatting and try again."
 msgstr ""
 
-#: bp-settings/actions/general.php:191
+#: bp-settings/actions/general.php:184
 msgid "That email address is currently unavailable for use."
 msgstr ""
 
-#: bp-settings/actions/general.php:194
+#: bp-settings/actions/general.php:187
 msgid "That email address is already taken."
 msgstr ""
 
-#: bp-settings/actions/general.php:197
+#: bp-settings/actions/general.php:190
 msgid "Email address cannot be empty."
 msgstr ""
 
-#: bp-settings/actions/general.php:210
+#: bp-settings/actions/general.php:203
 msgid "Your settings have been saved."
 msgstr ""
 
-#: bp-settings/actions/general.php:216
+#: bp-settings/actions/general.php:209
 msgid "No changes were made to your account."
 msgstr ""
 
-#: bp-settings/actions/general.php:218
+#: bp-settings/actions/general.php:211
 msgid "No changes were made to this account."
 msgstr ""
 
-#: bp-settings/actions/general.php:273
+#: bp-settings/actions/general.php:264
+msgid "There was a problem verifying your new email address. If you haven’t dismissed the pending email change, please request a new email update."
+msgstr ""
+
+#: bp-settings/actions/general.php:294
 msgid "You have successfully verified your new email address."
 msgstr ""
 
-#: bp-settings/actions/general.php:276
+#: bp-settings/actions/general.php:297
 msgid "There was a problem verifying your new email address. Please try again."
 msgstr ""
 
-#: bp-settings/actions/general.php:288
+#: bp-settings/actions/general.php:321
 msgid "You have successfully dismissed your pending email change."
 msgstr ""
 
