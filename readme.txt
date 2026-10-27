@@ -1,5 +1,5 @@
 === BuddyPress ===
-Contributors:      johnjamesjacoby, DJPaul, boonebgorges, r-a-y, imath, mercime, tw2113, dcavins, hnla, karmatosed, slaFFik, dimensionmedia, henrywright, netweb, offereins, espellcaste, modemlooper, danbp, Venutius, apeatling, shanebp
+Contributors:      johnjamesjacoby, DJPaul, boonebgorges, r-a-y, imath, mercime, tw2113, dcavins, hnla, karmatosed, slaFFik, dimensionmedia, henrywright, netweb, offereins, espellcaste, modemlooper, danbp, Venutius, apeatling, shanebp, emaralive
 Tags:              profiles, groups, activity, direct messaging, notifications, friends, community, social networking
 License:           GNU General Public License v2 or later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
@@ -63,7 +63,7 @@ In the search field type "BuddyPress" and click Search Plugins. Once you've foun
 
 Once activated:
 
-1. Visit 'Settings > BuddyPress > Components' and adjust the active components to match your community (you can always toggle these later).
+1. Visit 'Settings > BuddyPress > Components' and adjust the active components to match your community. (You can always toggle these later.)
 2. Visit 'Settings > BuddyPress > Pages' and setup your directories and special pages. We create a few automatically, but suggest you customize these to fit the flow and verbiage of your site.
 3. Visit 'Settings > BuddyPress > Settings' and take a moment to match BuddyPress's settings to your expectations. We pick the most common configuration by default, but every community is different.
 
