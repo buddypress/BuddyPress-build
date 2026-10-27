@@ -129,12 +129,11 @@ class Group extends BuddyPressCommand {
 			]
 		);
 
-		// Auto-generate slug.
+		// Auto-generate some stuff.
 		if ( empty( $r['slug'] ) ) {
 			$r['slug'] = groups_check_slug( sanitize_title( $r['name'] ) );
 		}
 
-		// Auto-generate description.
 		if ( empty( $r['description'] ) ) {
 			$r['description'] = sprintf( 'Description for group "%s"', $r['name'] );
 		}
@@ -365,9 +364,7 @@ class Group extends BuddyPressCommand {
 	 *
 	 * ## EXAMPLES
 	 *
-	 *     # Update a group.
 	 *     $ wp bp group update 35 --description="What a cool group!" --name="Group of Cool People"
-	 *     Success: Group updated.
 	 */
 	public function update( $args, $assoc_args ) {
 		parent::_update(

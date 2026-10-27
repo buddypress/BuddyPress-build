@@ -388,23 +388,14 @@ function bp_do_activation_redirect() {
 		return;
 	}
 
-	$settings_page = 'options-general.php';
-	if ( bp_core_do_network_admin() ) {
-		$settings_page = 'settings.php';
-	}
-
-	$query_args = array(
-		'page'  => 'bp-components',
-		'hello' => 'buddypress'
-	);
-
+	$query_args = array();
 	if ( get_transient( '_bp_is_new_install' ) ) {
 		$query_args['is_new_install'] = '1';
 		delete_transient( '_bp_is_new_install' );
 	}
 
 	// Redirect to dashboard and trigger the Hello screen.
-	wp_safe_redirect( add_query_arg( $query_args, bp_get_admin_url( $settings_page ) ) );
+	wp_safe_redirect( add_query_arg( $query_args, bp_get_admin_url( '?hello=buddypress' ) ) );
 }
 
 /** UI/Styling ****************************************************************/
@@ -1708,33 +1699,3 @@ function bp_core_admin_format_notifications( $notification = null ) {
 	</div>
 	<?php
 }
-
-/**
- * Sets the "per page" screen option for BP Items WP Admin lists.
- *
- * @since 14.0.0
- *
- * @param bool   $value     Will always be false unless another plugin filters it first.
- * @param string $option    Screen option name.
- * @param string $new_value Screen option form value.
- * @return string|int Option value. False to abandon update.
- */
-function bp_admin_set_screen_options( $value, $option, $new_value ) {
-	// Sanitize the new value.
-	$new_value = (int) $new_value;
-
-	// Make sure it's a reasonable value to paginate results.
-	if ( $new_value < 1 || $new_value > 999 ) {
-		return $value;
-	}
-
-	return $new_value;
-}
-add_filter( 'set_screen_option_toplevel_page_bp_activity_per_page', 'bp_admin_set_screen_options', 10, 3 );
-add_filter( 'set_screen_option_toplevel_page_bp_activity_network_per_page', 'bp_admin_set_screen_options', 10, 3 );
-add_filter( 'set_screen_option_toplevel_page_bp_groups_per_page', 'bp_admin_set_screen_options', 10, 3 );
-add_filter( 'set_screen_option_toplevel_page_bp_groups_network_per_page', 'bp_admin_set_screen_options', 10, 3 );
-add_filter( 'set_screen_option_tools_page_bp_optouts_per_page', 'bp_admin_set_screen_options', 10, 3 );
-add_filter( 'set_screen_option_tools_page_bp_optouts_network_per_page', 'bp_admin_set_screen_options', 10, 3 );
-add_filter( 'set_screen_option_tools_page_bp_members_invitations_per_page', 'bp_admin_set_screen_options', 10, 3 );
-add_filter( 'set_screen_option_tools_page_bp_members_invitations_network_per_page', 'bp_admin_set_screen_options', 10, 3 );

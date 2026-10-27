@@ -157,15 +157,9 @@ function bp_members_invitations_maybe_bypass_request_approval( $send, $details )
 		)
 	);
 
-	// If pending invitations exist, but we're not currently accepting an invite, send the verification mail.
+	// If pending invitations exist, send the verification mail.
 	if ( $invites ) {
-		// Is the current request actually a response to an invitation?
-		$maybe_inv = bp_get_members_invitation_from_request();
-
-		// Not currently accepting a request.
-		if ( ! $maybe_inv->id ) {
-			$send = true;
-		}
+		$send = true;
 	}
 
 	return $send;
