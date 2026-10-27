@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-03-20T20:52:39+00:00\n"
+"POT-Creation-Date: 2025-09-24T02:09:56+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: buddypress\n"
@@ -1434,13 +1434,13 @@ msgstr ""
 #: bp-activity/classes/class-bp-rest-activity-endpoint.php:1506
 #: bp-blogs/classes/class-bp-rest-blogs-endpoint.php:795
 #: bp-members/classes/class-bp-rest-members-endpoint.php:1238
-#: bp-members/classes/class-bp-rest-signup-endpoint.php:1028
+#: bp-members/classes/class-bp-rest-signup-endpoint.php:1082
 msgid "Ensure result set includes specific IDs."
 msgstr ""
 
 #: bp-activity/classes/class-bp-rest-activity-endpoint.php:1515
 #: bp-groups/classes/class-bp-rest-groups-endpoint.php:1421
-#: bp-members/classes/class-bp-rest-signup-endpoint.php:1046
+#: bp-members/classes/class-bp-rest-signup-endpoint.php:1100
 #: bp-notifications/classes/class-bp-rest-notifications-endpoint.php:896
 msgid "Order sort attribute ascending or descending."
 msgstr ""
@@ -4308,59 +4308,60 @@ msgstr ""
 msgid "You have been unsubscribed."
 msgstr ""
 
-#: bp-core/bp-core-functions.php:4422
+#: bp-core/bp-core-functions.php:4427
 msgid "You can change this or any other email notification preferences in your email settings."
 msgstr ""
 
-#: bp-core/bp-core-functions.php:4444
+#: bp-core/bp-core-functions.php:4451
+#: bp-core/bp-core-functions.php:4463
 msgid "Go to website's home page."
 msgstr ""
 
-#: bp-core/bp-core-functions.php:4943
+#: bp-core/bp-core-functions.php:4962
 msgid "Discover BuddyPress Add-ons"
 msgstr ""
 
-#: bp-core/bp-core-functions.php:4944
+#: bp-core/bp-core-functions.php:4963
 msgid "Hello BuddyPress Add-ons!"
 msgstr ""
 
-#: bp-core/bp-core-functions.php:4945
+#: bp-core/bp-core-functions.php:4964
 msgid "Add-ons are features as Plugins or Blocks maintained by the BuddyPress development team & hosted on the WordPress.org plugins directory."
 msgstr ""
 
-#: bp-core/bp-core-functions.php:4946
+#: bp-core/bp-core-functions.php:4965
 msgid "Thanks to this new tab inside your Dashboard screen to add plugins, you’ll be able to find them faster and eventually contribute to beta features early to give the BuddyPress development team your feedbacks."
 msgstr ""
 
-#: bp-core/bp-core-functions.php:4959
+#: bp-core/bp-core-functions.php:4978
 msgid "Get The BP Classic Add-on"
 msgstr ""
 
-#: bp-core/bp-core-functions.php:4960
+#: bp-core/bp-core-functions.php:4979
 msgid "Get ready for the brand-new BP Rewrites API!"
 msgstr ""
 
-#: bp-core/bp-core-functions.php:4961
+#: bp-core/bp-core-functions.php:4980
 msgid "Our next major version (12.0.0) will introduce several large changes that could be incompatible with your site's configuration. To prevent problems, we've built the BP Classic Add-on, which you may want to proactively install if any of the following cases:"
 msgstr ""
 
-#: bp-core/bp-core-functions.php:4962
+#: bp-core/bp-core-functions.php:4981
 msgid "Some of your BuddyPress plugins have not been updated lately."
 msgstr ""
 
-#: bp-core/bp-core-functions.php:4963
+#: bp-core/bp-core-functions.php:4982
 msgid "BuddyPress 12.0.0 introduces the BP Rewrites API, which completely changes the way BuddyPress URLs are built and routed. This fundamental change requires most BuddyPress plugins to update how they deal with BuddyPress URLs. If your BuddyPress plugins have not been updated in the last few months, they are probably not ready for BuddyPress 12.0.0."
 msgstr ""
 
-#: bp-core/bp-core-functions.php:4964
+#: bp-core/bp-core-functions.php:4983
 msgid "You are still using the BP Default theme."
 msgstr ""
 
-#: bp-core/bp-core-functions.php:4965
+#: bp-core/bp-core-functions.php:4984
 msgid "You still use a BP Legacy Widget."
 msgstr ""
 
-#: bp-core/bp-core-functions.php:4966
+#: bp-core/bp-core-functions.php:4985
 msgid "If any of the above items are true, we strongly advise you to install and activate the Classic Add-on before updating to BuddyPress 12.0.0."
 msgstr ""
 
@@ -10196,7 +10197,7 @@ msgid "Identifier for the signup. Can be a signup ID, an email address, or an ac
 msgstr ""
 
 #: bp-members/classes/class-bp-rest-signup-endpoint.php:95
-#: bp-members/classes/class-bp-rest-signup-endpoint.php:890
+#: bp-members/classes/class-bp-rest-signup-endpoint.php:944
 msgid "Activation key of the signup."
 msgstr ""
 
@@ -10216,84 +10217,88 @@ msgstr ""
 msgid "Fail to activate the signup."
 msgstr ""
 
-#: bp-members/classes/class-bp-rest-signup-endpoint.php:777
+#: bp-members/classes/class-bp-rest-signup-endpoint.php:653
+msgid "Invalid activation key format."
+msgstr ""
+
+#: bp-members/classes/class-bp-rest-signup-endpoint.php:831
 msgid "Passwords cannot be empty or contain the \"\\\" character."
 msgstr ""
 
-#: bp-members/classes/class-bp-rest-signup-endpoint.php:828
-#: bp-members/classes/class-bp-rest-signup-endpoint.php:934
+#: bp-members/classes/class-bp-rest-signup-endpoint.php:882
+#: bp-members/classes/class-bp-rest-signup-endpoint.php:988
 msgid "Password for the new user (never included)."
 msgstr ""
 
-#: bp-members/classes/class-bp-rest-signup-endpoint.php:872
+#: bp-members/classes/class-bp-rest-signup-endpoint.php:926
 msgid "A unique numeric ID for the signup."
 msgstr ""
 
-#: bp-members/classes/class-bp-rest-signup-endpoint.php:878
+#: bp-members/classes/class-bp-rest-signup-endpoint.php:932
 msgid "The username of the user the signup is for."
 msgstr ""
 
-#: bp-members/classes/class-bp-rest-signup-endpoint.php:884
+#: bp-members/classes/class-bp-rest-signup-endpoint.php:938
 msgid "The email for the user the signup is for."
 msgstr ""
 
-#: bp-members/classes/class-bp-rest-signup-endpoint.php:896
+#: bp-members/classes/class-bp-rest-signup-endpoint.php:950
 msgid "The registered date for the user, in the site's timezone."
 msgstr ""
 
-#: bp-members/classes/class-bp-rest-signup-endpoint.php:903
+#: bp-members/classes/class-bp-rest-signup-endpoint.php:957
 msgid "The registered date for the user, as GMT."
 msgstr ""
 
-#: bp-members/classes/class-bp-rest-signup-endpoint.php:910
+#: bp-members/classes/class-bp-rest-signup-endpoint.php:964
 msgid "The date the activation email was sent to the user, in the site's timezone."
 msgstr ""
 
-#: bp-members/classes/class-bp-rest-signup-endpoint.php:917
+#: bp-members/classes/class-bp-rest-signup-endpoint.php:971
 msgid "The date the activation email was sent to the user, as GMT."
 msgstr ""
 
-#: bp-members/classes/class-bp-rest-signup-endpoint.php:923
+#: bp-members/classes/class-bp-rest-signup-endpoint.php:977
 msgid "The number of times the activation email was sent to the user."
 msgstr ""
 
-#: bp-members/classes/class-bp-rest-signup-endpoint.php:930
+#: bp-members/classes/class-bp-rest-signup-endpoint.php:984
 msgid "The signup meta information"
 msgstr ""
 
-#: bp-members/classes/class-bp-rest-signup-endpoint.php:946
+#: bp-members/classes/class-bp-rest-signup-endpoint.php:1000
 msgid "The new user's full name."
 msgstr ""
 
-#: bp-members/classes/class-bp-rest-signup-endpoint.php:958
+#: bp-members/classes/class-bp-rest-signup-endpoint.php:1012
 msgid "Unique site name (slug) of the new user's child site."
 msgstr ""
 
-#: bp-members/classes/class-bp-rest-signup-endpoint.php:965
+#: bp-members/classes/class-bp-rest-signup-endpoint.php:1019
 msgid "Title of the new user's child site."
 msgstr ""
 
-#: bp-members/classes/class-bp-rest-signup-endpoint.php:972
+#: bp-members/classes/class-bp-rest-signup-endpoint.php:1026
 msgid "Search engine visibility of the new user's site."
 msgstr ""
 
-#: bp-members/classes/class-bp-rest-signup-endpoint.php:979
+#: bp-members/classes/class-bp-rest-signup-endpoint.php:1033
 msgid "Language to use for the new user's site."
 msgstr ""
 
-#: bp-members/classes/class-bp-rest-signup-endpoint.php:1012
+#: bp-members/classes/class-bp-rest-signup-endpoint.php:1066
 msgid "Total number of signups to return."
 msgstr ""
 
-#: bp-members/classes/class-bp-rest-signup-endpoint.php:1020
+#: bp-members/classes/class-bp-rest-signup-endpoint.php:1074
 msgid "Offset the result set by a specific number of items."
 msgstr ""
 
-#: bp-members/classes/class-bp-rest-signup-endpoint.php:1037
+#: bp-members/classes/class-bp-rest-signup-endpoint.php:1091
 msgid "Order by a specific parameter (default: signup_id)."
 msgstr ""
 
-#: bp-members/classes/class-bp-rest-signup-endpoint.php:1055
+#: bp-members/classes/class-bp-rest-signup-endpoint.php:1109
 msgid "Specific user login to return."
 msgstr ""
 
