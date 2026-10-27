@@ -384,7 +384,10 @@ class BP_REST_Groups_Endpoint extends WP_REST_Controller {
 			)
 		);
 
-		if ( is_user_logged_in() && bp_user_can_create_groups() ) {
+		$current_user_id = (int) bp_loggedin_user_id();
+		$creator_id      = (int) $request->get_param( 'creator_id' );
+
+		if ( ( $current_user_id && $current_user_id === $creator_id && bp_user_can_create_groups() ) || bp_current_user_can( 'bp_moderate' ) ) {
 			$retval = true;
 		}
 
@@ -983,7 +986,7 @@ class BP_REST_Groups_Endpoint extends WP_REST_Controller {
 	 * @return bool
 	 */
 	protected function can_user_delete_or_update( $group ) {
-		return ( bp_current_user_can( 'bp_moderate' ) || bp_loggedin_user_id() === $group->creator_id );
+		return ( bp_current_user_can( 'bp_moderate' ) || groups_is_user_admin( bp_loggedin_user_id(), $group->id ) );
 	}
 
 	/**
