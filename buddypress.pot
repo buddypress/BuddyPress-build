@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2022-02-22T20:37:37+00:00\n"
+"POT-Creation-Date: 2022-03-17T21:36:49+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.5.0\n"
 "X-Domain: buddypress\n"
@@ -3563,7 +3563,7 @@ msgstr ""
 
 #: bp-core/bp-core-functions.php:3259
 #: bp-groups/bp-groups-functions.php:2786
-#: bp-members/bp-members-functions.php:2825
+#: bp-members/bp-members-functions.php:2827
 msgid "Enter if you want the type slug to be different from its ID."
 msgstr ""
 
@@ -8573,264 +8573,264 @@ msgstr ""
 msgid "reset it"
 msgstr ""
 
-#: bp-members/bp-members-functions.php:1139
+#: bp-members/bp-members-functions.php:1141
 msgid "User last_activity data is no longer stored in usermeta. Use bp_get_user_last_activity() instead."
 msgstr ""
 
-#: bp-members/bp-members-functions.php:1174
+#: bp-members/bp-members-functions.php:1176
 msgid "User last_activity data is no longer stored in usermeta. Use bp_update_user_last_activity() instead."
 msgstr ""
 
-#: bp-members/bp-members-functions.php:1436
-#: bp-members/bp-members-functions.php:2663
+#: bp-members/bp-members-functions.php:1438
+#: bp-members/bp-members-functions.php:2665
 msgid "<strong>Error</strong>: Your account has been marked as a spammer."
 msgstr ""
 
-#: bp-members/bp-members-functions.php:1683
+#: bp-members/bp-members-functions.php:1685
 msgid "Please check your email address."
 msgstr ""
 
-#: bp-members/bp-members-functions.php:1687
-#: bp-members/bp-members-functions.php:1691
+#: bp-members/bp-members-functions.php:1689
+#: bp-members/bp-members-functions.php:1693
 msgid "Sorry, that email address is not allowed!"
 msgstr ""
 
-#: bp-members/bp-members-functions.php:1695
+#: bp-members/bp-members-functions.php:1697
 msgid "Sorry, that email address is already used!"
 msgstr ""
 
-#: bp-members/bp-members-functions.php:1735
+#: bp-members/bp-members-functions.php:1737
 msgid "Please enter a username"
 msgstr ""
 
-#: bp-members/bp-members-functions.php:1741
+#: bp-members/bp-members-functions.php:1743
 msgid "That username is not allowed"
 msgstr ""
 
-#: bp-members/bp-members-functions.php:1746
+#: bp-members/bp-members-functions.php:1748
 msgid "Usernames can contain only letters, numbers, ., -, and @"
 msgstr ""
 
-#: bp-members/bp-members-functions.php:1751
+#: bp-members/bp-members-functions.php:1753
 msgid "Username must be at least 4 characters"
 msgstr ""
 
-#: bp-members/bp-members-functions.php:1756
+#: bp-members/bp-members-functions.php:1758
 msgid "Sorry, usernames may not contain the character \"_\"!"
 msgstr ""
 
-#: bp-members/bp-members-functions.php:1763
+#: bp-members/bp-members-functions.php:1765
 msgid "Sorry, usernames must have letters too!"
 msgstr ""
 
-#: bp-members/bp-members-functions.php:1775
+#: bp-members/bp-members-functions.php:1777
 msgid "Sorry, that username already exists!"
 msgstr ""
 
-#: bp-members/bp-members-functions.php:1818
+#: bp-members/bp-members-functions.php:1820
 msgid "Please make sure you enter your password twice"
 msgstr ""
 
-#: bp-members/bp-members-functions.php:1822
+#: bp-members/bp-members-functions.php:1824
 msgid "The passwords you entered do not match."
 msgstr ""
 
-#: bp-members/bp-members-functions.php:2032
-#: bp-members/bp-members-functions.php:2059
+#: bp-members/bp-members-functions.php:2034
+#: bp-members/bp-members-functions.php:2061
 #: bp-members/classes/class-bp-rest-signup-endpoint.php:644
 msgid "Invalid activation key."
 msgstr ""
 
-#: bp-members/bp-members-functions.php:2039
+#: bp-members/bp-members-functions.php:2041
 msgid "The user is already active."
 msgstr ""
 
-#: bp-members/bp-members-functions.php:2041
+#: bp-members/bp-members-functions.php:2043
 msgid "The site is already active."
 msgstr ""
 
-#: bp-members/bp-members-functions.php:2071
+#: bp-members/bp-members-functions.php:2073
 msgid "Could not create user"
 msgstr ""
 
-#: bp-members/bp-members-functions.php:2085
+#: bp-members/bp-members-functions.php:2087
 msgid "That username is already activated."
 msgstr ""
 
-#: bp-members/bp-members-functions.php:2454
-#: bp-members/bp-members-functions.php:2473
+#: bp-members/bp-members-functions.php:2456
+#: bp-members/bp-members-functions.php:2475
 msgctxt "Warning displayed on the WP Login screen"
 msgid "Error:"
 msgstr ""
 
-#: bp-members/bp-members-functions.php:2455
+#: bp-members/bp-members-functions.php:2457
 msgctxt "Error message displayed on the WP Login screen"
 msgid "Your membership request has not yet been approved."
 msgstr ""
 
-#: bp-members/bp-members-functions.php:2474
+#: bp-members/bp-members-functions.php:2476
 msgctxt "Error message displayed on the WP Login screen"
 msgid "Your account has not been activated. Check your email for the activation link."
 msgstr ""
 
 #. translators: %s: the link to resend the activation email.
-#: bp-members/bp-members-functions.php:2477
+#: bp-members/bp-members-functions.php:2479
 msgctxt "WP Login screen message"
 msgid "If you have not received an email yet, %s."
 msgstr ""
 
-#: bp-members/bp-members-functions.php:2481
+#: bp-members/bp-members-functions.php:2483
 msgctxt "Text of the link to resend the activation email"
 msgid "click here to resend it"
 msgstr ""
 
-#: bp-members/bp-members-functions.php:2518
+#: bp-members/bp-members-functions.php:2520
 msgid "<strong>Error</strong>: Your account has already been activated."
 msgstr ""
 
-#: bp-members/bp-members-functions.php:2520
+#: bp-members/bp-members-functions.php:2522
 msgid "Activation email resent! Please check your inbox or spam folder."
 msgstr ""
 
-#: bp-members/bp-members-functions.php:2746
+#: bp-members/bp-members-functions.php:2748
 msgctxt "Member type taxonomy name"
 msgid "Member Types"
 msgstr ""
 
-#: bp-members/bp-members-functions.php:2747
+#: bp-members/bp-members-functions.php:2749
 msgctxt "Member type taxonomy singular name"
 msgid "Member Type"
 msgstr ""
 
-#: bp-members/bp-members-functions.php:2748
+#: bp-members/bp-members-functions.php:2750
 msgctxt "Member type taxonomy search items label"
 msgid "Search Member Types"
 msgstr ""
 
-#: bp-members/bp-members-functions.php:2749
+#: bp-members/bp-members-functions.php:2751
 msgctxt "Member type taxonomy popular items label"
 msgid "Popular Member Types"
 msgstr ""
 
-#: bp-members/bp-members-functions.php:2750
+#: bp-members/bp-members-functions.php:2752
 msgctxt "Member type taxonomy all items label"
 msgid "All Member Types"
 msgstr ""
 
-#: bp-members/bp-members-functions.php:2751
+#: bp-members/bp-members-functions.php:2753
 msgctxt "Member type taxonomy parent item label"
 msgid "Parent Member Type"
 msgstr ""
 
-#: bp-members/bp-members-functions.php:2752
+#: bp-members/bp-members-functions.php:2754
 msgctxt "Member type taxonomy parent item label"
 msgid "Parent Member Type:"
 msgstr ""
 
-#: bp-members/bp-members-functions.php:2753
+#: bp-members/bp-members-functions.php:2755
 msgctxt "Member type taxonomy edit item label"
 msgid "Edit Member Type"
 msgstr ""
 
-#: bp-members/bp-members-functions.php:2754
+#: bp-members/bp-members-functions.php:2756
 msgctxt "Member type taxonomy view item label"
 msgid "View Member Type"
 msgstr ""
 
-#: bp-members/bp-members-functions.php:2755
+#: bp-members/bp-members-functions.php:2757
 msgctxt "Member type taxonomy update item label"
 msgid "Update Member Type"
 msgstr ""
 
-#: bp-members/bp-members-functions.php:2756
+#: bp-members/bp-members-functions.php:2758
 msgctxt "Member type taxonomy add new item label"
 msgid "Add New Member Type"
 msgstr ""
 
-#: bp-members/bp-members-functions.php:2757
+#: bp-members/bp-members-functions.php:2759
 msgctxt "Member type taxonomy new item name label"
 msgid "New Member Type Name"
 msgstr ""
 
-#: bp-members/bp-members-functions.php:2758
+#: bp-members/bp-members-functions.php:2760
 msgctxt "Member type taxonomy separate items with commas label"
 msgid "Separate member types with commas"
 msgstr ""
 
-#: bp-members/bp-members-functions.php:2759
+#: bp-members/bp-members-functions.php:2761
 msgctxt "Member type taxonomy add or remove items label"
 msgid "Add or remove member types"
 msgstr ""
 
-#: bp-members/bp-members-functions.php:2760
+#: bp-members/bp-members-functions.php:2762
 msgctxt "Member type taxonomy choose from most used label"
 msgid "Choose from the most used meber types"
 msgstr ""
 
-#: bp-members/bp-members-functions.php:2761
+#: bp-members/bp-members-functions.php:2763
 msgctxt "Member type taxonomy not found label"
 msgid "No member types found."
 msgstr ""
 
-#: bp-members/bp-members-functions.php:2762
+#: bp-members/bp-members-functions.php:2764
 msgctxt "Member type taxonomy no terms label"
 msgid "No member types"
 msgstr ""
 
-#: bp-members/bp-members-functions.php:2763
+#: bp-members/bp-members-functions.php:2765
 msgctxt "Member type taxonomy items list navigation label"
 msgid "Member Types list navigation"
 msgstr ""
 
-#: bp-members/bp-members-functions.php:2764
+#: bp-members/bp-members-functions.php:2766
 msgctxt "Member type taxonomy items list label"
 msgid "Member Types list"
 msgstr ""
 
 #. translators: Tab heading when selecting from the most used terms.
-#: bp-members/bp-members-functions.php:2767
+#: bp-members/bp-members-functions.php:2769
 msgctxt "Member type taxonomy most used items label"
 msgid "Most Used"
 msgstr ""
 
-#: bp-members/bp-members-functions.php:2768
+#: bp-members/bp-members-functions.php:2770
 msgctxt "Member type taxonomy back to items label"
 msgid "&larr; Back to Member Types"
 msgstr ""
 
-#: bp-members/bp-members-functions.php:2771
+#: bp-members/bp-members-functions.php:2773
 msgctxt "BP Member type ID label"
 msgid "Member Type ID"
 msgstr ""
 
-#: bp-members/bp-members-functions.php:2772
+#: bp-members/bp-members-functions.php:2774
 msgctxt "BP Member type ID description"
 msgid "Enter a lower-case string without spaces or special characters (used internally to identify the member type)."
 msgstr ""
 
-#: bp-members/bp-members-functions.php:2773
+#: bp-members/bp-members-functions.php:2775
 msgctxt "BP Member type show in list"
 msgid "Show on Member"
 msgstr ""
 
-#: bp-members/bp-members-functions.php:2798
+#: bp-members/bp-members-functions.php:2800
 msgctxt "Member type taxonomy description"
 msgid "BuddyPress Member Types"
 msgstr ""
 
-#: bp-members/bp-members-functions.php:2820
+#: bp-members/bp-members-functions.php:2822
 msgid "Make a list of members matching this type available on the members directory."
 msgstr ""
 
-#: bp-members/bp-members-functions.php:2830
+#: bp-members/bp-members-functions.php:2832
 msgid "Show where member types may be listed, like in the member header."
 msgstr ""
 
-#: bp-members/bp-members-functions.php:2887
+#: bp-members/bp-members-functions.php:2889
 msgid "Member type already exists."
 msgstr ""
 
-#: bp-members/bp-members-functions.php:2917
+#: bp-members/bp-members-functions.php:2919
 msgid "You may not register a member type with this name."
 msgstr ""
 
