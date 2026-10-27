@@ -1,0 +1,34 @@
+# .github/workflows/mirror.yml in a new repo, e.g. you/foo-dist
+name: Mirror wp.org SVN releases
+on:
+  schedule: [{ cron: '23 * * * *' }]   # hourly
+  workflow_dispatch:
+concurrency: mirror
+permissions:
+  contents: write
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    env:
+      SVN: https://plugins.svn.wordpress.org/buddypress
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - run: sudo apt-get install -y -qq subversion
+      - name: Import new tags
+        run: |
+          set -euo pipefail
+          git config user.name  "wp.org mirror"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for tag in $(svn ls "$SVN/tags/" | tr -d / | sort -V); do
+            git rev-parse -q --verify "refs/tags/$tag" >/dev/null && continue
+            rm -rf "$RUNNER_TEMP/x"
+            svn export -q "$SVN/tags/$tag" "$RUNNER_TEMP/x"
+            # replace everything except the mirror's own plumbing
+            git ls-files -z | grep -zvE '^(\.github/|\.gitattributes$)' | xargs -0r git rm -q --
+            cp -a "$RUNNER_TEMP/x/." .
+            git add -A
+            git commit -q --allow-empty -m "Release $tag (wp.org SVN tags/$tag)"
+            git tag "$tag"
+          done
+          git push origin HEAD --tags
