@@ -367,8 +367,6 @@ trait BP_REST_Attachments {
 	 * Delete group's existing avatar if one exists.
 	 *
 	 * @since 5.0.0
-	 *
-	 * @return void
 	 */
 	protected function delete_existing_image() {
 		// Get existing avatar.
