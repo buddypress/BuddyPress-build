@@ -1,13 +1,13 @@
 === BuddyPress ===
-Contributors:      johnjamesjacoby, DJPaul, boonebgorges, r-a-y, imath, mercime, tw2113, dcavins, hnla, karmatosed, slaFFik, dimensionmedia, henrywright, netweb, offereins, espellcaste, modemlooper, danbp, Venutius, apeatling, shanebp, emaralive
+Contributors:      johnjamesjacoby, DJPaul, boonebgorges, r-a-y, imath, mercime, tw2113, dcavins, hnla, karmatosed, slaFFik, dimensionmedia, henrywright, netweb, offereins, espellcaste, modemlooper, danbp, Venutius, apeatling, shanebp
 Donate link:       https://wordpressfoundation.org
 Tags:              community, group, members, network, self-hosted
 License:           GNU General Public License v2 or later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 Requires PHP:      5.6
-Requires at least: 5.8
-Tested up to:      6.8
-Stable tag:        12.7.3
+Requires at least: 6.1
+Tested up to:      6.6
+Stable tag:        14.0.0
 
 Get together safely, in your own way, in WordPress.
 
@@ -130,20 +130,8 @@ Try <a href="https://wordpress.org/plugins/bbpress/">bbPress</a>. It integrates 
 
 == Upgrade Notice ==
 
-= 12.7.3 =
-See: https://codex.buddypress.org/releases/version-12-7-3/
-
-= 12.7.2 =
-See: https://codex.buddypress.org/releases/version-12-7-2/
-
-= 12.7.0 =
-See: https://codex.buddypress.org/releases/version-12-7-0/
-
-= 12.6.0 =
-See: https://codex.buddypress.org/releases/version-12-6-0/
-
-= 12.5.3 =
-See: https://codex.buddypress.org/releases/version-12-5-3/
+= 14.0.0 =
+See: https://codex.buddypress.org/releases/version-14-0-0/
 
 = 12.5.1 =
 See: https://codex.buddypress.org/releases/version-12-5-1/
@@ -211,21 +199,8 @@ See: https://codex.buddypress.org/releases/version-10-0-0/
 
 == Changelog ==
 
-= 12.7.3 =
-See: https://codex.buddypress.org/releases/version-12-7-3/
-
-= 12.7.2 =
-See: https://codex.buddypress.org/releases/version-12-7-2/
-
-= 12.7.0 =
-See: https://codex.buddypress.org/releases/version-12-7-0/
-
-= 12.6.0 =
-See: https://codex.buddypress.org/releases/version-12-6-0/
-
-= 12.5.3 =
-Security fix: Ensure that non-admin user owns the notifications that she is attempting to manage.
-See: https://codex.buddypress.org/releases/version-12-5-3/
+= 14.0.0 =
+See: https://codex.buddypress.org/releases/version-14-0-0/
 
 = 12.5.1 =
 Security fix: The Members block was vulnerable to a Stored Cross-Site Scripting. Discovered by Wesley (wcraft) from the Wordfence organization.

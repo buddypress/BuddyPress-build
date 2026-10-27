@@ -148,8 +148,7 @@ class BP_REST_Groups_Endpoint extends WP_REST_Controller {
 		}
 
 		// See if the user can see hidden groups.
-		$can_see_hidden_groups = $this->can_see_hidden_groups( $request );
-		if ( ! $can_see_hidden_groups ) {
+		if ( ! empty( $request->get_param( 'show_hidden' ) ) && true === (bool) $request->get_param( 'show_hidden' ) && ! $this->can_see_hidden_groups( $request ) ) {
 			$args['show_hidden'] = false;
 		}
 
@@ -166,14 +165,6 @@ class BP_REST_Groups_Endpoint extends WP_REST_Controller {
 		 * @param WP_REST_Request $request The request sent to the API.
 		 */
 		$args = apply_filters( 'bp_rest_groups_get_items_query_args', $args, $request );
-
-		// Apply mandatory visibility constraints after extensions filter the requested query.
-		if ( ! $can_see_hidden_groups ) {
-			$status_not_in = isset( $args['status__not_in'] ) ? $args['status__not_in'] : array();
-
-			$args['show_hidden']    = false;
-			$args['status__not_in'] = array_values( array_unique( array_merge( wp_parse_list( $status_not_in ), array( 'hidden' ) ) ) );
-		}
 
 		// Actually, query it.
 		$groups = groups_get_groups( $args );
@@ -938,7 +929,7 @@ class BP_REST_Groups_Endpoint extends WP_REST_Controller {
 		// Remove group type(s).
 		if ( isset( $prepared_group->group_id ) && ! empty( $request->get_param( 'remove_types' ) ) ) {
 			array_map(
-				function( $type ) use ( $prepared_group ) {
+				function ( $type ) use ( $prepared_group ) {
 					bp_groups_remove_group_type( $prepared_group->group_id, $type );
 				},
 				$request->get_param( 'remove_types' )

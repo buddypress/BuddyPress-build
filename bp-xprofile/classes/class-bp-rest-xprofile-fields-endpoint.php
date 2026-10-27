@@ -130,6 +130,7 @@ class BP_REST_XProfile_Fields_Endpoint extends WP_REST_Controller {
 			'exclude_groups'         => $request->get_param( 'exclude_groups' ),
 			'exclude_fields'         => $request->get_param( 'exclude_fields' ),
 			'update_meta_cache'      => $request->get_param( 'update_meta_cache' ),
+			'signup_fields_only'     => $request->get_param( 'signup_fields_only' ),
 			'fetch_fields'           => true,
 		);
 
@@ -152,8 +153,13 @@ class BP_REST_XProfile_Fields_Endpoint extends WP_REST_Controller {
 		 */
 		$args = apply_filters( 'bp_rest_xprofile_fields_get_items_query_args', $args, $request );
 
-		// Actually, query it.
-		$field_groups = bp_xprofile_get_groups( $args );
+		/**
+		 * Actually, query it.
+		 *
+		 * Let's not use `bp_xprofile_get_groups`, since `BP_XProfile_Data_Template` handles signup fields better.
+		 */
+		$template_query = new BP_XProfile_Data_Template( $args );
+		$field_groups   = (array) $template_query->groups;
 
 		$retval = array();
 		foreach ( $field_groups as $group ) {
@@ -167,11 +173,11 @@ class BP_REST_XProfile_Fields_Endpoint extends WP_REST_Controller {
 		$response = rest_ensure_response( $retval );
 
 		/**
-		 * Fires after a list of field are fetched via the REST API.
+		 * Fires after a list of XProfile group fields are fetched via the REST API.
 		 *
 		 * @since 5.0.0
 		 *
-		 * @param array            $field_groups  Fetched field groups.
+		 * @param array            $field_groups Fetched field groups.
 		 * @param WP_REST_Response $response     The response data.
 		 * @param WP_REST_Request  $request      The request sent to the API.
 		 */
@@ -736,7 +742,7 @@ class BP_REST_XProfile_Fields_Endpoint extends WP_REST_Controller {
 			'is_default_option' => (bool) $field->is_default_option,
 		);
 
-		if ( ! empty( $request->get_param( 'fetch_visibility_level' ) ) ) {
+		if ( ! empty( $request->get_param( 'fetch_visibility_level' ) && ! empty( $field->visibility_level ) ) ) {
 			$data['visibility_level'] = $field->visibility_level;
 		}
 
@@ -751,7 +757,7 @@ class BP_REST_XProfile_Fields_Endpoint extends WP_REST_Controller {
 
 			$data['data']['value'] = array(
 				'raw'          => $field->data->value,
-				'unserialized' => $this->get_profile_field_unserialized_value( $field->data->value, $field ),
+				'unserialized' => $this->get_profile_field_unserialized_value( $field->data->value ),
 				'rendered'     => $this->get_profile_field_rendered_value( $field->data->value, $field ),
 			);
 		}
@@ -759,7 +765,7 @@ class BP_REST_XProfile_Fields_Endpoint extends WP_REST_Controller {
 		// Adding the options.
 		if ( method_exists( $field, 'get_children' ) ) {
 			$data['options'] = array_map(
-				function( $item ) use ( $request ) {
+				function ( $item ) use ( $request ) {
 					return $this->assemble_response_data( $item, $request );
 				},
 				$field->get_children()
@@ -783,7 +789,7 @@ class BP_REST_XProfile_Fields_Endpoint extends WP_REST_Controller {
 	 */
 	protected function prepare_links( $field ) {
 		$base       = sprintf( '/%s/%s/', $this->namespace, $this->rest_base );
-		$group_base = sprintf( '/%s/%s/', $this->namespace, '/xprofile/groups/' );
+		$group_base = sprintf( '/%s/%s/', $this->namespace, 'xprofile/groups' );
 
 		// Entity meta.
 		$links = array(
@@ -856,10 +862,8 @@ class BP_REST_XProfile_Fields_Endpoint extends WP_REST_Controller {
 			return '';
 		}
 
-		if ( (bool) $profile_field->type_obj->supports_multiple_defaults ) {
-			// Unserialize the BuddyPress way.
-			$value = bp_unserialize_profile_field( $value );
-		}
+		// Unserialize the BuddyPress way.
+		$value = bp_unserialize_profile_field( $value );
 
 		global $field;
 		$reset_global = $field;
@@ -888,25 +892,16 @@ class BP_REST_XProfile_Fields_Endpoint extends WP_REST_Controller {
 	 * Retrieve the unserialized value of a profile field.
 	 *
 	 * @since 5.0.0
-	 * @since 14.5.3 Only unserialize fields that suppor multiple defaults.
 	 *
-	 * @param  string                    $value         The raw value of the field.
-	 * @param  integer|BP_XProfile_Field $profile_field The ID or the full object for the field.
-	 * @return array                                    The maybe unserialized field value.
+	 * @param  string $value The raw value of the field.
+	 * @return array The unserialized field value.
 	 */
-	public function get_profile_field_unserialized_value( $value = '', $profile_field = null ) {
+	public function get_profile_field_unserialized_value( $value = '' ) {
 		if ( empty( $value ) ) {
 			return array();
 		}
 
-		$profile_field = xprofile_get_field( $profile_field );
-
-		if ( (bool) $profile_field->type_obj->supports_multiple_defaults ) {
-			$unserialized_value = maybe_unserialize( $value );
-		} else {
-			$unserialized_value = $value;
-		}
-
+		$unserialized_value = maybe_unserialize( $value );
 		if ( ! is_array( $unserialized_value ) ) {
 			$unserialized_value = (array) $unserialized_value;
 		}
@@ -1194,6 +1189,14 @@ class BP_REST_XProfile_Fields_Endpoint extends WP_REST_Controller {
 
 		$params['fetch_field_data'] = array(
 			'description'       => __( 'Whether to fetch data for each field. Requires a $user_id.', 'buddypress' ),
+			'default'           => false,
+			'type'              => 'boolean',
+			'sanitize_callback' => 'rest_sanitize_boolean',
+			'validate_callback' => 'rest_validate_request_arg',
+		);
+
+		$params['signup_fields_only'] = array(
+			'description'       => __( 'Whether to only return signup fields.', 'buddypress' ),
 			'default'           => false,
 			'type'              => 'boolean',
 			'sanitize_callback' => 'rest_sanitize_boolean',

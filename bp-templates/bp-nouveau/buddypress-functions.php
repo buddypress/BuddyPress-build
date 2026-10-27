@@ -83,10 +83,7 @@ class BP_Nouveau extends BP_Theme_Compat {
 		$this->includes_dir   = trailingslashit( $this->dir ) . 'includes/';
 		$this->directory_nav  = new BP_Core_Nav( bp_get_root_blog_id() );
 		$this->is_block_theme = false;
-
-		if ( bp_is_running_wp( '5.9.0', '>=' ) ) {
-			$this->is_block_theme = wp_is_block_theme();
-		}
+		$this->is_block_theme = wp_is_block_theme();
 	}
 
 	/**
@@ -105,7 +102,7 @@ class BP_Nouveau extends BP_Theme_Compat {
 
 		// Load AJAX code only on AJAX requests.
 		} else {
-			add_action( 'admin_init', function() {
+			add_action( 'admin_init', function () {
 				if ( defined( 'DOING_AJAX' ) && true === DOING_AJAX ) {
 					require bp_nouveau()->includes_dir . 'ajax.php';
 				}
@@ -220,8 +217,11 @@ class BP_Nouveau extends BP_Theme_Compat {
 		add_action( 'bp_enqueue_community_scripts', array( $this, 'localize_scripts' ) );
 		remove_action( 'bp_enqueue_community_scripts', 'bp_core_confirmation_js' );
 
-		// Body no-js class.
-		add_filter( 'body_class', array( $this, 'add_nojs_body_class' ), 20, 1 );
+		/** This filter is documented in bp-core/bp-core-dependency.php */
+		if ( is_buddypress() || ! apply_filters( 'bp_enqueue_assets_in_bp_pages_only', true ) ) {
+			// Body no-js class.
+			add_filter( 'body_class', array( $this, 'add_nojs_body_class' ), 20, 1 );
+		}
 
 		// Ajax querystring.
 		add_filter( 'bp_ajax_querystring', 'bp_nouveau_ajax_querystring', 10, 2 );
@@ -468,17 +468,12 @@ class BP_Nouveau extends BP_Theme_Compat {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param string[] $classes Array of classes to append to body tag.
-	 * @return string[]
+	 * @param array $classes Array of classes to append to body tag.
+	 *
+	 * @return array $classes
 	 */
 	public function add_nojs_body_class( $classes ) {
-		/** This filter is documented in bp-core/bp-core-dependency.php */
-		if ( ! is_buddypress() && apply_filters( 'bp_enqueue_assets_in_bp_pages_only', true ) ) {
-			return $classes;
-		}
-
 		$classes[] = 'no-js';
-
 		return array_unique( $classes );
 	}
 
@@ -710,7 +705,7 @@ class BP_Nouveau extends BP_Theme_Compat {
 			return $path;
 		}
 
-		$uri = parse_url( $path );
+		$uri = wp_parse_url( $path );
 
 		if ( false === strpos( $uri['path'], 'customize.php' ) ) {
 			return $path;

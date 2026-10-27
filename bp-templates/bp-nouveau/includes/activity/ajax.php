@@ -9,7 +9,7 @@
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
-add_action( 'admin_init', function() {
+add_action( 'admin_init', function () {
 	$ajax_actions = array(
 		array(
 			'activity_filter' => array(
@@ -316,11 +316,6 @@ function bp_nouveau_ajax_get_single_activity_content() {
 	}
 
 	$activity = $activity_array['activities'][0];
-
-	// Ensure that the user is allowed to read the activity item.
-	if ( ! bp_activity_user_can_read( $activity ) ) {
-		wp_send_json_error( $response );
-	}
 
 	/**
 	 * Fires before the return of an activity's full, non-excerpted content via a POST request.

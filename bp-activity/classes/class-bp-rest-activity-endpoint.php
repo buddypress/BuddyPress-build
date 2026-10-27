@@ -260,6 +260,17 @@ class BP_REST_Activity_Endpoint extends WP_REST_Controller {
 	 * @return true|WP_Error
 	 */
 	public function get_items_permissions_check( $request ) {
+		$retval = new WP_Error(
+			'bp_rest_authorization_required',
+			__( 'Sorry, you are not allowed to perform this action.', 'buddypress' ),
+			array(
+				'status' => rest_authorization_required_code(),
+			)
+		);
+
+		if ( bp_current_user_can( 'bp_view', array( 'bp_component' => 'activity' ) ) ) {
+			$retval = true;
+		}
 
 		/**
 		 * Filter the activity `get_items` permissions check.
@@ -269,7 +280,7 @@ class BP_REST_Activity_Endpoint extends WP_REST_Controller {
 		 * @param true|WP_Error   $retval  Returned value.
 		 * @param WP_REST_Request $request Full data about the request.
 		 */
-		return apply_filters( 'bp_rest_activity_get_items_permissions_check', true, $request );
+		return apply_filters( 'bp_rest_activity_get_items_permissions_check', $retval, $request );
 	}
 
 	/**
@@ -332,7 +343,7 @@ class BP_REST_Activity_Endpoint extends WP_REST_Controller {
 			)
 		);
 
-		if ( $this->can_see( $request ) ) {
+		if ( bp_current_user_can( 'bp_view', array( 'bp_component' => 'activity' ) ) && $this->can_see( $request ) ) {
 			$retval = true;
 		}
 
@@ -481,26 +492,12 @@ class BP_REST_Activity_Endpoint extends WP_REST_Controller {
 
 			if ( empty( $user_id ) || (int) bp_loggedin_user_id() === (int) $user_id ) {
 				$item_id   = $request->get_param( 'primary_item_id' );
-				$parent_id = $request->get_param( 'secondary_item_id' );
 				$component = $request->get_param( 'component' );
-				$type      = $request->get_param( 'type' );
 
 				// The current user can create an activity.
 				$retval = true;
 
-				if ( 'activity_comment' === $type ) {
-					$activity = ! empty( $item_id ) ? new BP_Activity_Activity( $item_id ) : false;
-
-					if ( empty( $activity ) || (int) $activity->id !== (int) $item_id || 'activity_comment' === $activity->type || ( bp_is_active( 'groups' ) && ! bp_groups_filter_activity_can_comment( true, $activity ) ) ) {
-						$retval = $error;
-					} elseif ( ! empty( $parent_id ) && (int) $parent_id !== (int) $activity->id ) {
-						$parent = new BP_Activity_Activity( $parent_id );
-
-						if ( empty( $parent ) || (int) $parent->id !== (int) $parent_id || 'activity_comment' !== $parent->type || (int) $parent->item_id !== (int) $activity->id ) {
-							$retval = $error;
-						}
-					}
-				} elseif ( bp_is_active( 'groups' ) && buddypress()->groups->id === $component && ! is_null( $item_id ) ) {
+				if ( bp_is_active( 'groups' ) && buddypress()->groups->id === $component && ! is_null( $item_id ) ) {
 					if ( ! $this->show_hidden( $component, $item_id ) ) {
 						$retval = $error;
 					}
@@ -1163,7 +1160,7 @@ class BP_REST_Activity_Endpoint extends WP_REST_Controller {
 		}
 
 		// Embed Blog.
-		if ( bp_is_active( 'blogs' ) && buddypress()->blogs->id === $activity->component && ! empty( $activity->item_id ) ) {
+		if ( is_multisite() && bp_is_active( 'blogs' ) && buddypress()->blogs->id === $activity->component && ! empty( $activity->item_id ) ) {
 			$links['blog'] = array(
 				'embeddable' => true,
 				'href'       => rest_url(

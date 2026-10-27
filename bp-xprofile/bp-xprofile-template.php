@@ -614,9 +614,7 @@ function bp_the_profile_field_value() {
 	function bp_get_the_profile_field_value() {
 		global $field;
 
-		if ( (bool) $field->type_obj->supports_multiple_defaults ) {
-			$field->data->value = bp_unserialize_profile_field( $field->data->value );
-		}
+		$field->data->value = bp_unserialize_profile_field( $field->data->value );
 
 		/**
 		 * Filters the XProfile field value.
@@ -1377,7 +1375,7 @@ function bp_profile_visibility_radio_buttons( $args = '' ) {
 
 			<?php if ( bp_current_user_can( 'bp_xprofile_change_field_visibility' ) ) : ?>
 
-				<?php foreach( bp_xprofile_get_visibility_levels() as $level ) : ?>
+				<?php foreach ( bp_xprofile_get_visibility_levels() as $level ) : ?>
 
 					<?php
 						// phpcs:ignore WordPress.Security.EscapeOutput

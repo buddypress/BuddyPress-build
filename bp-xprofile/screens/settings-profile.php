@@ -20,14 +20,19 @@ function bp_xprofile_screen_settings() {
 		return;
 	}
 
-	/**
-	 * Filters the template to load for the XProfile settings screen.
-	 *
-	 * @since 2.0.0
-	 *
-	 * @param string $template Path to the XProfile change avatar template to load.
-	 */
-	bp_core_load_template( apply_filters( 'bp_settings_screen_xprofile', '/members/single/settings/profile' ) );
+	$templates = array(
+		/**
+		 * Filters the template to load for the XProfile settings screen.
+		 *
+		 * @since 2.0.0
+		 *
+		 * @param string $template Path to the XProfile change avatar template to load.
+		 */
+		apply_filters( 'bp_settings_screen_xprofile', '/members/single/settings/profile' ),
+		'members/single/index',
+	);
+
+	bp_core_load_template( $templates );
 }
 
 /**
@@ -74,7 +79,7 @@ function bp_xprofile_action_settings() {
 	if ( ! empty( $_POST['field_ids'] ) ) {
 
 		// Get the POST'ed field ID's.
-		$posted_field_ids = wp_parse_id_list( $_POST['field_ids'] );
+		$posted_field_ids = explode( ',', $_POST['field_ids'] );
 
 		// Backward compatibility: a bug in BP 2.0 caused only a single
 		// group's field IDs to be submitted. Look for values submitted

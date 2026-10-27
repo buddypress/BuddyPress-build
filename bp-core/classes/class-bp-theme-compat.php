@@ -18,7 +18,6 @@ defined( 'ABSPATH' ) || exit;
  * extending this class.
  *
  * @since 1.7.0
- * @since 14.3.0 Changed the `$name` property's description.
  *
  * @todo We should probably do something similar to BP_Component::start().
  * @todo If this is only intended to be extended, it should be abstract.
@@ -26,7 +25,7 @@ defined( 'ABSPATH' ) || exit;
  * @param array $properties {
  *     An array of properties describing the theme compat package.
  *     @type string $id      ID of the package. Must be unique.
- *     @type string $name    Raw name for the theme. This should match the name given
+ *     @type string $name    Name of the theme. This should match the name given
  *                           in style.css.
  *     @type string $version Theme version. Used for busting script and style
  *                           browser caches.
@@ -40,6 +39,7 @@ class BP_Theme_Compat {
 	 * Template package properties, as passed to the constructor.
 	 *
 	 * @since 1.7.0
+	 *
 	 * @var array
 	 */
 	protected $_data = array();
@@ -51,7 +51,7 @@ class BP_Theme_Compat {
 	 *
 	 * @param array $properties Array of properties for BP_Theme_Compat.
 	 */
-	public function __construct( Array $properties = array() ) {
+	public function __construct( array $properties = array() ) {
 		$this->_data = $properties;
 	}
 
@@ -100,10 +100,12 @@ class BP_Theme_Compat {
 	 *
 	 * @param string $property Property name.
 	 * @param mixed  $value    Property value.
-	 * @return bool True on success, false on failure.
+	 * @return bool
 	 */
 	public function __set( $property, $value ) {
-		return $this->_data[$property] = $value;
+		$this->_data[ $property ] = $value;
+
+		return $this->_data[ $property ];
 	}
 
 	/**
@@ -116,7 +118,7 @@ class BP_Theme_Compat {
 	 *               empty string.
 	 */
 	public function __get( $property ) {
-		return array_key_exists( $property, $this->_data ) ? $this->_data[$property] : '';
+		return array_key_exists( $property, $this->_data ) ? $this->_data[ $property ] : '';
 	}
 
 	/**
