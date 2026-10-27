@@ -1304,20 +1304,33 @@ add_filter( 'admin_body_class', 'bp_core_admin_body_classes' );
  * Adds a BuddyPress category to house BuddyPress blocks.
  *
  * @since 5.0.0
- * @since 8.0.0 The `bp_block_category_post_types` filter has been deprecated.
  *
- * @param array          $categories Array of block categories.
- * @param string|WP_Post $post       Post being loaded.
+ * @param array  $categories Array of block categories.
+ * @param object $post       Post being loaded.
  */
-function bp_block_category( $categories = array(), $editor_name_or_post = null ) {
-	if ( $editor_name_or_post instanceof WP_Post ) {
-		$post_types = array( 'post', 'page' );
+function bp_block_category( $categories = array(), $post = null ) {
+	if ( ! ( $post instanceof WP_Post ) ) {
+		return $categories;
+	}
 
-		/*
-		 * As blocks are always loaded even if the category is not available, there's no more interest
-		 * in disabling the BuddyPress category.
-		 */
-		apply_filters_deprecated( 'bp_block_category_post_types', array( $post_types ), '8.0.0' );
+	/**
+	 * Filter here to add/remove the supported post types for the BuddyPress blocks category.
+	 *
+	 * @since 5.0.0
+	 *
+	 * @param array $value The list of supported post types. Defaults to WordPress built-in ones.
+	 */
+	$post_types = apply_filters( 'bp_block_category_post_types', array( 'post', 'page' ) );
+
+	if ( ! $post_types ) {
+		return $categories;
+	}
+
+	// Get the post type of the current item.
+	$post_type = get_post_type( $post );
+
+	if ( ! in_array( $post_type, $post_types, true ) ) {
+		return $categories;
 	}
 
 	return array_merge(
@@ -1331,17 +1344,4 @@ function bp_block_category( $categories = array(), $editor_name_or_post = null )
 		)
 	);
 }
-
-/**
- * Select the right `block_categories` filter according to WP version.
- *
- * @since 8.0.0
- */
-function bp_block_init_category_filter() {
-	if ( function_exists( 'get_default_block_categories' ) ) {
-		add_filter( 'block_categories_all', 'bp_block_category', 1, 2 );
-	} else {
-		add_filter( 'block_categories', 'bp_block_category', 1, 2 );
-	}
-}
-add_action( 'bp_init', 'bp_block_init_category_filter' );
+add_filter( 'block_categories', 'bp_block_category', 1, 2 );

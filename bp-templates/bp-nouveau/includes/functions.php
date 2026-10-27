@@ -130,7 +130,7 @@ function bp_nouveau_ajax_querystring( $query_string, $object ) {
 	}
 
 	// Single activity.
-	if ( bp_is_single_activity() && 'activity' === $object ) {
+	if ( bp_is_single_activity() ) {
 		$qs = array(
 			'display_comments=threaded',
 			'show_hidden=true',
@@ -1090,27 +1090,9 @@ function bp_nouveau_get_user_feedback( $feedback_id = '' ) {
 				'type'    => 'info',
 				'message' => __( 'Currently only your friends can invite you to groups. Uncheck the box to allow any member to send invites.', 'buddypress' ),
 			),
-			'member-invitations-help'           => array(
-				'type'    => 'info',
-				'message' => __( 'Fill out the form below to invite a new user to join this site. Upon submission of the form, an email will be sent to the invitee containing a link to accept your invitation. You may also add a custom message to the email.', 'buddypress' ),
-			),
-			'member-invitations-none'           => array(
+			'member-invites-none'               => array(
 				'type'    => 'info',
 				'message' => __( 'There are no invitations to display.', 'buddypress' ),
-			),
-			'member-invitations-not-allowed'    => array(
-				'type'    => 'error',
-				/**
-				 * Use this filter to edit the restricted feedback message displayed into the Send invitation form.
-				 *
-				 * @since 8.0.0
-				 *
-				 * @param string $value The restricted feedback message displayed into the Send invitation form.
-				 */
-				'message' => apply_filters(
-					'members_invitations_form_access_restricted',
-					__( 'Sorry, you are not allowed to send invitations.', 'buddypress' )
-				),
 			),
 		)
 	);

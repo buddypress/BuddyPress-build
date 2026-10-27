@@ -15,8 +15,9 @@ function bp_members_invitations_setup_nav() {
 		return;
 	}
 
-	$user_has_access     = bp_user_has_access();
-	$default_subnav_slug = ( bp_is_my_profile() && bp_user_can( bp_displayed_user_id(), 'bp_members_invitations_view_send_screen' ) ) ? 'send-invites' : 'list-invites';
+	$user_has_access  = bp_user_has_access();
+	$user_can_send    = bp_user_can( bp_displayed_user_id(), 'bp_members_send_invitation' );
+	$user_has_invites = bp_members_invitations_user_has_sent_invites( bp_displayed_user_id() );
 
 	/* Add 'Invitations' to the main user profile navigation */
 	bp_core_new_nav_item(
@@ -25,8 +26,8 @@ function bp_members_invitations_setup_nav() {
 			'slug'                    => bp_get_members_invitations_slug(),
 			'position'                => 80,
 			'screen_function'         => 'members_screen_send_invites',
-			'default_subnav_slug'     => $default_subnav_slug,
-			'show_for_displayed_user' => $user_has_access && bp_user_can( bp_displayed_user_id(), 'bp_members_invitations_view_screens' )
+			'default_subnav_slug'     => ( $user_can_send && bp_is_my_profile() ) ? 'send-invites' : 'list-invites',
+			'show_for_displayed_user' => $user_has_access && ( $user_can_send || $user_has_invites )
 		)
 	);
 
@@ -41,7 +42,7 @@ function bp_members_invitations_setup_nav() {
 			'parent_url'      => $parent_link,
 			'screen_function' => 'members_screen_send_invites',
 			'position'        => 10,
-			'user_has_access' => $user_has_access && bp_is_my_profile() && bp_user_can( bp_displayed_user_id(), 'bp_members_invitations_view_send_screen' )
+			'user_has_access' => $user_has_access && $user_can_send && bp_is_my_profile()
 		)
 	);
 
@@ -53,7 +54,7 @@ function bp_members_invitations_setup_nav() {
 			'parent_url'      => $parent_link,
 			'screen_function' => 'members_screen_list_sent_invites',
 			'position'        => 20,
-			'user_has_access' => $user_has_access && bp_user_can( bp_displayed_user_id(), 'bp_members_invitations_view_screens' )
+			'user_has_access' => $user_has_access && ( $user_can_send || $user_has_invites )
 		)
 	);
 }

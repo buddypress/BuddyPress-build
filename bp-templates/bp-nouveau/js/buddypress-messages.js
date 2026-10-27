@@ -1,7 +1,6 @@
 /* global wp, BP_Nouveau, _, Backbone, tinymce, tinyMCE */
 /* jshint devel: true */
-/* @since 3.0.0 */
-/* @version 8.0.0 */
+/* @version 3.1.0 */
 window.wp = window.wp || {};
 window.bp = window.bp || {};
 
@@ -52,14 +51,9 @@ window.bp = window.bp || {};
 
 			// Then listen to nav click and load the appropriate view.
 			$( '#subnav a' ).on( 'click', function( event ) {
-				var view_id = $( event.target ).prop( 'id' ),
-				    supportedView = [ 'inbox', 'starred', 'sentbox', 'compose' ];
-
-				if ( -1 === _.indexOf( supportedView, view_id ) || 'unsupported' === self.box ) {
-					return event;
-				}
-
 				event.preventDefault();
+
+				var view_id = $( event.target ).prop( 'id' );
 
 				// Remove the editor to be sure it will be added dynamically later.
 				self.removeTinyMCE();
@@ -608,11 +602,11 @@ window.bp = window.bp || {};
 							errors.push( 'send_to' );
 						} else {
 							usernames = usernames.map( function( username ) {
-								username = username.trim();
+								username = $.trim( username );
 								return username;
 							} );
 
-							if ( ! usernames || ! _.isArray( usernames ) ) {
+							if ( ! usernames || ! $.isArray( usernames ) ) {
 								errors.push( 'send_to' );
 							}
 
@@ -1388,13 +1382,12 @@ window.bp = window.bp || {};
 
 	bp.Nouveau.Messages.Router = Backbone.Router.extend( {
 		routes: {
-			'compose/'    : 'composeMessage',
-			'view/:id/'   : 'viewMessage',
-			'sentbox/'    : 'sentboxView',
-			'starred/'    : 'starredView',
-			'inbox/'      : 'inboxView',
-			''            : 'inboxView',
-			'*unSupported': 'unSupported'
+			'compose/' : 'composeMessage',
+			'view/:id/': 'viewMessage',
+			'sentbox/' : 'sentboxView',
+			'starred/' : 'starredView',
+			'inbox/'   : 'inboxView',
+			''        : 'inboxView'
 		},
 
 		composeMessage: function() {
@@ -1425,10 +1418,6 @@ window.bp = window.bp || {};
 		starredView: function() {
 			bp.Nouveau.Messages.box = 'starred';
 			bp.Nouveau.Messages.threadsView();
-		},
-
-		unSupported: function() {
-			bp.Nouveau.Messages.box = 'unsupported';
 		},
 
 		inboxView: function() {
