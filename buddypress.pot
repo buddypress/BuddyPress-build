@@ -1,17 +1,17 @@
-# Copyright (C) 2018 The BuddyPress Community
+# Copyright (C) 2019 The BuddyPress Community
 # This file is distributed under the GPLv2 or later (license.txt).
 msgid ""
 msgstr ""
-"Project-Id-Version: BuddyPress 4.1.0\n"
+"Project-Id-Version: BuddyPress 4.2.0\n"
 "Report-Msgid-Bugs-To: https://buddypress.trac.wordpress.org\n"
-"POT-Creation-Date: 2018-12-05 15:46:31+00:00\n"
+"POT-Creation-Date: 2019-02-20 15:34:23+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2018-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2019-MO-DA HO:MI+ZONE\n"
 "Last-Translator: JOHN JAMES JACOBY <jjj@buddypress.org>\n"
 "Language-Team: ENGLISH <jjj@buddypress.org>\n"
-"X-Generator: grunt-wp-i18n1.0.2\n"
+"X-Generator: grunt-wp-i18n 1.0.3\n"
 
 #: bp-activity/actions/delete.php:52
 #: bp-templates/bp-nouveau/includes/activity/ajax.php:249
@@ -5146,11 +5146,11 @@ msgstr[1] ""
 msgid "Viewing members of the type: %s"
 msgstr ""
 
-#: bp-members/bp-members-template.php:2487
+#: bp-members/bp-members-template.php:2492
 msgid "Your Profile Photo"
 msgstr ""
 
-#: bp-members/bp-members-template.php:2577
+#: bp-members/bp-members-template.php:2582
 msgid "Activity RSS Feed"
 msgstr ""
 
@@ -5613,7 +5613,7 @@ msgid "Messages marked as read"
 msgstr ""
 
 #: bp-messages/actions/bulk-manage.php:68
-#: bp-templates/bp-nouveau/includes/messages/ajax.php:675
+#: bp-templates/bp-nouveau/includes/messages/ajax.php:681
 msgid "Messages marked as unread."
 msgstr ""
 
@@ -5687,7 +5687,7 @@ msgid "Message marked unread."
 msgstr ""
 
 #: bp-messages/actions/view.php:41
-#: bp-templates/bp-nouveau/includes/messages/ajax.php:210
+#: bp-templates/bp-nouveau/includes/messages/ajax.php:216
 msgid "Your reply was sent successfully"
 msgstr ""
 
@@ -7231,8 +7231,8 @@ msgid "View Message"
 msgstr ""
 
 #: bp-templates/bp-legacy/buddypress/members/single/messages/messages-loop.php:195
-#: bp-templates/bp-nouveau/includes/messages/ajax.php:247
-#: bp-templates/bp-nouveau/includes/messages/ajax.php:404
+#: bp-templates/bp-nouveau/includes/messages/ajax.php:253
+#: bp-templates/bp-nouveau/includes/messages/ajax.php:410
 msgid "Sorry, no messages were found."
 msgstr ""
 
@@ -7647,7 +7647,8 @@ msgstr ""
 msgid "There was a problem closing the notice."
 msgstr ""
 
-#: bp-templates/bp-legacy/buddypress-functions.php:1675
+#: bp-templates/bp-legacy/buddypress-functions.php:1643
+#: bp-templates/bp-legacy/buddypress-functions.php:1683
 msgid "There was a problem sending that reply. Please try again."
 msgstr ""
 
@@ -8708,52 +8709,52 @@ msgstr ""
 msgid "Your reply was not sent. Please enter some content."
 msgstr ""
 
-#: bp-templates/bp-nouveau/includes/messages/ajax.php:223
-#: bp-templates/bp-nouveau/includes/messages/ajax.php:398
+#: bp-templates/bp-nouveau/includes/messages/ajax.php:229
+#: bp-templates/bp-nouveau/includes/messages/ajax.php:404
 msgid "Unauthorized request."
 msgstr ""
 
-#: bp-templates/bp-nouveau/includes/messages/ajax.php:513
+#: bp-templates/bp-nouveau/includes/messages/ajax.php:519
 msgid "There was a problem deleting your messages. Please try again."
 msgstr ""
 
-#: bp-templates/bp-nouveau/includes/messages/ajax.php:536
+#: bp-templates/bp-nouveau/includes/messages/ajax.php:542
 msgid "Messages deleted"
 msgstr ""
 
-#: bp-templates/bp-nouveau/includes/messages/ajax.php:552
+#: bp-templates/bp-nouveau/includes/messages/ajax.php:558
 msgid "There was a problem starring your messages. Please try again."
 msgstr ""
 
-#: bp-templates/bp-nouveau/includes/messages/ajax.php:554
+#: bp-templates/bp-nouveau/includes/messages/ajax.php:560
 msgid "There was a problem unstarring your messages. Please try again."
 msgstr ""
 
-#: bp-templates/bp-nouveau/includes/messages/ajax.php:628
+#: bp-templates/bp-nouveau/includes/messages/ajax.php:634
 msgid "Messages successfully starred."
 msgstr ""
 
-#: bp-templates/bp-nouveau/includes/messages/ajax.php:630
+#: bp-templates/bp-nouveau/includes/messages/ajax.php:636
 msgid "Messages successfully unstarred."
 msgstr ""
 
-#: bp-templates/bp-nouveau/includes/messages/ajax.php:651
+#: bp-templates/bp-nouveau/includes/messages/ajax.php:657
 msgid "There was a problem marking your messages as read. Please try again."
 msgstr ""
 
-#: bp-templates/bp-nouveau/includes/messages/ajax.php:657
+#: bp-templates/bp-nouveau/includes/messages/ajax.php:663
 msgid "There was a problem marking your messages as unread. Please try again."
 msgstr ""
 
-#: bp-templates/bp-nouveau/includes/messages/ajax.php:677
+#: bp-templates/bp-nouveau/includes/messages/ajax.php:683
 msgid "Messages marked as read."
 msgstr ""
 
-#: bp-templates/bp-nouveau/includes/messages/ajax.php:712
+#: bp-templates/bp-nouveau/includes/messages/ajax.php:718
 msgid "There was a problem dismissing the notice. Please try again."
 msgstr ""
 
-#: bp-templates/bp-nouveau/includes/messages/ajax.php:746
+#: bp-templates/bp-nouveau/includes/messages/ajax.php:752
 msgid "Sitewide notice dismissed"
 msgstr ""
 
