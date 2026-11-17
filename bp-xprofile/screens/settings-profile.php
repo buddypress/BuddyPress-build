@@ -20,19 +20,14 @@ function bp_xprofile_screen_settings() {
 		return;
 	}
 
-	$templates = array(
-		/**
-		 * Filters the template to load for the XProfile settings screen.
-		 *
-		 * @since 2.0.0
-		 *
-		 * @param string $template Path to the XProfile change avatar template to load.
-		 */
-		apply_filters( 'bp_settings_screen_xprofile', '/members/single/settings/profile' ),
-		'members/single/index',
-	);
-
-	bp_core_load_template( $templates );
+	/**
+	 * Filters the template to load for the XProfile settings screen.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param string $template Path to the XProfile change avatar template to load.
+	 */
+	bp_core_load_template( apply_filters( 'bp_settings_screen_xprofile', '/members/single/settings/profile' ) );
 }
 
 /**
@@ -97,8 +92,8 @@ function bp_xprofile_action_settings() {
 
 			$visibility_level = 'public';
 
-			if ( ! empty( $_POST[ 'field_' . $field_id . '_visibility' ] ) ) {
-				$visibility_level = $_POST[ 'field_' . $field_id . '_visibility' ];
+			if ( !empty( $_POST['field_' . $field_id . '_visibility'] ) ) {
+				$visibility_level = $_POST['field_' . $field_id . '_visibility'];
 			}
 
 			xprofile_set_field_visibility_level( $field_id, bp_displayed_user_id(), $visibility_level );
@@ -114,9 +109,7 @@ function bp_xprofile_action_settings() {
 	 */
 	do_action( 'bp_xprofile_settings_after_save' );
 
-	// Redirect to the User's profile settings.
-	bp_core_redirect(
-		bp_displayed_user_url( bp_members_get_path_chunks( array( bp_get_settings_slug(), 'profile' ) ) )
-	);
+	// Redirect to the root domain.
+	bp_core_redirect( bp_displayed_user_domain() . bp_get_settings_slug() . '/profile' );
 }
 add_action( 'bp_actions', 'bp_xprofile_action_settings' );

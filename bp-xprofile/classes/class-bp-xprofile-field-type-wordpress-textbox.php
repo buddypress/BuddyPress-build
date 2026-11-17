@@ -179,7 +179,7 @@ class BP_XProfile_Field_Type_WordPress_Textbox extends BP_XProfile_Field_Type_Wo
 		/** This action is documented in bp-xprofile/bp-xprofile-classes */
 		do_action( bp_get_the_profile_field_errors_action() ); ?>
 
-		<input <?php $this->output_edit_field_html_elements( $r ); ?> aria-labelledby="<?php bp_the_profile_field_input_name(); ?>-1" aria-describedby="<?php bp_the_profile_field_input_name(); ?>-3">
+		<input <?php echo $this->get_edit_field_html_elements( $r ); ?> aria-labelledby="<?php bp_the_profile_field_input_name(); ?>-1" aria-describedby="<?php bp_the_profile_field_input_name(); ?>-3">
 
 		<?php if ( bp_get_the_profile_field_description() ) : ?>
 			<p class="description" id="<?php bp_the_profile_field_input_name(); ?>-3"><?php bp_the_profile_field_description(); ?></p>
@@ -210,7 +210,7 @@ class BP_XProfile_Field_Type_WordPress_Textbox extends BP_XProfile_Field_Type_Wo
 			/* translators: accessibility text */
 			esc_html_e( 'WordPress field', 'buddypress' );
 		?></label>
-		<input <?php $this->output_edit_field_html_elements( $r ); ?>>
+		<input <?php echo $this->get_edit_field_html_elements( $r ); ?>>
 
 		<?php
 	}
@@ -236,7 +236,7 @@ class BP_XProfile_Field_Type_WordPress_Textbox extends BP_XProfile_Field_Type_Wo
 	 *
 	 * @param int   $field_id ID of the field.
 	 * @param array $settings Array of settings.
-	 * @return bool
+	 * @return bool True on success.
 	 */
 	public function admin_save_settings( $field_id, $settings ) {
 		$existing_setting = self::get_field_settings( $field_id );

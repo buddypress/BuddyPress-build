@@ -15,7 +15,6 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 1.5.0
  */
-#[AllowDynamicProperties]
 class BP_Settings_Component extends BP_Component {
 
 	/**
@@ -26,7 +25,7 @@ class BP_Settings_Component extends BP_Component {
 	public function __construct() {
 		parent::start(
 			'settings',
-			'Settings',
+			__( 'Settings', 'buddypress' ),
 			buddypress()->plugin_dir,
 			array(
 				'adminbar_myaccount_order' => 100,
@@ -72,21 +71,21 @@ class BP_Settings_Component extends BP_Component {
 		// Authenticated actions.
 		if ( is_user_logged_in() ) {
 			if ( ! bp_current_action() || bp_is_current_action( 'general' ) ) {
-				require_once $this->path . 'bp-settings/actions/general.php';
+				require $this->path . 'bp-settings/actions/general.php';
 
 			// Specific to post requests.
 			} elseif ( bp_is_post_request() && in_array( bp_current_action(), $actions, true ) ) {
-				require_once $this->path . 'bp-settings/actions/' . bp_current_action() . '.php';
+				require $this->path . 'bp-settings/actions/' . bp_current_action() . '.php';
 			}
 		}
 
 		// Screens - User profile integration.
 		if ( bp_is_user() ) {
-			require_once $this->path . 'bp-settings/screens/general.php';
+			require $this->path . 'bp-settings/screens/general.php';
 
 			// Sub-nav items.
 			if ( in_array( bp_current_action(), $actions, true ) ) {
-				require_once $this->path . 'bp-settings/screens/' . bp_current_action() . '.php';
+				require $this->path . 'bp-settings/screens/' . bp_current_action() . '.php';
 			}
 		}
 	}
@@ -94,7 +93,8 @@ class BP_Settings_Component extends BP_Component {
 	/**
 	 * Setup globals.
 	 *
-	 * The BP_SETTINGS_SLUG constant is deprecated.
+	 * The BP_SETTINGS_SLUG constant is deprecated, and only used here for
+	 * backwards compatibility.
 	 *
 	 * @since 1.5.0
 	 *
@@ -103,95 +103,91 @@ class BP_Settings_Component extends BP_Component {
 	 * @param array $args See BP_Component::setup_globals() for a description.
 	 */
 	public function setup_globals( $args = array() ) {
-		$default_slug = $this->id;
 
-		// @deprecated.
-		if ( defined( 'BP_SETTINGS_SLUG' ) ) {
-			_doing_it_wrong( 'BP_SETTINGS_SLUG', esc_html__( 'Slug constants are deprecated.', 'buddypress' ), 'BuddyPress 12.0.0' );
-			$default_slug = BP_SETTINGS_SLUG;
+		// Define a slug, if necessary.
+		if ( ! defined( 'BP_SETTINGS_SLUG' ) ) {
+			define( 'BP_SETTINGS_SLUG', $this->id );
 		}
 
 		// All globals for settings component.
 		parent::setup_globals( array(
-			'slug'          => $default_slug,
+			'slug'          => BP_SETTINGS_SLUG,
 			'has_directory' => false,
 		) );
 	}
 
 	/**
-	 * Register component navigation.
+	 * Set up navigation.
 	 *
-	 * @since 12.0.0
+	 * @since 1.5.0
 	 *
-	 * @see `BP_Component::register_nav()` for a description of arguments.
+	 * @see BP_Component::setup_nav() for a description of arguments.
 	 *
-	 * @param array $main_nav Optional. See `BP_Component::register_nav()` for
+	 * @param array $main_nav Optional. See BP_Component::setup_nav() for
 	 *                        description.
-	 * @param array $sub_nav  Optional. See `BP_Component::register_nav()` for
+	 * @param array $sub_nav  Optional. See BP_Component::setup_nav() for
 	 *                        description.
 	 */
-	public function register_nav( $main_nav = array(), $sub_nav = array() ) {
-		$slug   = bp_get_settings_slug();
+	public function setup_nav( $main_nav = array(), $sub_nav = array() ) {
+
+		// Determine user to use.
+		if ( bp_displayed_user_domain() ) {
+			$user_domain = bp_displayed_user_domain();
+		} elseif ( bp_loggedin_user_domain() ) {
+			$user_domain = bp_loggedin_user_domain();
+		} else {
+			return;
+		}
+
+		$access        = bp_core_can_edit_settings();
+		$slug          = bp_get_settings_slug();
+		$settings_link = trailingslashit( $user_domain . $slug );
 
 		// Add the settings navigation item.
 		$main_nav = array(
-			'name'                     => __( 'Settings', 'buddypress' ),
-			'slug'                     => $slug,
-			'position'                 => 100,
-			'screen_function'          => 'bp_settings_screen_general',
-			'default_subnav_slug'      => 'general',
-			'user_has_access_callback' => 'bp_core_can_edit_settings',
+			'name'                    => __( 'Settings', 'buddypress' ),
+			'slug'                    => $slug,
+			'position'                => 100,
+			'show_for_displayed_user' => $access,
+			'screen_function'         => 'bp_settings_screen_general',
+			'default_subnav_slug'     => 'general',
 		);
 
 		// Add General Settings nav item.
 		$sub_nav[] = array(
-			'name'                     => __( 'General', 'buddypress' ),
-			'slug'                     => 'general',
-			'parent_slug'              => $slug,
-			'screen_function'          => 'bp_settings_screen_general',
-			'position'                 => 10,
-			'user_has_access'          => false,
-			'user_has_access_callback' => 'bp_core_can_edit_settings',
+			'name'            => __( 'General', 'buddypress' ),
+			'slug'            => 'general',
+			'parent_url'      => $settings_link,
+			'parent_slug'     => $slug,
+			'screen_function' => 'bp_settings_screen_general',
+			'position'        => 10,
+			'user_has_access' => $access,
 		);
 
-		/**
-		 * Add Email nav item. Formely called 'Notifications', we
-		 * retain the old slug and function names for backward compat.
-		 */
-		if ( bp_is_active( 'notifications' ) ) {
-			$sub_nav[] = array(
-				'name'                     => __( 'Email', 'buddypress' ),
-				'slug'                     => 'notifications',
-				'parent_slug'              => $slug,
-				'screen_function'          => 'bp_settings_screen_notification',
-				'position'                 => 20,
-				'user_has_access'          => false,
-				'user_has_access_callback' => 'bp_core_can_edit_settings',
-			);
-		}
-
-		if ( bp_is_active( 'xprofile' ) ) {
-			$sub_nav[] = array(
-				'name'                     => _x( 'Profile Visibility', 'Profile settings sub nav', 'buddypress' ),
-				'slug'                     => 'profile',
-				'parent_slug'              => $slug,
-				'screen_function'          => 'bp_xprofile_screen_settings',
-				'position'                 => 30,
-				'user_has_access'          => false,
-				'user_has_access_callback' => 'bp_core_can_edit_settings',
-			);
-		}
-
+		// Add Email nav item. Formerly called 'Notifications', we
+		// retain the old slug and function names for backward compat.
 		$sub_nav[] = array(
-			'name'                     => __( 'Capabilities', 'buddypress' ),
-			'slug'                     => 'capabilities',
-			'parent_slug'              => $slug,
-			'screen_function'          => 'bp_settings_screen_capabilities',
-			'position'                 => 80,
-			'user_has_access'          => false,
-			'user_has_access_callback' => 'bp_settings_show_capability_nav',
-			'generate'                 => bp_current_user_can( 'bp_moderate' ),
+			'name'            => __( 'Email', 'buddypress' ),
+			'slug'            => 'notifications',
+			'parent_url'      => $settings_link,
+			'parent_slug'     => $slug,
+			'screen_function' => 'bp_settings_screen_notification',
+			'position'        => 20,
+			'user_has_access' => $access,
 		);
+
+		// Add Spam Account nav item.
+		if ( bp_current_user_can( 'bp_moderate' ) ) {
+			$sub_nav[] = array(
+				'name'            => __( 'Capabilities', 'buddypress' ),
+				'slug'            => 'capabilities',
+				'parent_url'      => $settings_link,
+				'parent_slug'     => $slug,
+				'screen_function' => 'bp_settings_screen_capabilities',
+				'position'        => 80,
+				'user_has_access' => ! bp_is_my_profile(),
+			);
+		}
 
 		/**
 		 * Filter whether the site should show the "Settings > Data" page.
@@ -205,29 +201,30 @@ class BP_Settings_Component extends BP_Component {
 		// Export Data.
 		if ( true === $show_data_page ) {
 			$sub_nav[] = array(
-				'name'                     => __( 'Export Data', 'buddypress' ),
-				'slug'                     => 'data',
-				'parent_slug'              => $slug,
-				'screen_function'          => 'bp_settings_screen_data',
-				'position'                 => 89,
-				'user_has_access'          => false,
-				'user_has_access_callback' => 'bp_core_can_edit_settings',
+				'name'            => __( 'Export Data', 'buddypress' ),
+				'slug'            => 'data',
+				'parent_url'      => $settings_link,
+				'parent_slug'     => $slug,
+				'screen_function' => 'bp_settings_screen_data',
+				'position'        => 89,
+				'user_has_access' => $access,
 			);
 		}
 
 		// Add Delete Account nav item.
-		$sub_nav[] = array(
-			'name'                     => __( 'Delete Account', 'buddypress' ),
-			'slug'                     => 'delete-account',
-			'parent_slug'              => $slug,
-			'screen_function'          => 'bp_settings_screen_delete_account',
-			'position'                 => 90,
-			'user_has_access'          => false,
-			'user_has_access_callback' => 'bp_settings_can_delete_self_account',
-			'generate'                 => 'bp_settings_show_delete_account_nav',
-		);
+		if ( ( ! bp_disable_account_deletion() && bp_is_my_profile() ) || bp_current_user_can( 'delete_users' ) ) {
+			$sub_nav[] = array(
+				'name'            => __( 'Delete Account', 'buddypress' ),
+				'slug'            => 'delete-account',
+				'parent_url'      => $settings_link,
+				'parent_slug'     => $slug,
+				'screen_function' => 'bp_settings_screen_delete_account',
+				'position'        => 90,
+				'user_has_access' => ! user_can( bp_displayed_user_id(), 'delete_users' ),
+			);
+		}
 
-		parent::register_nav( $main_nav, $sub_nav );
+		parent::setup_nav( $main_nav, $sub_nav );
 	}
 
 	/**
@@ -235,24 +232,26 @@ class BP_Settings_Component extends BP_Component {
 	 *
 	 * @since 1.5.0
 	 *
-	 * @see `BP_Component::setup_admin_bar()` for a description of the $wp_admin_nav
+	 * @see BP_Component::setup_nav() for a description of the $wp_admin_nav
 	 *      parameter array.
 	 *
-	 * @param array $wp_admin_nav See `BP_Component::setup_admin_bar()` for a
+	 * @param array $wp_admin_nav See BP_Component::setup_admin_bar() for a
 	 *                            description.
 	 */
 	public function setup_admin_bar( $wp_admin_nav = array() ) {
 
 		// Menus for logged in user.
 		if ( is_user_logged_in() ) {
-			$settings_slug = bp_get_settings_slug();
+
+			// Setup the logged in user variables.
+			$settings_link = trailingslashit( bp_loggedin_user_domain() . bp_get_settings_slug() );
 
 			// Add main Settings menu.
 			$wp_admin_nav[] = array(
 				'parent' => buddypress()->my_account_menu_id,
 				'id'     => 'my-account-' . $this->id,
 				'title'  => __( 'Settings', 'buddypress' ),
-				'href'   => bp_loggedin_user_url( bp_members_get_path_chunks( array( $settings_slug ) ) ),
+				'href'   => $settings_link,
 			);
 
 			// General Account.
@@ -260,7 +259,7 @@ class BP_Settings_Component extends BP_Component {
 				'parent'   => 'my-account-' . $this->id,
 				'id'       => 'my-account-' . $this->id . '-general',
 				'title'    => __( 'General', 'buddypress' ),
-				'href'     => bp_loggedin_user_url( bp_members_get_path_chunks( array( $settings_slug, 'general' ) ) ),
+				'href'     => trailingslashit( $settings_link . 'general' ),
 				'position' => 10,
 			);
 
@@ -270,7 +269,7 @@ class BP_Settings_Component extends BP_Component {
 					'parent'   => 'my-account-' . $this->id,
 					'id'       => 'my-account-' . $this->id . '-notifications',
 					'title'    => __( 'Email', 'buddypress' ),
-					'href'     => bp_loggedin_user_url( bp_members_get_path_chunks( array( $settings_slug, 'notifications' ) ) ),
+					'href'     => trailingslashit( $settings_link . 'notifications' ),
 					'position' => 20,
 				);
 			}
@@ -284,18 +283,18 @@ class BP_Settings_Component extends BP_Component {
 					'parent'   => 'my-account-' . $this->id,
 					'id'       => 'my-account-' . $this->id . '-data',
 					'title'    => __( 'Export Data', 'buddypress' ),
-					'href'     => bp_loggedin_user_url( bp_members_get_path_chunks( array( $settings_slug, 'data' ) ) ),
+					'href'     => trailingslashit( $settings_link . 'data' ),
 					'position' => 89,
 				);
 			}
 
 			// Delete Account
-			if ( ! bp_current_user_can( 'bp_moderate' ) && ! bp_core_get_root_option( 'bp-disable-account-deletion' ) ) {
+			if ( !bp_current_user_can( 'bp_moderate' ) && ! bp_core_get_root_option( 'bp-disable-account-deletion' ) ) {
 				$wp_admin_nav[] = array(
 					'parent'   => 'my-account-' . $this->id,
 					'id'       => 'my-account-' . $this->id . '-delete-account',
 					'title'    => __( 'Delete Account', 'buddypress' ),
-					'href'     => bp_loggedin_user_url( bp_members_get_path_chunks( array( $settings_slug, 'delete-account' ) ) ),
+					'href'     => trailingslashit( $settings_link . 'delete-account' ),
 					'position' => 90,
 				);
 			}

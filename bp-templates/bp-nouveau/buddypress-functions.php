@@ -4,7 +4,7 @@
  *
  * @since 3.0.0
  * @package BuddyPress
- * @version 12.0.0
+ * @version 10.0.0
  *
  * @buddypress-template-pack {
  *   Template Pack ID:       nouveau
@@ -80,10 +80,8 @@ class BP_Nouveau extends BP_Theme_Compat {
 			$this->{$property} = $value;
 		}
 
-		$this->includes_dir   = trailingslashit( $this->dir ) . 'includes/';
-		$this->directory_nav  = new BP_Core_Nav( bp_get_root_blog_id() );
-		$this->is_block_theme = false;
-		$this->is_block_theme = wp_is_block_theme();
+		$this->includes_dir  = trailingslashit( $this->dir ) . 'includes/';
+		$this->directory_nav = new BP_Core_Nav( bp_get_root_blog_id() );
 	}
 
 	/**
@@ -102,33 +100,18 @@ class BP_Nouveau extends BP_Theme_Compat {
 
 		// Load AJAX code only on AJAX requests.
 		} else {
-			add_action( 'admin_init', function () {
+			add_action( 'admin_init', function() {
 				if ( defined( 'DOING_AJAX' ) && true === DOING_AJAX ) {
 					require bp_nouveau()->includes_dir . 'ajax.php';
 				}
 			}, 0 );
 		}
 
-		// The customizer is only used by classic themes.
-		if ( ! $this->is_block_theme ) {
-			add_action(
-				'bp_customize_register',
-				function() {
-					if ( bp_is_root_blog() && current_user_can( 'customize' ) ) {
-						require bp_nouveau()->includes_dir . 'customizer.php';
-					}
-				},
-				0
-			);
-
-			// When BP Classic is activated, regular themes need this filter. 
-			if ( function_exists( 'bp_classic' ) ) {
-				// Set the BP Uri for the Ajax customizer preview.
-				add_filter( 'bp_uri', array( $this, 'customizer_set_uri' ), 10, 1 );
+		add_action( 'bp_customize_register', function() {
+			if ( bp_is_root_blog() && current_user_can( 'customize' ) ) {
+				require bp_nouveau()->includes_dir . 'customizer.php';
 			}
-		} elseif ( wp_using_themes() && ! isset( $_GET['bp_customizer'] ) ) {
-			remove_action( 'customize_register', 'bp_customize_register', 20 );
-		}
+		}, 0 );
 
 		foreach ( bp_core_get_packaged_component_ids() as $component ) {
 			$component_loader = trailingslashit( $this->includes_dir ) . $component . '/loader.php';
@@ -166,33 +149,16 @@ class BP_Nouveau extends BP_Theme_Compat {
 			$top_offset = $avatar_height;
 		}
 
-		if ( $this->is_block_theme ) {
-			$width = (int) wp_get_global_settings( array( 'layout', 'contentSize' ) );
-		}
-
-		bp_set_theme_compat_feature(
-			$this->id,
-			array(
-				'name'     => 'cover_image',
-				'settings' => array(
-					'components'   => array( 'members', 'groups' ),
-					'width'        => $width,
-					'height'       => $top_offset + round( $avatar_height / 2 ),
-					'callback'     => 'bp_nouveau_theme_cover_image',
-					'theme_handle' => 'bp-nouveau',
-				),
-			)
-		);
-
-		bp_set_theme_compat_feature(
-			$this->id,
-			array(
-				'name'     => 'priority_item_nav',
-				'settings' => array(
-					'single_items' => $this->is_block_theme ? array( 'member', 'group' ) : array(),
-				),
-			)
-		);
+		bp_set_theme_compat_feature( $this->id, array(
+			'name'     => 'cover_image',
+			'settings' => array(
+				'components'   => array( 'members', 'groups' ),
+				'width'        => $width,
+				'height'       => $top_offset + round( $avatar_height / 2 ),
+				'callback'     => 'bp_nouveau_theme_cover_image',
+				'theme_handle' => 'bp-nouveau',
+			),
+		) );
 	}
 
 	/**
@@ -210,8 +176,23 @@ class BP_Nouveau extends BP_Theme_Compat {
 		// We need to neutralize the BuddyPress core "bp_core_render_message()" once it has been added.
 		add_action( 'bp_actions', array( $this, 'neutralize_core_template_notices' ), 6 );
 
-		// Register scripts & styles.
-		add_action( 'bp_enqueue_community_scripts', array( $this, 'register_scripts' ), 2 );
+		// Scripts & Styles.
+		$registration_params = array(
+			'hook'     => 'bp_enqueue_community_scripts',
+			'priority' => 2,
+		);
+
+		/*
+		 * The WordPress Full Site Editing feature needs Scripts
+		 * and Styles to be registered earlier.
+		 */
+		if ( current_theme_supports( 'block-templates' ) ) {
+			$registration_params['hook']     = 'bp_init';
+			$registration_params['priority'] = 20;
+		}
+
+		// Register theme JS.
+		add_action( $registration_params['hook'], array( $this, 'register_scripts' ), $registration_params['priority'] );
 
 		// Enqueue theme CSS.
 		add_action( 'bp_enqueue_community_scripts', array( $this, 'enqueue_styles' ) );
@@ -234,6 +215,14 @@ class BP_Nouveau extends BP_Theme_Compat {
 
 		// Register the Default front pages Dynamic Sidebars.
 		add_action( 'widgets_init', 'bp_nouveau_register_sidebars', 11 );
+
+		// Register the Primary Object nav widget.
+		if ( bp_core_retain_legacy_widgets() ) {
+			add_action( 'bp_widgets_init', array( 'BP_Nouveau_Object_Nav_Widget', 'register_widget' ) );
+		}
+
+		// Set the BP Uri for the Ajax customizer preview.
+		add_filter( 'bp_uri', array( $this, 'customizer_set_uri' ), 10, 1 );
 
 		// Modify "registration disabled" and welcome message if invitations are enabled.
 		add_action( 'bp_nouveau_feedback_messages', array( $this, 'filter_registration_messages' ), 99 );
@@ -270,7 +259,7 @@ class BP_Nouveau extends BP_Theme_Compat {
 		 *
 		 * @param array $value Array of style dependencies. Default Dashicons.
 		 */
-		$css_dependencies = apply_filters( 'bp_nouveau_css_dependencies', array( 'dashicons', 'bp-tooltips' ) );
+		$css_dependencies = apply_filters( 'bp_nouveau_css_dependencies', array( 'dashicons' ) );
 
 		/**
 		 * Filters the styles to enqueue for BuddyPress Nouveau.
@@ -286,9 +275,6 @@ class BP_Nouveau extends BP_Theme_Compat {
 		$styles = apply_filters( 'bp_nouveau_enqueue_styles', array(
 			'bp-nouveau' => array(
 				'file' => 'css/buddypress%1$s%2$s.css', 'dependencies' => $css_dependencies, 'version' => $this->version,
-			),
-			'bp-nouveau-priority-nav' => array(
-				'file' => 'css/priority-nav%1$s%2$s.css', 'dependencies' => array( 'dashicons' ), 'version' => $this->version,
 			),
 		) );
 
@@ -390,12 +376,6 @@ class BP_Nouveau extends BP_Theme_Compat {
 					'version'      => $this->version,
 					'footer'       => true,
 				),
-				'bp-nouveau-priority-menu' => array(
-					'file'         => 'js/buddypress-priority-menu%s.js',
-					'dependencies' => array(),
-					'version'      => $this->version,
-					'footer'       => true,
-				)
 			)
 		);
 
@@ -471,17 +451,12 @@ class BP_Nouveau extends BP_Theme_Compat {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param string[] $classes Array of classes to append to body tag.
-	 * @return string[]
+	 * @param array $classes Array of classes to append to body tag.
+	 *
+	 * @return array $classes
 	 */
 	public function add_nojs_body_class( $classes ) {
-		/** This filter is documented in bp-core/bp-core-dependency.php */
-		if ( ! is_buddypress() && apply_filters( 'bp_enqueue_assets_in_bp_pages_only', true ) ) {
-			return $classes;
-		}
-
 		$classes[] = 'no-js';
-
 		return array_unique( $classes );
 	}
 
@@ -701,31 +676,29 @@ class BP_Nouveau extends BP_Theme_Compat {
 	 * Set the BP Uri for the customizer in case of Ajax requests.
 	 *
 	 * @since 3.0.0
-	 * @since 12.0.0 Only fired for regular themes when BP Classic is activated.
 	 *
 	 * @param  string $path The BP Uri.
-	 * @return string
+	 * @return string       The BP Uri.
 	 */
 	public function customizer_set_uri( $path ) {
-
 		if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) {
 			return $path;
 		}
 
-		$uri = wp_parse_url( $path );
+		$uri = parse_url( $path );
 
-		if ( ! str_contains( $uri['path'], 'customize.php' ) || empty( $uri['query'] ) ) {
+		if ( false === strpos( $uri['path'], 'customize.php' ) ) {
 			return $path;
-		}
+		} else {
+			$vars = bp_parse_args(
+				$uri['query'],
+				array(),
+				'customizer_set_uri'
+			);
 
-		$vars = bp_parse_args(
-			$uri['query'],
-			array(),
-			'customizer_set_uri'
-		);
-
-		if ( ! empty( $vars['url'] ) ) {
-			$path = str_replace( get_site_url(), '', urldecode( $vars['url'] ) );
+			if ( ! empty( $vars['url'] ) ) {
+				$path = str_replace( get_site_url(), '', urldecode( $vars['url'] ) );
+			}
 		}
 
 		return $path;

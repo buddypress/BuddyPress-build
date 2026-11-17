@@ -59,26 +59,26 @@ function bp_is_activation( $basename = '' ) {
 	$bp     = buddypress();
 	$action = false;
 
-	if ( ! empty( $_REQUEST['action'] ) && ( '-1' !== $_REQUEST['action'] ) ) {
+	if ( ! empty( $_REQUEST['action'] ) && ( '-1' != $_REQUEST['action'] ) ) {
 		$action = $_REQUEST['action'];
-	} elseif ( ! empty( $_REQUEST['action2'] ) && ( '-1' !== $_REQUEST['action2'] ) ) {
+	} elseif ( ! empty( $_REQUEST['action2'] ) && ( '-1' != $_REQUEST['action2'] ) ) {
 		$action = $_REQUEST['action2'];
 	}
 
 	// Bail if not activating.
-	if ( empty( $action ) || ! in_array( $action, array( 'activate', 'activate-selected' ), true ) ) {
+	if ( empty( $action ) || !in_array( $action, array( 'activate', 'activate-selected' ) ) ) {
 		return false;
 	}
 
 	// The plugin(s) being activated.
-	if ( $action === 'activate' ) {
+	if ( $action == 'activate' ) {
 		$plugins = isset( $_GET['plugin'] ) ? array( $_GET['plugin'] ) : array();
 	} else {
 		$plugins = isset( $_POST['checked'] ) ? (array) $_POST['checked'] : array();
 	}
 
 	// Set basename if empty.
-	if ( empty( $basename ) && ! empty( $bp->basename ) ) {
+	if ( empty( $basename ) && !empty( $bp->basename ) ) {
 		$basename = $bp->basename;
 	}
 
@@ -88,7 +88,7 @@ function bp_is_activation( $basename = '' ) {
 	}
 
 	// Is BuddyPress being activated?
-	return in_array( $basename, $plugins, true );
+	return in_array( $basename, $plugins );
 }
 
 /**
@@ -103,26 +103,26 @@ function bp_is_deactivation( $basename = '' ) {
 	$bp     = buddypress();
 	$action = false;
 
-	if ( ! empty( $_REQUEST['action'] ) && ( '-1' !== $_REQUEST['action'] ) ) {
+	if ( ! empty( $_REQUEST['action'] ) && ( '-1' != $_REQUEST['action'] ) ) {
 		$action = $_REQUEST['action'];
-	} elseif ( ! empty( $_REQUEST['action2'] ) && ( '-1' !== $_REQUEST['action2'] ) ) {
+	} elseif ( ! empty( $_REQUEST['action2'] ) && ( '-1' != $_REQUEST['action2'] ) ) {
 		$action = $_REQUEST['action2'];
 	}
 
 	// Bail if not deactivating.
-	if ( empty( $action ) || ! in_array( $action, array( 'deactivate', 'deactivate-selected' ), true ) ) {
+	if ( empty( $action ) || !in_array( $action, array( 'deactivate', 'deactivate-selected' ) ) ) {
 		return false;
 	}
 
 	// The plugin(s) being deactivated.
-	if ( 'deactivate' === $action ) {
+	if ( 'deactivate' == $action ) {
 		$plugins = isset( $_GET['plugin'] ) ? array( $_GET['plugin'] ) : array();
 	} else {
 		$plugins = isset( $_POST['checked'] ) ? (array) $_POST['checked'] : array();
 	}
 
 	// Set basename if empty.
-	if ( empty( $basename ) && ! empty( $bp->basename ) ) {
+	if ( empty( $basename ) && !empty( $bp->basename ) ) {
 		$basename = $bp->basename;
 	}
 
@@ -132,7 +132,7 @@ function bp_is_deactivation( $basename = '' ) {
 	}
 
 	// Is bbPress being deactivated?
-	return in_array( $basename, $plugins, true );
+	return in_array( $basename, $plugins );
 }
 
 /**
@@ -183,19 +183,16 @@ function bp_version_updater() {
 	 *
 	 * @param array $value Array of default components to activate.
 	 */
-	$default_components = apply_filters(
-		'bp_new_install_default_components',
-		array(
-			'activity'      => 1,
-			'members'       => 1,
-			'settings'      => 1,
-			'xprofile'      => 1,
-			'notifications' => 1,
-		)
-	);
+	$default_components = apply_filters( 'bp_new_install_default_components', array(
+		'activity'      => 1,
+		'members'       => 1,
+		'settings'      => 1,
+		'xprofile'      => 1,
+		'notifications' => 1,
+	) );
 
-	require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-	require_once buddypress()->plugin_dir . '/bp-core/admin/bp-core-admin-schema.php';
+	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+	require_once( buddypress()->plugin_dir . '/bp-core/admin/bp-core-admin-schema.php' );
 	$switched_to_root_blog = false;
 
 	// Make sure the current blog is set to the root blog.
@@ -206,29 +203,18 @@ function bp_version_updater() {
 		$switched_to_root_blog = true;
 	}
 
-	// Install BP schema and activate default components.
+	// Install BP schema and activate only Activity and XProfile.
 	if ( bp_is_install() ) {
 		// Set the first BP major version the plugin was installed.
 		bp_update_option( '_bp_initial_major_version', bp_get_major_version() );
 
-		// Add an unread Admin notification.
-		if ( 13422 === bp_get_db_version() ) {
-			$unread   = bp_core_get_unread_admin_notifications();
-			$unread[] = 'bp120-new-installs-warning';
-
-			bp_update_option( 'bp_unread_admin_notifications', $unread );
-		}
-
-		// Apply schema and set default components as active.
+		// Apply schema and set Activity and XProfile components as active.
 		bp_core_install( $default_components );
 		bp_update_option( 'bp-active-components', $default_components );
 		bp_core_add_page_mappings( $default_components, 'delete' );
 		bp_core_install_emails();
 
-		// Force permalinks to be refreshed at next page load.
-		bp_delete_rewrite_rules();
-
-		// Upgrades.
+	// Upgrades.
 	} else {
 
 		// Run the schema install to update tables.
@@ -309,16 +295,6 @@ function bp_version_updater() {
 		if ( $raw_db_version < 13408 ) {
 			bp_update_to_11_4();
 		}
-
-		// Version 12.0.0.
-		if ( $raw_db_version < 13422 ) {
-			bp_update_to_12_0();
-		}
-
-		// Version 14.0.0.
-		if ( $raw_db_version < 13906 ) {
-			bp_update_to_14_0();
-		}
 	}
 
 	/* All done! *************************************************************/
@@ -358,7 +334,7 @@ function bp_pre_schema_upgrade() {
 
 		foreach ( $tables as $table_name => $indexes ) {
 			foreach ( $indexes as $index ) {
-				if ( $wpdb->query( $wpdb->prepare( 'SHOW TABLES LIKE %s', bp_esc_like( $table_name ) ) ) ) {
+				if ( $wpdb->query( $wpdb->prepare( "SHOW TABLES LIKE %s", bp_esc_like( $table_name ) ) ) ) {
 					$wpdb->query( "ALTER TABLE {$table_name} DROP INDEX {$index}" );
 				}
 			}
@@ -379,9 +355,9 @@ function bp_update_to_1_5() {
 
 	// Delete old database version options.
 	delete_site_option( 'bp-activity-db-version' );
-	delete_site_option( 'bp-blogs-db-version' );
-	delete_site_option( 'bp-friends-db-version' );
-	delete_site_option( 'bp-groups-db-version' );
+	delete_site_option( 'bp-blogs-db-version'    );
+	delete_site_option( 'bp-friends-db-version'  );
+	delete_site_option( 'bp-groups-db-version'   );
 	delete_site_option( 'bp-messages-db-version' );
 	delete_site_option( 'bp-xprofile-db-version' );
 }
@@ -396,16 +372,16 @@ function bp_update_to_1_5() {
 function bp_update_to_1_6() {
 
 	// Delete possible site options.
-	delete_site_option( 'bp-db-version' );
-	delete_site_option( '_bp_db_version' );
-	delete_site_option( 'bp-core-db-version' );
+	delete_site_option( 'bp-db-version'       );
+	delete_site_option( '_bp_db_version'      );
+	delete_site_option( 'bp-core-db-version'  );
 	delete_site_option( '_bp-core-db-version' );
 
 	// Delete possible blog options.
-	delete_blog_option( bp_get_root_blog_id(), 'bp-db-version' );
-	delete_blog_option( bp_get_root_blog_id(), 'bp-core-db-version' );
+	delete_blog_option( bp_get_root_blog_id(), 'bp-db-version'       );
+	delete_blog_option( bp_get_root_blog_id(), 'bp-core-db-version'  );
 	delete_site_option( bp_get_root_blog_id(), '_bp-core-db-version' );
-	delete_site_option( bp_get_root_blog_id(), '_bp_db_version' );
+	delete_site_option( bp_get_root_blog_id(), '_bp_db_version'      );
 }
 
 /**
@@ -424,10 +400,10 @@ function bp_update_to_1_9() {
 	$notifications_component_id = 'notifications';
 
 	// Get the active components.
-	$active_components = bp_get_option( $active_components_key );
+	$active_components          = bp_get_option( $active_components_key );
 
 	// Add notifications.
-	if ( ! in_array( $notifications_component_id, $active_components, true ) ) {
+	if ( ! in_array( $notifications_component_id, $active_components ) ) {
 		$active_components[ $notifications_component_id ] = 1;
 	}
 
@@ -636,13 +612,13 @@ function bp_update_to_5_0() {
 			'object_id'   => $field_id,
 			'object_type' => 'field',
 			'meta_key'    => 'allow_custom_visibility',
-			'meta_value'  => 'disabled',
+			'meta_value'  => 'disabled'
 		),
 		array(
 			'%d',
 			'%s',
 			'%s',
-			'%s',
+			'%s'
 		)
 	);
 
@@ -700,7 +676,7 @@ function bp_update_to_8_0() {
 		if ( $signup_fields ) {
 			$signup_position = 0;
 			foreach ( $signup_fields as $signup_field_id ) {
-				++$signup_position;
+				$signup_position += 1;
 
 				$wpdb->insert(
 					$bp_prefix . 'bp_xprofile_meta',
@@ -843,159 +819,11 @@ function bp_update_to_11_4() {
 }
 
 /**
- * 12.0.0 update routine.
- *
- * - Swith directory page post type from "page" to "buddypress".
- * - Remove Legacy Widgets option.
- * - Add the default community visibility value.
- *
- * @since 12.0.0
- */
-function bp_update_to_12_0() {
-	/*
-	 * Only perform the BP Rewrites API & Legacy Widgets upgrade tasks
-	 * when the BP Classic plugin is not active.
-	 */
-	if ( ! function_exists( 'bp_classic' ) ) {
-		$post_type = bp_core_get_directory_post_type();
-
-		if ( 'page' !== $post_type ) {
-			$directory_pages   = bp_core_get_directory_pages();
-			$nav_menu_item_ids = array();
-
-			// Do not check post slugs nor post types.
-			remove_filter( 'wp_unique_post_slug', 'bp_core_set_unique_directory_page_slug', 10 );
-
-			// Update Directory pages post types.
-			foreach ( $directory_pages as $directory_page ) {
-				$nav_menu_item_ids[] = $directory_page->id;
-
-				// Switch the post type.
-				wp_update_post(
-					array(
-						'ID'          => $directory_page->id,
-						'post_type'   => $post_type,
-						'post_status' => 'publish',
-					)
-				);
-			}
-
-			// Update nav menu items!
-			$nav_menus = wp_get_nav_menus( array( 'hide_empty' => true ) );
-			foreach ( $nav_menus as $nav_menu ) {
-				$items = wp_get_nav_menu_items( $nav_menu->term_id );
-				foreach ( $items as $item ) {
-					if ( 'page' !== $item->object || ! in_array( $item->object_id, $nav_menu_item_ids, true ) ) {
-						continue;
-					}
-
-					wp_update_nav_menu_item(
-						$nav_menu->term_id,
-						$item->ID,
-						array(
-							'menu-item-db-id'       => $item->db_id,
-							'menu-item-object-id'   => $item->object_id,
-							'menu-item-object'      => $post_type,
-							'menu-item-parent-id'   => $item->menu_item_parent,
-							'menu-item-position'    => $item->menu_order,
-							'menu-item-type'        => 'post_type',
-							'menu-item-title'       => $item->title,
-							'menu-item-url'         => $item->url,
-							'menu-item-description' => $item->description,
-							'menu-item-attr-title'  => $item->attr_title,
-							'menu-item-target'      => $item->target,
-							'menu-item-classes'     => implode( ' ', (array) $item->classes ),
-							'menu-item-xfn'         => $item->xfn,
-							'menu-item-status'      => 'publish',
-						)
-					);
-				}
-			}
-
-			// Force permalinks to be refreshed at next page load.
-			bp_delete_rewrite_rules();
-		}
-
-		// Widgets.
-		$widget_options = array(
-			'widget_bp_core_login_widget',
-			'widget_bp_core_members_widget',
-			'widget_bp_core_whos_online_widget',
-			'widget_bp_core_recently_active_widget',
-			'widget_bp_groups_widget',
-			'widget_bp_messages_sitewide_notices_widget',
-		);
-
-		foreach ( $widget_options as $widget_option ) {
-			bp_delete_option( $widget_option );
-		}
-	}
-
-	// Community visibility.
-	bp_update_option( '_bp_community_visibility', array( 'global' => 'anyone' ) );
-
-	/**
-	 * Fires once BuddyPress achieved 12.0 upgrading tasks.
-	 *
-	 * @since 12.0.0
-	 */
-	do_action( 'bp_updated_to_12_0' );
-}
-
-/**
- * 14.0.0 update routine.
- *
- * Edit db schema to stop using boolean fields in favor of tinyint ones.
- * This moves was necessary to support WP Playground.
- *
- * @since 14.0.0
- */
-function bp_update_to_14_0() {
-	global $wpdb;
-	$bp        = buddypress();
-	$bp_prefix = bp_core_get_table_prefix();
-
-	if ( isset( $bp->members->table_name_last_activity ) && $wpdb->get_var( "SHOW TABLES LIKE '%{$bp->members->table_name_last_activity}%'" ) ) {
-		if ( $wpdb->get_var( "SHOW COLUMNS FROM {$bp->members->table_name_last_activity} LIKE 'hide_sitewide'" ) ) {
-			$wpdb->query( "ALTER TABLE {$bp->members->table_name_last_activity} CHANGE hide_sitewide hide_sitewide tinyint(1) DEFAULT 0" );
-		}
-	}
-
-	if ( isset( $bp->friends->table_name ) && $wpdb->get_var( "SHOW TABLES LIKE '%{$bp->friends->table_name}%'" ) ) {
-		if ( $wpdb->get_var( "SHOW COLUMNS FROM {$bp->friends->table_name} LIKE 'is_confirmed'" ) ) {
-			$wpdb->query( "ALTER TABLE {$bp->friends->table_name} CHANGE is_confirmed is_confirmed tinyint(1) DEFAULT 0" );
-		}
-
-		if ( $wpdb->get_var( "SHOW COLUMNS FROM {$bp->friends->table_name} LIKE 'is_limited'" ) ) {
-			$wpdb->query( "ALTER TABLE {$bp->friends->table_name} CHANGE is_limited is_limited tinyint(1) DEFAULT 0" );
-		}
-	}
-
-	if ( isset( $bp->notifications->table_name ) && $wpdb->get_var( "SHOW TABLES LIKE '%{$bp->notifications->table_name}%'" ) ) {
-		if ( $wpdb->get_var( "SHOW COLUMNS FROM {$bp->notifications->table_name} LIKE 'is_new'" ) ) {
-			$wpdb->query( "ALTER TABLE {$bp->notifications->table_name} CHANGE is_new is_new tinyint(1) NOT NULL DEFAULT 0" );
-		}
-	}
-
-	/*
-	 * Force permalinks to be refreshed at next page load.
-	 *
-	 * This will make sure configs using BP Classic won't include
-	 * unnecessary rewrite rules.
-	 *
-	 * @see https://buddypress.trac.wordpress.org/ticket/9192
-	 */
-	if ( 'rewrites' !== bp_core_get_query_parser() ) {
-		bp_delete_rewrite_rules();
-	}
-}
-
-/**
  * Updates the component field for new_members type.
  *
  * @since 2.2.0
  *
- * @global wpdb $wpdb WordPress database object.
+ * @global $wpdb
  */
 function bp_migrate_new_member_activity_component() {
 	global $wpdb;
@@ -1019,7 +847,7 @@ function bp_migrate_new_member_activity_component() {
 		// WHERE sanitization format.
 		array(
 			'%s',
-			'%s',
+			'%s'
 		)
 	);
 }
@@ -1030,13 +858,11 @@ function bp_migrate_new_member_activity_component() {
  * @since 2.2.0
  */
 function bp_cleanup_friendship_activities() {
-	bp_activity_delete(
-		array(
-			'component'     => buddypress()->friends->id,
-			'type'          => 'friendship_created',
-			'hide_sitewide' => true,
-		)
-	);
+	bp_activity_delete( array(
+		'component'     => buddypress()->friends->id,
+		'type'          => 'friendship_created',
+		'hide_sitewide' => true,
+	) );
 }
 
 /**
@@ -1076,17 +902,15 @@ function bp_migrate_directory_page_titles() {
 		}
 
 		// If the saved page title is the same as the legacy title, there's nothing to do.
-		if ( $legacy_titles[ $component ] === $page->post_title ) {
+		if ( $legacy_titles[ $component ] == $page->post_title ) {
 			continue;
 		}
 
 		// Update the page with the legacy title.
-		wp_update_post(
-			array(
-				'ID'         => $page_id,
-				'post_title' => $legacy_titles[ $component ],
-			)
-		);
+		wp_update_post( array(
+			'ID' => $page_id,
+			'post_title' => $legacy_titles[ $component ],
+		) );
 	}
 }
 
@@ -1121,7 +945,7 @@ function bp_add_activation_redirect() {
  *
  * @since 2.0.0
  *
- * @global wpdb $wpdb WordPress database object.
+ * @global WPDB $wpdb
  */
 function bp_core_maybe_install_signups() {
 	global $wpdb;
@@ -1130,10 +954,10 @@ function bp_core_maybe_install_signups() {
 	$signups_table = $wpdb->base_prefix . 'signups';
 
 	// Suppress errors because users shouldn't see what happens next.
-	$old_suppress = $wpdb->suppress_errors();
+	$old_suppress  = $wpdb->suppress_errors();
 
 	// Never use bp_core_get_table_prefix() for any global users tables.
-	$table_exists = (bool) $wpdb->get_results( "DESCRIBE {$signups_table};" );
+	$table_exists  = (bool) $wpdb->get_results( "DESCRIBE {$signups_table};" );
 
 	// Table already exists, so maybe upgrade instead?
 	if ( true === $table_exists ) {
@@ -1146,8 +970,8 @@ function bp_core_maybe_install_signups() {
 			bp_core_upgrade_signups();
 		}
 
-		// Table does not exist, and we are a single site, so install the multisite
-		// signups table using WordPress core's database schema.
+	// Table does not exist, and we are a single site, so install the multisite
+	// signups table using WordPress core's database schema.
 	} elseif ( ! is_multisite() ) {
 		bp_core_install_signups();
 	}
@@ -1194,6 +1018,18 @@ function bp_activation() {
  * @since 1.6.0
  */
 function bp_deactivation() {
+
+	// Force refresh theme roots.
+	delete_site_transient( 'theme_roots' );
+
+	// Switch to WordPress's default theme if current parent or child theme
+	// depend on bp-default. This is to prevent white screens of doom.
+	if ( in_array( 'bp-default', array( get_template(), get_stylesheet() ) ) ) {
+		switch_theme( WP_DEFAULT_THEME, WP_DEFAULT_THEME );
+		update_option( 'template_root',   get_raw_theme_root( WP_DEFAULT_THEME, true ) );
+		update_option( 'stylesheet_root', get_raw_theme_root( WP_DEFAULT_THEME, true ) );
+	}
+
 	/**
 	 * Fires during the deactivation of BuddyPress.
 	 *
@@ -1204,7 +1040,7 @@ function bp_deactivation() {
 	do_action( 'bp_deactivation' );
 
 	// @deprecated as of 1.6.0
-	do_action_deprecated( 'bp_loader_deactivate', array(), '1.6.0' );
+	do_action( 'bp_loader_deactivate' );
 }
 
 /**

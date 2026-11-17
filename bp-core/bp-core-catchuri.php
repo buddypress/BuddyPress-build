@@ -14,30 +14,377 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Sets BuddyPress globals for Ajax requests using the BP Rewrites API.
+ * Analyze the URI and break it down into BuddyPress-usable chunks.
  *
- * @since 12.0.0
+ * BuddyPress can use complete custom friendly URIs without the user having to
+ * add new rewrite rules. Custom components are able to use their own custom
+ * URI structures with very little work.
+ *
+ * The URIs are broken down as follows:
+ *   - http:// example.com / members / andy / [current_component] / [current_action] / [action_variables] / [action_variables] / ...
+ *   - OUTSIDE ROOT: http:// example.com / sites / buddypress / members / andy / [current_component] / [current_action] / [action_variables] / [action_variables] / ...
+ *
+ * Example:
+ *    - http://example.com/members/andy/profile/edit/group/5/
+ *    - $bp->current_component: string 'xprofile'
+ *    - $bp->current_action: string 'edit'
+ *    - $bp->action_variables: array ['group', 5]
+ *
+ * @since 1.0.0
  */
-function bp_core_set_ajax_uri_globals() {
-	if ( ! wp_doing_ajax() || 'rewrites' !== bp_core_get_query_parser() ) {
+function bp_core_set_uri_globals() {
+	global $current_blog, $wp_rewrite;
+
+	// Don't catch URIs on non-root blogs unless multiblog mode is on.
+	if ( !bp_is_root_blog() && !bp_is_multiblog_mode() )
+		return false;
+
+	$bp = buddypress();
+
+	// Define local variables.
+	$root_profile = $match   = false;
+	$key_slugs    = $matches = $uri_chunks = array();
+
+	// Fetch all the WP page names for each component.
+	if ( empty( $bp->pages ) )
+		$bp->pages = bp_core_get_directory_pages();
+
+	// Ajax or not?
+	if ( defined( 'DOING_AJAX' ) && DOING_AJAX || strpos( $_SERVER['REQUEST_URI'], 'wp-load.php' ) )
+		$path = bp_get_referer_path();
+	else
+		$path = esc_url( $_SERVER['REQUEST_URI'] );
+
+	/**
+	 * Filters the BuddyPress global URI path.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $path Path to set.
+	 */
+	$path = apply_filters( 'bp_uri', $path );
+
+	// Take GET variables off the URL to avoid problems.
+	$path = strtok( $path, '?' );
+
+	// Fetch current URI and explode each part separated by '/' into an array.
+	$bp_uri = explode( '/', $path );
+
+	// Loop and remove empties.
+	foreach ( (array) $bp_uri as $key => $uri_chunk ) {
+		if ( empty( $bp_uri[$key] ) ) {
+			unset( $bp_uri[$key] );
+		}
+	}
+
+	/*
+	 * If running off blog other than root, any subdirectory names must be
+	 * removed from $bp_uri. This includes two cases:
+	 *
+	 * 1. when WP is installed in a subdirectory,
+	 * 2. when BP is running on secondary blog of a subdirectory
+	 * multisite installation. Phew!
+	 */
+	if ( is_multisite() && !is_subdomain_install() && ( bp_is_multiblog_mode() || 1 != bp_get_root_blog_id() ) ) {
+
+		// Blow chunks.
+		$chunks = explode( '/', $current_blog->path );
+
+		// If chunks exist...
+		if ( !empty( $chunks ) ) {
+
+			// ...loop through them...
+			foreach( $chunks as $key => $chunk ) {
+				$bkey = array_search( $chunk, $bp_uri );
+
+				// ...and unset offending keys.
+				if ( false !== $bkey ) {
+					unset( $bp_uri[$bkey] );
+				}
+
+				$bp_uri = array_values( $bp_uri );
+			}
+		}
+	}
+
+	// Get site path items.
+	$paths = explode( '/', bp_core_get_site_path() );
+
+	// Take empties off the end of path.
+	if ( empty( $paths[count( $paths ) - 1] ) )
+		array_pop( $paths );
+
+	// Take empties off the start of path.
+	if ( empty( $paths[0] ) )
+		array_shift( $paths );
+
+	// Reset indexes.
+	$bp_uri = array_values( $bp_uri );
+	$paths  = array_values( $paths );
+
+	// Unset URI indices if they intersect with the paths.
+	foreach ( (array) $bp_uri as $key => $uri_chunk ) {
+		if ( isset( $paths[$key] ) && $uri_chunk == $paths[$key] ) {
+			unset( $bp_uri[$key] );
+		}
+	}
+
+	// Reset the keys by merging with an empty array.
+	$bp_uri = array_merge( array(), $bp_uri );
+
+	/*
+	 * If a component is set to the front page, force its name into $bp_uri
+	 * so that $current_component is populated (unless a specific WP post is being requested
+	 * via a URL parameter, usually signifying Preview mode).
+	 */
+	if ( 'page' == get_option( 'show_on_front' ) && get_option( 'page_on_front' ) && empty( $bp_uri ) && empty( $_GET['p'] ) && empty( $_GET['page_id'] ) ) {
+		$post = get_post( get_option( 'page_on_front' ) );
+		if ( !empty( $post ) ) {
+			$bp_uri[0] = $post->post_name;
+		}
+	}
+
+	// Keep the unfiltered URI safe.
+	$bp->unfiltered_uri = $bp_uri;
+
+	// Don't use $bp_unfiltered_uri, this is only for backpat with old plugins. Use $bp->unfiltered_uri.
+	$GLOBALS['bp_unfiltered_uri'] = &$bp->unfiltered_uri;
+
+	// Get slugs of pages into array.
+	foreach ( (array) $bp->pages as $page_key => $bp_page )
+		$key_slugs[$page_key] = trailingslashit( '/' . $bp_page->slug );
+
+	// Bail if keyslugs are empty, as BP is not setup correct.
+	if ( empty( $key_slugs ) )
 		return;
+
+	// Loop through page slugs and look for exact match to path.
+	foreach ( $key_slugs as $key => $slug ) {
+		if ( $slug == $path ) {
+			$match      = $bp->pages->{$key};
+			$match->key = $key;
+			$matches[]  = 1;
+			break;
+		}
 	}
 
-	$action = '';
-	if ( isset( $_REQUEST['action'] ) ) {
-		$action = wp_unslash( sanitize_text_field( $_REQUEST['action'] ) );
+	// No exact match, so look for partials.
+	if ( empty( $match ) ) {
+
+		// Loop through each page in the $bp->pages global.
+		foreach ( (array) $bp->pages as $page_key => $bp_page ) {
+
+			// Look for a match (check members first).
+			if ( in_array( $bp_page->name, (array) $bp_uri ) ) {
+
+				// Match found, now match the slug to make sure.
+				$uri_chunks = explode( '/', $bp_page->slug );
+
+				// Loop through uri_chunks.
+				foreach ( (array) $uri_chunks as $key => $uri_chunk ) {
+
+					// Make sure chunk is in the correct position.
+					if ( !empty( $bp_uri[$key] ) && ( $bp_uri[$key] == $uri_chunk ) ) {
+						$matches[] = 1;
+
+					// No match.
+					} else {
+						$matches[] = 0;
+					}
+				}
+
+				// Have a match.
+				if ( !in_array( 0, (array) $matches ) ) {
+					$match      = $bp_page;
+					$match->key = $page_key;
+					break;
+				};
+
+				// Unset matches.
+				unset( $matches );
+			}
+
+			// Unset uri chunks.
+			unset( $uri_chunks );
+		}
 	}
 
-	// Only set BuddyPress URI globals for registered Ajax actions.
-	if ( ! bp_ajax_action_is_registered( $action ) ) {
-		return;
+	// URLs with BP_ENABLE_ROOT_PROFILES enabled won't be caught above.
+	if ( empty( $matches ) && bp_core_enable_root_profiles() && ! empty( $bp_uri[0] ) ) {
+
+		// Switch field based on compat.
+		$field = bp_is_username_compatibility_mode() ? 'login' : 'slug';
+
+		/**
+		 * Filter the portion of the URI that is the displayed user's slug.
+		 *
+		 * Eg. example.com/ADMIN (when root profiles is enabled)
+		 *     example.com/members/ADMIN (when root profiles isn't enabled)
+		 *
+		 * ADMIN would be the displayed user's slug.
+		 *
+		 * @since 2.6.0
+		 *
+		 * @param string $member_slug
+		 */
+		$member_slug = apply_filters( 'bp_core_set_uri_globals_member_slug', $bp_uri[0] );
+
+		// Make sure there's a user corresponding to $bp_uri[0].
+		if ( ! empty( $bp->pages->members ) && $root_profile = get_user_by( $field, $member_slug ) ) {
+
+			// Force BP to recognize that this is a members page.
+			$matches[]  = 1;
+			$match      = $bp->pages->members;
+			$match->key = 'members';
+		}
 	}
 
-	if ( 'heartbeat' === $action && empty( $_REQUEST['data']['bp_heartbeat'] ) ) {
-		return;
+	// Search doesn't have an associated page, so we check for it separately.
+	if ( isset( $_POST['search-terms'] ) && !empty( $bp_uri[0] ) && ( bp_get_search_slug() == $bp_uri[0] ) ) {
+		$matches[]   = 1;
+		$match       = new stdClass;
+		$match->key  = 'search';
+		$match->slug = bp_get_search_slug();
 	}
 
-	bp_reset_query( bp_get_referer_path(), $GLOBALS['wp_query'] );
+	// This is not a BuddyPress page, so just return.
+	if ( empty( $matches ) ) {
+		/**
+		 * Fires when the the current page is not a BuddyPress one.
+		 *
+		 * @since 10.0.0
+		 */
+		do_action( 'is_not_buddypress' );
+		return false;
+	}
+
+	$wp_rewrite->use_verbose_page_rules = false;
+
+	// Find the offset. With $root_profile set, we fudge the offset down so later parsing works.
+	$slug       = !empty ( $match ) ? explode( '/', $match->slug ) : '';
+	$uri_offset = empty( $root_profile ) ? 0 : -1;
+
+	// Rejig the offset.
+	if ( !empty( $slug ) && ( 1 < count( $slug ) ) ) {
+		// Only offset if not on a root profile. Fixes issue when Members page is nested.
+		if ( false === $root_profile ) {
+			array_pop( $slug );
+			$uri_offset = count( $slug );
+		}
+	}
+
+	// Global the unfiltered offset to use in bp_core_load_template().
+	// To avoid PHP warnings in bp_core_load_template(), it must always be >= 0.
+	$bp->unfiltered_uri_offset = $uri_offset >= 0 ? $uri_offset : 0;
+
+	// We have an exact match.
+	if ( isset( $match->key ) ) {
+
+		// Set current component to matched key.
+		$bp->current_component = $match->key;
+
+		// If members component, do more work to find the actual component.
+		if ( 'members' == $match->key ) {
+
+			$after_member_slug = false;
+			if ( ! empty( $bp_uri[ $uri_offset + 1 ] ) ) {
+				$after_member_slug = $bp_uri[ $uri_offset + 1 ];
+			}
+
+			// Are we viewing a specific user?
+			if ( $after_member_slug ) {
+
+				/** This filter is documented in bp-core/bp-core-catchuri.php */
+				$after_member_slug = apply_filters( 'bp_core_set_uri_globals_member_slug', $after_member_slug );
+
+				// If root profile, we've already queried for the user.
+				if ( $root_profile instanceof WP_User ) {
+					$bp->displayed_user->id = $root_profile->ID;
+
+				// Switch the displayed_user based on compatibility mode.
+				} elseif ( bp_is_username_compatibility_mode() ) {
+					$bp->displayed_user->id = (int) bp_core_get_userid( urldecode( $after_member_slug ) );
+
+				} else {
+					$bp->displayed_user->id = (int) bp_core_get_userid_from_nicename( $after_member_slug );
+				}
+			}
+
+			// Is this a member type directory?
+			if ( ! bp_displayed_user_id() && $after_member_slug === bp_get_members_member_type_base() && ! empty( $bp_uri[ $uri_offset + 2 ] ) ) {
+				$matched_types = bp_get_member_types( array(
+					'has_directory'  => true,
+					'directory_slug' => $bp_uri[ $uri_offset + 2 ],
+				) );
+
+				if ( ! empty( $matched_types ) ) {
+					$bp->current_member_type = reset( $matched_types );
+					unset( $bp_uri[ $uri_offset + 1 ] );
+				}
+			}
+
+			// If the slug matches neither a member type nor a specific member, 404.
+			if ( ! bp_displayed_user_id() && ! bp_get_current_member_type() && $after_member_slug ) {
+				// Prevent components from loading their templates.
+				$bp->current_component = '';
+				bp_do_404();
+				return;
+			}
+
+			// If the displayed user is marked as a spammer, 404 (unless logged-in user is a super admin).
+			if ( bp_displayed_user_id() && bp_is_user_spammer( bp_displayed_user_id() ) ) {
+				if ( bp_current_user_can( 'bp_moderate' ) ) {
+					bp_core_add_message( __( 'This user has been marked as a spammer. Only site admins can view this profile.', 'buddypress' ), 'warning' );
+				} else {
+					bp_do_404();
+					return;
+				}
+			}
+
+			// Bump the offset.
+			if ( bp_displayed_user_id() ) {
+				if ( isset( $bp_uri[$uri_offset + 2] ) ) {
+					$bp_uri                = array_merge( array(), array_slice( $bp_uri, $uri_offset + 2 ) );
+					$bp->current_component = $bp_uri[0];
+
+				// No component, so default will be picked later.
+				} else {
+					$bp_uri                = array_merge( array(), array_slice( $bp_uri, $uri_offset + 2 ) );
+					$bp->current_component = '';
+				}
+
+				// Reset the offset.
+				$uri_offset = 0;
+			}
+		}
+	}
+
+	// Determine the current action.
+	$current_action = isset( $bp_uri[ $uri_offset + 1 ] ) ? $bp_uri[ $uri_offset + 1 ] : '';
+
+	/*
+	 * If a BuddyPress directory is set to the WP front page, URLs like example.com/members/?s=foo
+	 * shouldn't interfere with blog searches.
+	 */
+	if ( empty( $current_action) && ! empty( $_GET['s'] ) && 'page' == get_option( 'show_on_front' ) && ! empty( $match->id ) ) {
+		$page_on_front = (int) get_option( 'page_on_front' );
+		if ( (int) $match->id === $page_on_front ) {
+			$bp->current_component = '';
+			return false;
+		}
+	}
+
+	$bp->current_action = $current_action;
+
+	// Slice the rest of the $bp_uri array and reset offset.
+	$bp_uri      = array_slice( $bp_uri, $uri_offset + 2 );
+	$uri_offset  = 0;
+
+	// Set the entire URI as the action variables, we will unset the current_component and action in a second.
+	$bp->action_variables = $bp_uri;
+
+	// Reset the keys by merging with an empty array.
+	$bp->action_variables = array_merge( array(), $bp->action_variables );
 }
 
 /**
@@ -45,14 +392,14 @@ function bp_core_set_ajax_uri_globals() {
  *
  * @since 1.6.0
  *
- * @return bool
+ * @return bool True if yes, false if no.
  */
 function bp_core_enable_root_profiles() {
+
 	$retval = false;
 
-	if ( defined( 'BP_ENABLE_ROOT_PROFILES' ) && ( true === BP_ENABLE_ROOT_PROFILES ) ) {
+	if ( defined( 'BP_ENABLE_ROOT_PROFILES' ) && ( true == BP_ENABLE_ROOT_PROFILES ) )
 		$retval = true;
-	}
 
 	/**
 	 * Filters whether or not root profiles are enabled and allowed.
@@ -73,7 +420,6 @@ function bp_core_enable_root_profiles() {
  *   wp-content/themes/[activated_theme]/members/index.php
  *
  * @since 1.0.0
- * @since 14.0.0 Uses `locate_block_template()` to support BuddyPress Block only Themes.
  *
  * @param array $templates Array of templates to attempt to load.
  */
@@ -81,13 +427,11 @@ function bp_core_load_template( $templates ) {
 	global $wp_query;
 
 	// Reset the post.
-	bp_theme_compat_reset_post(
-		array(
-			'ID'          => 0,
-			'is_404'      => true,
-			'post_status' => 'publish',
-		)
-	);
+	bp_theme_compat_reset_post( array(
+		'ID'          => 0,
+		'is_404'      => true,
+		'post_status' => 'publish',
+	) );
 
 	// Set theme compat to false since the reset post function automatically sets
 	// theme compat to true.
@@ -101,25 +445,9 @@ function bp_core_load_template( $templates ) {
 
 	// Only perform template lookup for bp-default themes.
 	if ( ! bp_use_theme_compat_with_current_theme() ) {
-		if ( bp_theme_compat_is_block_theme() ) {
-			// Prevent BuddyPress components from using the BP Theme Compat feature.
-			remove_all_actions( 'bp_setup_theme_compat' );
+		$template = locate_template( (array) $filtered_templates, false );
 
-			$block_templates = array();
-			foreach ( (array) $templates as $template ) {
-				$block_templates[] = 'buddypress/' . $template;
-			}
-
-			$template_type     = 'buddypress';
-			$block_templates[] = $template_type;
-
-			$template = locate_block_template( '', $template_type, $block_templates );
-
-		} else {
-			$template = locate_template( (array) $filtered_templates, false );
-		}
-
-		// Theme compat doesn't require a template lookup.
+	// Theme compat doesn't require a template lookup.
 	} else {
 		$template = '';
 	}
@@ -146,15 +474,12 @@ function bp_core_load_template( $templates ) {
 		$located_template = '';
 	}
 
-	if ( ! empty( $located_template ) ) {
+	if ( !empty( $located_template ) ) {
 		// Template was located, lets set this as a valid page and not a 404.
 		status_header( 200 );
 		$wp_query->is_page     = true;
 		$wp_query->is_singular = true;
 		$wp_query->is_404      = false;
-
-		// Check if a BuddyPress component's directory is set as homepage.
-		$wp_query->is_home = bp_is_directory_homepage( bp_current_component() );
 
 		/**
 		 * Fires before the loading of a located template file.
@@ -172,9 +497,7 @@ function bp_core_load_template( $templates ) {
 		 *
 		 * @param string $located_template Template found to be loaded.
 		 */
-		$bp_load_template = apply_filters( 'bp_load_template', $located_template );
-
-		load_template( $bp_load_template );
+		load_template( apply_filters( 'bp_load_template', $located_template ) );
 
 		/**
 		 * Fires after the loading of a located template file.
@@ -188,8 +511,8 @@ function bp_core_load_template( $templates ) {
 		// Kill any other output after this.
 		exit();
 
-		// No template found, so setup theme compatibility.
-		// @todo Some other 404 handling if theme compat doesn't kick in.
+	// No template found, so setup theme compatibility.
+	// @todo Some other 404 handling if theme compat doesn't kick in.
 	} else {
 
 		// We know where we are, so reset important $wp_query bits here early.
@@ -199,12 +522,6 @@ function bp_core_load_template( $templates ) {
 			$wp_query->is_page     = true;
 			$wp_query->is_singular = true;
 			$wp_query->is_404      = false;
-
-			// Check if a BuddyPress component's direcory is set as homepage.
-			if ( bp_is_directory_homepage( bp_current_component() ) ) {
-				$wp_query->home          = true;
-				$wp_query->is_front_page = true;
-			}
 		}
 
 		/**
@@ -222,21 +539,16 @@ function bp_core_load_template( $templates ) {
  * @since 1.0.0
  */
 function bp_core_catch_profile_uri() {
-	if ( ! bp_is_active( 'xprofile' ) ) {
+	if ( !bp_is_active( 'xprofile' ) ) {
 
-		$templates = array(
-			/**
-			 * Filters the path to redirect users to if XProfile is not enabled.
-			 *
-			 * @since 1.0.0
-			 *
-			 * @param string $value Path to redirect users to.
-			 */
-			apply_filters( 'bp_core_template_display_profile', 'members/single/home' ),
-			'members/single/index',
-		);
-
-		bp_core_load_template( $templates );
+		/**
+		 * Filters the path to redirect users to if XProfile is not enabled.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param string $value Path to redirect users to.
+		 */
+		bp_core_load_template( apply_filters( 'bp_core_template_display_profile', 'members/single/home' ) );
 	}
 }
 
@@ -278,7 +590,7 @@ function bp_core_members_shortlink_redirector( $member_slug ) {
 
 	$user = wp_get_current_user();
 
-	return bp_members_get_user_slug( $user->ID );
+	return bp_core_get_username( $user->ID, $user->user_nicename, $user->user_login );
 }
 add_filter( 'bp_core_set_uri_globals_member_slug', 'bp_core_members_shortlink_redirector' );
 
@@ -294,11 +606,10 @@ function bp_core_catch_no_access() {
 
 	// If coming from bp_core_redirect() and $bp_no_status_set is true,
 	// we are redirecting to an accessible page so skip this check.
-	if ( ! empty( $bp->no_status_set ) ) {
+	if ( !empty( $bp->no_status_set ) )
 		return false;
-	}
 
-	if ( ! isset( $wp_query->queried_object ) && ! bp_is_blog_page() ) {
+	if ( !isset( $wp_query->queried_object ) && !bp_is_blog_page() ) {
 		bp_do_404();
 	}
 }
@@ -314,14 +625,13 @@ add_action( 'bp_template_redirect', 'bp_core_catch_no_access', 1 );
  * @since 1.5.0
  *
  * @param array|string $args {
- *     Optional. Array of arguments for redirecting user when visiting access controlled areas.
  *     @type int    $mode     Specifies the destination of the redirect. 1 will
  *                            direct to the root domain (home page), which assumes you have a
  *                            log-in form there; 2 directs to wp-login.php. Default: 2.
  *     @type string $redirect The URL the user will be redirected to after successfully
  *                            logging in. Default: the URL originally requested.
  *     @type string $root     The root URL of the site, used in case of error or mode 1 redirects.
- *                            Default: the value of {@link bp_get_root_url()}.
+ *                            Default: the value of {@link bp_get_root_domain()}.
  *     @type string $message  An error message to display to the user on the log-in page.
  *                            Default: "You must log in to access the page you requested."
  * }
@@ -336,8 +646,8 @@ function bp_core_no_access( $args = '' ) {
 	$defaults = array(
 		'mode'     => 2,                    // 1 = $root, 2 = wp-login.php.
 		'redirect' => $redirect_url,        // the URL you get redirected to when a user successfully logs in.
-		'root'     => bp_get_root_url(),    // the landing page you get redirected to when a user doesn't have access.
-		'message'  => __( 'You must log in to access the page you requested.', 'buddypress' ),
+		'root'     => bp_get_root_domain(), // the landing page you get redirected to when a user doesn't have access.
+		'message'  => __( 'You must log in to access the page you requested.', 'buddypress' )
 	);
 
 	$r = bp_parse_args(
@@ -353,33 +663,27 @@ function bp_core_no_access( $args = '' ) {
 	 * @param array $r Array of parsed arguments for redirect determination.
 	 */
 	$r = apply_filters( 'bp_core_no_access', $r );
-
 	extract( $r, EXTR_SKIP );
 
 	/*
 	 * @ignore Ignore these filters and use 'bp_core_no_access' above.
 	 */
-	$mode     = apply_filters( 'bp_no_access_mode', $mode, $root, $redirect, $message );
-	$redirect = apply_filters( 'bp_no_access_redirect', $redirect, $root, $message, $mode );
-	$root     = apply_filters( 'bp_no_access_root', $root, $redirect, $message, $mode );
-	$message  = apply_filters( 'bp_no_access_message', $message, $root, $redirect, $mode );
+	$mode     = apply_filters( 'bp_no_access_mode',     $mode,     $root,     $redirect, $message );
+	$redirect = apply_filters( 'bp_no_access_redirect', $redirect, $root,     $message,  $mode    );
+	$root     = apply_filters( 'bp_no_access_root',     $root,     $redirect, $message,  $mode    );
+	$message  = apply_filters( 'bp_no_access_message',  $message,  $root,     $redirect, $mode    );
 	$root     = trailingslashit( $root );
 
 	switch ( $mode ) {
 
 		// Option to redirect to wp-login.php.
 		// Error message is displayed with bp_core_no_access_wp_login_error().
-		case 2:
-			if ( ! empty( $redirect ) ) {
-				bp_core_redirect(
-					add_query_arg(
-						array(
-							'bp-auth' => 1,
-							'action'  => 'bpnoaccess',
-						),
-						wp_login_url( $redirect )
-					)
-				);
+		case 2 :
+			if ( !empty( $redirect ) ) {
+				bp_core_redirect( add_query_arg( array(
+					'bp-auth' => 1,
+					'action'  => 'bpnoaccess'
+				), wp_login_url( $redirect ) ) );
 			} else {
 				bp_core_redirect( $root );
 			}
@@ -388,14 +692,15 @@ function bp_core_no_access( $args = '' ) {
 
 		// Redirect to root with "redirect_to" parameter.
 		// Error message is displayed with bp_core_add_message().
-		case 1:
-		default:
+		case 1 :
+		default :
+
 			$url = $root;
-			if ( ! empty( $redirect ) ) {
+			if ( !empty( $redirect ) ) {
 				$url = add_query_arg( 'redirect_to', urlencode( $redirect ), $root );
 			}
 
-			if ( ! empty( $message ) ) {
+			if ( !empty( $message ) ) {
 				bp_core_add_message( $message, 'error' );
 			}
 
@@ -502,31 +807,28 @@ function bp_redirect_canonical() {
 	 *
 	 * @param bool $value Whether or not to do canonical redirects. Default true.
 	 */
-	if ( ! bp_is_blog_page() && apply_filters( 'bp_do_redirect_canonical', true ) ) {
+	if ( !bp_is_blog_page() && apply_filters( 'bp_do_redirect_canonical', true ) ) {
 		// If this is a POST request, don't do a canonical redirect.
 		// This is for backward compatibility with plugins that submit form requests to
 		// non-canonical URLs. Plugin authors should do their best to use canonical URLs in
 		// their form actions.
-		if ( ! empty( $_POST ) ) {
+		if ( !empty( $_POST ) ) {
 			return;
 		}
 
 		// Build the URL in the address bar.
-		$requested_url = bp_get_requested_url();
-		$query_args    = '';
+		$requested_url  = bp_get_requested_url();
 
 		// Stash query args.
-		if ( bp_has_pretty_urls() ) {
-			$query_args    = wp_parse_url( $requested_url, PHP_URL_QUERY );
-			$req_url_clean = str_replace( '?' . $query_args, '', $requested_url );
-		} else {
-			$req_url_clean = $requested_url;
-		}
+		$url_stack      = explode( '?', $requested_url );
+		$req_url_clean  = $url_stack[0];
+		$query_args     = isset( $url_stack[1] ) ? $url_stack[1] : '';
 
-		$canonical_url = bp_get_canonical_url();
+		$canonical_url  = bp_get_canonical_url();
 
 		// Only redirect if we've assembled a URL different from the request.
-		if ( esc_url( $canonical_url ) !== esc_url( $req_url_clean ) ) {
+		if ( $canonical_url !== $req_url_clean ) {
+
 			$bp = buddypress();
 
 			// Template messages have been deleted from the cookie by this point, so
@@ -538,7 +840,7 @@ function bp_redirect_canonical() {
 				bp_core_add_message( $message, $message_type );
 			}
 
-			if ( ! empty( $query_args ) ) {
+			if ( !empty( $query_args ) ) {
 				$canonical_url .= '?' . $query_args;
 			}
 
@@ -589,11 +891,13 @@ function bp_get_canonical_url( $args = array() ) {
 		$defaults
 	);
 
+	extract( $r );
+
 	// Special case: when a BuddyPress directory (eg example.com/members)
 	// is set to be the front page, ensure that the current canonical URL
 	// is the home page URL.
-	if ( 'page' === get_option( 'show_on_front' ) && $page_on_front = (int) get_option( 'page_on_front' ) ) {
-		$front_page_component = array_search( $page_on_front, bp_core_get_directory_page_ids(), true );
+	if ( 'page' == get_option( 'show_on_front' ) && $page_on_front = (int) get_option( 'page_on_front' ) ) {
+		$front_page_component = array_search( $page_on_front, bp_core_get_directory_page_ids() );
 
 		/*
 		 * If requesting the front page component directory, canonical
@@ -603,12 +907,12 @@ function bp_get_canonical_url( $args = array() ) {
 		 * type directory.
 		 */
 		if ( false !== $front_page_component && bp_is_current_component( $front_page_component ) && ! bp_current_action() && ! bp_get_current_member_type() ) {
-			$bp->canonical_stack['canonical_url'] = trailingslashit( bp_get_root_url() );
+			$bp->canonical_stack['canonical_url'] = trailingslashit( bp_get_root_domain() );
 
-			// Except when the front page is set to the registration page
-			// and the current user is logged in. In this case we send to
-			// the members directory to avoid redirect loops.
-		} elseif ( bp_is_register_page() && 'register' === $front_page_component && is_user_logged_in() ) {
+		// Except when the front page is set to the registration page
+		// and the current user is logged in. In this case we send to
+		// the members directory to avoid redirect loops.
+		} elseif ( bp_is_register_page() && 'register' == $front_page_component && is_user_logged_in() ) {
 
 			/**
 			 * Filters the logged in register page redirect URL.
@@ -623,93 +927,39 @@ function bp_get_canonical_url( $args = array() ) {
 
 	if ( empty( $bp->canonical_stack['canonical_url'] ) ) {
 		// Build the URL in the address bar.
-		$requested_url = bp_get_requested_url();
-		$base_url      = '';
-		$path_chunks   = array();
-		$component_id  = '';
+		$requested_url  = bp_get_requested_url();
 
-		// Get query args.
-		$query_string = wp_parse_url( $requested_url, PHP_URL_QUERY );
-		$query_args   = wp_parse_args( $query_string, array() );
+		// Stash query args.
+		$url_stack      = explode( '?', $requested_url );
 
 		// Build the canonical URL out of the redirect stack.
-		if ( isset( $bp->canonical_stack['base_url'] ) ) {
-			$base_url = $bp->canonical_stack['base_url'];
-		} else {
-			$base_url = $requested_url;
+		if ( isset( $bp->canonical_stack['base_url'] ) )
+			$url_stack[0] = $bp->canonical_stack['base_url'];
 
-			if ( bp_has_pretty_urls() ) {
-				$base_url = str_replace( '?' . $query_string, '', $requested_url );
+		if ( isset( $bp->canonical_stack['component'] ) )
+			$url_stack[0] = trailingslashit( $url_stack[0] . $bp->canonical_stack['component'] );
+
+		if ( isset( $bp->canonical_stack['action'] ) )
+			$url_stack[0] = trailingslashit( $url_stack[0] . $bp->canonical_stack['action'] );
+
+		if ( !empty( $bp->canonical_stack['action_variables'] ) ) {
+			foreach( (array) $bp->canonical_stack['action_variables'] as $av ) {
+				$url_stack[0] = trailingslashit( $url_stack[0] . $av );
 			}
 		}
 
-		// This is a BP Members URL.
-		if ( isset( $bp->canonical_stack['component'] ) ) {
-			$component_id  = 'members';
-			$path_chunks[] = $bp->canonical_stack['component'];
+		// Add trailing slash.
+		$url_stack[0] = trailingslashit( $url_stack[0] );
 
-			if ( $query_args ) {
-				$query_args = array_diff_key(
-					$query_args,
-					array_fill_keys(
-						array( 'bp_members', 'bp_member', 'bp_member_component' ),
-						true
-					)
-				);
-			}
-		} else {
-			$component_id = 'groups';
-		}
-
-		if ( isset( $bp->canonical_stack['action'] ) ) {
-			$path_chunks[]        = $bp->canonical_stack['action'];
-			$action_key           = 'bp_member_action';
-			$action_variables_key = 'bp_member_action_variables';
-
-			if ( 'groups' === $component_id ) {
-				$action_key           = 'bp_group_action';
-				$action_variables_key = 'bp_group_action_variables';
-			}
-
-			if ( ! empty( $bp->canonical_stack['action_variables'] ) ) {
-				$path_chunks = array_merge( $path_chunks, (array) $bp->canonical_stack['action_variables'] );
-			} elseif ( isset( $query_args[ $action_variables_key ] ) ) {
-				unset( $query_args[ $action_variables_key ] );
-			}
-
-			if ( $query_args ) {
-				$query_args = array_diff_key(
-					$query_args,
-					array_fill_keys(
-						array( $action_key, $action_variables_key ),
-						true
-					)
-				);
-			}
-		} elseif ( isset( $query_args['bp_member_action'] ) && 'members' === $component_id ) {
-			unset( $query_args['bp_member_action'] );
-		} elseif ( isset( $query_args['bp_group_action'] ) && 'groups' === $component_id ) {
-			unset( $query_args['bp_group_action'] );
-		}
-
-		if ( $path_chunks ) {
-			if ( 'groups' === $component_id ) {
-				$bp->canonical_stack['canonical_url'] = bp_get_group_url(
-					groups_get_current_group(),
-					bp_groups_get_path_chunks( $path_chunks )
-				);
-			} else {
-				$bp->canonical_stack['canonical_url'] = bp_displayed_user_url( bp_members_get_path_chunks( $path_chunks ) );
-			}
-		} else {
-			$bp->canonical_stack['canonical_url'] = $base_url;
-		}
+		// Stash in the $bp global.
+		$bp->canonical_stack['canonical_url'] = implode( '?', $url_stack );
 	}
 
 	$canonical_url = $bp->canonical_stack['canonical_url'];
 
-	if ( $r['include_query_args'] && $query_args ) {
-		$canonical_url = add_query_arg( $query_args, $canonical_url );
+	if ( !$include_query_args ) {
+		$canonical_url = array_reverse( explode( '?', $canonical_url ) );
+		$canonical_url = array_pop( $canonical_url );
 	}
 
 	/**
@@ -760,10 +1010,10 @@ function bp_get_requested_url() {
  * @since 1.6.0
  */
 function _bp_maybe_remove_redirect_canonical() {
-	if ( ! bp_is_blog_page() ) {
+	if ( ! bp_is_blog_page() )
 		remove_action( 'template_redirect', 'redirect_canonical' );
-	}
 }
+add_action( 'bp_init', '_bp_maybe_remove_redirect_canonical' );
 
 /**
  * Rehook maybe_redirect_404() to run later than the default.

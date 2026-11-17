@@ -26,7 +26,7 @@ class Notification extends BuddyPressCommand {
 	 *
 	 * @var array
 	 */
-	protected $obj_fields = [
+	protected $obj_fields = array(
 		'id',
 		'user_id',
 		'item_id',
@@ -35,7 +35,7 @@ class Notification extends BuddyPressCommand {
 		'component_action',
 		'date_notified',
 		'is_new',
-	];
+	);
 
 	/**
 	 * Dependency check for this CLI command.
@@ -49,7 +49,7 @@ class Notification extends BuddyPressCommand {
 	}
 
 	/**
-	 * Create a notification.
+	 * Create a notification item.
 	 *
 	 * ## OPTIONS
 	 *
@@ -81,11 +81,9 @@ class Notification extends BuddyPressCommand {
 	 *
 	 * ## EXAMPLES
 	 *
-	 *     # Create a `update_reply` notification.
 	 *     $ wp bp notification create --component=messages --action=update_reply --user-id=523
 	 *     Success: Successfully created new notification. (ID #5464)
 	 *
-	 *     # Create a `comment_reply` notification.
 	 *     $ wp bp notification add --component=groups --action=comment_reply --user-id=10
 	 *     Success: Successfully created new notification (ID #48949)
 	 *
@@ -94,25 +92,25 @@ class Notification extends BuddyPressCommand {
 	public function create( $args, $assoc_args ) {
 		$r = wp_parse_args(
 			$assoc_args,
-			[
+			array(
 				'component'         => '',
 				'action'            => '',
 				'user-id'           => 0,
 				'item-id'           => 0,
 				'secondary-item-id' => 0,
 				'date'              => bp_core_current_time(),
-			]
+			)
 		);
 
-		$notification_id = bp_notifications_add_notification(
-			[
+		$id = bp_notifications_add_notification(
+			array(
 				'user_id'           => $r['user-id'],
 				'item_id'           => $r['item-id'],
 				'secondary_item_id' => $r['secondary-item-id'],
 				'component_name'    => $r['component'],
 				'component_action'  => $r['action'],
 				'date_notified'     => $r['date'],
-			]
+			)
 		);
 
 		// Silent it before it errors.
@@ -120,14 +118,14 @@ class Notification extends BuddyPressCommand {
 			return;
 		}
 
-		if ( ! is_numeric( $notification_id ) ) {
+		if ( ! is_numeric( $id ) ) {
 			WP_CLI::error( 'Could not create notification.' );
 		}
 
 		if ( WP_CLI\Utils\get_flag_value( $assoc_args, 'porcelain' ) ) {
-			WP_CLI::log( $notification_id );
+			WP_CLI::log( $id );
 		} else {
-			WP_CLI::success( sprintf( 'Successfully created new notification (ID #%d)', $notification_id ) );
+			WP_CLI::success( sprintf( 'Successfully created new notification (ID #%d)', $id ) );
 		}
 	}
 
@@ -148,49 +146,25 @@ class Notification extends BuddyPressCommand {
 	 * default: table
 	 * options:
 	 *   - table
-	 *   - json
 	 *   - csv
+	 *   - ids
+	 *   - json
+	 *   - count
 	 *   - yaml
 	 * ---
 	 *
 	 * ## EXAMPLES
 	 *
-	 *     # Get a notification by ID.
-	 *     $ wp bp notification get 10071
-	 *     +-------------------+---------------------+
-	 *     | Field             | Value               |
-	 *     +-------------------+---------------------+
-	 *     | id                | 10071               |
-	 *     | item_id           | 0                   |
-	 *     | secondary_item_id | 0                   |
-	 *     | user_id           | 7                   |
-	 *     | component_name    | activity            |
-	 *     | component_action  | comment_reply       |
-	 *     | date_notified     | 2024-02-06 00:28:45 |
-	 *     | is_new            | 1                   |
-	 *     +-------------------+---------------------+
-	 *
-	 *     # Get a notification in JSON format.
-	 *     $ wp bp notification get 10071 --format=json
-	 *     {"id":10071,"item_id":0,"secondary_item_id":0,"user_id":7,"component_name":"activity","component_action":"comment_reply","date_notified":"2024-02-06 00:28:45","is_new":1}
-	 *
-	 *     # Get a notification using a invalid ID.
-	 *     $ wp bp notification see buddypress
-	 *     Error: Please provide a numeric notification ID.
+	 *     $ wp bp notification get 500
+	 *     $ wp bp notification get 56 --format=json
 	 *
 	 * @alias see
 	 */
 	public function get( $args, $assoc_args ) {
-		$notification_id = $args[0];
-
-		if ( ! is_numeric( $notification_id ) ) {
-			WP_CLI::error( 'Please provide a numeric notification ID.' );
-		}
-
-		$notification = bp_notifications_get_notification( $notification_id );
+		$notification = bp_notifications_get_notification( $args[0] );
 
 		if ( empty( $notification->id ) || ! is_object( $notification ) ) {
-			WP_CLI::error( 'No notification found.' );
+			WP_CLI::error( 'No notification found by that ID.' );
 		}
 
 		$notification_arr = get_object_vars( $notification );
@@ -215,38 +189,36 @@ class Notification extends BuddyPressCommand {
 	 *
 	 * ## EXAMPLES
 	 *
-	 *     # Delete a notification.
 	 *     $ wp bp notification delete 520 --yes
 	 *     Success: Deleted notification 520.
 	 *
-	 *     # Delete multiple notifications.
 	 *     $ wp bp notification delete 55654 54564 --yes
 	 *     Success: Deleted notification 55654.
 	 *     Success: Deleted notification 54564.
 	 *
-	 * @alias remove
+	 *     $ wp bp notification delete $(wp bp notification list --format=ids) --yes
+	 *     Success: Deleted notification 35456465.
+	 *     Success: Deleted notification 46546546.
+	 *     Success: Deleted notification 46465465.
+	 *
 	 * @alias trash
 	 */
 	public function delete( $args, $assoc_args ) {
-		$notifications = wp_parse_id_list( $args );
+		$notifications = $args;
 
 		if ( count( $notifications ) > 1 ) {
-			WP_CLI::confirm( 'Are you sure you want to delete these notifications?', $assoc_args );
+			WP_CLI::confirm( 'Are you sure want to delete these notifications?', $assoc_args );
 		} else {
 			WP_CLI::confirm( 'Are you sure you want to delete this notification?', $assoc_args );
 		}
 
-		parent::_delete(
-			$notifications,
-			$assoc_args,
-			function ( $notification_id ) {
-				if ( \BP_Notifications_Notification::delete( [ 'id' => $notification_id ] ) ) {
-					return [ 'success', sprintf( 'Deleted notification %d.', $notification_id ) ];
-				}
-
-				return [ 'error', sprintf( 'Could not delete notification %d.', $notification_id ) ];
+		parent::_delete( $notifications, $assoc_args, function( $notification_id ) {
+			if ( \BP_Notifications_Notification::delete( array( 'id' => $notification_id ) ) ) {
+				return array( 'success', sprintf( 'Deleted notification %d.', $notification_id ) );
+			} else {
+				return array( 'error', sprintf( 'Could not delete notification %d.', $notification_id ) );
 			}
-		);
+		} );
 	}
 
 	/**
@@ -260,61 +232,31 @@ class Notification extends BuddyPressCommand {
 	 * default: 100
 	 * ---
 	 *
-	 * [--user-id=<user>]
-	 * : ID of the user. Accepts either a user_login or a numeric ID.
+	 * ## EXAMPLE
 	 *
-	 * [--format=<format>]
-	 * : Render output in a particular format.
-	 * ---
-	 * default: progress
-	 * options:
-	 *   - progress
-	 *   - ids
-	 * ---
-	 *
-	 * ## EXAMPLES
-	 *
-	 *     # Generate 5 random notifications.
-	 *     $ wp bp notification generate --count=5
-	 *     Generating notifications  100% [======================] 0:00 / 0:00
-	 *
-	 *     # Generate 5 random notifications and output only the IDs.
-	 *     $ wp bp notification generate --count=5 --format=ids
-	 *     70 71 72 73 74
+	 *     $ wp bp notification generate --count=50
 	 */
 	public function generate( $args, $assoc_args ) {
-		$user_id = null;
+		$notify = WP_CLI\Utils\make_progress_bar( 'Generating notifications', $assoc_args['count'] );
 
-		if ( isset( $assoc_args['user-id'] ) ) {
-			$user    = $this->get_user_id_from_identifier( $assoc_args['user-id'] );
-			$user_id = $user->ID;
-		}
+		for ( $i = 0; $i < $assoc_args['count']; $i++ ) {
 
-		$this->generate_callback(
-			'Generating notifications',
-			$assoc_args,
-			function ( $assoc_args, $format ) use ( $user_id ) {
-				$component = $this->get_random_component();
+			$component = $this->get_random_component();
 
-				if ( ! $user_id ) {
-					$user_id = $this->get_random_user_id();
-				}
-
-				$params = [
-					'user-id'   => $user_id,
+			$this->create(
+				array(),
+				array(
+					'user-id'   => $this->get_random_user_id(),
 					'component' => $component,
 					'action'    => $this->get_random_action( $component ),
-				];
+					'silent',
+				)
+			);
 
-				if ( 'ids' === $format ) {
-					$params['porcelain'] = true;
-				} else {
-					$params['silent'] = true;
-				}
+			$notify->tick();
+		}
 
-				return $this->create( [], $params );
-			}
-		);
+		$notify->finish();
 	}
 
 	/**
@@ -350,23 +292,19 @@ class Notification extends BuddyPressCommand {
 	 * options:
 	 *   - table
 	 *   - ids
-	 *   - count
 	 *   - csv
-	 *   - json
-	 *   - yaml
+	 *   - count
+	 *   - haml
 	 * ---
 
 	 * ## EXAMPLES
 	 *
-	 *     # List all notifications and output only the IDs.
 	 *     $ wp bp notification list --format=ids
 	 *     15 25 34 37 198
 	 *
-	 *     # List all notifications and output the count.
 	 *     $ wp bp notification list --format=count
 	 *     10
 	 *
-	 *     # List all notifications and output the IDs and user_id.
 	 *     $ wp bp notification list --fields=id,user_id
 	 *     | id     | user_id  |
 	 *     | 66546  | 656      |
@@ -374,11 +312,15 @@ class Notification extends BuddyPressCommand {
 	 *
 	 * @subcommand list
 	 */
-	public function list_( $args, $assoc_args ) {
-		$formatter  = $this->get_formatter( $assoc_args );
-		$query_args = [
-			'update_meta_cache' => false,
-		];
+	public function list_( $args, $assoc_args ) { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
+		$formatter = $this->get_formatter( $assoc_args );
+
+		$query_args = wp_parse_args(
+			$assoc_args,
+			array(
+				'count' => 50,
+			)
+		);
 
 		if ( isset( $assoc_args['user-id'] ) ) {
 			$user                  = $this->get_user_id_from_identifier( $assoc_args['user-id'] );
@@ -393,19 +335,21 @@ class Notification extends BuddyPressCommand {
 			$query_args['component_name'] = $assoc_args['component'];
 		}
 
-		$query_args['page']     = 1;
-		$query_args['per_page'] = (int) $assoc_args['count'];
+		$query_args['per_page'] = $query_args['count'];
 
-		unset( $query_args['count'] );
+		$query_args = self::process_csv_arguments_to_arrays( $query_args );
 
-		$query_args    = self::process_csv_arguments_to_arrays( $query_args );
 		$notifications = \BP_Notifications_Notification::get( $query_args );
 
 		if ( empty( $notifications ) ) {
 			WP_CLI::error( 'No notification items found.' );
 		}
 
-		$formatter->display_items( 'ids' === $formatter->format ? wp_list_pluck( $notifications, 'id' ) : $notifications );
+		if ( 'ids' === $formatter->format ) {
+			echo implode( ' ', wp_list_pluck( $notifications, 'id' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		} else {
+			$formatter->display_items( $notifications );
+		}
 	}
 
 	/**

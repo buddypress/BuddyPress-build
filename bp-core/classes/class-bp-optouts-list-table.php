@@ -52,6 +52,8 @@ class BP_Optouts_List_Table extends WP_Users_List_Table {
 	 * @since 8.0.0
 	 */
 	public function prepare_items() {
+		global $usersearch;
+
 		$search   = isset( $_REQUEST['s'] ) ? $_REQUEST['s'] : '';
 		$per_page = $this->get_items_per_page( str_replace( '-', '_', "{$this->screen->id}_per_page" ) );
 		$paged    = $this->get_pagenum();
@@ -128,12 +130,12 @@ class BP_Optouts_List_Table extends WP_Users_List_Table {
 			 *
 			 * @since 8.0.0
 			 *
-			 * @param string $url_base Current URL base for view.
+			 * @param string $url_base       Current URL base for view.
+			 * @param array  $active_filters Current filters being requested.
 			 */
-			do_action( 'bp_optouts_list_table_get_views', $url_base );
-			?>
+			do_action( 'bp_optouts_list_table_get_views', $url_base, $this->active_filters ); ?>
 		</ul>
-		<?php
+	<?php
 	}
 
 	/**
@@ -146,7 +148,9 @@ class BP_Optouts_List_Table extends WP_Users_List_Table {
 	 *
 	 * @param array $which Current table nav item.
 	 */
-	public function extra_tablenav( $which ) {}
+	public function extra_tablenav( $which ) {
+		return;
+	}
 
 	/**
 	 * Specific opt-out columns.
@@ -222,10 +226,7 @@ class BP_Optouts_List_Table extends WP_Users_List_Table {
 	public function display_rows() {
 		$style = '';
 		foreach ( $this->items as $optout ) {
-			$style = 'alt' === $style ? '' : 'alt';
-
-			// Escapes are made into `self::single_row()`.
-			// phpcs:ignore WordPress.Security.EscapeOutput
+			$style = ( ' class="alternate"' == $style ) ? '' : ' class="alternate"';
 			echo "\n\t" . $this->single_row( $optout, $style );
 		}
 	}
@@ -241,16 +242,10 @@ class BP_Optouts_List_Table extends WP_Users_List_Table {
 	 * @param string    $style    Styles for the row.
 	 * @param string    $role     Role to be assigned to user.
 	 * @param int       $numposts Number of posts.
+	 * @return void
 	 */
 	public function single_row( $optout = null, $style = '', $role = '', $numposts = 0 ) {
-		if ( '' === $style ) {
-			echo '<tr id="optout-' . intval( $optout->id ) . '">';
-		} else {
-			echo '<tr class="alternate" id="optout-' . intval( $optout->id ) . '">';
-		}
-
-		// BuddyPress relies on WordPress's `WP_Users_List_Table::single_row_columns()`.
-		// phpcs:ignore WordPress.Security.EscapeOutput
+		echo '<tr' . $style . ' id="optout-' . intval( $optout->id ) . '">';
 		echo $this->single_row_columns( $optout );
 		echo '</tr>';
 	}
@@ -263,14 +258,14 @@ class BP_Optouts_List_Table extends WP_Users_List_Table {
 	 * @param BP_Optout $optout BP_Optout object.
 	 */
 	public function column_cb( $optout = null ) {
-		?>
+	?>
 		<label class="screen-reader-text" for="optout_<?php echo intval( $optout->id ); ?>">
 			<?php
 				/* translators: %d: accessibility text. */
 				printf( esc_html__( 'Select opt-out request: %d', 'buddypress' ), intval( $optout->id ) );
 			?>
 		</label>
-		<input type="checkbox" id="optout_<?php echo intval( $optout->id ); ?>" name="optout_ids[]" value="<?php echo esc_attr( $optout->id ); ?>" />
+		<input type="checkbox" id="optout_<?php echo intval( $optout->id ) ?>" name="optout_ids[]" value="<?php echo esc_attr( $optout->id ) ?>" />
 		<?php
 	}
 
@@ -279,7 +274,7 @@ class BP_Optouts_List_Table extends WP_Users_List_Table {
 	 *
 	 * @since 8.0.0
 	 *
-	 * @param BP_Optout|null $optout BP_Optout object.
+	 * @param BP_Optout $optout BP_Optout object.
 	 */
 	public function column_email_address( $optout = null ) {
 		echo esc_html( $optout->email_address );
@@ -293,7 +288,7 @@ class BP_Optouts_List_Table extends WP_Users_List_Table {
 		}
 
 		// Delete link.
-		$delete_link       = add_query_arg(
+		$delete_link = add_query_arg(
 			array(
 				'page'      => 'bp-optouts',
 				'optout_id' => $optout->id,
@@ -313,8 +308,6 @@ class BP_Optouts_List_Table extends WP_Users_List_Table {
 		 */
 		$actions = apply_filters( 'bp_optouts_management_row_actions', $actions, $optout );
 
-		// BuddyPress relies on WordPress's `WP_Users_List_Table::row_actions()`.
-		// phpcs:ignore WordPress.Security.EscapeOutput
 		echo $this->row_actions( $actions );
 	}
 
@@ -323,32 +316,16 @@ class BP_Optouts_List_Table extends WP_Users_List_Table {
 	 *
 	 * @since 8.0.0
 	 *
-	 * @param BP_Optout|null $optout BP_Optout object.
+	 * @param BP_Optout $optout BP_Optout object.
 	 */
 	public function column_username( $optout = null ) {
-		$avatar  = get_avatar( $optout->user_id, 32 );
+		$avatar = get_avatar( $optout->user_id, 32 );
 		$inviter = get_user_by( 'id', $optout->user_id );
-
 		if ( ! $inviter ) {
 			return;
 		}
-
-		$user_link = bp_members_get_user_url( $optout->user_id );
-
-		echo wp_kses(
-			$avatar,
-			array(
-				'img' => array(
-					'alt'    => true,
-					'src'    => true,
-					'srcset' => true,
-					'class'  => true,
-					'height' => true,
-					'width'  => true,
-				),
-			)
-		);
-		printf( '<strong><a href="%1$s" class="edit">%2$s</a></strong><br/>', esc_url( $user_link ), esc_html( $inviter->user_login ) );
+		$user_link = bp_core_get_user_domain( $optout->user_id );
+		echo $avatar . sprintf( '<strong><a href="%1$s" class="edit">%2$s</a></strong><br/>', esc_url( $user_link ), esc_html( $inviter->user_login ) );
 	}
 
 	/**
@@ -356,16 +333,14 @@ class BP_Optouts_List_Table extends WP_Users_List_Table {
 	 *
 	 * @since 8.0.0
 	 *
-	 * @param BP_Optout|null $optout BP_Optout object.
+	 * @param BP_Optout $optout BP_Optout object.
 	 */
 	public function column_user_registered( $optout = null ) {
 		$inviter = get_user_by( 'id', $optout->user_id );
-
 		if ( ! $inviter ) {
 			return;
 		}
-
-		echo esc_html( mysql2date( 'Y/m/d g:i:s a', $inviter->user_registered ) );
+		echo esc_html( mysql2date( 'Y/m/d g:i:s a', $inviter->user_registered  ) );
 	}
 
 	/**
@@ -373,7 +348,7 @@ class BP_Optouts_List_Table extends WP_Users_List_Table {
 	 *
 	 * @since 8.0.0
 	 *
-	 * @param BP_Optout|null $optout BP_Optout object.
+	 * @param BP_Optout $optout BP_Optout object.
 	 */
 	public function column_email_type( $optout = null ) {
 		echo esc_html( $optout->email_type );
@@ -384,14 +359,14 @@ class BP_Optouts_List_Table extends WP_Users_List_Table {
 	 *
 	 * @since 8.0.0
 	 *
-	 * @param BP_Optout|null $optout BP_Optout object.
+	 * @param BP_Optout $optout BP_Optout object.
 	 */
 	public function column_email_type_description( $optout = null ) {
 		$type_term = get_term_by( 'slug', $optout->email_type, 'bp-email-type' );
-
 		if ( $type_term ) {
 			echo esc_html( $type_term->description );
 		}
+
 	}
 
 	/**
@@ -399,7 +374,7 @@ class BP_Optouts_List_Table extends WP_Users_List_Table {
 	 *
 	 * @since 8.0.0
 	 *
-	 * @param BP_Optout|null $optout BP_Optout object.
+	 * @param BP_Optout $optout BP_Optout object.
 	 */
 	public function column_optout_date_modified( $optout = null ) {
 		echo esc_html( mysql2date( 'Y/m/d g:i:s a', $optout->date_modified ) );
@@ -410,19 +385,19 @@ class BP_Optouts_List_Table extends WP_Users_List_Table {
 	 *
 	 * @since 8.0.0
 	 *
-	 * @param BP_Optout|null $optout      BP_Optout object.
-	 * @param string         $column_name The column name.
+	 * @param BP_Optout $optout      BP_Optout object.
+	 * @param string    $column_name The column name.
 	 * @return string
 	 */
-	public function column_default( $optout = null, $column_name = '' ) {
+	function column_default( $optout = null, $column_name = '' ) {
 
 		/**
 		 * Filters the single site custom columns for plugins.
 		 *
 		 * @since 8.0.0
 		 *
-		 * @param string         $column_name The column name.
-		 * @param BP_Optout|null $optout      BP_Optout object or null.
+		 * @param string    $column_name The column name.
+		 * @param BP_Optout $optout      BP_Optout object.
 		 */
 		return apply_filters( 'bp_optouts_management_custom_column', '', $column_name, $optout );
 	}

@@ -3,7 +3,7 @@
  * Common template tags
  *
  * @since 3.0.0
- * @version 12.0.0
+ * @version 10.0.0
  */
 
 // Exit if accessed directly.
@@ -161,7 +161,7 @@ function bp_nouveau_has_dismiss_button() {
 }
 
 /**
- * Output the dismiss type.
+ * Ouptut the dismiss type.
  *
  * $type is used to set the data-attr for the button.
  * 'clear' is tested for & used to remove cookies, if set, in buddypress-nouveau.js.
@@ -186,8 +186,6 @@ function bp_nouveau_dismiss_button_type() {
  * @since 3.0.0
  */
 function bp_nouveau_template_message() {
-	// Escaping is made in `bp-core/bp-core-filters.php`.
-	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo bp_nouveau_get_template_message();
 }
 
@@ -199,29 +197,30 @@ function bp_nouveau_template_message() {
 	 * @return string HTML Output.
 	 */
 	function bp_nouveau_get_template_message() {
-		$bp_nouveau       = bp_nouveau();
-		$template_message = '';
-		$type             = '';
+		$bp_nouveau = bp_nouveau();
 
 		if ( ! empty( $bp_nouveau->user_feedback['message'] ) ) {
-			$template_message = $bp_nouveau->user_feedback['message'];
-			$type             = 'updated';
+			$user_feedback = $bp_nouveau->user_feedback['message'];
+
+			// @TODO: why is this treated differently?
+			foreach ( array( 'wp_kses_data', 'wp_unslash', 'wptexturize', 'convert_smilies', 'convert_chars' ) as $filter ) {
+				$user_feedback = call_user_func( $filter, $user_feedback );
+			}
+
+			return '<p>' . $user_feedback . '</p>';
 
 		} elseif ( ! empty( $bp_nouveau->template_message['message'] ) ) {
-			$template_message = $bp_nouveau->template_message['message'];
-			$type             = bp_nouveau_get_template_message_type();
+			/**
+			 * Filters the 'template_notices' feedback message content.
+			 *
+			 * @since 1.5.5
+			 *
+			 * @param string $template_message Feedback message content.
+			 * @param string $type             The type of message being displayed.
+			 *                                 Either 'updated' or 'error'.
+			 */
+			return apply_filters( 'bp_core_render_message_content', $bp_nouveau->template_message['message'], bp_nouveau_get_template_message_type() );
 		}
-
-		/**
-		 * Filters the 'template_notices' feedback message content.
-		 *
-		 * @since 1.5.5
-		 *
-		 * @param string $template_message Feedback message content.
-		 * @param string $type             The type of message being displayed.
-		 *                                 Either 'updated' or 'error'.
-		 */
-		return apply_filters( 'bp_core_render_message_content', $template_message, $type );
 	}
 
 /**
@@ -475,6 +474,11 @@ function bp_nouveau_pagination( $position ) {
 			break;
 	}
 
+	$count_class = sprintf( '%1$s-%2$s-count-%3$s', $pagination_type, $screen, $position );
+	$links_class = sprintf( '%1$s-%2$s-links-%3$s', $pagination_type, $screen, $position );
+	?>
+
+	<?php
 	if ( 'bottom' === $position && isset( $bottom_hook ) ) {
 		/**
 		 * Fires after the component directory list.
@@ -578,7 +582,7 @@ function bp_nouveau_loop_classes() {
 			'blogs'   => true,
 
 			/*
-			 * Technically not a component but allows us to check the single group members loop as a separate loop.
+			 * Technically not a component but allows us to check the single group members loop as a seperate loop.
 			 */
 			'members_group'   => true,
 			'members_friends' => true,
@@ -1017,9 +1021,7 @@ function bp_nouveau_nav_classes() {
  * @since 3.0.0
  */
 function bp_nouveau_nav_scope() {
-	// Escaping is made in `bp_get_form_field_attributes()`.
-	// phpcs:ignore WordPress.Security.EscapeOutput
-	echo bp_nouveau_get_nav_scope();
+	echo bp_nouveau_get_nav_scope();  // Escaped by bp_get_form_field_attributes().
 }
 	/**
 	 * Retrieve the specific scope for the current nav item.
@@ -1034,25 +1036,10 @@ function bp_nouveau_nav_scope() {
 		$scope      = array();
 
 		if ( 'directory' === $bp_nouveau->displayed_nav ) {
-			$scope = array(
-				'data-bp-scope' => $nav_item->slug
-			);
+			$scope = array( 'data-bp-scope' => $nav_item->slug );
 
 		} elseif ( 'personal' === $bp_nouveau->displayed_nav && ! empty( $nav_item->secondary ) ) {
-			$rewrite_id = bp_rewrites_get_custom_slug_rewrite_id( 'members', $nav_item->slug, bp_current_component() );
-			$user_scope = $nav_item->slug;
-
-			if ( $rewrite_id ) {
-				$user_scope = str_replace(
-					array( 'bp_member_' . bp_current_component() . '_', '_' ),
-					array( '', '-' ),
-					$rewrite_id
-				);
-			}
-
-			$scope = array(
-				'data-bp-user-scope' => $nav_item->slug
-			);
+			$scope = array( 'data-bp-user-scope' => $nav_item->slug );
 
 		} else {
 			/**
@@ -1099,8 +1086,10 @@ function bp_nouveau_nav_link() {
 		}
 
 		if ( 'personal' === $bp_nouveau->displayed_nav && ! empty( $nav_item->primary ) ) {
-			if ( bp_loggedin_user_url() ) {
-				$link = str_replace( bp_loggedin_user_url(), bp_displayed_user_url(), $link );
+			if ( bp_loggedin_user_domain() ) {
+				$link = str_replace( bp_loggedin_user_domain(), bp_displayed_user_domain(), $link );
+			} else {
+				$link = trailingslashit( bp_displayed_user_domain() . $link );
 			}
 		}
 
@@ -1516,6 +1505,12 @@ function bp_nouveau_container_classes() {
 
 		// Add classes according to site owners preferences. These are options set via Customizer.
 
+		// These are general site wide Cust options falling outside component checks
+		$general_settings = bp_nouveau_get_temporary_setting( 'avatar_style', bp_nouveau_get_appearance_settings( 'avatar_style' ) );
+		if ( $general_settings ) {
+			$classes[] = 'round-avatars';
+		}
+
 		// Set via earlier switch for component check to provide correct option key.
 		if ( $customizer_option ) {
 			$layout_prefs  = bp_nouveau_get_temporary_setting( $customizer_option, bp_nouveau_get_appearance_settings( $customizer_option ) );
@@ -1575,21 +1570,14 @@ function bp_nouveau_single_item_nav_classes() {
 		$classes    = array( 'main-navs', 'no-ajax', 'bp-navs', 'single-screen-navs' );
 		$component  = bp_current_component();
 		$bp_nouveau = bp_nouveau();
-		$object     = '';
 
 		// @todo wasn't able to get $customizer_option to pass a string to get_settings
 		// this is a temp workaround but differs from earlier dir approach- bad!
 		if ( bp_is_group() ) {
-			$object   = 'group';
 			$nav_tabs = (int) bp_nouveau_get_temporary_setting( 'group_nav_tabs', bp_nouveau_get_appearance_settings( 'group_nav_tabs' ) );
 
 		} elseif ( bp_is_user() ) {
-			$object   = 'member';
 			$nav_tabs = (int) bp_nouveau_get_temporary_setting( 'user_nav_tabs', bp_nouveau_get_appearance_settings( 'user_nav_tabs' ) );
-		}
-
-		if ( $object && bp_nouveau_single_item_supports_priority_nav( $object ) ) {
-			$classes[] = 'bp-priority-nav';
 		}
 
 		if ( bp_is_group() && 1 === $nav_tabs) {
@@ -1657,17 +1645,11 @@ function bp_nouveau_single_item_subnav_classes() {
 
 		// Set user or group class string
 		if ( bp_is_user() ) {
-			$object    = 'member';
 			$classes[] = 'user-subnav';
 		}
 
 		if ( bp_is_group() ) {
-			$object    = 'group';
 			$classes[] = 'group-subnav';
-		}
-
-		if ( $object && bp_nouveau_single_item_supports_priority_nav( $object ) ) {
-			$classes[] = 'bp-priority-nav';
 		}
 
 		if ( ( bp_is_group() && 'send-invites' === bp_current_action() ) || ( bp_is_group_create() && 'group-invites' === bp_get_groups_current_create_step() ) ) {
@@ -1919,46 +1901,10 @@ function bp_nouveau_search_default_text( $text = '', $is_attr = true ) {
  */
 function bp_nouveau_search_form() {
 	$search_form_html = bp_buffer_template_part( 'common/search/search-form', null, false );
-	$allowed_html     = array(
-		'div'    => array(
-			'id'             => true,
-			'class'          => true,
-			'data-bp-search' => true,
-		),
-		'form'   => array(
-			'action' => true,
-			'method' => true,
-			'id'     => true,
-			'class'  => true,
-			'role'   => true,
-		),
-		'label'  => array(
-			'for'   => true,
-			'class' => true,
-		),
-		'input'  => array(
-			'type'        => true,
-			'id'          => true,
-			'name'        => true,
-			'placeholder' => true,
-			'class'       => true,
-		),
-		'button' => array(
-			'type'  => true,
-			'name'  => true,
-			'id'    => true,
-			'class' => true,
-		),
-		'span'   => array(
-			'id'          => true,
-			'class'       => true,
-			'aria-hidden' => true,
-		),
-	);
 
 	$objects = bp_nouveau_get_search_objects();
 	if ( empty( $objects['primary'] ) || empty( $objects['secondary'] ) ) {
-		echo wp_kses( $search_form_html, $allowed_html );
+		echo $search_form_html;
 		return;
 	}
 
@@ -1975,7 +1921,7 @@ function bp_nouveau_search_form() {
 		 *
 		 * @param string $search_form_html The HTML output for the directory search form.
 		 */
-		echo wp_kses( apply_filters( "bp_directory_{$objects['secondary']}_search_form", $search_form_html ), $allowed_html );
+		echo apply_filters( "bp_directory_{$objects['secondary']}_search_form", $search_form_html );
 
 		if ( 'activity' === $objects['secondary'] ) {
 			/**
@@ -2018,7 +1964,7 @@ function bp_nouveau_search_form() {
 			 *
 			 * @param string $search_form_html The HTML output for the directory search form.
 			 */
-			echo wp_kses( apply_filters( "bp_group_{$objects['secondary']}_search_form", $search_form_html ), $allowed_html );
+			echo apply_filters( "bp_group_{$objects['secondary']}_search_form", $search_form_html );
 
 		} else {
 			/**
@@ -2028,7 +1974,7 @@ function bp_nouveau_search_form() {
 			 *
 			 * @param string $search_form_html HTML markup for the member search form.
 			 */
-			echo wp_kses( apply_filters( 'bp_directory_members_search_form', $search_form_html ), $allowed_html );
+			echo apply_filters( 'bp_directory_members_search_form', $search_form_html );
 		}
 
 		if ( 'members' === $objects['secondary'] ) {
@@ -2247,9 +2193,7 @@ function bp_nouveau_filter_component() {
  * @since 3.0.0
  */
 function bp_nouveau_filter_options() {
-	// Escaping is made in `bp_nouveau_get_filter_options()`.
-	// phpcs:ignore WordPress.Security.EscapeOutput
-	echo bp_nouveau_get_filter_options();
+	echo bp_nouveau_get_filter_options();  // Escaped in inner functions.
 }
 
 	/**
@@ -2316,20 +2260,20 @@ function bp_nouveau_get_customizer_link( $args = array() ) {
 	$url = '';
 
 	if ( bp_is_user() ) {
-		$url = rawurlencode( bp_displayed_user_url() );
+		$url = rawurlencode( bp_displayed_user_domain() );
 
 	} elseif ( bp_is_group() ) {
-		$url = rawurlencode( bp_get_group_url( groups_get_current_group() ) );
+		$url = rawurlencode( bp_get_group_permalink( groups_get_current_group() ) );
 
 	} elseif ( ! empty( $r['object'] ) && ! empty( $r['item_id'] ) ) {
 		if ( 'user' === $r['object'] ) {
-			$url = rawurlencode( bp_members_get_user_url( $r['item_id'] ) );
+			$url = rawurlencode( bp_core_get_user_domain( $r['item_id'] ) );
 
 		} elseif ( 'group' === $r['object'] ) {
 			$group = groups_get_group( array( 'group_id' => $r['item_id'] ) );
 
 			if ( ! empty( $group->id ) ) {
-				$url = rawurlencode( bp_get_group_url( $group ) );
+				$url = rawurlencode( bp_get_group_permalink( $group ) );
 			}
 		}
 	}
@@ -2455,7 +2399,7 @@ function bp_nouveau_signup_form( $section = 'account_details' ) {
 				<input type="password" name="signup_password_confirm" id="pass2" class="password-entry-confirm" size="24" value="" <?php bp_form_field_attributes( 'password' ); ?> />
 			</p>
 
-			<p class="description indicator-hint"><?php echo esc_html( wp_get_password_hint() ); ?></p>
+			<p class="description indicator-hint"><?php echo wp_get_password_hint(); ?></p>
 			<?php
 		} else {
 			list( $label, $required, $value, $attribute_type, $type, $class ) = array_values( $attributes );
@@ -2473,10 +2417,8 @@ function bp_nouveau_signup_form( $section = 'account_details' ) {
 			// Output the label for regular fields
 			if ( 'radio' !== $type ) {
 				if ( $required ) {
-					// phpcs:ignore WordPress.Security.EscapeOutput
-					printf( $label_output, esc_attr( $name ), esc_html( $label ), esc_html__( '(required)', 'buddypress' ) );
+					printf( $label_output, esc_attr( $name ), esc_html( $label ), __( '(required)', 'buddypress' ) );
 				} else {
-					// phpcs:ignore WordPress.Security.EscapeOutput
 					printf( $label_output, esc_attr( $name ), esc_html( $label ) );
 				}
 
@@ -2560,35 +2502,31 @@ function bp_nouveau_signup_form( $section = 'account_details' ) {
 				esc_attr( $type ),
 				esc_attr( $name ),
 				esc_attr( $id ),
-				// phpcs:ignore WordPress.Security.EscapeOutput
 				$class,  // Constructed safely above.
 				esc_attr( $value ),
-				// phpcs:ignore WordPress.Security.EscapeOutput
 				$attribute_type // Constructed safely above.
 			);
 
 			// Not a radio, let's output the field
 			if ( 'radio' !== $type ) {
 				if ( 'signup_blog_url' !== $name ) {
-					// phpcs:ignore WordPress.Security.EscapeOutput
 					print( $field_output );  // Constructed safely above.
 
 				// If it's the signup blog url, it's specific to Multisite config.
 				} elseif ( is_subdomain_install() ) {
+					// Constructed safely above.
 					printf(
 						'%1$s %2$s . %3$s',
 						is_ssl() ? 'https://' : 'http://',
-						// phpcs:ignore WordPress.Security.EscapeOutput
-						$field_output, // Constructed safely above.
-						esc_url( bp_signup_get_subdomain_base() )
+						$field_output,
+						bp_signup_get_subdomain_base()
 					);
 
 				// Subfolders!
 				} else {
 					printf(
 						'%1$s %2$s',
-						esc_url( home_url( '/' ) ),
-						// phpcs:ignore WordPress.Security.EscapeOutput
+						home_url( '/' ),
 						$field_output  // Constructed safely above.
 					);
 				}
@@ -2596,7 +2534,6 @@ function bp_nouveau_signup_form( $section = 'account_details' ) {
 			// It's a radio, let's output the field inside the label
 			} else {
 				// $label_output and $field_output are constructed safely above.
-				// phpcs:ignore WordPress.Security.EscapeOutput
 				printf( $label_output, esc_attr( $name ), $field_output . ' ' . esc_html( $label ) );
 			}
 		}
@@ -2671,7 +2608,6 @@ function bp_nouveau_submit_button( $action, $object_id = 0 ) {
 	);
 
 	// Output the submit button.
-	// phpcs:disable WordPress.Security.EscapeOutput
 	if ( isset( $submit_data['wrapper'] ) && false === $submit_data['wrapper'] ) {
 		echo $submit_input;
 
@@ -2679,7 +2615,6 @@ function bp_nouveau_submit_button( $action, $object_id = 0 ) {
 	} else {
 		printf( '<div class="submit">%s</div>', $submit_input );
 	}
-	// phpcs:enable
 
 	$nonce = $submit_data['nonce'];
 	if ( isset( $submit_data['nonce_placeholder_value'] ) ) {
@@ -2765,32 +2700,32 @@ function bp_nouveau_is_feed_enable() {
 				$retval = bp_activity_is_feed_enable( 'personal' );
 
 				if ( $retval ) {
-					$bp_nouveau->activity->current_rss_feed['link'] = bp_displayed_user_url( bp_members_get_path_chunks( array( bp_nouveau_get_component_slug( 'activity' ), 'feed' ) ) );
+					$bp_nouveau->activity->current_rss_feed['link'] = trailingslashit( bp_displayed_user_domain() . bp_nouveau_get_component_slug( 'activity' ) . '/feed' );
 				}
 
 				if ( bp_is_active( 'friends' ) && bp_is_current_action( bp_nouveau_get_component_slug( 'friends' ) ) ) {
 					$retval = bp_activity_is_feed_enable( 'friends' );
 
 					if ( $retval ) {
-						$bp_nouveau->activity->current_rss_feed['link'] = bp_displayed_user_url( bp_members_get_path_chunks( array( bp_nouveau_get_component_slug( 'activity' ), bp_nouveau_get_component_slug( 'friends' ), 'feed' ) ) );
+						$bp_nouveau->activity->current_rss_feed['link'] = trailingslashit( bp_displayed_user_domain() . bp_nouveau_get_component_slug( 'activity' ) . '/' . bp_nouveau_get_component_slug( 'friends' ) . '/feed' );
 					}
 				} elseif ( bp_is_active( 'groups' ) && bp_is_current_action( bp_nouveau_get_component_slug( 'groups' ) ) ) {
 					$retval = bp_activity_is_feed_enable( 'mygroups' );
 
 					if ( $retval ) {
-						$bp_nouveau->activity->current_rss_feed['link'] = bp_displayed_user_url( bp_members_get_path_chunks( array( bp_nouveau_get_component_slug( 'activity' ), bp_nouveau_get_component_slug( 'groups' ), 'feed' ) ) );
+						$bp_nouveau->activity->current_rss_feed['link'] = trailingslashit( bp_displayed_user_domain() . bp_nouveau_get_component_slug( 'activity' ) . '/' . bp_nouveau_get_component_slug( 'groups' ) . '/feed' );
 					}
 				} elseif ( bp_activity_do_mentions() && bp_is_current_action( 'mentions' ) ) {
 					$retval = bp_activity_is_feed_enable( 'mentions' );
 
 					if ( $retval ) {
-						$bp_nouveau->activity->current_rss_feed['link'] = bp_displayed_user_url( bp_members_get_path_chunks( array( bp_nouveau_get_component_slug( 'activity' ), 'mentions', 'feed' ) ) );
+						$bp_nouveau->activity->current_rss_feed['link'] = trailingslashit( bp_displayed_user_domain() . bp_nouveau_get_component_slug( 'activity' ) . '/mentions/feed' );
 					}
 				} elseif ( bp_activity_can_favorite() && bp_is_current_action( 'favorites' ) ) {
 					$retval = bp_activity_is_feed_enable( 'mentions' );
 
 					if ( $retval ) {
-						$bp_nouveau->activity->current_rss_feed['link'] = bp_displayed_user_url( bp_members_get_path_chunks( array( bp_nouveau_get_component_slug( 'activity' ), 'favorites', 'feed' ) ) );
+						$bp_nouveau->activity->current_rss_feed['link'] = trailingslashit( bp_displayed_user_domain() . bp_nouveau_get_component_slug( 'activity' ) . '/favorites/feed' );
 					}
 				}
 			}
@@ -2798,54 +2733,4 @@ function bp_nouveau_is_feed_enable() {
 	}
 
 	return $retval;
-}
-
-/**
- * Displays an ellipsis to show hidden primary nav items.
- *
- * @since 12.0.0
- */
-function bp_nouveau_hidden_primary_nav() {
-	$object = bp_nouveau_get_current_priority_nav_object();
-
-	if ( ! $object || ! bp_nouveau_single_item_supports_priority_nav( $object ) ) {
-		return '';
-	}
-?>
-	<div class="primary-nav-more">
-		<ul class="bp-priority-object-nav-nav-items">
-			<li class="primary-nav-item primary-nav-item-has-children">
-				<button class="submenu-expand bp-priority-nav-more-toggle is-empty" tabindex="-1" aria-label="<?php esc_attr_e( 'More', 'buddypress' ); ?>" aria-haspopup="true" aria-expanded="false">
-					<span class="dashicons dashicons-ellipsis"></span>
-				</button>
-				<ul class="sub-menu hidden-items"></ul>
-			</li>
-		</ul>
-	</div>
-<?php
-}
-
-/**
- * Displays an ellipsis to show hidden secondary nav items.
- *
- * @since 12.0.0
- */
-function bp_nouveau_hidden_secondary_nav() {
-	$object = bp_nouveau_get_current_priority_nav_object();
-
-	if ( ! $object || ! bp_nouveau_single_item_supports_priority_nav( $object ) ) {
-		return '';
-	}
-?>
-	<div class="secondary-nav-more">
-		<ul class="bp-priority-subnav-nav-items">
-			<li class="secondary-nav-item secondary-nav-item-has-children">
-				<button class="submenu-expand bp-priority-nav-more-toggle is-empty" tabindex="-1" aria-label="<?php esc_attr_e( 'More', 'buddypress' ); ?>" aria-haspopup="true" aria-expanded="false">
-					<span class="dashicons dashicons-ellipsis"></span>
-				</button>
-				<ul class="sub-menu hidden-items"></ul>
-			</li>
-		</ul>
-	</div>
-<?php
 }

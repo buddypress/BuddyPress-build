@@ -1,6 +1,6 @@
 <?php
 /**
- * BuddyPress Membership Invitations
+ * BuddyPress Membersip Invitations
  *
  * @package BuddyPress
  * @subpackage MembersInvitations
@@ -9,6 +9,60 @@
 
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
+
+/**
+ * Set up the displayed user's Members Invitations nav.
+ *
+ * @since 8.0.0
+ */
+function bp_members_invitations_setup_nav() {
+	if ( ! bp_get_members_invitations_allowed() ) {
+		return;
+	}
+
+	$user_has_access     = bp_user_has_access();
+	$default_subnav_slug = ( bp_is_my_profile() && bp_user_can( bp_displayed_user_id(), 'bp_members_invitations_view_send_screen' ) ) ? 'send-invites' : 'list-invites';
+
+	/* Add 'Invitations' to the main user profile navigation */
+	bp_core_new_nav_item(
+		array(
+			'name'                    => __( 'Invitations', 'buddypress' ),
+			'slug'                    => bp_get_members_invitations_slug(),
+			'position'                => 80,
+			'screen_function'         => 'members_screen_send_invites',
+			'default_subnav_slug'     => $default_subnav_slug,
+			'show_for_displayed_user' => $user_has_access && bp_user_can( bp_displayed_user_id(), 'bp_members_invitations_view_screens' )
+		)
+	);
+
+	$parent_link = trailingslashit( bp_displayed_user_domain() . bp_get_members_invitations_slug() );
+
+	/* Create two subnav items for community invitations */
+	bp_core_new_subnav_item(
+		array(
+			'name'            => __( 'Send Invites', 'buddypress' ),
+			'slug'            => 'send-invites',
+			'parent_slug'     => bp_get_members_invitations_slug(),
+			'parent_url'      => $parent_link,
+			'screen_function' => 'members_screen_send_invites',
+			'position'        => 10,
+			'user_has_access' => $user_has_access && bp_is_my_profile() && bp_user_can( bp_displayed_user_id(), 'bp_members_invitations_view_send_screen' )
+		)
+	);
+
+	bp_core_new_subnav_item(
+		array(
+			'name'            => __( 'Pending Invites', 'buddypress' ),
+			'slug'            => 'list-invites',
+			'parent_slug'     => bp_get_members_invitations_slug(),
+			'parent_url'      => $parent_link,
+			'screen_function' => 'members_screen_list_sent_invites',
+			'position'        => 20,
+			'user_has_access' => $user_has_access && bp_user_can( bp_displayed_user_id(), 'bp_members_invitations_view_screens' )
+		)
+	);
+}
+add_action( 'bp_setup_nav', 'bp_members_invitations_setup_nav' );
 
 /**
  * When a user joins the network via an invitation, skip sending the activation email.
@@ -43,8 +97,13 @@ add_filter( 'bp_core_signup_send_activation_key', 'bp_members_invitations_cancel
  * - activate the user upon signup
  *
  * @since 8.0.0
+ *
+ * @global BuddyPress $bp The one true BuddyPress instance.
+ *
+ * @param bool|WP_Error $user_id True on success, WP_Error on failure.
  */
-function bp_members_invitations_complete_signup() {
+function bp_members_invitations_complete_signup( $user_id ) {
+	$bp = buddypress();
 
 	// Check to see if this signup is the result of a valid invitation.
 	$invite = bp_get_members_invitation_from_request();
@@ -77,7 +136,6 @@ function bp_members_invitations_complete_signup() {
 		$args          = array(
 			'id' => $invite->id,
 		);
-
 		$invites_class->accept_invitation( $args );
 
 		// If there were errors, add a message and redirect.
@@ -128,7 +186,7 @@ function bp_members_invitations_delete_optedout_invites( $optout ) {
 add_action( 'bp_optout_after_save', 'bp_members_invitations_delete_optedout_invites' );
 
 /**
- * If a user submits a site membership request, but there's already a
+ * If a user submits a site membership request, but there's a
  * sent invitation to her, bypass the manual approval of the request.
  *
  * @since 10.0.0
@@ -156,42 +214,12 @@ function bp_members_invitations_maybe_bypass_request_approval( $send, $details )
 		)
 	);
 
-	// If pending invitations exist, but we're not currently accepting an invite, send the verification mail.
+	// If pending invitations exist, send the verification mail.
 	if ( $invites ) {
-		// Is the current request actually a response to an invitation?
-		$maybe_inv = bp_get_members_invitation_from_request();
-
-		// Not currently accepting a request.
-		if ( ! $maybe_inv->id ) {
-			$send = true;
-		}
+		$send = true;
 	}
 
 	return $send;
 }
 add_filter( 'bp_members_membership_requests_bypass_manual_approval', 'bp_members_invitations_maybe_bypass_request_approval', 10, 2 );
 add_filter( 'bp_members_membership_requests_bypass_manual_approval_multisite', 'bp_members_invitations_maybe_bypass_request_approval', 10, 2 );
-
-/**
- * Whether a user can access invitations screens.
- * Referred to by BP_Members_Invitations_Component::register_nav().
- *
- * @since 12.0.0
- *
- * @return bool Whether the user can view member invitations screens.
- */
-function bp_members_invitations_user_can_view_screens() {
-	return bp_user_has_access() && bp_user_can( bp_displayed_user_id(), 'bp_members_invitations_view_screens' );
-}
-
-/**
- * Whether a user can access the send invitations member screen.
- * Referred to by BP_Members_Invitations_Component::register_nav().
- *
- * @since 12.0.0
- *
- * @return bool Whether the user can view member invitations send screen.
- */
-function bp_members_invitations_user_can_view_send_screen() {
-	return bp_is_my_profile() && bp_user_can( bp_displayed_user_id(), 'bp_members_invitations_view_send_screen' );
-}

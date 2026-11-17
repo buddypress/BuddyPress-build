@@ -14,9 +14,8 @@
  */
 function groups_screen_group_admin_edit_details() {
 
-	if ( 'edit-details' !== bp_get_group_current_admin_tab() ) {
-		return;
-	}
+	if ( 'edit-details' != bp_get_group_current_admin_tab() )
+		return false;
 
 	if ( bp_is_item_admin() ) {
 
@@ -25,9 +24,8 @@ function groups_screen_group_admin_edit_details() {
 		// If the edit form has been submitted, save the edited details.
 		if ( isset( $_POST['save'] ) ) {
 			// Check the nonce.
-			if ( ! check_admin_referer( 'groups_edit_group_details' ) ) {
-				return;
-			}
+			if ( !check_admin_referer( 'groups_edit_group_details' ) )
+				return false;
 
 			$group_notify_members = isset( $_POST['group-notify-members'] ) ? (int) $_POST['group-notify-members'] : 0;
 
@@ -55,12 +53,7 @@ function groups_screen_group_admin_edit_details() {
 			 */
 			do_action( 'groups_group_details_edited', $bp->groups->current_group->id );
 
-			$redirect = bp_get_group_manage_url(
-				groups_get_current_group(),
-				bp_groups_get_path_chunks( array( 'edit-details' ), 'manage' )
-			);
-
-			bp_core_redirect( $redirect );
+			bp_core_redirect( bp_get_group_permalink( groups_get_current_group() ) . 'admin/edit-details/' );
 		}
 
 		/**
@@ -72,19 +65,14 @@ function groups_screen_group_admin_edit_details() {
 		 */
 		do_action( 'groups_screen_group_admin_edit_details', $bp->groups->current_group->id );
 
-		$templates = array(
-			/**
-			 * Filters the template to load for a group's admin/edit-details page.
-			 *
-			 * @since 1.0.0
-			 *
-			 * @param string $value Path to a group's admin/edit-details template.
-			 */
-			apply_filters( 'groups_template_group_admin', 'groups/single/home' ),
-			'groups/single/index',
-		);
-
-		bp_core_load_template( $templates );
+		/**
+		 * Filters the template to load for a group's admin/edit-details page.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param string $value Path to a group's admin/edit-details template.
+		 */
+		bp_core_load_template( apply_filters( 'groups_template_group_admin', 'groups/single/home' ) );
 	}
 }
 add_action( 'bp_screens', 'groups_screen_group_admin_edit_details' );

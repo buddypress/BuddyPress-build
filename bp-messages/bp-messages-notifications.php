@@ -26,7 +26,8 @@ defined( 'ABSPATH' ) || exit;
 function messages_format_notifications( $action, $item_id, $secondary_item_id, $total_items, $format = 'string' ) {
 	$total_items = (int) $total_items;
 	$text        = '';
-	$link        = bp_loggedin_user_url( bp_members_get_path_chunks( array( bp_get_messages_slug(), 'inbox' ) ) );
+	$link        = trailingslashit( bp_loggedin_user_domain() . bp_get_messages_slug() . '/inbox' );
+	$title       = __( 'Inbox', 'buddypress' );
 	$amount      = 'single';
 
 	if ( 'new_message' === $action ) {
@@ -215,7 +216,7 @@ add_action( 'messages_message_sent', 'bp_messages_message_sent_add_notification'
  *
  * @since 1.9.0
  *
- * @global BP_Messages_Thread_Template $thread_template Message Thread Template Class.
+ * @global BP_Messages_Thread_Template $thread_template
  */
 function bp_messages_screen_conversation_mark_notifications() {
 	global $thread_template;
@@ -260,7 +261,7 @@ add_action( 'thread_loop_start', 'bp_messages_screen_conversation_mark_notificat
  * @param int $thread_id ID of the thread being marked as read.
  * @param int $user_id   ID of the user who read the thread.
  * @param int $num_rows  The number of affected rows by the "mark read" update query.
- * @return bool False otherwise.
+ * @return bool True on success. False otherwise.
  */
 function bp_messages_mark_notification_on_mark_thread( $thread_id, $user_id = 0, $num_rows = 0 ) {
 	$unread_messages = array();

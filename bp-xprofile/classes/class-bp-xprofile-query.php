@@ -341,8 +341,6 @@ class BP_XProfile_Query {
 	 *
 	 * @since 2.2.0
 	 *
-	 * @global wpdb $wpdb WordPress database object.
-	 *
 	 * @param array $clause       Query clause.
 	 * @param array $parent_query Parent query array.
 	 * @return array {
@@ -372,7 +370,7 @@ class BP_XProfile_Query {
 			'IN', 'NOT IN',
 			'BETWEEN', 'NOT BETWEEN',
 			'EXISTS', 'NOT EXISTS',
-			'REGEXP', 'NOT REGEXP', 'RLIKE',
+			'REGEXP', 'NOT REGEXP', 'RLIKE'
 		) ) ) {
 			$clause['compare'] = '=';
 		}

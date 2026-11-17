@@ -3,7 +3,7 @@
  * Customizer controls
  *
  * @since 3.0.0
- * @version 12.0.0
+ * @version 3.1.0
  */
 
 // Exit if accessed directly.
@@ -31,6 +31,7 @@ class BP_Nouveau_Nav_Customize_Control extends WP_Customize_Control {
 	 */
 	public function render_content() {
 		$id       = 'customize-control-' . str_replace( '[', '-', str_replace( ']', '', $this->id ) );
+		$class    = 'customize-control customize-control-' . $this->type;
 		$setting  = "bp_nouveau_appearance[{$this->type}_nav_order]";
 		$item_nav = array();
 
@@ -60,7 +61,8 @@ class BP_Nouveau_Nav_Customize_Control extends WP_Customize_Control {
 		// It's a user!
 		} else {
 			$item_nav = bp_nouveau_member_customizer_nav();
-			$guide    = __( 'Drag each possible member navigation items that are listed below into the order you prefer.', 'buddypress' );
+
+			$guide = __( 'Drag each possible member navigation items that are listed below into the order you prefer.', 'buddypress' );
 		}
 		?>
 
@@ -73,7 +75,11 @@ class BP_Nouveau_Nav_Customize_Control extends WP_Customize_Control {
 		<?php if ( ! empty( $item_nav ) ) : ?>
 			<ul id="<?php echo esc_attr( $id ); ?>" class="ui-sortable" style="margin-top: 0px; height: 500px;" data-bp-type="<?php echo esc_attr( $this->type ); ?>">
 
-				<?php foreach ( $item_nav as $item ) : ?>
+				<?php
+				$i = 0;
+				foreach ( $item_nav as $item ) :
+					$i += 1;
+				?>
 					<li data-bp-nav="<?php echo esc_attr( $item->slug ); ?>">
 						<div class="menu-item-bar">
 							<div class="menu-item-handle ui-sortable-handle">

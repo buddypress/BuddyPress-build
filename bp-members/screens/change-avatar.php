@@ -15,7 +15,7 @@
 function bp_members_screen_change_avatar() {
 	// Bail if not the correct screen.
 	if ( ! bp_is_my_profile() && ! bp_current_user_can( 'bp_moderate' ) ) {
-		return;
+		return false;
 	}
 
 	// Bail if there are action variables.
@@ -32,7 +32,7 @@ function bp_members_screen_change_avatar() {
 
 	$bp->avatar_admin->step = 'upload-image';
 
-	if ( ! empty( $_FILES ) ) {
+	if ( !empty( $_FILES ) ) {
 
 		// Check the nonce.
 		check_admin_referer( 'bp_avatar_upload' );
@@ -85,7 +85,7 @@ function bp_members_screen_change_avatar() {
 			do_action( 'bp_members_avatar_uploaded', (int) $args['item_id'], 'crop', $args, $cropped_avatar );
 
 			bp_core_add_message( __( 'Your new profile photo was uploaded successfully.', 'buddypress' ) );
-			bp_core_redirect( bp_displayed_user_url() );
+			bp_core_redirect( bp_displayed_user_domain() );
 		}
 	}
 
@@ -99,18 +99,15 @@ function bp_members_screen_change_avatar() {
 	 */
 	do_action( 'bp_members_screen_change_avatar' );
 
-	$templates = array(
-		/** This filter is documented in wp-includes/deprecated.php */
-		apply_filters_deprecated( 'xprofile_template_change_avatar', array( 'members/single/home' ), '6.0.0', 'bp_members_template_change_avatar' ),
-		'members/single/index'
-	);
+	/** This filter is documented in wp-includes/deprecated.php */
+	$template = apply_filters_deprecated( 'xprofile_template_change_avatar', array( 'members/single/home' ), '6.0.0', 'bp_members_template_change_avatar' );
 
 	/**
 	 * Filters the template to load for the Member Change Avatar page screen.
 	 *
 	 * @since 6.0.0
 	 *
-	 * @param string[] $templates Path to the Member templates to load.
+	 * @param string $template Path to the Member template to load.
 	 */
-	bp_core_load_template( apply_filters( 'bp_members_template_change_avatar', $templates ) );
+	bp_core_load_template( apply_filters( 'bp_members_template_change_avatar', $template ) );
 }

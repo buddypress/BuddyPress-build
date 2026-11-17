@@ -15,8 +15,6 @@ defined( 'ABSPATH' ) || exit;
  * @since 3.0.0
  */
 function bp_nouveau_notifications_filters() {
-	// Escaping is made in `bp_nouveau_get_notifications_filters()`.
-	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo bp_nouveau_get_notifications_filters();
 }
 

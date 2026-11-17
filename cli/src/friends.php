@@ -24,13 +24,13 @@ class Friends extends BuddyPressCommand {
 	 *
 	 * @var array
 	 */
-	protected $obj_fields = [
+	protected $obj_fields = array(
 		'id',
 		'initiator_user_id',
 		'friend_user_id',
 		'is_confirmed',
 		'is_limited',
-	];
+	);
 
 	/**
 	 * Dependency check for this CLI command.
@@ -65,11 +65,9 @@ class Friends extends BuddyPressCommand {
 	 *
 	 * ## EXAMPLES
 	 *
-	 *     # Create a new friendship.
 	 *     $ wp bp friend create user1 another_use
 	 *     Success: Friendship successfully created.
 	 *
-	 *     # Create a new friendship, forcing acceptance.
 	 *     $ wp bp friend create user1 another_use --force-accept
 	 *     Success: Friendship successfully created.
 	 *
@@ -89,7 +87,7 @@ class Friends extends BuddyPressCommand {
 			WP_CLI::error( 'These users are already friends.' );
 		}
 
-		$force = (bool) WP_CLI\Utils\get_flag_value( $assoc_args, 'force-accept' );
+		$force = WP_CLI\Utils\get_flag_value( $assoc_args, 'force-accept' );
 
 		if ( ! friends_add_friend( $initiator->ID, $friend->ID, $force ) ) {
 			WP_CLI::error( 'There was a problem while creating the friendship.' );
@@ -97,10 +95,12 @@ class Friends extends BuddyPressCommand {
 
 		if ( WP_CLI\Utils\get_flag_value( $assoc_args, 'porcelain' ) ) {
 			WP_CLI::log( \BP_Friends_Friendship::get_friendship_id( $initiator->ID, $friend->ID ) );
-		} elseif ( $force ) {
-			WP_CLI::success( 'Friendship successfully created.' );
 		} else {
-			WP_CLI::success( 'Friendship successfully created but not accepted.' );
+			if ( $force ) {
+				WP_CLI::success( 'Friendship successfully created.' );
+			} else {
+				WP_CLI::success( 'Friendship successfully created but not accepted.' );
+			}
 		}
 	}
 
@@ -117,14 +117,12 @@ class Friends extends BuddyPressCommand {
 	 *
 	 * ## EXAMPLE
 	 *
-	 *     # Remove a friendship.
-	 *     $ wp bp friend remove user_1 user_2
+	 *     $ wp bp friend remove user1 another_user
 	 *     Success: Friendship successfully removed.
 	 *
-	 * @alias remove
-	 * @alias trash
+	 * @alias delete
 	 */
-	public function delete( $args ) {
+	public function remove( $args ) {
 		$initiator = $this->get_user_id_from_identifier( $args[0] );
 		$friend    = $this->get_user_id_from_identifier( $args[1] );
 
@@ -159,17 +157,13 @@ class Friends extends BuddyPressCommand {
 	 * @alias accept-invitation
 	 */
 	public function accept( $args, $assoc_args ) {
-		parent::_update(
-			wp_parse_id_list( $args ),
-			$assoc_args,
-			function ( $friendship_id ) {
-				if ( friends_accept_friendship( $friendship_id ) ) {
-					return [ 'success', 'Friendship successfully accepted.' ];
-				}
-
-				return [ 'error', 'There was a problem accepting the friendship.' ];
+		parent::_update( $args, $assoc_args, function( $friendship_id ) {
+			if ( friends_accept_friendship( (int) $friendship_id ) ) {
+				return array( 'success', 'Friendship successfully accepted.' );
+			} else {
+				return array( 'error', 'There was a problem accepting the friendship.' );
 			}
-		);
+		} );
 	}
 
 	/**
@@ -191,17 +185,13 @@ class Friends extends BuddyPressCommand {
 	 * @alias reject-invitation
 	 */
 	public function reject( $args, $assoc_args ) {
-		parent::_update(
-			wp_parse_id_list( $args ),
-			$assoc_args,
-			function ( $friendship_id ) {
-				if ( friends_reject_friendship( $friendship_id ) ) {
-					return [ 'success', 'Friendship successfully rejected.' ];
-				}
-
-				return [ 'error', 'There was a problem rejecting the friendship.' ];
+		parent::_update( $args, $assoc_args, function( $friendship_id ) {
+			if ( friends_reject_friendship( (int) $friendship_id ) ) {
+				return array( 'success', 'Friendship successfully rejected.' );
+			} else {
+				return array( 'error', 'There was a problem rejecting the friendship.' );
 			}
-		);
+		} );
 	}
 
 	/**
@@ -247,12 +237,6 @@ class Friends extends BuddyPressCommand {
 	 * [--fields=<fields>]
 	 * : Fields to display.
 	 *
-	 * [--count=<number>]
-	 * : How many user's friends to list.
-	 * ---
-	 * default: 50
-	 * ---
-	 *
 	 * [--format=<format>]
 	 * : Render output in a particular format.
 	 * ---
@@ -260,40 +244,34 @@ class Friends extends BuddyPressCommand {
 	 * options:
 	 *   - table
 	 *   - ids
-	 *   - count
 	 *   - csv
-	 *   - json
-	 *   - yaml
+	 *   - count
+	 *   - haml
 	 * ---
 	 *
 	 * ## EXAMPLES
 	 *
-	 *     # List a user's friends and get the count.
-	 *     $ wp bp friend list 65465 --format=count
-	 *     100
-	 *
-	 *     # List a user's friends and get the IDs.
-	 *     $ wp bp friend list 2422 --format=ids
-	 *     70 71 72 73 74
+	 *     $ wp bp friend list 65465 --format=ids
+	 *     $ wp bp friend list 2422 --format=count
 	 *
 	 * @subcommand list
 	 */
-	public function list_( $args, $assoc_args ) {
+	public function list_( $args, $assoc_args ) { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
 		$formatter = $this->get_formatter( $assoc_args );
 		$user      = $this->get_user_id_from_identifier( $args[0] );
-		$friends   = \BP_Friends_Friendship::get_friendships(
-			$user->ID,
-			[
-				'page'     => 1,
-				'per_page' => $assoc_args['count'],
-			]
-		);
+		$friends   = \BP_Friends_Friendship::get_friendships( $user->ID );
 
 		if ( empty( $friends ) ) {
 			WP_CLI::error( 'This member has no friends.' );
 		}
 
-		$formatter->display_items( 'ids' === $formatter->format ? wp_list_pluck( $friends, 'friend_user_id' ) : $friends );
+		if ( 'ids' === $formatter->format ) {
+			echo implode( ' ', wp_list_pluck( $friends, 'friend_user_id' ) );
+		} elseif ( 'count' === $formatter->format ) {
+			$formatter->display_items( $friends );
+		} else {
+			$formatter->display_items( $friends );
+		}
 	}
 
 	/**
@@ -301,77 +279,56 @@ class Friends extends BuddyPressCommand {
 	 *
 	 * ## OPTIONS
 	 *
-	 * [--initiator=<user>]
-	 * : ID of the first user. Accepts either a user_login or a numeric ID.
-	 *
-	 * [--friend=<user>]
-	 * : ID of the second user. Accepts either a user_login or a numeric ID.
-	 *
 	 * [--count=<number>]
 	 * : How many friendships to generate.
 	 * ---
 	 * default: 100
 	 * ---
 	 *
-	 * [--format=<format>]
-	 * : Render output in a particular format.
-	 * ---
-	 * default: progress
-	 * options:
-	 *   - progress
-	 *   - ids
-	 * ---
+	 * [--initiator=<user>]
+	 * : ID of the first user. Accepts either a user_login or a numeric ID.
+	 *
+	 * [--friend=<user>]
+	 * : ID of the second user. Accepts either a user_login or a numeric ID.
+	 *
+	 * [--force-accept]
+	 * : Whether to force acceptance.
 	 *
 	 * ## EXAMPLES
 	 *
-	 *     # Generate 50 random friendships.
 	 *     $ wp bp friend generate --count=50
-	 *     Generating friendships  100% [======================] 0:00 / 0:00
-	 *
-	 *     # Generate 50 friendships with a specific user.
 	 *     $ wp bp friend generate --initiator=121 --count=50
-	 *     Generating friendships  100% [======================] 0:00 / 0:00
-	 *
-	 *     # Generate 5 random friendships and output only the IDs.
-	 *     $ wp bp friend generate --count=5 --format=ids
-	 *     70 71 72 73 74
 	 */
 	public function generate( $args, $assoc_args ) {
-		$member_id = null;
-		$friend_id = null;
+		$notify = WP_CLI\Utils\make_progress_bar( 'Generating friendships', $assoc_args['count'] );
 
-		if ( isset( $assoc_args['initiator'] ) ) {
-			$user      = $this->get_user_id_from_identifier( $assoc_args['initiator'] );
-			$member_id = $user->ID;
-		}
+		for ( $i = 0; $i < $assoc_args['count']; $i++ ) {
 
-		if ( isset( $assoc_args['friend'] ) ) {
-			$user_2    = $this->get_user_id_from_identifier( $assoc_args['friend'] );
-			$friend_id = $user_2->ID;
-		}
-
-		$this->generate_callback(
-			'Generating friendships',
-			$assoc_args,
-			function ( $assoc_args, $format ) use ( $member_id, $friend_id ) {
-				if ( ! $member_id ) {
-					$member_id = $this->get_random_user_id();
-				}
-
-				if ( ! $friend_id ) {
-					$friend_id = $this->get_random_user_id();
-				}
-
-				$params = [ 'force-accept' => true ];
-
-				if ( 'ids' === $format ) {
-					$params['porcelain'] = true;
-				} else {
-					$params['silent'] = true;
-				}
-
-				return $this->create( [ $member_id, $friend_id ], $params );
+			if ( isset( $assoc_args['initiator'] ) ) {
+				$user   = $this->get_user_id_from_identifier( $assoc_args['initiator'] );
+				$member = $user->ID;
+			} else {
+				$member = $this->get_random_user_id();
 			}
-		);
+
+			if ( isset( $assoc_args['friend'] ) ) {
+				$user_2 = $this->get_user_id_from_identifier( $assoc_args['friend'] );
+				$friend = $user_2->ID;
+			} else {
+				$friend = $this->get_random_user_id();
+			}
+
+			$this->create(
+				array( $member, $friend ),
+				array(
+					'silent',
+					'force-accept',
+				)
+			);
+
+			$notify->tick();
+		}
+
+		$notify->finish();
 	}
 }

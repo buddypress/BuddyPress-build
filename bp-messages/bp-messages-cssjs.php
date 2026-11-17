@@ -64,7 +64,7 @@ function messages_autocomplete_init_jsblock() {
 		jQuery(document).ready(function() {
 			var acfb = jQuery("ul.first").autoCompletefb({urlLookup: ajaxurl});
 
-			jQuery('#send_message_form').submit( function () {
+			jQuery('#send_message_form').submit( function() {
 				var users = document.getElementById('send-to-usernames').className;
 				document.getElementById('send-to-usernames').value = String(users);
 			});
@@ -84,7 +84,7 @@ function messages_autocomplete_init_jsblock() {
  */
 function bp_messages_register_scripts( $scripts = array() ) {
 	$scripts['bp-sitewide-notices-script'] = array(
-		'file'         => plugins_url( 'blocks/close-notices-block/index.js', __FILE__ ),
+		'file'         => plugins_url( 'js/sitewide-notices.js', __FILE__ ),
 		'dependencies' => array(),
 		'footer'       => true,
 	);

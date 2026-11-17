@@ -1,21 +1,20 @@
 <?php
 /**
- * Represents an email that will be sent to member(s).
+ * Core component classes.
  *
  * @package BuddyPress
  * @subpackage Core
  */
 
-// Exit if accessed directly.
+// Exit if accessed directly
 defined( 'ABSPATH' ) || exit;
 
 /**
- * BP_Email class.
+ * Represents an email that will be sent to member(s).
  *
  * @since 2.5.0
  */
 class BP_Email {
-
 	/**
 	 * Addressee details (BCC).
 	 *
@@ -66,7 +65,7 @@ class BP_Email {
 	 *
 	 * @since 2.5.0
 	 *
-	 * @var BP_Email_Sender
+	 * @var BP_Email_Sender Sender details.
 	 */
 	protected $from = null;
 
@@ -82,11 +81,9 @@ class BP_Email {
 	/**
 	 * Email headers.
 	 *
-	 * Associative pairing of email header name/value.
-	 *
 	 * @since 2.5.0
 	 *
-	 * @var string[]
+	 * @var string[] Associative pairing of email header name/value.
 	 */
 	protected $headers = array();
 
@@ -95,7 +92,7 @@ class BP_Email {
 	 *
 	 * @since 2.5.0
 	 *
-	 * @var WP_Post|null
+	 * @var WP_Post
 	 */
 	protected $post_object = null;
 
@@ -104,7 +101,7 @@ class BP_Email {
 	 *
 	 * @since 2.5.0
 	 *
-	 * @var BP_Email_Sender|null
+	 * @var BP_Email_Sender "Reply to" details.
 	 */
 	protected $reply_to = null;
 
@@ -148,11 +145,9 @@ class BP_Email {
 	/**
 	 * Token names and replacement values for this email.
 	 *
-	 * Associative pairing of token name (key) and replacement value (value).
-	 *
 	 * @since 2.5.0
 	 *
-	 * @var string[]
+	 * @var string[] Associative pairing of token name (key) and replacement value (value).
 	 */
 	protected $tokens = array();
 
@@ -174,6 +169,7 @@ class BP_Email {
 			if ( substr( $domain, 0, 4 ) === 'www.' ) {
 				$domain = substr( $domain, 4 );
 			}
+
 		} elseif ( function_exists( 'gethostname' ) && gethostname() !== false ) {
 			$domain = gethostname();
 
@@ -197,9 +193,6 @@ class BP_Email {
 		$this->set_from( $from_address, $from_name );
 		$this->set_reply_to( bp_get_option( 'admin_email' ), $from_name );
 
-		// Prefer HTML emails unless filtered to plaintext.
-		$this->set_content_type( $this->content_type );
-
 		/**
 		 * Fires inside __construct() method for BP_Email class.
 		 *
@@ -210,6 +203,7 @@ class BP_Email {
 		 */
 		do_action( 'bp_email', $email_type, $this );
 	}
+
 
 	/*
 	 * Setters/getters.
@@ -233,7 +227,7 @@ class BP_Email {
 		if ( $property_name === 'content' ) {
 			$property_name = 'content_' . $this->get_content_type();
 
-			if ( ! in_array( $property_name, array( 'content_html', 'content_plaintext' ), true ) ) {
+			if ( ! in_array( $property_name, array( 'content_html', 'content_plaintext', ), true ) ) {
 				$property_name = 'content_html';
 			}
 		}
@@ -241,6 +235,7 @@ class BP_Email {
 		if ( ! property_exists( $this, $property_name ) ) {
 			return null;
 		}
+
 
 		/**
 		 * Filters the value of the specified email property before transformation.
@@ -277,7 +272,7 @@ class BP_Email {
 		 *
 		 * @since 2.5.0
 		 *
-		 * @param mixed    $retval        Property value.
+		 * @param string   $retval        Property value.
 		 * @param string   $property_name Property name.
 		 * @param string   $transform     How to transform the return value.
 		 *                                Accepts 'raw' (default) or 'replace-tokens'.
@@ -290,8 +285,6 @@ class BP_Email {
 	 * Get email preheader.
 	 *
 	 * @since 4.0.0
-	 *
-	 * @return string
 	 */
 	public function get_preheader() {
 		if ( null !== $this->preheader ) {
@@ -450,8 +443,7 @@ class BP_Email {
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param string $transform Optional. How to transform the return value. Defaults to 'raw'.
-	 * @return WP_Post|null WP_Post object, or null if not set.
+	 * @return WP_Post The post.
 	 */
 	public function get_post_object( $transform = 'raw' ) {
 		return $this->get( 'post_object', $transform );
@@ -466,7 +458,7 @@ class BP_Email {
 	 *
 	 * @param string $transform Optional. How to transform the return value.
 	 *                          Accepts 'raw' (default) or 'replace-tokens'.
-	 * @return BP_Email_Recipient|null "Reply to" recipient, or null if not set.
+	 * @return BP_Email_Recipient "Reply to" recipient.
 	 */
 	public function get_reply_to( $transform = 'raw' ) {
 		return $this->get( 'reply_to', $transform );
@@ -481,7 +473,7 @@ class BP_Email {
 	 *
 	 * @param string $transform Optional. How to transform the return value.
 	 *                          Accepts 'raw' (default) or 'replace-tokens'.
-	 * @return string|null Email subject, or null if not set.
+	 * @return string Email subject.
 	 */
 	public function get_subject( $transform = 'raw' ) {
 		return $this->get( 'subject', $transform );
@@ -496,7 +488,7 @@ class BP_Email {
 	 *
 	 * @param string $transform Optional. How to transform the return value.
 	 *                          Accepts 'raw' (default) or 'replace-tokens'.
-	 * @return string|null Email template. Assumed to be HTML. Or null if not set.
+	 * @return string Email template. Assumed to be HTML.
 	 */
 	public function get_template( $transform = 'raw' ) {
 		return $this->get( 'template', $transform );
@@ -511,7 +503,7 @@ class BP_Email {
 	 *
 	 * @param string $transform Optional. How to transform the return value.
 	 *                          Accepts 'raw' (default) or 'replace-tokens'.
-	 * @return BP_Email_Recipient[]|null "To" recipients. Or null if not set.
+	 * @return BP_Email_Recipient[] "To" recipients.
 	 */
 	public function get_to( $transform = 'raw' ) {
 		return $this->get( 'to', $transform );
@@ -526,8 +518,7 @@ class BP_Email {
 	 *
 	 * @param string $transform Optional. How to transform the return value.
 	 *                          Accepts 'raw' (default) or 'replace-tokens'.
-	 * @return string[]|null Associative pairing of token name (key) and replacement value (value).
-	 *                       Or null if not set.
+	 * @return string[] Associative pairing of token name (key) and replacement value (value).
 	 */
 	public function get_tokens( $transform = 'raw' ) {
 		return $this->get( 'tokens', $transform );
@@ -579,9 +570,9 @@ class BP_Email {
 	 *
 	 * @param string|array|int|WP_User $bcc_address Either a email address, user ID, WP_User object,
 	 *                                              or an array containing any combination of the above.
-	 * @param string                   $name Optional. If $bcc_address is a string, this is the recipient's name.
-	 * @param string                   $operation Optional. If "replace", $to_address replaces current setting (default).
-	 *                                            If "add", $to_address is added to the current setting.
+	 * @param string $name Optional. If $bcc_address is a string, this is the recipient's name.
+	 * @param string $operation Optional. If "replace", $to_address replaces current setting (default).
+	 *                          If "add", $to_address is added to the current setting.
 	 * @return BP_Email
 	 */
 	public function set_bcc( $bcc_address, $name = '', $operation = 'replace' ) {
@@ -591,6 +582,7 @@ class BP_Email {
 			foreach ( $bcc_address as $address ) {
 				$bcc[] = new BP_Email_Recipient( $address );
 			}
+
 		} else {
 			$bcc[] = new BP_Email_Recipient( $bcc_address, $name );
 		}
@@ -627,9 +619,9 @@ class BP_Email {
 	 *
 	 * @param string|array|int|WP_User $cc_address Either a email address, user ID, WP_User object,
 	 *                                             or an array containing any combination of the above.
-	 * @param string                   $name Optional. If $cc_address is a string, this is the recipient's name.
-	 * @param string                   $operation Optional. If "replace", $to_address replaces current setting (default).
-	 *                                            If "add", $to_address is added to the current setting.
+	 * @param string $name Optional. If $cc_address is a string, this is the recipient's name.
+	 * @param string $operation Optional. If "replace", $to_address replaces current setting (default).
+	 *                          If "add", $to_address is added to the current setting.
 	 * @return BP_Email
 	 */
 	public function set_cc( $cc_address, $name = '', $operation = 'replace' ) {
@@ -639,6 +631,7 @@ class BP_Email {
 			foreach ( $cc_address as $address ) {
 				$cc[] = new BP_Email_Recipient( $address );
 			}
+
 		} else {
 			$cc[] = new BP_Email_Recipient( $cc_address, $name );
 		}
@@ -716,7 +709,7 @@ class BP_Email {
 	 * @return BP_Email
 	 */
 	public function set_content_type( $content_type ) {
-		if ( ! in_array( $content_type, array( 'html', 'plaintext' ), true ) ) {
+		if ( ! in_array( $content_type, array( 'html', 'plaintext', ), true ) ) {
 			$class        = get_class_vars( get_class() );
 			$content_type = $class['content_type'];
 		}
@@ -742,7 +735,7 @@ class BP_Email {
 	 * @since 2.5.0
 	 *
 	 * @param string|array|int|WP_User $email_address Either a email address, user ID, or WP_User object.
-	 * @param string                   $name Optional. If $email_address is a string, this is the recipient's name.
+	 * @param string $name Optional. If $email_address is a string, this is the recipient's name.
 	 * @return BP_Email
 	 */
 	public function set_from( $email_address, $name = '' ) {
@@ -774,7 +767,7 @@ class BP_Email {
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param WP_Post $post Post object.
+	 * @param WP_Post $post
 	 * @return BP_Email
 	 */
 	public function set_post_object( WP_Post $post ) {
@@ -826,7 +819,7 @@ class BP_Email {
 	 *
 	 * @param string|array|int|WP_User $email_address Either a email address, user ID, WP_User object,
 	 *                                                or an array containing any combination of the above.
-	 * @param string                   $name Optional. If $email_address is a string, this is the recipient's name.
+	 * @param string $name Optional. If $email_address is a string, this is the recipient's name.
 	 * @return BP_Email
 	 */
 	public function set_reply_to( $email_address, $name = '' ) {
@@ -919,9 +912,9 @@ class BP_Email {
 	 *
 	 * @param string|array|int|WP_User $to_address Either a email address, user ID, WP_User object,
 	 *                                             or an array containing any combination of the above.
-	 * @param string                   $name Optional. If $to_address is a string, this is the recipient's name.
-	 * @param string                   $operation Optional. If "replace", $to_address replaces current setting (default).
-	 *                                            If "add", $to_address is added to the current setting.
+	 * @param string $name Optional. If $to_address is a string, this is the recipient's name.
+	 * @param string $operation Optional. If "replace", $to_address replaces current setting (default).
+	 *                          If "add", $to_address is added to the current setting.
 	 * @return BP_Email
 	 */
 	public function set_to( $to_address, $name = '', $operation = 'replace' ) {
@@ -931,6 +924,7 @@ class BP_Email {
 			foreach ( $to_address as $address ) {
 				$to[] = new BP_Email_Recipient( $address );
 			}
+
 		} else {
 			$to[] = new BP_Email_Recipient( $to_address, $name );
 		}
@@ -987,6 +981,7 @@ class BP_Email {
 
 		return $this;
 	}
+
 
 	/*
 	 * Sanitisation and validation logic.

@@ -103,9 +103,8 @@ add_filter( 'bp_get_activity_parent_content',        'bp_create_excerpt' );
 add_filter( 'bp_get_activity_content_body', 'bp_activity_truncate_entry', 5 );
 add_filter( 'bp_get_activity_content',      'bp_activity_truncate_entry', 5 );
 
-add_filter( 'bp_activity_get_user_favorites',       'bp_activity_sanitize_user_favorites_meta' );
-add_filter( 'bp_get_total_favorite_count_for_user', 'bp_core_number_format'                    );
-add_filter( 'bp_get_total_mention_count_for_user',  'bp_core_number_format'                    );
+add_filter( 'bp_get_total_favorite_count_for_user', 'bp_core_number_format' );
+add_filter( 'bp_get_total_mention_count_for_user',  'bp_core_number_format' );
 
 add_filter( 'bp_activity_get_embed_excerpt', 'bp_activity_embed_excerpt_onclick_location_filter', 9 );
 
@@ -265,7 +264,7 @@ function bp_activity_at_name_filter( $content, $activity_id = 0 ) {
 
 	// Linkify the mentions with the username.
 	foreach ( (array) $usernames as $user_id => $username ) {
-		$content = preg_replace( '/(@' . $username . '\b)/', "<a class='bp-suggestions-mention' href='" . bp_members_get_user_url( $user_id ) . "' rel='nofollow'>@$username</a>", $content );
+		$content = preg_replace( '/(@' . $username . '\b)/', "<a class='bp-suggestions-mention' href='" . bp_core_get_user_domain( $user_id ) . "' rel='nofollow'>@$username</a>", $content );
 	}
 
 	// Put everything back.
@@ -305,8 +304,8 @@ function bp_activity_at_name_filter_updates( $activity ) {
 	// We have mentions!
 	if ( ! empty( $usernames ) ) {
 		// Replace @mention text with userlinks.
-		foreach ( (array) $usernames as $user_id => $username ) {
-			$activity->content = preg_replace( '/(@' . $username . '\b)/', "<a class='bp-suggestions-mention' href='" . bp_members_get_user_url( $user_id ) . "' rel='nofollow'>@$username</a>", $activity->content );
+		foreach( (array) $usernames as $user_id => $username ) {
+			$activity->content = preg_replace( '/(@' . $username . '\b)/', "<a class='bp-suggestions-mention' href='" . bp_core_get_user_domain( $user_id ) . "' rel='nofollow'>@$username</a>", $activity->content );
 		}
 
 		// Add our hook to send @mention emails after the activity item is saved.
@@ -343,7 +342,7 @@ function bp_activity_at_name_send_emails( $activity ) {
 	unset( $bp->activity->mentioned_users );
 
 	// Send @mentions and setup BP notifications.
-	foreach ( (array) $usernames as $user_id => $username ) {
+	foreach( (array) $usernames as $user_id => $username ) {
 
 		/**
 		 * Filters BuddyPress' ability to send email notifications for @mentions.
@@ -401,8 +400,6 @@ function bp_activity_make_nofollow_filter( $text ) {
  *
  * @since 1.5.0
  * @since 2.6.0 Added $args parameter.
- *
- * @global BP_Activity_Template $activities_template The Activity template loop.
  *
  * @param string $text The original activity entry text.
  * @param array  $args {

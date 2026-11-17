@@ -15,13 +15,13 @@
 function groups_screen_group_request_membership() {
 
 	if ( ! is_user_logged_in() ) {
-		return;
+		return false;
 	}
 
 	$bp = buddypress();
 
 	if ( 'private' != $bp->groups->current_group->status ) {
-		return;
+		return false;
 	}
 
 	// If the user is already invited, accept invitation.
@@ -32,7 +32,7 @@ function groups_screen_group_request_membership() {
 			bp_core_add_message( __( 'There was an error accepting the group invitation. Please try again.', 'buddypress' ), 'error' );
 		}
 
-		bp_core_redirect( bp_get_group_url( $bp->groups->current_group ) );
+		bp_core_redirect( bp_get_group_permalink( $bp->groups->current_group ) );
 	}
 
 	// If the user has submitted a request, send it.
@@ -40,7 +40,7 @@ function groups_screen_group_request_membership() {
 
 		// Check the nonce.
 		if ( ! check_admin_referer( 'groups_request_membership' ) ) {
-			return;
+			return false;
 		}
 
 		// Default arguments for the membership request.
@@ -51,7 +51,7 @@ function groups_screen_group_request_membership() {
 
 		// If the member added a message to their request include it into the request arguments.
 		if ( isset( $_POST['group-request-membership-comments'] ) && $_POST['group-request-membership-comments'] ) {
-			$request_args['content'] = wp_strip_all_tags( wp_unslash( $_POST['group-request-membership-comments'] ) );
+			$request_args['content'] = strip_tags( wp_unslash( $_POST['group-request-membership-comments'] ) );
 		}
 
 		if ( ! groups_send_membership_request( $request_args ) ) {
@@ -59,8 +59,7 @@ function groups_screen_group_request_membership() {
 		} else {
 			bp_core_add_message( __( 'Your membership request was sent to the group administrator successfully. You will be notified when the group administrator responds to your request.', 'buddypress' ) );
 		}
-
-		bp_core_redirect( bp_get_group_url( $bp->groups->current_group ) );
+		bp_core_redirect( bp_get_group_permalink( $bp->groups->current_group ) );
 	}
 
 	/**
@@ -72,17 +71,12 @@ function groups_screen_group_request_membership() {
 	 */
 	do_action( 'groups_screen_group_request_membership', $bp->groups->current_group->id );
 
-	$templates = array(
-		/**
-		 * Filters the template to load for a group's Request Membership page.
-		 *
-		 * @since 1.0.0
-		 *
-		 * @param string $value Path to a group's Request Membership template.
-		 */
-		apply_filters( 'groups_template_group_request_membership', 'groups/single/home' ),
-		'groups/single/index',
-	);
-
-	bp_core_load_template( $templates );
+	/**
+	 * Filters the template to load for a group's Request Membership page.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $value Path to a group's Request Membership template.
+	 */
+	bp_core_load_template( apply_filters( 'groups_template_group_request_membership', 'groups/single/home' ) );
 }

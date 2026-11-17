@@ -14,14 +14,12 @@
  */
 function groups_screen_group_admin_avatar() {
 
-	if ( 'group-avatar' !== bp_get_group_current_admin_tab() ) {
-		return;
-	}
+	if ( 'group-avatar' != bp_get_group_current_admin_tab() )
+		return false;
 
 	// If the logged-in user doesn't have permission or if avatar uploads are disabled, then stop here.
-	if ( ! bp_is_item_admin() || bp_disable_group_avatar_uploads() || ! buddypress()->avatar->show_avatars ) {
-		return;
-	}
+	if ( ! bp_is_item_admin() || bp_disable_group_avatar_uploads() || ! buddypress()->avatar->show_avatars )
+		return false;
 
 	$bp = buddypress();
 
@@ -44,7 +42,7 @@ function groups_screen_group_admin_avatar() {
 
 	$bp->avatar_admin->step = 'upload-image';
 
-	if ( ! empty( $_FILES ) ) {
+	if ( !empty( $_FILES ) ) {
 
 		// Check the nonce.
 		check_admin_referer( 'bp_avatar_upload' );
@@ -106,18 +104,13 @@ function groups_screen_group_admin_avatar() {
 	 */
 	do_action( 'groups_screen_group_admin_avatar', $bp->groups->current_group->id );
 
-	$templates = array(
-		/**
-		 * Filters the template to load for a group's Change Avatar page.
-		 *
-		 * @since 1.0.0
-		 *
-		 * @param string $value Path to a group's Change Avatar template.
-		 */
-		apply_filters( 'groups_template_group_admin_avatar', 'groups/single/home' ),
-		'groups/single/index',
-	);
-
-	bp_core_load_template( $templates );
+	/**
+	 * Filters the template to load for a group's Change Avatar page.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $value Path to a group's Change Avatar template.
+	 */
+	bp_core_load_template( apply_filters( 'groups_template_group_admin_avatar', 'groups/single/home' ) );
 }
 add_action( 'bp_screens', 'groups_screen_group_admin_avatar' );

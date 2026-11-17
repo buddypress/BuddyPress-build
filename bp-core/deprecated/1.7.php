@@ -17,7 +17,7 @@ defined( 'ABSPATH' ) || exit;
  * @deprecated 1.7.0
  */
 function bp_maintenance_mode() {
-	echo esc_html( bp_get_maintenance_mode() );
+	echo bp_get_maintenance_mode();
 }
 	/**
 	 * Return the BuddyPress maintenance mode
@@ -49,7 +49,7 @@ function bp_get_profile_header() {
 /**
  * @deprecated 1.7.0
  * @param string $component_name
- * @return bool
+ * @return boolean
  */
 function bp_exists( $component_name ) {
 	_deprecated_function( __FUNCTION__, '1.7' );
@@ -98,7 +98,7 @@ function bp_core_allow_default_theme( $themes ) {
  *
  * @deprecated 1.7.0
  * @param string $page
- * @return bool True if is BuddyPress page
+ * @return boolean True if is BuddyPress page
  */
 function bp_is_page( $page = '' ) {
 	_deprecated_function( __FUNCTION__, '1.7' );
@@ -119,8 +119,7 @@ function bp_is_page( $page = '' ) {
  * before we had a legitimate update process.
  *
  * @deprecated 1.7.0
- *
- * @global wpdb $wpdb WordPress database object.
+ * @global WPDB $wpdb
  */
 function bp_update_db_stuff() {
 	global $wpdb;

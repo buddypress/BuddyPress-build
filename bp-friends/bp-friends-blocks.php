@@ -41,8 +41,7 @@ function bp_friends_blocks_add_script_data() {
 		)
 	);
 
-	// Include the common JS template (Escaping is done there).
-	// phpcs:ignore WordPress.Security.EscapeOutput
+	// Include the common JS template.
 	echo bp_get_dynamic_template_part( 'assets/widgets/friends.php' );
 
 	// List the block specific props.
@@ -111,10 +110,7 @@ function bp_friends_render_friends_block( $attributes = array() ) {
 	// Make sure the widget ID is unique.
 	$widget_id = uniqid( 'friends-list-' );
 
-	$link = bp_members_get_user_url(
-		$user_id,
-		bp_members_get_path_chunks( array( bp_get_friends_slug() ) )
-	);
+	$link = trailingslashit( bp_core_get_user_domain( $user_id ) . bp_get_friends_slug() );
 
 	/* translators: %s: member name */
 	$title = sprintf( __( '%s\'s Friends', 'buddypress' ), bp_core_get_user_displayname( $user_id ) );
@@ -133,15 +129,15 @@ function bp_friends_render_friends_block( $attributes = array() ) {
 	$item_options = array(
 		'newest'  => array(
 			'class' => '',
-			'label' => _x( 'Newest', 'Friends', 'buddypress' ),
+			'label' => __( 'Newest', 'buddypress' ),
 		),
 		'active'  => array(
 			'class' => '',
-			'label' => _x( 'Active', 'Friends', 'buddypress' ),
+			'label' => __( 'Active', 'buddypress' ),
 		),
 		'popular' => array(
 			'class' => '',
-			'label' => _x( 'Popular', 'Friends', 'buddypress' ),
+			'label' => __( 'Popular', 'buddypress' ),
 		),
 	);
 
@@ -193,8 +189,8 @@ function bp_friends_render_friends_block( $attributes = array() ) {
 					'assets/widgets/friends.php',
 					'php',
 					array(
-						'data.link'              => esc_url( bp_members_get_user_url( $user->ID ) ),
-						'data.name'              => esc_html( $user->display_name ),
+						'data.link'              => bp_core_get_user_domain( $user->ID, $user->user_nicename, $user->user_login ),
+						'data.name'              => $user->display_name,
 						'data.avatar_urls.thumb' => bp_core_fetch_avatar(
 							array(
 								'item_id' => $user->ID,
@@ -205,11 +201,11 @@ function bp_friends_render_friends_block( $attributes = array() ) {
 							sprintf(
 								/* translators: %s: member name */
 								__( 'Profile picture of %s', 'buddypress' ),
-								esc_html( $user->display_name )
+								$user->display_name
 							)
 						),
 						'data.id'                => $user->ID,
-						'data.extra'             => esc_html( $extra ),
+						'data.extra'             => $extra,
 					)
 				);
 			}

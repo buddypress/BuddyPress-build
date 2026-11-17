@@ -12,18 +12,17 @@
  * Also checks to make sure this can only be accessed for the logged in users profile.
  *
  * @since 1.0.0
+ *
  */
 function xprofile_screen_edit_profile() {
 
 	if ( ! bp_is_my_profile() && ! bp_current_user_can( 'bp_moderate' ) ) {
-		return;
+		return false;
 	}
 
 	// Make sure a group is set.
 	if ( ! bp_action_variable( 1 ) ) {
-		bp_core_redirect(
-			bp_displayed_user_url( bp_members_get_path_chunks( array( bp_get_profile_slug(), 'edit', array( 'group', 1 ) ) ) )
-		);
+		bp_core_redirect( trailingslashit( bp_displayed_user_domain() . bp_get_profile_slug() . '/edit/group/1' ) );
 	}
 
 	// Check the field group exists.
@@ -33,8 +32,7 @@ function xprofile_screen_edit_profile() {
 	}
 
 	// No errors.
-	$errors      = false;
-	$path_chunks = array( bp_get_profile_slug(), 'edit' );
+	$errors = false;
 
 	// Check to see if any new information has been submitted.
 	if ( isset( $_POST['field_ids'] ) ) {
@@ -44,8 +42,7 @@ function xprofile_screen_edit_profile() {
 
 		// Check we have field ID's.
 		if ( empty( $_POST['field_ids'] ) ) {
-			$path_chunks[] = array( 'group', bp_action_variable( 1 ) );
-			bp_core_redirect( bp_displayed_user_url( bp_members_get_path_chunks( $path_chunks ) ) );
+			bp_core_redirect( trailingslashit( bp_displayed_user_domain() . bp_get_profile_slug() . '/edit/group/' . bp_action_variable( 1 ) ) );
 		}
 
 		// Explode the posted field IDs into an array so we know which
@@ -61,13 +58,13 @@ function xprofile_screen_edit_profile() {
 			bp_xprofile_maybe_format_datebox_post_data( $field_id );
 
 			$is_required[ $field_id ] = xprofile_check_is_required_field( $field_id ) && ! bp_current_user_can( 'bp_moderate' );
-			if ( $is_required[ $field_id ] && empty( $_POST[ 'field_' . $field_id ] ) ) {
+			if ( $is_required[$field_id] && empty( $_POST['field_' . $field_id] ) ) {
 				$errors = true;
 			}
 		}
 
 		// There are errors.
-		if ( ! empty( $errors ) ) {
+		if ( !empty( $errors ) ) {
 			bp_core_add_message( __( 'Your changes have not been saved. Please fill in all required fields, and save your changes again.', 'buddypress' ), 'error' );
 
 		// No errors.
@@ -81,9 +78,9 @@ function xprofile_screen_edit_profile() {
 			foreach ( (array) $posted_field_ids as $field_id ) {
 
 				// Certain types of fields (checkboxes, multiselects) may come through empty. Save them as an empty array so that they don't get overwritten by the default on the next edit.
-				$value = isset( $_POST[ 'field_' . $field_id ] ) ? $_POST[ 'field_' . $field_id ] : '';
+				$value = isset( $_POST['field_' . $field_id] ) ? $_POST['field_' . $field_id] : '';
 
-				$visibility_level = ! empty( $_POST[ 'field_' . $field_id . '_visibility' ] ) ? $_POST[ 'field_' . $field_id . '_visibility' ] : 'public';
+				$visibility_level = !empty( $_POST['field_' . $field_id . '_visibility'] ) ? $_POST['field_' . $field_id . '_visibility'] : 'public';
 
 				// Save the old and new values. They will be
 				// passed to the filter and used to determine
@@ -151,15 +148,14 @@ function xprofile_screen_edit_profile() {
 			}
 
 			// Set the feedback messages.
-			if ( ! empty( $errors ) ) {
+			if ( !empty( $errors ) ) {
 				bp_core_add_message( __( 'There was a problem updating some of your profile information. Please try again.', 'buddypress' ), 'error' );
 			} else {
 				bp_core_add_message( __( 'Changes saved.', 'buddypress' ) );
 			}
 
 			// Redirect back to the edit screen to display the updates and message.
-			$path_chunks[] = array( 'group', bp_action_variable( 1 ) );
-			bp_core_redirect( bp_displayed_user_url( bp_members_get_path_chunks( $path_chunks ) ) );
+			bp_core_redirect( trailingslashit( bp_displayed_user_domain() . bp_get_profile_slug() . '/edit/group/' . bp_action_variable( 1 ) ) );
 		}
 	}
 
@@ -170,17 +166,12 @@ function xprofile_screen_edit_profile() {
 	 */
 	do_action( 'xprofile_screen_edit_profile' );
 
-	$templates = array(
-		/**
-		 * Filters the template to load for the XProfile edit screen.
-		 *
-		 * @since 1.0.0
-		 *
-		 * @param string $template Path to the XProfile edit template to load.
-		 */
-		apply_filters( 'xprofile_template_edit_profile', 'members/single/home' ),
-		'members/single/index',
-	);
-
-	bp_core_load_template( $templates );
+	/**
+	 * Filters the template to load for the XProfile edit screen.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $template Path to the XProfile edit template to load.
+	 */
+	bp_core_load_template( apply_filters( 'xprofile_template_edit_profile', 'members/single/home' ) );
 }

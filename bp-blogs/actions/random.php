@@ -25,7 +25,7 @@ function bp_blogs_redirect_to_random_blog() {
 
 	// No multisite and still called, always redirect to root.
 	} else {
-		bp_core_redirect( bp_get_root_url() );
+		bp_core_redirect( bp_core_get_root_domain() );
 	}
 }
 add_action( 'bp_actions', 'bp_blogs_redirect_to_random_blog' );

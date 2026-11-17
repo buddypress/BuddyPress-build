@@ -8,14 +8,14 @@
  */
 
 // Exit if accessed directly.
-defined( 'ABSPATH' ) || exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
  * Callback function to render the Recent Posts Block.
  *
  * @since 9.0.0
- *
- * @global BP_Activity_Template $activities_template The Activity template loop.
  *
  * @param array $attributes The block attributes.
  * @return string           HTML output.
@@ -24,19 +24,15 @@ function bp_blogs_render_recent_posts_block( $attributes = array() ) {
 	$block_args = bp_parse_args(
 		$attributes,
 		array(
-			'title'     => '',
+			'title'     => __( 'Recent Networkwide Posts', 'buddypress' ),
 			'maxPosts'  => 10,
 			'linkTitle' => false,
 		)
 	);
 
-	if ( ! $block_args['title'] ) {
-		$block_args['title'] = __( 'Recent Networkwide Posts', 'buddypress' );
-	}
-
 	$classnames           = 'widget_bp_blogs_widget buddypress widget';
 	$wrapper_attributes   = get_block_wrapper_attributes( array( 'class' => $classnames ) );
-	$blogs_directory_link = bp_get_blogs_directory_url();
+	$blogs_directory_link = bp_get_blogs_directory_permalink();
 	$max_posts            = (int) $block_args['maxPosts'];
 	$no_posts             = __( 'Sorry, there were no posts found.', 'buddypress' );
 
@@ -76,7 +72,7 @@ function bp_blogs_render_recent_posts_block( $attributes = array() ) {
 			$reset_activities_template = $GLOBALS['activities_template'];
 		}
 
-		$GLOBALS['activities_template'] = new stdClass();
+		$GLOBALS['activities_template'] = new \stdClass();
 		$activities                     = array();
 
 		foreach ( $blog_activities as $blog_activity ) {

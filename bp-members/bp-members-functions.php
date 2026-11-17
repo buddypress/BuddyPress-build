@@ -26,6 +26,53 @@ function bp_members_has_directory() {
 }
 
 /**
+ * Define the slug constants for the Members component.
+ *
+ * Handles the three slug constants used in the Members component -
+ * BP_MEMBERS_SLUG, BP_REGISTER_SLUG, and BP_ACTIVATION_SLUG. If these
+ * constants are not overridden in wp-config.php or bp-custom.php, they are
+ * defined here to match the slug of the corresponding WP pages.
+ *
+ * In general, fallback values are only used during initial BP page creation,
+ * when no slugs have been explicitly defined.
+ *
+ * @since 1.5.0
+ *
+ * @global BuddyPress $bp The one true BuddyPress instance.
+ */
+function bp_core_define_slugs() {
+	$bp = buddypress();
+
+	// No custom members slug.
+	if ( !defined( 'BP_MEMBERS_SLUG' ) ) {
+		if ( !empty( $bp->pages->members ) ) {
+			define( 'BP_MEMBERS_SLUG', $bp->pages->members->slug );
+		} else {
+			define( 'BP_MEMBERS_SLUG', 'members' );
+		}
+	}
+
+	// No custom registration slug.
+	if ( !defined( 'BP_REGISTER_SLUG' ) ) {
+		if ( !empty( $bp->pages->register ) ) {
+			define( 'BP_REGISTER_SLUG', $bp->pages->register->slug );
+		} else {
+			define( 'BP_REGISTER_SLUG', 'register' );
+		}
+	}
+
+	// No custom activation slug.
+	if ( !defined( 'BP_ACTIVATION_SLUG' ) ) {
+		if ( !empty( $bp->pages->activate ) ) {
+			define( 'BP_ACTIVATION_SLUG', $bp->pages->activate->slug );
+		} else {
+			define( 'BP_ACTIVATION_SLUG', 'activate' );
+		}
+	}
+}
+add_action( 'bp_setup_globals', 'bp_core_define_slugs', 11 );
+
+/**
  * Fetch an array of users based on the parameters passed.
  *
  * Since BuddyPress 1.7, bp_core_get_users() uses BP_User_Query. If you
@@ -139,102 +186,45 @@ function bp_core_get_users( $args = '' ) {
 }
 
 /**
- * Get single Members item customized path chunks using an array of BP URL default slugs.
+ * Return the domain for the passed user: e.g. http://example.com/members/andy/.
  *
- * @since 12.0.0
+ * @since 1.0.0
  *
- * @param array $chunks An array of BP URL default slugs.
- * @return array An associative array containing member's customized path chunks.
+ * @param int         $user_id       The ID of the user.
+ * @param string|bool $user_nicename Optional. user_nicename of the user.
+ * @param string|bool $user_login    Optional. user_login of the user.
+ * @return string
  */
-function bp_members_get_path_chunks( $chunks = array() ) {
-	$path_chunks = array();
+function bp_core_get_user_domain( $user_id = 0, $user_nicename = false, $user_login = false ) {
 
-	$single_item_component            = array_shift( $chunks );
-	$item_component_rewrite_id_suffix = '';
-	if ( $single_item_component ) {
-		$item_component_rewrite_id_suffix     = str_replace( '-', '_', $single_item_component );
-		$path_chunks['single_item_component'] = bp_rewrites_get_slug( 'members', 'member_' . $item_component_rewrite_id_suffix, $single_item_component );
+	if ( empty( $user_id ) ) {
+		return;
 	}
 
-	$single_item_action            = array_shift( $chunks );
-	$item_action_rewrite_id_suffix = '';
-	if ( $single_item_action ) {
-		$item_action_rewrite_id_suffix     = str_replace( '-', '_', $single_item_action );
-		$path_chunks['single_item_action'] = bp_rewrites_get_slug( 'members', 'member_' . $item_component_rewrite_id_suffix . '_' . $item_action_rewrite_id_suffix, $single_item_action );
+	$username = bp_core_get_username( $user_id, $user_nicename, $user_login );
+
+	if ( bp_is_username_compatibility_mode() ) {
+		$username = rawurlencode( $username );
 	}
 
-	// If action variables were added as an array, reset chunks to it.
-	if ( isset( $chunks[0] ) && is_array( $chunks[0] ) ) {
-		$chunks = reset( $chunks );
-	}
+	$after_domain = bp_core_enable_root_profiles() ? $username : bp_get_members_root_slug() . '/' . $username;
+	$domain       = trailingslashit( bp_get_root_domain() . '/' . $after_domain );
 
-	if ( $chunks && $item_component_rewrite_id_suffix && $item_action_rewrite_id_suffix ) {
-		foreach ( $chunks as $chunk ) {
-			if ( is_numeric( $chunk ) ) {
-				$path_chunks['single_item_action_variables'][] = $chunk;
-			} else {
-				$item_action_variable_rewrite_id_suffix        =  str_replace( '-', '_', $chunk );
-				$path_chunks['single_item_action_variables'][] = bp_rewrites_get_slug( 'members', 'member_' . $item_component_rewrite_id_suffix . '_' . $item_action_rewrite_id_suffix . '_' . $item_action_variable_rewrite_id_suffix, $chunk );
-			}
-		}
-	}
-
-	return $path_chunks;
-}
-
-/**
- * Return the Members single item's URL.
- *
- * @since 12.0.0
- *
- * @param integer $user_id  The user ID.
- * @param array   $path_chunks {
- *     An array of arguments. Optional.
- *
- *     @type string $single_item_component        The component slug the action is relative to.
- *     @type string $single_item_action           The slug of the action to perform.
- *     @type array  $single_item_action_variables An array of additional informations about the action to perform.
- * }
- * @return string The URL built for the BP Rewrites URL parser.
- */
-function bp_members_get_user_url( $user_id = 0, $path_chunks = array() ) {
-	$url  = '';
-	$slug = bp_members_get_user_slug( $user_id );
-
-	if ( $slug ) {
-		if ( bp_is_username_compatibility_mode() ) {
-			$slug = rawurlencode( $slug );
-		}
-
-		$supported_chunks = array_fill_keys( array( 'single_item_component', 'single_item_action', 'single_item_action_variables' ), true );
-		$path_chunks      = bp_parse_args(
-			array_intersect_key( $path_chunks, $supported_chunks ),
-			array(
-				'component_id' => 'members',
-				'single_item'  => $slug,
-			)
-		);
-
-		$url = bp_rewrites_get_url( $path_chunks );
-	}
+	// Don't use this filter.  Subject to removal in a future release.
+	// Use the 'bp_core_get_user_domain' filter instead.
+	$domain = apply_filters( 'bp_core_get_user_domain_pre_cache', $domain, $user_id, $user_nicename, $user_login );
 
 	/**
 	 * Filters the domain for the passed user.
 	 *
-	 * @since 12.0.0
+	 * @since 1.0.1
 	 *
-	 * @param string  $url      The user url.
-	 * @param integer $user_id  The user ID.
-	 * @param string  $slug     The user slug.
-	 * @param array   $path_chunks {
-	 *     An array of arguments. Optional.
-	 *
-	 *     @type string $single_item_component        The component slug the action is relative to.
-	 *     @type string $single_item_action           The slug of the action to perform.
-	 *     @type array  $single_item_action_variables An array of additional informations about the action to perform.
-	 * }
+	 * @param string $domain        Domain for the passed user.
+	 * @param int    $user_id       ID of the passed user.
+	 * @param string $user_nicename User nicename of the passed user.
+	 * @param string $user_login    User login of the passed user.
 	 */
-	return apply_filters( 'bp_members_get_user_url', $url, $user_id, $slug, $path_chunks );
+	return apply_filters( 'bp_core_get_user_domain', $domain, $user_id, $user_nicename, $user_login );
 }
 
 /**
@@ -261,6 +251,20 @@ function bp_core_get_core_userdata( $user_id = 0 ) {
 	 * @param array|bool $userdata Array of user data for a passed user on success, false on failure.
 	 */
 	return apply_filters( 'bp_core_get_core_userdata', $userdata );
+}
+
+/**
+ * Return the ID of a user, based on user_login.
+ *
+ * No longer used.
+ *
+ * @todo Deprecate.
+ *
+ * @param string $user_login user_login of the user being queried.
+ * @return int
+ */
+function bp_core_get_displayed_userid( $user_login ) {
+	return apply_filters( 'bp_core_get_displayed_userid', bp_core_get_userid( $user_login ) );
 }
 
 /**
@@ -316,43 +320,39 @@ function bp_core_get_userid_from_nicename( $user_nicename = '' ) {
 }
 
 /**
- * Returns the members single item (member) slug.
+ * Return the username for a user based on their user id.
  *
- * @since 12.0.0
+ * This function is sensitive to the BP_ENABLE_USERNAME_COMPATIBILITY_MODE,
+ * so it will return the user_login or user_nicename as appropriate.
  *
- * @param integer $user_id The User ID.
- * @return string The member slug.
+ * @since 1.0.0
+ *
+ * @param int         $user_id       User ID to check.
+ * @param string|bool $user_nicename Optional. user_nicename of user being checked.
+ * @param string|bool $user_login    Optional. user_login of user being checked.
+ * @return string The username of the matched user or an empty string if no user is found.
  */
-function bp_members_get_user_slug( $user_id = 0 ) {
-	$bp   = buddypress();
-	$slug = '';
+function bp_core_get_username( $user_id = 0, $user_nicename = false, $user_login = false ) {
 
-	$prop = 'user_nicename';
-	if ( bp_is_username_compatibility_mode() ) {
-		$prop = 'user_login';
-	}
-
-	if ( (int) bp_loggedin_user_id() === (int) $user_id ) {
-		$slug = isset( $bp->loggedin_user->userdata->{$prop} ) ? $bp->loggedin_user->userdata->{$prop} : null;
-	} elseif ( (int) bp_displayed_user_id() === (int) $user_id ) {
-		$slug = isset( $bp->displayed_user->userdata->{$prop} ) ? $bp->displayed_user->userdata->{$prop} : null;
-	} else {
-		$user = get_user_by( 'id', $user_id );
-
-		if ( $user instanceof WP_User ) {
-			$slug = $user->{$prop};
+	if ( ! $user_nicename && ! $user_login ) {
+		// Pull an audible and maybe use the login over the nicename.
+		if ( bp_is_username_compatibility_mode() ) {
+			$username = get_the_author_meta( 'login', $user_id );
+		} else {
+			$username = get_the_author_meta( 'nicename', $user_id );
 		}
+	} else {
+		$username = bp_is_username_compatibility_mode() ? $user_login : $user_nicename;
 	}
 
 	/**
-	 * Filter here to edit the user's slug.
+	 * Filters the username based on originally provided user ID.
 	 *
-	 * @since 12.0.0
+	 * @since 1.0.1
 	 *
-	 * @param string $slug     The user's slug.
-	 * @param integer $user_id The user ID.
+	 * @param string $username Username determined by user ID.
 	 */
-	return apply_filters( 'bp_members_get_user_slug', $slug, $user_id );
+	return apply_filters( 'bp_core_get_username', $username );
 }
 
 /**
@@ -413,7 +413,7 @@ function bp_core_get_user_email( $user_id ) {
  *                        Default: false.
  * @param bool $just_link Disable full name and HTML and just return the URL
  *                        text. Default false.
- * @return string|false The link text based on passed parameters, or false on
+ * @return string|bool The link text based on passed parameters, or false on
  *                     no match.
  */
 function bp_core_get_userlink( $user_id, $no_anchor = false, $just_link = false ) {
@@ -427,7 +427,7 @@ function bp_core_get_userlink( $user_id, $no_anchor = false, $just_link = false 
 		return $display_name;
 	}
 
-	if ( !$url = bp_members_get_user_url( $user_id ) ) {
+	if ( !$url = bp_core_get_user_domain( $user_id ) ) {
 		return false;
 	}
 
@@ -514,7 +514,7 @@ function bp_core_get_user_displayname( $user_id_or_username ) {
 	 */
 	return apply_filters( 'bp_core_get_user_displayname', get_the_author_meta( 'display_name', $user_id ), $user_id );
 }
-add_filter( 'bp_core_get_user_displayname', 'wp_strip_all_tags', 1 );
+add_filter( 'bp_core_get_user_displayname', 'strip_tags', 1 );
 add_filter( 'bp_core_get_user_displayname', 'trim' );
 add_filter( 'bp_core_get_user_displayname', 'stripslashes' );
 add_filter( 'bp_core_get_user_displayname', 'esc_html' );
@@ -646,8 +646,8 @@ function bp_core_get_active_member_count() {
  *
  * @since 5.0.0
  *
- * @param int    $user_id The user ID to spam or ham.
- * @param string $value   '0' to mark the user as `ham`, '1' to mark as `spam`.
+ * @param int $user_id The user ID to spam or ham.
+ * @param int $value   0 to mark the user as `ham`, 1 to mark as `spam`.
  * @return bool          True if the spam status of the member changed.
  *                       False otherwise.
  */
@@ -664,17 +664,11 @@ function bp_core_update_member_status( $user_id = 0, $value = 0 ) {
 		return update_user_status( $user_id, 'spam', $value );
 	}
 
-	if ( $value ) {
-		$value = '1';
-	}
-
 	// Otherwise use the replacement function.
-	$user = wp_update_user(
-		array(
-			'ID'   => $user_id,
-			'spam' => $value,
-		)
-	);
+	$user = wp_update_user( array(
+		'ID'   => $user_id,
+		'spam' => $value,
+	) );
 
 	if ( is_wp_error( $user ) ) {
 		return false;
@@ -703,7 +697,7 @@ function bp_core_update_member_status( $user_id = 0, $value = 0 ) {
  *                              only be false if WordPress is expected to have
  *                              performed this cleanup independently, as when hooked
  *                              to 'make_spam_user'.
- * @return bool
+ * @return bool True on success, false on failure.
  */
 function bp_core_process_spammer_status( $user_id, $status, $do_wp_cleanup = true ) {
 	global $wpdb;
@@ -841,7 +835,7 @@ function bp_core_process_spammer_status( $user_id, $status, $do_wp_cleanup = tru
 	}
 
 	/**
-	 * Fires at the end of the process for handling spammer status.
+	 * Fires at the end of the process for hanlding spammer status.
 	 *
 	 * @since 1.5.5
 	 *
@@ -885,7 +879,7 @@ add_action( 'make_ham_user', 'bp_core_mark_user_ham_admin' );
  *
  * @since 1.6.0
  *
- * @global BP_Core_Members_Template $members_template The Members template loop class.
+ * @global BuddyPress $bp The one true BuddyPress instance.
  *
  * @param int $user_id The ID for the user.
  * @return bool True if spammer, otherwise false.
@@ -958,6 +952,8 @@ function bp_is_user_spammer( $user_id = 0 ) {
  * Check whether a user has been marked as deleted.
  *
  * @since 1.6.0
+ *
+ * @global BuddyPress $bp The one true BuddyPress instance.
  *
  * @param int $user_id The ID for the user.
  * @return bool True if deleted, otherwise false.
@@ -1077,7 +1073,7 @@ function bp_is_user_inactive( $user_id = 0 ) {
  *
  * @param int    $user_id Optional. ID of the user being updated.
  * @param string $time    Optional. Time of last activity, in 'Y-m-d H:i:s' format.
- * @return bool
+ * @return bool True on success, false on failure.
  */
 function bp_update_user_last_activity( $user_id = 0, $time = '' ) {
 
@@ -1142,7 +1138,7 @@ function _bp_get_user_meta_last_activity_warning( $retval, $object_id, $meta_key
 	if ( 'last_activity' === $meta_key ) {
 		// Don't send the warning more than once per pageload.
 		if ( false === $warned ) {
-			_doing_it_wrong( 'get_user_meta( $user_id, \'last_activity\' )', esc_html__( 'User last_activity data is no longer stored in usermeta. Use bp_get_user_last_activity() instead.', 'buddypress' ), '2.0.0' );
+			_doing_it_wrong( 'get_user_meta( $user_id, \'last_activity\' )', __( 'User last_activity data is no longer stored in usermeta. Use bp_get_user_last_activity() instead.', 'buddypress' ), '2.0.0' );
 			$warned = true;
 		}
 
@@ -1177,7 +1173,7 @@ add_filter( 'get_user_metadata', '_bp_get_user_meta_last_activity_warning', 10, 
  */
 function _bp_update_user_meta_last_activity_warning( $meta_id, $object_id, $meta_key, $meta_value ) {
 	if ( 'last_activity' === $meta_key ) {
-		_doing_it_wrong( 'update_user_meta( $user_id, \'last_activity\' )', esc_html__( 'User last_activity data is no longer stored in usermeta. Use bp_update_user_last_activity() instead.', 'buddypress' ), '2.0.0' );
+		_doing_it_wrong( 'update_user_meta( $user_id, \'last_activity\' )', __( 'User last_activity data is no longer stored in usermeta. Use bp_update_user_last_activity() instead.', 'buddypress' ), '2.0.0' );
 		bp_update_user_last_activity( $object_id, $meta_value );
 	}
 }
@@ -1219,6 +1215,8 @@ function bp_get_user_last_activity( $user_id = 0 ) {
  * be called directly from the BuddyPress Tools panel.
  *
  * @since 2.0.0
+ *
+ * @global BuddyPress $bp The one true BuddyPress instance.
  * @global wpdb $wpdb WordPress database object.
  *
  * @return bool
@@ -1244,6 +1242,26 @@ function bp_last_activity_migrate() {
 }
 
 /**
+ * Fetch every post that is authored by the given user for the current blog.
+ *
+ * No longer used in BuddyPress.
+ *
+ * @todo Deprecate.
+ *
+ * @param int $user_id ID of the user being queried.
+ * @return array Post IDs.
+ */
+function bp_core_get_all_posts_for_user( $user_id = 0 ) {
+	global $wpdb;
+
+	if ( empty( $user_id ) ) {
+		$user_id = bp_displayed_user_id();
+	}
+
+	return apply_filters( 'bp_core_get_all_posts_for_user', $wpdb->get_col( $wpdb->prepare( "SELECT ID FROM {$wpdb->posts} WHERE post_author = %d AND post_status = 'publish' AND post_type = 'post'", $user_id ) ) );
+}
+
+/**
  * Process account deletion requests.
  *
  * Primarily used for self-deletions, as requested through Settings.
@@ -1252,7 +1270,7 @@ function bp_last_activity_migrate() {
  *
  * @param int $user_id Optional. ID of the user to be deleted. Default: the
  *                     logged-in user.
- * @return bool
+ * @return bool True on success, false on failure.
  */
 function bp_core_delete_account( $user_id = 0 ) {
 
@@ -1349,7 +1367,7 @@ function bp_remove_user_data_on_delete_user_hook( $component, $user_id ) {
  * @since 1.9.0
  *
  * @param int $user_id ID of the user who is about to be deleted.
- * @return bool
+ * @return bool True on success, false on failure.
  */
 function bp_core_delete_avatar_on_user_delete( $user_id ) {
 	return bp_core_delete_existing_avatar( array(
@@ -1537,10 +1555,20 @@ function bp_core_get_illegal_names( $value = '' ) {
 		'activate',
 	);
 
-	// @todo replace slug constants with custom slugs.
+	// Core constants.
 	$slug_constants = array(
+		'BP_GROUPS_SLUG',
+		'BP_MEMBERS_SLUG',
 		'BP_FORUMS_SLUG',
+		'BP_BLOGS_SLUG',
+		'BP_ACTIVITY_SLUG',
+		'BP_XPROFILE_SLUG',
+		'BP_FRIENDS_SLUG',
 		'BP_SEARCH_SLUG',
+		'BP_SETTINGS_SLUG',
+		'BP_NOTIFICATIONS_SLUG',
+		'BP_REGISTER_SLUG',
+		'BP_ACTIVATION_SLUG',
 	);
 	foreach ( $slug_constants as $constant ) {
 		if ( defined( $constant ) ) {
@@ -1593,7 +1621,7 @@ add_filter( 'pre_update_site_option_illegal_names', 'bp_core_get_illegal_names' 
  *   - Is the email address well-formed?
  *   - Is the email address already used?
  *   - If there are disallowed email domains, is the current domain among them?
- *   - If there's an email domain whitelist, is the current domain on it?
+ *   - If there's an email domain whitelest, is the current domain on it?
  *
  * @since 1.6.2
  *
@@ -1627,7 +1655,7 @@ function bp_core_validate_email_address( $user_email ) {
 		}
 	}
 
-	// Is the email already in use?
+	// Is the email alreday in use?
 	if ( email_exists( $user_email ) ) {
 		$errors['in_use'] = 1;
 	}
@@ -1840,6 +1868,8 @@ function bp_core_validate_blog_signup( $blog_url, $blog_title ) {
  *
  * @since 1.2.0
  *
+ * @global BuddyPress $bp The one true BuddyPress instance.
+ *
  * @todo There appears to be a bug in the return value on success.
  *
  * @param string $user_login    Login name requested by the user.
@@ -1864,26 +1894,21 @@ function bp_core_signup_user( $user_login, $user_password, $user_email, $usermet
 		$user_login     = preg_replace( '/\s+/', '', sanitize_user( $user_login, true ) );
 		$user_email     = sanitize_email( $user_email );
 		$activation_key = wp_generate_password( 32, false );
-		$create_user    = false;
-
-		// @deprecated.
-		if ( defined( 'BP_SIGNUPS_SKIP_USER_CREATION' ) ) {
-			_doing_it_wrong( 'BP_SIGNUPS_SKIP_USER_CREATION', esc_html__( 'the `BP_SIGNUPS_SKIP_USER_CREATION` constant is deprecated as skipping user creation is now the default behavior.', 'buddypress' ), 'BuddyPress 14.0.0' );
-
-			// Creating a user is the opposite of skipping user creation.
-			$create_user = ! BP_SIGNUPS_SKIP_USER_CREATION;
-		}
 
 		/**
-		 * Filter here to keep creating a user when a registration is performed on regular WordPress configs.
-		 *
-		 * @since 14.0.0
-		 * @todo Fully deprecate in 15.0.0
-		 *
-		 * @param boolean $create_user True to carry on creating a user when a registration is performed.
-		 *                             False otherwise.
+		 * WordPress's default behavior is to create user accounts
+		 * immediately at registration time. BuddyPress uses a system
+		 * borrowed from WordPress Multisite, where signups are stored
+		 * separately and accounts are only created at the time of
+		 * activation. For backward compatibility with plugins that may
+		 * be anticipating WP's default behavior, BP silently creates
+		 * accounts for registrations (though it does not use them). If
+		 * you know that you are not running any plugins dependent on
+		 * these pending accounts, you may want to save a little DB
+		 * clutter by defining setting the BP_SIGNUPS_SKIP_USER_CREATION
+		 * to true in your wp-config.php file.
 		 */
-		if ( apply_filters( 'bp_signups_create_user', $create_user ) ) {
+		if ( ! defined( 'BP_SIGNUPS_SKIP_USER_CREATION' ) || ! BP_SIGNUPS_SKIP_USER_CREATION ) {
 			$user_id = BP_Signup::add_backcompat( $user_login, $user_password, $user_email, $usermeta );
 
 			if ( is_wp_error( $user_id ) ) {
@@ -1954,14 +1979,12 @@ function bp_core_signup_user( $user_login, $user_password, $user_email, $usermet
  * @param string $user_name   user_login of requesting user.
  * @param string $user_email  Email address of requesting user.
  * @param string $usermeta    Miscellaneous metadata for the user.
- * @return bool|null
+ * @return bool
  */
 function bp_core_signup_blog( $blog_domain, $blog_path, $blog_title, $user_name, $user_email, $usermeta ) {
 	if ( ! is_multisite() || ! function_exists( 'wpmu_signup_blog' ) ) {
 		return false;
 	}
-
-	wpmu_signup_blog( $blog_domain, $blog_path, $blog_title, $user_name, $user_email, $usermeta );
 
 	/**
 	 * Filters the result of wpmu_signup_blog().
@@ -1971,9 +1994,9 @@ function bp_core_signup_blog( $blog_domain, $blog_path, $blog_title, $user_name,
 	 *
 	 * @since 1.2.2
 	 *
-	 * @param null $value Null value.
+	 * @param void $value
 	 */
-	return apply_filters( 'bp_core_signup_blog', null );
+	return apply_filters( 'bp_core_signup_blog', wpmu_signup_blog( $blog_domain, $blog_path, $blog_title, $user_name, $user_email, $usermeta ) );
 }
 
 /**
@@ -2030,13 +2053,7 @@ function bp_core_activate_signup( $key ) {
 		if ( ! $user_id ) {
 			$user_id = wp_create_user( $signup->user_login, $password, $signup->user_email );
 
-			/*
-			 * @todo Remove this `elseif` statement in version 15.0.0.
-			 *
-			 * Since 2.0.0 BuddyPress is using the $wpdb->signups table even in regular WordPress configs.
-			 * In 14.0.0, we are deprecating the `BP_SIGNUPS_SKIP_USER_CREATION` as well as creating a user
-			 * each time a registration is performed.
-			 */
+		// Otherwise, update the existing user's status.
 		} elseif ( $key === bp_get_user_meta( $user_id, 'activation_key', true ) || $key === wp_hash( $user_id ) ) {
 
 			// Change the user's status so they become active.
@@ -2109,7 +2126,7 @@ function bp_core_activate_signup( $key ) {
 		if ( ! empty( $user['meta']['profile_field_ids'] ) ) {
 			$profile_field_ids = wp_parse_id_list( $user['meta']['profile_field_ids'] );
 
-			foreach ( (array) $profile_field_ids as $field_id ) {
+			foreach( (array) $profile_field_ids as $field_id ) {
 				$current_field = isset( $user['meta']["field_{$field_id}"] ) ? $user['meta']["field_{$field_id}"] : false;
 
 				if ( ! empty( $current_field ) ) {
@@ -2311,6 +2328,8 @@ add_action( 'user_register', 'bp_core_map_user_registration' );
  *
  * @since 1.1.0
  *
+ * @global BuddyPress $bp The one true BuddyPress instance.
+ *
  * @return string|bool Directory path on success, false on failure.
  */
 function bp_core_signup_avatar_upload_dir() {
@@ -2476,8 +2495,6 @@ add_filter( 'authenticate', 'bp_core_signup_disable_inactive', 30, 3 );
  *
  * @since 2.0.0
  *
- * @global string $error The error message.
- *
  * @see bp_core_signup_disable_inactive()
  */
 function bp_members_login_resend_activation_email() {
@@ -2556,13 +2573,7 @@ function bp_core_wpsignup_redirect() {
 
 	if ( $is_site_creation ) {
 		if ( bp_is_active( 'blogs' ) ) {
-			$url = bp_get_blogs_directory_url(
-				array(
-					'create_single_item' => 1,
-				)
-			);
-
-			$redirect_to = trailingslashit( $url );
+			$redirect_to = trailingslashit( bp_get_blogs_directory_permalink() . 'create' );
 		} else {
 			// Perform no redirect in this case.
 			$redirect_to = '';
@@ -2637,8 +2648,8 @@ function bp_stop_live_spammer() {
 		$login_url = apply_filters( 'bp_live_spammer_redirect', add_query_arg( $args, wp_login_url() ) );
 
 		// Redirect user to login page.
-		wp_safe_redirect( $login_url );
-		exit;
+		wp_redirect( $login_url );
+		die();
 	}
 }
 add_action( 'bp_init', 'bp_stop_live_spammer', 5 );
@@ -2647,8 +2658,6 @@ add_action( 'bp_init', 'bp_stop_live_spammer', 5 );
  * Show a custom error message when a logged-in user is marked as a spammer.
  *
  * @since 1.8.0
- *
- * @global string $error The error message.
  */
 function bp_live_spammer_login_error() {
 	global $error;
@@ -2664,6 +2673,8 @@ add_action( 'login_form_bp-spam', 'bp_live_spammer_login_error' );
  * Get the displayed user Object
  *
  * @since 2.6.0
+ *
+ * @global BuddyPress $bp The one true BuddyPress instance.
  *
  * @return object The displayed user object, null otherwise.
  */
@@ -2693,7 +2704,7 @@ function bp_get_displayed_user() {
  * @since 2.7.0
  */
 function bp_member_type_tax_name() {
-	echo esc_html( bp_get_member_type_tax_name() );
+	echo bp_get_member_type_tax_name();
 }
 	/**
 	 * Return the slug of the member type taxonomy.
@@ -2748,7 +2759,7 @@ function bp_get_member_type_tax_labels() {
 			'new_item_name'              => _x( 'New Member Type Name', 'Member type taxonomy new item name label', 'buddypress' ),
 			'separate_items_with_commas' => _x( 'Separate member types with commas', 'Member type taxonomy separate items with commas label', 'buddypress' ),
 			'add_or_remove_items'        => _x( 'Add or remove member types', 'Member type taxonomy add or remove items label', 'buddypress' ),
-			'choose_from_most_used'      => _x( 'Choose from the most used member types', 'Member type taxonomy choose from most used label', 'buddypress' ),
+			'choose_from_most_used'      => _x( 'Choose from the most used meber types', 'Member type taxonomy choose from most used label', 'buddypress' ),
 			'not_found'                  => _x( 'No member types found.', 'Member type taxonomy not found label', 'buddypress' ),
 			'no_terms'                   => _x( 'No member types', 'Member type taxonomy no terms label', 'buddypress' ),
 			'items_list_navigation'      => _x( 'Member Types list navigation', 'Member type taxonomy items list navigation label', 'buddypress' ),
@@ -2848,6 +2859,8 @@ add_action( 'bp_register_type_metadata', 'bp_register_member_type_metadata' );
  *
  * @since 2.2.0
  *
+ * @global BuddyPress $bp The one true BuddyPress instance.
+ *
  * @param string $member_type Unique string identifier for the member type.
  * @param array  $args {
  *     Array of arguments describing the member type.
@@ -2918,7 +2931,7 @@ function bp_register_member_type( $member_type, $args = array() ) {
 
 	// Directory slug.
 	if ( $r['has_directory'] ) {
-		// A string value is interpreted as the directory slug. Otherwise fall back on member type.
+		// A string value is intepreted as the directory slug. Otherwise fall back on member type.
 		if ( is_string( $r['has_directory'] ) ) {
 			$directory_slug = $r['has_directory'];
 		} else {
@@ -2973,6 +2986,8 @@ function bp_get_member_type_object( $member_type ) {
  * Get a list of all registered member type objects.
  *
  * @since 2.2.0
+ *
+ * @global BuddyPress $bp The one true BuddyPress instance.
  *
  * @see bp_register_member_type() for accepted arguments.
  *
@@ -3302,6 +3317,8 @@ add_action( 'delete_user', 'bp_remove_member_type_on_delete_user' );
  *
  * @since 2.3.0
  *
+ * @global BuddyPress $bp The one true BuddyPress instance.
+ *
  * @return string
  */
 function bp_get_current_member_type() {
@@ -3373,7 +3390,7 @@ function bp_send_welcome_email( $user_id = 0 ) {
 		return;
 	}
 
-	$profile_url = bp_members_get_user_url( $user_id );
+	$profile_url = bp_core_get_user_domain( $user_id );
 
 	/**
 	 * Use this filter to add/edit/remove tokens to use for your welcome email.
@@ -3451,7 +3468,7 @@ function bp_members_invitations_user_has_sent_invites( $user_id = 0 ) {
  *     @type bool   $send_invite   Optional. Whether the invitation should be
  *                                 sent now. Default: false.
  * }
- * @return bool
+ * @return bool True on success, false on failure.
  */
 function bp_members_invitations_invite_user( $args = array() ) {
 	$r = bp_parse_args(
@@ -3476,7 +3493,7 @@ function bp_members_invitations_invite_user( $args = array() ) {
 		'send_invite'   => $r['send_invite'],
 	);
 
-	// Create the invitation.
+	// Create the invitataion.
 	$invites_class = new BP_Members_Invitation_Manager();
 	$created       = $invites_class->add_invitation( $inv_args );
 
@@ -3499,7 +3516,7 @@ function bp_members_invitations_invite_user( $args = array() ) {
  * @since 8.0.0
  *
  * @param int $id ID of the invitation to resend.
- * @return bool
+ * @return bool True on success, false on failure.
  */
 function bp_members_invitation_resend_by_id( $id = 0 ) {
 

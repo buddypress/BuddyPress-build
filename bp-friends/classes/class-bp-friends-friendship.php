@@ -15,7 +15,6 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 1.0.0
  */
-#[AllowDynamicProperties]
 class BP_Friends_Friendship {
 
 	/**
@@ -133,6 +132,7 @@ class BP_Friends_Friendship {
 	 *
 	 * @since 1.0.0
 	 *
+	 * @global BuddyPress $bp The one true BuddyPress instance.
 	 * @global wpdb $wpdb WordPress database object.
 	 */
 	public function populate() {
@@ -176,9 +176,10 @@ class BP_Friends_Friendship {
 	 *
 	 * @since 1.0.0
 	 *
+	 * @global BuddyPress $bp The one true BuddyPress instance.
 	 * @global wpdb $wpdb WordPress database object.
 	 *
-	 * @return bool
+	 * @return bool True on success, false on failure.
 	 */
 	public function save() {
 		global $wpdb;
@@ -227,6 +228,7 @@ class BP_Friends_Friendship {
 	 *
 	 * @since 1.0.0
 	 *
+	 * @global BuddyPress $bp The one true BuddyPress instance.
 	 * @global wpdb $wpdb WordPress database object.
 	 *
 	 * @return bool|int
@@ -397,6 +399,7 @@ class BP_Friends_Friendship {
 	 *
 	 * @since 2.7.0
 	 *
+	 * @global BuddyPress $bp The one true BuddyPress instance.
 	 * @global wpdb $wpdb WordPress database object.
 	 *
 	 * @param int $user_id ID of the user.
@@ -559,6 +562,7 @@ class BP_Friends_Friendship {
 	 *
 	 * @since 1.0.0
 	 *
+	 * @global BuddyPress $bp The one true BuddyPress instance.
 	 * @global wpdb $wpdb WordPress database object.
 	 *
 	 * @param string   $filter  The search string, matched against xprofile
@@ -663,6 +667,7 @@ class BP_Friends_Friendship {
 	 *
 	 * @since 3.0.0
 	 *
+	 * @global BuddyPress $bp The one true BuddyPress instance.
 	 * @global wpdb $wpdb WordPress database object.
 	 *
 	 * @param int              $user_id             The ID of the primary user for whom we want
@@ -735,7 +740,7 @@ class BP_Friends_Friendship {
 		$last_activities = BP_Core_User::get_last_activity( $user_ids );
 
 		// Sort and structure as expected in legacy function.
-		usort( $last_activities, function ( $a, $b ) {
+		usort( $last_activities, function( $a, $b ) {
 			if ( $a['date_recorded'] === $b['date_recorded'] ) {
 				return 0;
 			}
@@ -760,6 +765,7 @@ class BP_Friends_Friendship {
 	 *
 	 * @since 1.0.0
 	 *
+	 * @global BuddyPress $bp The one true BuddyPress instance.
 	 * @global wpdb $wpdb WordPress database object.
 	 *
 	 * @param int $friendship_id ID of the friendship to be accepted.
@@ -778,6 +784,7 @@ class BP_Friends_Friendship {
 	 *
 	 * @since 1.6.0
 	 *
+	 * @global BuddyPress $bp The one true BuddyPress instance.
 	 * @global wpdb $wpdb WordPress database object.
 	 *
 	 * @param int $friendship_id ID of the friendship to be withdrawn.
@@ -796,6 +803,7 @@ class BP_Friends_Friendship {
 	 *
 	 * @since 1.0.0
 	 *
+	 * @global BuddyPress $bp The one true BuddyPress instance.
 	 * @global wpdb $wpdb WordPress database object.
 	 *
 	 * @param int $friendship_id ID of the friendship to be rejected.
@@ -816,6 +824,7 @@ class BP_Friends_Friendship {
 	 *
 	 * @since 1.0.0
 	 *
+	 * @global BuddyPress $bp The one true BuddyPress instance.
 	 * @global wpdb $wpdb WordPress database object.
 	 *
 	 * @param string   $filter  String to search by.
@@ -865,6 +874,7 @@ class BP_Friends_Friendship {
 	 *
 	 * @since 1.0.0
 	 *
+	 * @global BuddyPress $bp The one true BuddyPress instance.
 	 * @global wpdb $wpdb WordPress database object.
 	 *
 	 * @param string $filter Search term.
@@ -905,6 +915,7 @@ class BP_Friends_Friendship {
 	 *
 	 * @since 1.0.0
 	 *
+	 * @global BuddyPress $bp The one true BuddyPress instance.
 	 * @global wpdb $wpdb WordPress database object.
 	 *
 	 * @param array $user_ids Array of user IDs.
@@ -930,6 +941,7 @@ class BP_Friends_Friendship {
 	 *
 	 * @since 1.0.0
 	 *
+	 * @global BuddyPress $bp The one true BuddyPress instance.
 	 * @global wpdb $wpdb WordPress database object.
 	 *
 	 * @param int $user_id       ID of the user whose friends are being retrieved.
@@ -1022,6 +1034,7 @@ class BP_Friends_Friendship {
 	 *
 	 * @since 2.7.0
 	 *
+	 * @global BuddyPress $bp The one true BuddyPress instance.
 	 * @global wpdb $wpdb WordPress database object.
 	 *
 	 * @param int|string|array $friendship_ids Single friendship ID or comma-separated/array list of friendship IDs.
@@ -1063,6 +1076,7 @@ class BP_Friends_Friendship {
 	 *
 	 * @since 1.0.0
 	 *
+	 * @global BuddyPress $bp The one true BuddyPress instance.
 	 * @global wpdb $wpdb WordPress database object.
 	 *
 	 * @param int $user_id ID of the user being expunged.

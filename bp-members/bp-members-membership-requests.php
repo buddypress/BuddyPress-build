@@ -50,15 +50,8 @@ function bp_members_membership_requests_cancel_activation_email( $send, $user_id
 	 */
 	$send = apply_filters( 'bp_members_membership_requests_bypass_manual_approval', false, $details );
 
-	$invites = bp_members_invitations_get_invites(
-		array(
-			'invitee_email' => $user_email,
-			'invite_sent'   => 'sent'
-		)
-	);
-
-	// If the registration process has been interrupted, this is a new membership request or the user was accepting an invitation and we need not send an activation email.
-	if ( ! $send && ! $invites ) {
+	// If the registration process has been interrupted, this is a new membership request.
+	if ( ! $send ) {
 		$signup = bp_members_get_signup_by( 'activation_key', $activation_key );
 
 		/**
@@ -184,7 +177,7 @@ function bp_members_membership_requests_notify_site_admins( $signup ) {
 
 		// Bail if member opted out of receiving this email.
 		if ( 'no' === bp_get_user_meta( $admin_id, 'notification_members_membership_request', true ) ) {
-			continue;
+			return;
 		}
 
 		$unsubscribe_args = array(
@@ -383,14 +376,14 @@ add_filter( 'bp_members_ms_signup_date_sent_unsent_message', 'bp_members_members
 
 /**
  * Filter/add "Request Membership" links in the following locations:
- * - BP login block widget,
+ * - BP login widget,
  * - Sidebar register link,
  * - WP Toolbar,
  * - WP login form.
  *********************************************************************/
 
 /**
- * Add "Request Membership" link to Block Widget login form.
+ * Add "Request Membership" link to Widget login form.
  *
  * @since 10.0.0
  *
@@ -428,7 +421,7 @@ add_filter( 'register', 'bp_members_membership_requests_filter_sidebar_register_
  *
  * @since 10.0.0
  *
- * @param WP_Admin_Bar $wp_admin_bar WordPress object implementing a Toolbar API.
+ * @param WP_Admin_Bar $wp_admin_bar WP_Admin_Bar instance, passed by reference
  */
 function bp_members_membership_requests_add_toolbar_link( $wp_admin_bar ) {
 	if ( is_user_logged_in() ) {

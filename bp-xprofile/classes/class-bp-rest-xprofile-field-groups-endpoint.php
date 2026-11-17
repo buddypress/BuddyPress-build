@@ -152,7 +152,6 @@ class BP_REST_XProfile_Field_Groups_Endpoint extends WP_REST_Controller {
 			'exclude_groups'         => $request->get_param( 'exclude_groups' ),
 			'exclude_fields'         => $request->get_param( 'exclude_fields' ),
 			'update_meta_cache'      => $request->get_param( 'update_meta_cache' ),
-			'signup_fields_only'     => $request->get_param( 'signup_fields_only' ),
 		);
 
 		if ( empty( $request->get_param( 'member_type' ) ) ) {
@@ -182,16 +181,11 @@ class BP_REST_XProfile_Field_Groups_Endpoint extends WP_REST_Controller {
 		 */
 		$args = apply_filters( 'bp_rest_xprofile_field_groups_get_items_query_args', $args, $request );
 
-		/**
-		 * Actually, query it.
-		 *
-		 * Let's not use `bp_xprofile_get_groups`, since `BP_XProfile_Data_Template` handles signup fields better.
-		 */
-		$template_query = new BP_XProfile_Data_Template( $args );
-		$field_groups   = (array) $template_query->groups;
+		// Actually, query it.
+		$field_groups = bp_xprofile_get_groups( $args );
 
 		$retval = array();
-		foreach ( $field_groups as $item ) {
+		foreach ( (array) $field_groups as $item ) {
 			$retval[] = $this->prepare_response_for_collection(
 				$this->prepare_item_for_response( $item, $request )
 			);
@@ -222,27 +216,16 @@ class BP_REST_XProfile_Field_Groups_Endpoint extends WP_REST_Controller {
 	 * @return true|WP_Error
 	 */
 	public function get_items_permissions_check( $request ) {
-		$retval = new WP_Error(
-			'bp_rest_authorization_required',
-			__( 'Sorry, you are not allowed to perform this action.', 'buddypress' ),
-			array(
-				'status' => rest_authorization_required_code(),
-			)
-		);
-
-		if ( bp_current_user_can( 'bp_view', array( 'bp_component' => 'xprofile' ) ) ) {
-			$retval = true;
-		}
 
 		/**
 		 * Filter the XProfile fields groups `get_items` permissions check.
 		 *
 		 * @since 5.0.0
 		 *
-		 * @param true|WP_Error   $retval  Whether the user has access to xprofile field groups.
+		 * @param true|WP_Error   $retval  Returned value.
 		 * @param WP_REST_Request $request The request sent to the API.
 		 */
-		return apply_filters( 'bp_rest_xprofile_field_groups_get_items_permissions_check', $retval, $request );
+		return apply_filters( 'bp_rest_xprofile_field_groups_get_items_permissions_check', true, $request );
 	}
 
 	/**
@@ -297,17 +280,7 @@ class BP_REST_XProfile_Field_Groups_Endpoint extends WP_REST_Controller {
 	 * @return true|WP_Error
 	 */
 	public function get_item_permissions_check( $request ) {
-		$retval = new WP_Error(
-			'bp_rest_authorization_required',
-			__( 'Sorry, you are not allowed to perform this action.', 'buddypress' ),
-			array(
-				'status' => rest_authorization_required_code(),
-			)
-		);
-
-		if ( bp_current_user_can( 'bp_view', array( 'bp_component' => 'xprofile' ) ) ) {
-			$retval = true;
-		}
+		$retval = $this->get_items_permissions_check( $request );
 
 		/**
 		 * Filter the XProfile fields groups `get_item` permissions check.
@@ -871,14 +844,6 @@ class BP_REST_XProfile_Field_Groups_Endpoint extends WP_REST_Controller {
 
 		$params['fetch_fields'] = array(
 			'description'       => __( 'Whether to fetch the fields for each group.', 'buddypress' ),
-			'default'           => false,
-			'type'              => 'boolean',
-			'sanitize_callback' => 'rest_sanitize_boolean',
-			'validate_callback' => 'rest_validate_request_arg',
-		);
-
-		$params['signup_fields_only'] = array(
-			'description'       => __( 'Whether to only return signup fields.', 'buddypress' ),
 			'default'           => false,
 			'type'              => 'boolean',
 			'sanitize_callback' => 'rest_sanitize_boolean',

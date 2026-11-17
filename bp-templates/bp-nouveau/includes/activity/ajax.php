@@ -3,13 +3,13 @@
  * Activity Ajax functions
  *
  * @since 3.0.0
- * @version 12.0.0
+ * @version 10.0.0
  */
 
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
-add_action( 'admin_init', function () {
+add_action( 'admin_init', function() {
 	$ajax_actions = array(
 		array(
 			'activity_filter' => array(
@@ -103,21 +103,19 @@ function bp_nouveau_ajax_mark_activity_favorite() {
 
 	$activity_id   = (int) $_POST['id'];
 	$activity_item = new BP_Activity_Activity( $activity_id );
-	if ( empty( $activity_item->id ) || ! bp_activity_user_can_read( $activity_item, bp_loggedin_user_id() ) ) {
+	if ( ! bp_activity_user_can_read( $activity_item, bp_loggedin_user_id() ) ) {
 		wp_send_json_error();
 	}
 
-	if ( bp_activity_add_user_favorite( $activity_id ) ) {
+	if ( bp_activity_add_user_favorite( $_POST['id'] ) ) {
 		$response = array( 'content' => __( 'Remove Favorite', 'buddypress' ) );
 
 		if ( ! bp_is_user() ) {
 			$fav_count = (int) bp_get_total_favorite_count_for_user( bp_loggedin_user_id() );
 
 			if ( 1 === $fav_count ) {
-				$activity_favorites_url = bp_loggedin_user_url( bp_members_get_path_chunks( array( bp_nouveau_get_component_slug( 'activity' ), 'favorites' ) ) );
-
 				$response['directory_tab'] = '<li id="activity-favorites" data-bp-scope="favorites" data-bp-object="activity">
-					<a href="' . esc_url( $activity_favorites_url ). '">
+					<a href="' . bp_loggedin_user_domain() . bp_nouveau_get_component_slug( 'activity' ) . '/favorites/">
 						' . esc_html__( 'My Favorites', 'buddypress' ) . '
 					</a>
 				</li>';
@@ -149,9 +147,7 @@ function bp_nouveau_ajax_unmark_activity_favorite() {
 		wp_send_json_error();
 	}
 
-	$activity_id = (int) $_POST['id'];
-
-	if ( bp_activity_remove_user_favorite( $activity_id ) ) {
+	if ( bp_activity_remove_user_favorite( $_POST['id'] ) ) {
 		$response = array( 'content' => __( 'Mark as Favorite', 'buddypress' ) );
 
 		$fav_count = (int) bp_get_total_favorite_count_for_user( bp_loggedin_user_id() );
@@ -271,7 +267,7 @@ function bp_nouveau_ajax_delete_activity() {
 
 	// If on a single activity redirect to user's home.
 	if ( ! empty( $_POST['is_single'] ) ) {
-		$response['redirect'] = bp_members_get_user_url( $activity->user_id );
+		$response['redirect'] = bp_core_get_user_domain( $activity->user_id );
 		bp_core_add_message( __( 'Activity deleted successfully', 'buddypress' ) );
 	}
 
@@ -351,7 +347,7 @@ function bp_nouveau_ajax_get_single_activity_content() {
  *
  * @since 3.0.0
  *
- * @global BP_Activity_Template $activities_template The main activity template loop class.
+ * @global BP_Activity_Template $activities_template
  *
  * @return string JSON reply
  */
@@ -674,7 +670,7 @@ function bp_nouveau_ajax_spam_activity() {
 
 	// If on a single activity redirect to user's home.
 	if ( ! empty( $_POST['is_single'] ) ) {
-		$response['redirect'] = bp_members_get_user_url( $activity->user_id );
+		$response['redirect'] = bp_core_get_user_domain( $activity->user_id );
 		bp_core_add_message( __( 'This activity has been marked as spam and is no longer visible.', 'buddypress' ) );
 	}
 

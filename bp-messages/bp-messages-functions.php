@@ -214,7 +214,7 @@ function messages_new_message( $args = '' ) {
  *
  * @param string $subject Subject of the notice.
  * @param string $message Content of the notice.
- * @return bool
+ * @return bool True on success, false on failure.
  */
 function messages_send_notice( $subject, $message ) {
 
@@ -256,7 +256,7 @@ function messages_send_notice( $subject, $message ) {
  * @param int|array $thread_ids Thread ID or array of thread IDs.
  * @param int       $user_id    ID of the user to delete the threads for. Defaults
  *                              to the current logged-in user.
- * @return bool
+ * @return bool True on success, false on failure.
  */
 function messages_delete_thread( $thread_ids, $user_id = 0 ) {
 
@@ -432,6 +432,7 @@ function messages_is_valid_thread( $thread_id ) {
  *
  * @since 2.3.0
  *
+ * @global BuddyPress $bp The one true BuddyPress instance.
  * @global wpdb $wpdb WordPress database object.
  *
  * @param  int $message_id ID of the message.
@@ -462,7 +463,8 @@ function messages_get_message_thread_id( $message_id = 0 ) {
  * @param string|bool $meta_key   Meta key to delete. Default false.
  * @param string|bool $meta_value Meta value to delete. Default false.
  * @param bool        $delete_all Whether or not to delete all meta data.
- * @return bool
+ *
+ * @return bool True on successful delete, false on failure.
  */
 function bp_messages_delete_meta( $message_id, $meta_key = false, $meta_value = false, $delete_all = false ) {
 	global $wpdb;
@@ -625,12 +627,7 @@ function messages_notification_new_message( $raw_args = array() ) {
 		bp_send_email( 'messages-unread', $ud, array(
 			'tokens' => array(
 				'usermessage' => wp_strip_all_tags( stripslashes( $message ) ),
-				'message.url' => esc_url(
-					bp_members_get_user_url(
-						$recipient->user_id,
-						bp_members_get_path_chunks( array( bp_get_messages_slug(), 'view', array( $thread_id ) ) )
-					)
-				),
+				'message.url' => esc_url( bp_core_get_user_domain( $recipient->user_id ) . bp_get_messages_slug() . '/view/' . $thread_id . '/' ),
 				'sender.name' => $sender_name,
 				'usersubject' => sanitize_text_field( stripslashes( $subject ) ),
 				'unsubscribe' => esc_url( bp_email_get_unsubscribe_link( $unsubscribe_args ) ),
@@ -813,7 +810,7 @@ function bp_messages_dismiss_sitewide_notice( $user_id = 0, $notice_id = 0 ) {
  * @param int|array $thread_ids Thread ID or array of thread IDs.
  * @param int       $user_id    ID of the user to delete the threads for. Defaults
  *                              to the current logged-in user.
- * @return bool
+ * @return bool True on success, false on failure.
  */
 function bp_messages_exit_thread( $thread_ids, $user_id = 0 ) {
 

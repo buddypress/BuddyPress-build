@@ -22,18 +22,12 @@ function bp_activity_screen_favorites() {
 	 */
 	do_action( 'bp_activity_screen_favorites' );
 
-	$templates = array(
-		/**
-		 * Filters the template to load for the "Favorites" screen.
-		 *
-		 * @since 1.2.0
-		 *
-		 * @param string $template Path to the activity template to load.
-		 */
-		apply_filters( 'bp_activity_template_favorite_activity', 'members/single/home' ),
-		'members/single/index',
-	);
-
-
-	bp_core_load_template( $templates );
+	/**
+	 * Filters the template to load for the "Favorites" screen.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @param string $template Path to the activity template to load.
+	 */
+	bp_core_load_template( apply_filters( 'bp_activity_template_favorite_activity', 'members/single/home' ) );
 }

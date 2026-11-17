@@ -3,7 +3,7 @@
  * BP Nouveau Messages
  *
  * @since 3.0.0
- * @version 12.0.0
+ * @version 10.0.0
  */
 
 // Exit if accessed directly.
@@ -14,7 +14,6 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 3.0.0
  */
-#[AllowDynamicProperties]
 class BP_Nouveau_Messages {
 	/**
 	 * Constructor
@@ -52,7 +51,7 @@ class BP_Nouveau_Messages {
 
 		// Load AJAX code only on AJAX requests.
 		} else {
-			add_action( 'admin_init', function () {
+			add_action( 'admin_init', function() {
 				if ( defined( 'DOING_AJAX' ) && true === DOING_AJAX && 0 === strpos( $_REQUEST['action'], 'messages_' ) ) {
 					require bp_nouveau()->messages->dir . 'ajax.php';
 				}
@@ -66,14 +65,9 @@ class BP_Nouveau_Messages {
 	 * @since 3.0.0
 	 */
 	protected function setup_actions() {
-		add_action( 'bp_init', 'bp_nouveau_register_messages_ajax_actions' );
-
-		$hook = 'bp_parse_query';
-		if ( 'rewrites' !== bp_core_get_query_parser() ) {
-			$hook = 'bp_init';
-		}
-
-		add_action( $hook, 'bp_nouveau_push_sitewide_notices', 99 );
+		// Notices
+		add_action( 'widgets_init', 'bp_nouveau_unregister_notices_widget' );
+		add_action( 'bp_init', 'bp_nouveau_push_sitewide_notices', 99 );
 
 		// Messages
 		add_action( 'bp_messages_setup_nav', 'bp_nouveau_messages_adjust_nav' );

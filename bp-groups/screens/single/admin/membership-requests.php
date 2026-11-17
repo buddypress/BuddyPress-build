@@ -16,11 +16,11 @@ function groups_screen_group_admin_requests() {
 	$bp = buddypress();
 
 	if ( 'membership-requests' != bp_get_group_current_admin_tab() ) {
-		return;
+		return false;
 	}
 
-	if ( ! bp_is_item_admin() || ( 'public' === $bp->groups->current_group->status ) ) {
-		return;
+	if ( ! bp_is_item_admin() || ( 'public' == $bp->groups->current_group->status ) ) {
+		return false;
 	}
 
 	$request_action = isset( $_GET['action'] ) ? $_GET['action'] : false;
@@ -32,7 +32,7 @@ function groups_screen_group_admin_requests() {
 
 			// Check the nonce first.
 			if ( ! check_admin_referer( 'groups_accept_membership_request' ) ) {
-				return;
+				return false;
 			}
 
 			// Accept the membership request.
@@ -45,7 +45,7 @@ function groups_screen_group_admin_requests() {
 		} elseif ( 'reject' === $request_action ) {
 			/* Check the nonce first. */
 			if ( ! check_admin_referer( 'groups_reject_membership_request' ) ) {
-				return;
+				return false;
 			}
 
 			// Reject the membership request.
@@ -71,13 +71,7 @@ function groups_screen_group_admin_requests() {
 		 * @param int    $group_id       The ID of the requested group.
 		 */
 		do_action( 'groups_group_request_managed', $bp->groups->current_group->id, $request_action, $membership_id, $user_id, $group_id );
-
-		$redirect = bp_get_group_manage_url(
-			groups_get_current_group(),
-			bp_groups_get_path_chunks( array( 'membership-requests' ), 'manage' )
-		);
-
-		bp_core_redirect( $redirect );
+		bp_core_redirect( bp_get_group_permalink( groups_get_current_group() ) . 'admin/membership-requests/' );
 	}
 
 	/**
@@ -89,18 +83,13 @@ function groups_screen_group_admin_requests() {
 	 */
 	do_action( 'groups_screen_group_admin_requests', $bp->groups->current_group->id );
 
-	$templates = array(
-		/**
-		 * Filters the template to load for a group's membership request page.
-		 *
-		 * @since 1.0.0
-		 *
-		 * @param string $value Path to a group's membership request template.
-		 */
-		apply_filters( 'groups_template_group_admin_requests', 'groups/single/home' ),
-		'groups/single/index',
-	);
-
-	bp_core_load_template( $templates );
+	/**
+	 * Filters the template to load for a group's membership request page.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $value Path to a group's membership request template.
+	 */
+	bp_core_load_template( apply_filters( 'groups_template_group_admin_requests', 'groups/single/home' ) );
 }
 add_action( 'bp_screens', 'groups_screen_group_admin_requests' );

@@ -16,7 +16,7 @@ function bp_core_screen_activation() {
 
 	// Bail if not viewing the activation page.
 	if ( ! bp_is_current_component( 'activate' ) ) {
-		return;
+		return false;
 	}
 
 	// If the user is already logged in, redirect away from here.
@@ -26,7 +26,7 @@ function bp_core_screen_activation() {
 		// avoid an infinite loop. Otherwise, set to root domain.
 		$redirect_to = bp_is_component_front_page( 'activate' )
 			? bp_get_members_directory_permalink()
-			: bp_get_root_url();
+			: bp_get_root_domain();
 
 		// Trailing slash it, as we expect these URL's to be.
 		$redirect_to = trailingslashit( $redirect_to );
@@ -44,17 +44,17 @@ function bp_core_screen_activation() {
 		bp_core_redirect( $redirect_to );
 	}
 
+	// Get BuddyPress.
+	$bp = buddypress();
+
 	/**
 	 * Filters the template to load for the Member activation page screen.
 	 *
 	 * @since 1.1.1
 	 *
-	 * @param string[] $value Path to the list of Member activation template to load.
+	 * @param string $value Path to the Member activation template to load.
 	 */
-	$templates   = apply_filters( 'bp_core_template_activate', array( 'activate', 'registration/activate' ) );
-	$templates[] = 'members/activate';
-
-	bp_core_load_template( $templates );
+	bp_core_load_template( apply_filters( 'bp_core_template_activate', array( 'activate', 'registration/activate' ) ) );
 }
 add_action( 'bp_screens', 'bp_core_screen_activation' );
 
@@ -85,6 +85,7 @@ function bp_members_action_activate_account() {
 		return;
 	}
 
+	$bp       = buddypress();
 	$redirect = bp_get_activation_page();
 
 	/**
@@ -124,5 +125,6 @@ function bp_members_action_activate_account() {
 
 	bp_core_add_message( __( 'Your account is now active!', 'buddypress' ) );
 	bp_core_redirect( add_query_arg( 'activated', '1', $redirect ) );
+
 }
 add_action( 'bp_actions', 'bp_members_action_activate_account' );

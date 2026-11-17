@@ -1,20 +1,16 @@
 <?php
 /**
- * Email delivery implementation using PHPMailer.
+ * Core component classes.
  *
  * @package BuddyPress
  * @subpackage Core
- *
- * @phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
- * @phpcs:disable Generic.CodeAnalysis.EmptyStatement.DetectedCatch
- * @phpcs:disable Squiz.Commenting.EmptyCatchComment.Missing
  */
 
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
 /**
- * BP_PHPMailer class.
+ * Email delivery implementation using PHPMailer.
  *
  * @since 2.5.0
  */
@@ -72,7 +68,7 @@ class BP_PHPMailer implements BP_Email_Delivery {
 		 * Content.
 		 */
 		$phpmailer->Subject = $email->get_subject( 'replace-tokens' );
-		$content_plaintext  = PHPMailer\PHPMailer\PHPMailer::normalizeBreaks( $email->get_content_plaintext( 'replace-tokens' ) );
+		$content_plaintext = PHPMailer\PHPMailer\PHPMailer::normalizeBreaks( $email->get_content_plaintext( 'replace-tokens' ) );
 
 		if ( $email->get( 'content_type' ) === 'html' ) {
 			$phpmailer->msgHTML( $email->get_template( 'add-content' ) );
@@ -143,11 +139,14 @@ class BP_PHPMailer implements BP_Email_Delivery {
 		}
 	}
 
+	/*
+	 * Utility/helper functions.
+	 */
+
 	/**
 	 * Get an appropriate hostname for the email. Varies depending on site configuration.
 	 *
 	 * @since 2.5.0
-	 *
 	 * @deprecated 2.5.3 No longer used.
 	 *
 	 * @return string

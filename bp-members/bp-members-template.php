@@ -18,7 +18,7 @@ defined( 'ABSPATH' ) || exit;
  * @since 2.4.0
  */
 function bp_profile_slug() {
-	echo esc_attr( bp_get_profile_slug() );
+	echo bp_get_profile_slug();
 }
 	/**
 	 * Return the profile component slug.
@@ -45,7 +45,7 @@ function bp_profile_slug() {
  * @since 1.5.0
  */
 function bp_members_slug() {
-	echo esc_attr( bp_get_members_slug() );
+	echo bp_get_members_slug();
 }
 	/**
 	 * Return the members component slug.
@@ -72,7 +72,7 @@ function bp_members_slug() {
  * @since 1.5.0
  */
 function bp_members_root_slug() {
-	echo esc_attr( bp_get_members_root_slug() );
+	echo bp_get_members_root_slug();
 }
 	/**
 	 * Return the members component root slug.
@@ -99,7 +99,7 @@ function bp_members_root_slug() {
  * @since 2.5.0
  */
 function bp_members_member_type_base() {
-	echo esc_attr( bp_get_members_member_type_base() );
+	echo esc_url( bp_get_members_member_type_base() );
 }
 	/**
 	 * Get the member type URL base.
@@ -140,20 +140,15 @@ function bp_members_directory_permalink() {
 	 * @return string
 	 */
 	function bp_get_members_directory_permalink() {
-		$url = bp_rewrites_get_url(
-			array(
-				'component_id' => 'members',
-			)
-		);
 
 		/**
 		 * Filters the member directory permalink.
 		 *
 		 * @since 1.5.0
 		 *
-		 * @param string $url Members directory permalink.
+		 * @param string $value Members directory permalink.
 		 */
-		return apply_filters( 'bp_get_members_directory_permalink', $url );
+		return apply_filters( 'bp_get_members_directory_permalink', trailingslashit( bp_get_root_domain() . '/' . bp_get_members_root_slug() ) );
 	}
 
 /**
@@ -190,23 +185,16 @@ function bp_member_type_directory_permalink( $member_type = '' ) {
 			return '';
 		}
 
-		$url = bp_rewrites_get_url(
-			array(
-				'component_id'   => 'members',
-				'directory_type' => $type->directory_slug,
-			)
-		);
-
 		/**
 		 * Filters the member type directory permalink.
 		 *
 		 * @since 2.5.0
 		 *
-		 * @param string $url         Member type directory permalink.
+		 * @param string $value       Member type directory permalink.
 		 * @param object $type        Member type object.
 		 * @param string $member_type Member type name, as passed to the function.
 		 */
-		return apply_filters( 'bp_get_member_type_directory_permalink', $url, $type, $member_type );
+		return apply_filters( 'bp_get_member_type_directory_permalink', trailingslashit( bp_get_members_directory_permalink() . bp_get_members_member_type_base() . '/' . $type->directory_slug ), $type, $member_type );
 	}
 
 /**
@@ -215,21 +203,26 @@ function bp_member_type_directory_permalink( $member_type = '' ) {
  * @since 1.5.0
  */
 function bp_signup_slug() {
-	echo esc_attr( bp_get_signup_slug() );
+	echo bp_get_signup_slug();
 }
 	/**
 	 * Return the sign-up slug.
 	 *
 	 * @since 1.5.0
 	 *
+	 * @global BuddyPress $bp The one true BuddyPress instance.
+	 *
 	 * @return string
 	 */
 	function bp_get_signup_slug() {
-		$bp   = buddypress();
-		$slug = 'register';
+		$bp = buddypress();
 
 		if ( ! empty( $bp->pages->register->slug ) ) {
 			$slug = $bp->pages->register->slug;
+		} elseif ( defined( 'BP_REGISTER_SLUG' ) ) {
+			$slug = BP_REGISTER_SLUG;
+		} else {
+			$slug = 'register';
 		}
 
 		/**
@@ -248,21 +241,26 @@ function bp_signup_slug() {
  * @since 1.5.0
  */
 function bp_activate_slug() {
-	echo esc_attr( bp_get_activate_slug() );
+	echo bp_get_activate_slug();
 }
 	/**
 	 * Return the activation slug.
 	 *
 	 * @since 1.5.0
 	 *
+	 * @global BuddyPress $bp The one true BuddyPress instance.
+	 *
 	 * @return string
 	 */
 	function bp_get_activate_slug() {
-		$bp   = buddypress();
-		$slug = 'activate';
+		$bp = buddypress();
 
 		if ( ! empty( $bp->pages->activate->slug ) ) {
 			$slug = $bp->pages->activate->slug;
+		} elseif ( defined( 'BP_ACTIVATION_SLUG' ) ) {
+			$slug = BP_ACTIVATION_SLUG;
+		} else {
+			$slug = 'activate';
 		}
 
 		/**
@@ -281,7 +279,7 @@ function bp_activate_slug() {
  * @since 8.0.0
  */
 function bp_members_invitations_slug() {
-	echo esc_attr( bp_get_members_invitations_slug() );
+	echo bp_get_members_invitations_slug();
 }
 	/**
 	 * Return the members invitations root slug.
@@ -313,7 +311,7 @@ function bp_members_invitations_slug() {
  * @since 7.0.0 Added `xprofile_query` parameter. Added `user_ids` parameter.
  * @since 10.0.0 Added `date_query` parameter.
  *
- * @global BP_Core_Members_Template $members_template The main member template loop class.
+ * @global BP_Core_Members_Template $members_template
  *
  * @param array|string $args {
  *     Arguments for limiting the contents of the members loop. Most arguments
@@ -460,7 +458,7 @@ function bp_has_members( $args = '' ) {
  *
  * @since 1.2.0
  *
- * @global BP_Core_Members_Template $members_template The main member template loop class.
+ * @global BP_Core_Members_Template $members_template
  *
  * @return object
  */
@@ -474,7 +472,7 @@ function bp_the_member() {
  *
  * @since 1.2.0
  *
- * @global BP_Core_Members_Template $members_template The main member template loop class.
+ * @global BP_Core_Members_Template $members_template
  *
  * @return bool
  */
@@ -489,14 +487,14 @@ function bp_members() {
  * @since 1.2.0
  */
 function bp_members_pagination_count() {
-	echo esc_html( bp_get_members_pagination_count() );
+	echo bp_get_members_pagination_count();
 }
 	/**
 	 * Generate the members pagination count.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @global BP_Core_Members_Template $members_template The main member template loop class.
+	 * @global BP_Core_Members_Template $members_template
 	 *
 	 * @return string
 	 */
@@ -558,8 +556,6 @@ function bp_members_pagination_count() {
  * @since 1.2.0
  */
 function bp_members_pagination_links() {
-	// Escaping is done in WordPress's `paginate_links()` function.
-	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo bp_get_members_pagination_links();
 }
 	/**
@@ -567,7 +563,7 @@ function bp_members_pagination_links() {
 	 *
 	 * @since 1.2.0
 	 *
-	 * @global BP_Core_Members_Template $members_template The main member template loop class.
+	 * @global BP_Core_Members_Template $members_template
 	 *
 	 * @return string
 	 */
@@ -590,14 +586,14 @@ function bp_members_pagination_links() {
  * @since 1.2.0
  */
 function bp_member_user_id() {
-	echo intval( bp_get_member_user_id() );
+	echo bp_get_member_user_id();
 }
 	/**
 	 * Get the ID of the current member in the loop.
 	 *
 	 * @since 1.2.0
 	 *
-	 * @global BP_Core_Members_Template $members_template The main member template loop class.
+	 * @global BP_Core_Members_Template $members_template
 	 *
 	 * @return int Member ID.
 	 */
@@ -626,7 +622,6 @@ function bp_member_user_id() {
  * @param array $classes Array of custom classes.
  */
 function bp_member_class( $classes = array() ) {
-	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo bp_get_member_class( $classes );
 }
 	/**
@@ -634,7 +629,7 @@ function bp_member_class( $classes = array() ) {
 	 *
 	 * @since 1.7.0
 	 *
-	 * @global BP_Core_Members_Template $members_template The main member template loop class.
+	 * @global BP_Core_Members_Template $members_template
 	 *
 	 * @param array $classes Array of custom classes.
 	 *
@@ -675,7 +670,7 @@ function bp_member_class( $classes = array() ) {
 		// Add current user member types.
 		if ( $member_types = bp_get_member_type( $members_template->member->id, false ) ) {
 			foreach ( $member_types as $member_type ) {
-				$classes[] = sprintf( 'member-type-%s', $member_type );
+				$classes[] = sprintf( 'member-type-%s', esc_attr( $member_type ) );
 			}
 		}
 
@@ -684,9 +679,9 @@ function bp_member_class( $classes = array() ) {
 		 *
 		 * @since 1.7.0
 		 *
-		 * @param array $classes Classes to be added to the HTML element.
+		 * @param string $classes Classes to be added to the HTML element.
 		 */
-		$classes = array_map( 'sanitize_html_class', apply_filters( 'bp_get_member_class', $classes ) );
+		$classes = apply_filters( 'bp_get_member_class', $classes );
 		$classes = array_merge( $classes, array() );
 		$retval  = 'class="' . join( ' ', $classes ) . '"';
 
@@ -699,14 +694,14 @@ function bp_member_class( $classes = array() ) {
  * @since 1.2.5
  */
 function bp_member_user_nicename() {
-	echo esc_html( bp_get_member_user_nicename() );
+	echo bp_get_member_user_nicename();
 }
 	/**
 	 * Get the nicename of the current member in the loop.
 	 *
 	 * @since 1.2.5
 	 *
-	 * @global BP_Core_Members_Template $members_template The main member template loop class.
+	 * @global BP_Core_Members_Template $members_template
 	 *
 	 * @return string Members nicename.
 	 */
@@ -729,14 +724,14 @@ function bp_member_user_nicename() {
  * @since 1.2.5
  */
 function bp_member_user_login() {
-	echo esc_html( bp_get_member_user_login() );
+	echo bp_get_member_user_login();
 }
 	/**
 	 * Get the login of the current member in the loop.
 	 *
 	 * @since 1.2.5
 	 *
-	 * @global BP_Core_Members_Template $members_template The main member template loop class.
+	 * @global BP_Core_Members_Template $members_template
 	 *
 	 * @return string Member's login.
 	 */
@@ -759,14 +754,14 @@ function bp_member_user_login() {
  * @since 1.2.5
  */
 function bp_member_user_email() {
-	echo esc_html( bp_get_member_user_email() );
+	echo bp_get_member_user_email();
 }
 	/**
 	 * Get the email address of the current member in the loop.
 	 *
 	 * @since 1.2.5
 	 *
-	 * @global BP_Core_Members_Template $members_template The main member template loop class.
+	 * @global BP_Core_Members_Template $members_template
 	 *
 	 * @return string Member's email address.
 	 */
@@ -813,7 +808,6 @@ function bp_member_is_loggedin_user() {
  * @param array|string $args See {@link bp_get_member_avatar()}.
  */
 function bp_member_avatar( $args = '' ) {
-	// phpcs:disable WordPress.Security.EscapeOutput
 
 	/**
 	 * Filters a members avatar.
@@ -825,14 +819,13 @@ function bp_member_avatar( $args = '' ) {
 	 * @param array|string $args  See {@link bp_get_member_avatar()}.
 	 */
 	echo apply_filters( 'bp_member_avatar', bp_get_member_avatar( $args ), $args );
-	// phpcs:enable
 }
 	/**
 	 * Get a member's avatar.
 	 *
 	 * @since 1.2.0
 	 *
-	 * @global BP_Core_Members_Template $members_template The main member template loop class.
+	 * @global BP_Core_Members_Template $members_template
 	 *
 	 * @see bp_core_fetch_avatar() For a description of arguments and
 	 *      return values.
@@ -911,14 +904,18 @@ function bp_member_permalink() {
 	 *
 	 * @since 1.2.0
 	 *
-	 * @global BP_Core_Members_Template $members_template The main member template loop class.
+	 * @global BP_Core_Members_Template $members_template
 	 *
 	 * @return string
 	 */
 	function bp_get_member_permalink() {
 		global $members_template;
 
-		$permalink = bp_members_get_user_url( $members_template->member->id );
+		$permalink = bp_core_get_user_domain(
+			$members_template->member->id,
+			$members_template->member->user_nicename,
+			$members_template->member->user_login
+		);
 
 		/**
 		 * Filters the permalink for the current member in the loop.
@@ -954,7 +951,6 @@ function bp_member_permalink() {
  * @since 1.2.0
  */
 function bp_member_name() {
-	// phpcs:disable WordPress.Security.EscapeOutput
 
 	/**
 	 * Filters the display name of current member in the loop.
@@ -964,7 +960,6 @@ function bp_member_name() {
 	 * @param string $value Display name for current member.
 	 */
 	echo apply_filters( 'bp_member_name', bp_get_member_name() );
-	// phpcs:enable
 }
 	/**
 	 * Get the display name of the current member in the loop.
@@ -976,7 +971,7 @@ function bp_member_name() {
 	 *
 	 * @since 1.2.0
 	 *
-	 * @global BP_Core_Members_Template $members_template The main member template loop class.
+	 * @global BP_Core_Members_Template $members_template
 	 *
 	 * @return string The user's fullname for display.
 	 */
@@ -1012,7 +1007,7 @@ function bp_member_name() {
 	}
 	add_filter( 'bp_get_member_name', 'wp_filter_kses' );
 	add_filter( 'bp_get_member_name', 'stripslashes'   );
-	add_filter( 'bp_get_member_name', 'wp_strip_all_tags' );
+	add_filter( 'bp_get_member_name', 'strip_tags'     );
 	add_filter( 'bp_get_member_name', 'esc_html'       );
 
 /**
@@ -1023,7 +1018,7 @@ function bp_member_name() {
  * @param array $args {@see bp_get_member_last_active()}.
  */
 function bp_member_last_active( $args = array() ) {
-	echo esc_html( bp_get_member_last_active( $args ) );
+	echo bp_get_member_last_active( $args );
 }
 	/**
 	 * Return the current member's last active time.
@@ -1031,7 +1026,7 @@ function bp_member_last_active( $args = array() ) {
 	 * @since 1.2.0
 	 * @since 2.7.0 Added 'relative' as a parameter to $args.
 	 *
-	 * @global BP_Core_Members_Template $members_template The main member template loop class.
+	 * @global BP_Core_Members_Template $members_template
 	 *
 	 * @param array $args {
 	 *     Array of optional arguments.
@@ -1097,7 +1092,6 @@ function bp_member_last_active( $args = array() ) {
  * @param array|string $args {@see bp_get_member_latest_update()}.
  */
 function bp_member_latest_update( $args = '' ) {
-	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo bp_get_member_latest_update( $args );
 }
 	/**
@@ -1105,7 +1099,7 @@ function bp_member_latest_update( $args = '' ) {
 	 *
 	 * @since 1.2.0
 	 *
-	 * @global BP_Core_Members_Template $members_template The main member template loop class.
+	 * @global BP_Core_Members_Template $members_template
 	 *
 	 * @param array|string $args {
 	 *     Array of optional arguments.
@@ -1118,47 +1112,20 @@ function bp_member_latest_update( $args = '' ) {
 	function bp_get_member_latest_update( $args = '' ) {
 		global $members_template;
 
-		if ( ! bp_is_active( 'activity' ) ) {
-			return '';
-		}
+		$defaults = array(
+			'length'    => 225,
+			'view_link' => true,
+		);
 
 		$r = bp_parse_args(
 			$args,
-			array(
-				'length'    => 225,
-				'view_link' => true,
-			),
-			'member_latest_update'
+			$defaults
 		);
 
-		$length    = (int) $r['length'];
-		$view_link = (bool) $r['view_link'];
+		extract( $r );
 
-		// Init default update.
-		$update_content = '';
-		$update         = array(
-			'id'        => 0,
-			'content'   => '',
-			'excerpt'   => '',
-			'permalink' => '',
-		);
-
-		if ( ! empty( $members_template->member->latest_update ) ) {
-			$update = maybe_unserialize( $members_template->member->latest_update );
-		}
-
-		if ( ! empty( $update['content'] ) ) {
-			$excerpt           = wp_strip_all_tags( bp_create_excerpt( $update['content'], $length ) );
-			$update['content'] = wp_strip_all_tags( $update['content'] );
-			$update['excerpt'] = $excerpt;
-		} else {
-			$excerpt = '';
-		}
-
-		if ( isset( $update['id'] ) ) {
-			$activity_id = (int) $update['id'];
-			$update['permalink'] = bp_activity_get_permalink( $activity_id );
-		}
+		if ( !bp_is_active( 'activity' ) || empty( $members_template->member->latest_update ) || !$update = maybe_unserialize( $members_template->member->latest_update ) )
+			return false;
 
 		/**
 		 * Filters the excerpt of the latest update for current member in the loop.
@@ -1166,28 +1133,20 @@ function bp_member_latest_update( $args = '' ) {
 		 * @since 1.2.5
 		 * @since 2.6.0 Added the `$r` parameter.
 		 *
-		 * @param string $excerpt Excerpt of the latest update for current member in the loop.
-		 * @param array  $r       Array of parsed arguments.
+		 * @param string $value Excerpt of the latest update for current member in the loop.
+		 * @param array  $r     Array of parsed arguments.
 		 */
-		$excerpt = apply_filters( 'bp_get_activity_latest_update_excerpt', $excerpt, $r );
+		$update_content = apply_filters( 'bp_get_activity_latest_update_excerpt', trim( strip_tags( bp_create_excerpt( $update['content'], $length ) ) ), $r );
 
-		// If we have an excerpt, set its output and eventually add a link to view the full activity.
-		if ( $excerpt ) {
-			/* translators: %s: the member latest activity update */
-			$update_content = sprintf( _x( '- &quot;%s&quot;', 'member latest update in member directory', 'buddypress' ), $excerpt );
+		/* translators: %s: the member latest activity update */
+		$update_content = sprintf( _x( '- &quot;%s&quot;', 'member latest update in member directory', 'buddypress' ), $update_content );
 
-			/*
-			* If `$view_link` is true and the text returned by `bp_create_excerpt()` is different
-			* from the original text (ie it's been truncated), add the "View" link.
-			*/
-			if ( $view_link && $update['permalink'] && ( strlen( $excerpt ) < strlen( $update['content'] ) ) ) {
-				$update_content      = sprintf(
-					'%1$s<span class="activity-read-more"><a href="%2$s" rel="nofollow">%3$s</a></span>',
-					$update_content . "\n",
-					esc_url( $update['permalink'] ),
-					esc_html__( 'View', 'buddypress' )
-				);
-			}
+		// If $view_link is true and the text returned by bp_create_excerpt() is different from the original text (ie it's
+		// been truncated), add the "View" link.
+		if ( $view_link && ( $update_content != $update['content'] ) ) {
+			$view = __( 'View', 'buddypress' );
+
+			$update_content .= '<span class="activity-read-more"><a href="' . bp_activity_get_permalink( $update['id'] ) . '" rel="nofollow">' . $view . '</a></span>';
 		}
 
 		/**
@@ -1195,13 +1154,11 @@ function bp_member_latest_update( $args = '' ) {
 		 *
 		 * @since 1.2.0
 		 * @since 2.6.0 Added the `$r` parameter.
-		 * @since 12.0.0 Added the `$update` parameter.
 		 *
 		 * @param string $update_content Formatted latest update for current member.
 		 * @param array  $r              Array of parsed arguments.
-		 * @param array  $update         Array of the latest activity data.
 		 */
-		return apply_filters( 'bp_get_member_latest_update', $update_content, $r, $update );
+		return apply_filters( 'bp_get_member_latest_update', $update_content, $r );
 	}
 
 /**
@@ -1214,7 +1171,6 @@ function bp_member_latest_update( $args = '' ) {
  * @param array|string $args See {@link bp_get_member_profile_data()}.
  */
 function bp_member_profile_data( $args = '' ) {
-	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo bp_get_member_profile_data( $args );
 }
 	/**
@@ -1226,7 +1182,7 @@ function bp_member_profile_data( $args = '' ) {
 	 *
 	 * @since 1.2.0
 	 *
-	 * @global BP_Core_Members_Template $members_template The main member template loop class.
+	 * @global BP_Core_Members_Template $members_template
 	 *
 	 * @param array|string $args {
 	 *     Array of config parameters.
@@ -1323,7 +1279,7 @@ function bp_member_profile_data( $args = '' ) {
  * @param array $args Optional. {@see bp_get_member_registered()}.
  */
 function bp_member_registered( $args = array() ) {
-	echo esc_html( bp_get_member_registered( $args ) );
+	echo bp_get_member_registered( $args );
 }
 	/**
 	 * Get the 'registered [x days ago]' string for the current member.
@@ -1331,7 +1287,7 @@ function bp_member_registered( $args = array() ) {
 	 * @since 1.2.0
 	 * @since 2.7.0 Added `$args` as a parameter.
 	 *
-	 * @global BP_Core_Members_Template $members_template The main member template loop class.
+	 * @global BP_Core_Members_Template $members_template
 	 *
 	 * @param array $args {
 	 *     Array of optional parameters.
@@ -1377,15 +1333,11 @@ function bp_member_registered( $args = array() ) {
  * @since 10.0.0 Updated to get member ID using `bp_get_member_user_id`.
  */
 function bp_member_random_profile_data() {
-	if ( bp_is_active( 'xprofile' ) ) {
-		$random_data = xprofile_get_random_profile_data( bp_get_member_user_id(), true );
-		// phpcs:disable WordPress.Security.EscapeOutput
-		?>
+	if ( bp_is_active( 'xprofile' ) ) { ?>
+		<?php $random_data = xprofile_get_random_profile_data( bp_get_member_user_id(), true ); ?>
 			<strong><?php echo wp_filter_kses( $random_data[0]->name ) ?></strong>
 			<?php echo wp_filter_kses( $random_data[0]->value ) ?>
-		<?php
-		// phpcs:enable
-	}
+	<?php }
 }
 
 /**
@@ -1426,21 +1378,17 @@ function bp_directory_members_search_form() {
 
 	$search_form_html = '<form action="" method="get" id="search-members-form">
 		<label for="members_search"><input type="text" name="' . esc_attr( $query_arg ) . '" id="members_search" placeholder="'. esc_attr( $search_value ) .'" /></label>
-		<input type="submit" id="members_search_submit" name="members_search_submit" value="' . esc_html__( 'Search', 'buddypress' ) . '" />
+		<input type="submit" id="members_search_submit" name="members_search_submit" value="' . __( 'Search', 'buddypress' ) . '" />
 	</form>';
 
-	// phpcs:ignore WordPress.Security.EscapeOutput
-	echo apply_filters(
-		/**
-		 * Filters the Members component search form.
-		 *
-		 * @since 1.9.0
-		 *
-		 * @param string $search_form_html HTML markup for the member search form.
-		 */
-		'bp_directory_members_search_form',
-		$search_form_html
-	);
+	/**
+	 * Filters the Members component search form.
+	 *
+	 * @since 1.9.0
+	 *
+	 * @param string $search_form_html HTML markup for the member search form.
+	 */
+	echo apply_filters( 'bp_directory_members_search_form', $search_form_html );
 }
 
 /**
@@ -1449,7 +1397,7 @@ function bp_directory_members_search_form() {
  * @since 1.2.0
  */
 function bp_total_site_member_count() {
-	echo esc_html( bp_get_total_site_member_count() );
+	echo bp_get_total_site_member_count();
 }
 	/**
 	 * Get the total site member count.
@@ -1486,6 +1434,8 @@ function bp_total_site_member_count() {
  *
  * @since 1.1.0
  *
+ * @global BuddyPress $bp The one true BuddyPress instance.
+ *
  * @todo Move to a back-compat file?
  * @deprecated Does not seem to be called anywhere in BP core.
  */
@@ -1518,14 +1468,13 @@ function bp_get_loggedin_user_nav() {
 			}
 		}
 
-		// phpcs:ignore WordPress.Security.EscapeOutput
-		echo apply_filters_ref_array( 'bp_get_loggedin_user_nav_' . $nav_item->css_id, array( '<li id="li-nav-' . esc_attr( $nav_item->css_id ) . '" ' . $selected . '><a id="my-' . esc_attr( $nav_item->css_id ) . '" href="' . esc_url( $nav_item->link ) . '">' . esc_html( $nav_item->name ) . '</a></li>', &$nav_item ) );
+		// Echo out the final list item.
+		echo apply_filters_ref_array( 'bp_get_loggedin_user_nav_' . $nav_item->css_id, array( '<li id="li-nav-' . $nav_item->css_id . '" ' . $selected . '><a id="my-' . $nav_item->css_id . '" href="' . $nav_item->link . '">' . $nav_item->name . '</a></li>', &$nav_item ) );
 	}
 
 	// Always add a log out list item to the end of the navigation.
-	$logout_link = '<li><a id="wp-logout" href="' .  esc_url( wp_logout_url( bp_get_root_url() ) ) . '">' . esc_html__( 'Log Out', 'buddypress' ) . '</a></li>';
+	$logout_link = '<li><a id="wp-logout" href="' .  wp_logout_url( bp_get_root_domain() ) . '">' . __( 'Log Out', 'buddypress' ) . '</a></li>';
 
-	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo apply_filters( 'bp_logout_nav_link', $logout_link );
 }
 
@@ -1627,6 +1576,8 @@ function bp_displayed_user_has_front_template() {
  * Render the navigation markup for the displayed user.
  *
  * @since 1.1.0
+ *
+ * @global BuddyPress $bp The one true BuddyPress instance.
  */
 function bp_get_displayed_user_nav() {
 	$bp = buddypress();
@@ -1641,31 +1592,24 @@ function bp_get_displayed_user_nav() {
 			$selected = ' class="current selected"';
 		}
 
-		if ( bp_loggedin_user_url() ) {
-			$link = str_replace( bp_loggedin_user_url(), bp_displayed_user_url(), $user_nav_item->link );
+		if ( bp_loggedin_user_domain() ) {
+			$link = str_replace( bp_loggedin_user_domain(), bp_displayed_user_domain(), $user_nav_item->link );
 		} else {
-			$link = $user_nav_item->link;
+			$link = trailingslashit( bp_displayed_user_domain() . $user_nav_item->link );
 		}
 
-		// phpcs:ignore WordPress.Security.EscapeOutput
-		echo apply_filters_ref_array(
-			/**
-			 * Filters the navigation markup for the displayed user.
-			 *
-			 * This is a dynamic filter that is dependent on the navigation tab component being rendered.
-			 *
-			 * @since 1.1.0
-			 *
-			 * @param string $value         Markup for the tab list item including link.
-			 * @param array  $user_nav_item Array holding parts used to construct tab list item.
-			 *                              Passed by reference.
-			 */
-			'bp_get_displayed_user_nav_' . $user_nav_item->css_id,
-			array(
-				'<li id="' . esc_attr( $user_nav_item->css_id ) . '-personal-li" ' . $selected . '><a id="user-' . esc_attr( $user_nav_item->css_id ) . '" href="' . esc_url( $link ) . '">' . wp_kses( $user_nav_item->name, array( 'span' => array( 'class' => true ) ) ) . '</a></li>',
-				&$user_nav_item
-			)
-		);
+		/**
+		 * Filters the navigation markup for the displayed user.
+		 *
+		 * This is a dynamic filter that is dependent on the navigation tab component being rendered.
+		 *
+		 * @since 1.1.0
+		 *
+		 * @param string $value         Markup for the tab list item including link.
+		 * @param array  $user_nav_item Array holding parts used to construct tab list item.
+		 *                              Passed by reference.
+		 */
+		echo apply_filters_ref_array( 'bp_get_displayed_user_nav_' . $user_nav_item->css_id, array( '<li id="' . $user_nav_item->css_id . '-personal-li" ' . $selected . '><a id="user-' . $user_nav_item->css_id . '" href="' . $link . '">' . $user_nav_item->name . '</a></li>', &$user_nav_item ) );
 	}
 }
 
@@ -1695,7 +1639,6 @@ function bp_displayed_user_use_cover_image_header() {
  * @param array|string $args {@see bp_get_loggedin_user_avatar()}.
  */
 function bp_loggedin_user_avatar( $args = '' ) {
-	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo bp_get_loggedin_user_avatar( $args );
 }
 	/**
@@ -1755,7 +1698,6 @@ function bp_loggedin_user_avatar( $args = '' ) {
  * @param array|string $args {@see bp_get_displayed_user_avatar()}.
  */
 function bp_displayed_user_avatar( $args = '' ) {
-	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo bp_get_displayed_user_avatar( $args );
 }
 	/**
@@ -1811,12 +1753,14 @@ function bp_displayed_user_avatar( $args = '' ) {
  * @since 1.5.0
  */
 function bp_displayed_user_email() {
-	echo esc_html( bp_get_displayed_user_email() );
+	echo bp_get_displayed_user_email();
 }
 	/**
 	 * Get the email address of the displayed user.
 	 *
 	 * @since 1.5.0
+	 *
+	 * @global BuddyPress $bp The one true BuddyPress instance.
 	 *
 	 * @return string
 	 */
@@ -1850,7 +1794,7 @@ function bp_displayed_user_email() {
  * @param int $user_id See {@link bp_get_last_activity()}.
  */
 function bp_last_activity( $user_id = 0 ) {
-	echo esc_html( bp_get_last_activity( $user_id ) );
+	echo bp_get_last_activity( $user_id );
 }
 	/**
 	 * Get the "active [x days ago]" string for a user.
@@ -1887,7 +1831,7 @@ function bp_last_activity( $user_id = 0 ) {
  * @since 1.2.0
  */
 function bp_user_firstname() {
-	echo esc_html( bp_get_user_firstname() );
+	echo bp_get_user_firstname();
 }
 	/**
 	 * Output the first name of a user.
@@ -1927,6 +1871,69 @@ function bp_user_firstname() {
 	}
 
 /**
+ * Output the link for the logged-in user's profile.
+ *
+ * @since 1.2.4
+ */
+function bp_loggedin_user_link() {
+	echo esc_url( bp_get_loggedin_user_link() );
+}
+	/**
+	 * Get the link for the logged-in user's profile.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string
+	 */
+	function bp_get_loggedin_user_link() {
+
+		/**
+		 * Filters the link for the logged-in user's profile.
+		 *
+		 * @since 1.2.4
+		 *
+		 * @param string $value Link for the logged-in user's profile.
+		 */
+		return apply_filters( 'bp_get_loggedin_user_link', bp_loggedin_user_domain() );
+	}
+
+/**
+ * Output the link for the displayed user's profile.
+ *
+ * @since 1.2.4
+ */
+function bp_displayed_user_link() {
+	echo esc_url( bp_get_displayed_user_link() );
+}
+	/**
+	 * Get the link for the displayed user's profile.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string
+	 */
+	function bp_get_displayed_user_link() {
+
+		/**
+		 * Filters the link for the displayed user's profile.
+		 *
+		 * @since 1.2.4
+		 *
+		 * @param string $value Link for the displayed user's profile.
+		 */
+		return apply_filters( 'bp_get_displayed_user_link', bp_displayed_user_domain() );
+	}
+
+	/**
+	 * Alias of {@link bp_displayed_user_domain()}.
+	 *
+	 * @deprecated
+	 */
+	function bp_user_link() {
+		bp_displayed_user_domain();
+	}
+
+/**
  * Alias of {@link bp_displayed_user_id()}.
  *
  * @since 1.0.0
@@ -1936,177 +1943,47 @@ function bp_current_user_id() {
 }
 
 /**
- * Output the link for the displayed user's profile.
- *
- * @since 1.2.4
- * @since 12.0.0 Introduced the `$chunk` argument.
- *
- * @param array $chunk A list of slugs to append to the URL.
- */
-function bp_displayed_user_link( $chunks = array() ) {
-	$path_chunks = array();
-	$chunks      = (array) $chunks;
-
-	if ( $chunks ) {
-		$path_chunks = bp_members_get_path_chunks( $chunks );
-	}
-
-	echo esc_url( bp_displayed_user_url( $path_chunks ) );
-}
-
-/**
- * Builds the logged-in user's profile URL.
- *
- * @since 12.0.0
- *
- * @param array $path_chunks {
- *     An array of arguments. Optional.
- *
- *     @type string $single_item_component        The component slug the action is relative to.
- *     @type string $single_item_action           The slug of the action to perform.
- *     @type array  $single_item_action_variables An array of additional informations about the action to perform.
- * }
- * @return string The logged-in user's profile URL.
- */
-function bp_displayed_user_url( $path_chunks = array() ) {
-	$bp  = buddypress();
-	$url = '';
-
-	if ( isset( $bp->displayed_user->domain ) ) {
-		$url = $bp->displayed_user->domain;
-	}
-
-	if ( $path_chunks ) {
-		$url = bp_members_get_user_url( bp_displayed_user_id(), $path_chunks );
-	}
-
-	/**
-	 * Filter here to edit the displayed user's profile URL.
-	 *
-	 * @since 12.0.0
-	 *
-	 * @param string $url         The displayed user's profile URL.
-	 * @param array  $path_chunks {
-	 *     An array of arguments. Optional.
-	 *
-	 *     @type string $single_item_component        The component slug the action is relative to.
-	 *     @type string $single_item_action           The slug of the action to perform.
-	 *     @type array  $single_item_action_variables An array of additional informations about the action to perform.
-	 * }
-	 */
-	return apply_filters( 'bp_displayed_user_url', $url, $path_chunks );
-}
-
-/**
  * Generate the link for the displayed user's profile.
  *
  * @since 1.0.0
- * @since 12.0.0 This function is now an alias of `bp_displayed_user_url()`.
- *               You should only use it to get the "home" URL of the displayed
- *               user's profile page. If you need to build an URL to reach another
- *               page, we strongly advise you to use `bp_displayed_user_url()`.
  *
- * @todo Deprecating this function would be safer.
+ * @global BuddyPress $bp The one true BuddyPress instance.
+ *
  * @return string
  */
 function bp_displayed_user_domain() {
-	$url = bp_displayed_user_url();
+	$bp = buddypress();
 
 	/**
 	 * Filters the generated link for the displayed user's profile.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string $url Generated link for the displayed user's profile.
+	 * @param string $value Generated link for the displayed user's profile.
 	 */
-	return apply_filters( 'bp_displayed_user_domain', $url );
-}
-
-/**
- * Output the link for the logged-in user's profile.
- *
- * @since 1.2.4
- * @since 12.0.0 Introduced the `$chunk` argument.
- *
- * @param array $chunk A list of slugs to append to the URL.
- */
-function bp_loggedin_user_link( $chunks = array() ) {
-	$path_chunks = array();
-	$chunks      = (array) $chunks;
-
-	if ( $chunks ) {
-		$path_chunks = bp_members_get_path_chunks( $chunks );
-	}
-
-	echo esc_url( bp_loggedin_user_url( $path_chunks ) );
-}
-
-/**
- * Builds the logged-in user's profile URL.
- *
- * @since 12.0.0
- *
- * @param array $path_chunks {
- *     An array of arguments. Optional.
- *
- *     @type string $single_item_component        The component slug the action is relative to.
- *     @type string $single_item_action           The slug of the action to perform.
- *     @type array  $single_item_action_variables An array of additional informations about the action to perform.
- * }
- * @return string The logged-in user's profile URL.
- */
-function bp_loggedin_user_url( $path_chunks = array() ) {
-	$bp  = buddypress();
-	$url = '';
-
-	if ( isset( $bp->loggedin_user->domain ) ) {
-		$url = $bp->loggedin_user->domain;
-	}
-
-	if ( $path_chunks ) {
-		$url = bp_members_get_user_url( bp_loggedin_user_id(), $path_chunks );
-	}
-
-	/**
-	 * Filter here to edit the logged-in user's profile URL.
-	 *
-	 * @since 12.0.0
-	 *
-	 * @param string $url         The logged-in user's profile URL.
-	 * @param array  $path_chunks {
-	 *     An array of arguments. Optional.
-	 *
-	 *     @type string $single_item_component        The component slug the action is relative to.
-	 *     @type string $single_item_action           The slug of the action to perform.
-	 *     @type array  $single_item_action_variables An array of additional informations about the action to perform.
-	 * }
-	 */
-	return apply_filters( 'bp_loggedin_user_url', $url, $path_chunks );
+	return apply_filters( 'bp_displayed_user_domain', isset( $bp->displayed_user->domain ) ? $bp->displayed_user->domain : '' );
 }
 
 /**
  * Generate the link for the logged-in user's profile.
  *
  * @since 1.0.0
- * @since 12.0.0 This function is now an alias of `bp_loggedin_user_url()`.
- *               You should only use it to get the "home" URL of the logged-in
- *               user's profile page. If you need to build an URL to reach another
- *               page, we strongly advise you to use `bp_loggedin_user_url()`.
  *
- * @todo Deprecating this function would be safer.
+ * @global BuddyPress $bp The one true BuddyPress instance.
+ *
  * @return string
  */
 function bp_loggedin_user_domain() {
-	$url = bp_loggedin_user_url();
+	$bp = buddypress();
 
 	/**
 	 * Filters the generated link for the logged-in user's profile.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string $url Generated link for the logged-in user's profile.
+	 * @param string $value Generated link for the logged-in user's profile.
 	 */
-	return apply_filters( 'bp_loggedin_user_domain', $url );
+	return apply_filters( 'bp_loggedin_user_domain', isset( $bp->loggedin_user->domain ) ? $bp->loggedin_user->domain : '' );
 }
 
 /**
@@ -2115,12 +1992,14 @@ function bp_loggedin_user_domain() {
  * @since 1.0.0
  */
 function bp_displayed_user_fullname() {
-	echo esc_html( bp_get_displayed_user_fullname() );
+	echo bp_get_displayed_user_fullname();
 }
 	/**
 	 * Get the displayed user's display name.
 	 *
 	 * @since 1.2.0
+	 *
+	 * @global BuddyPress $bp The one true BuddyPress instance.
 	 *
 	 * @return string
 	 */
@@ -2142,7 +2021,7 @@ function bp_displayed_user_fullname() {
 	 *
 	 * @since 1.0.0
 	 */
-	function bp_user_fullname() { echo esc_html( bp_get_displayed_user_fullname() ); }
+	function bp_user_fullname() { echo bp_get_displayed_user_fullname(); }
 
 
 /**
@@ -2151,12 +2030,14 @@ function bp_displayed_user_fullname() {
  * @since 1.0.0
  */
 function bp_loggedin_user_fullname() {
-	echo esc_html( bp_get_loggedin_user_fullname() );
+	echo bp_get_loggedin_user_fullname();
 }
 	/**
 	 * Get the logged-in user's display name.
 	 *
 	 * @since 1.0.0
+	 *
+	 * @global BuddyPress $bp The one true BuddyPress instance.
 	 *
 	 * @return string
 	 */
@@ -2179,12 +2060,14 @@ function bp_loggedin_user_fullname() {
  * @since 1.2.0
  */
 function bp_displayed_user_username() {
-	echo esc_html( bp_get_displayed_user_username() );
+	echo bp_get_displayed_user_username();
 }
 	/**
 	 * Get the username of the displayed user.
 	 *
 	 * @since 1.2.0
+	 *
+	 * @global BuddyPress $bp The one true BuddyPress instance.
 	 *
 	 * @return string
 	 */
@@ -2192,7 +2075,7 @@ function bp_displayed_user_username() {
 		$bp = buddypress();
 
 		if ( bp_displayed_user_id() ) {
-			$username = bp_members_get_user_slug( bp_displayed_user_id() );
+			$username = bp_core_get_username( bp_displayed_user_id(), $bp->displayed_user->userdata->user_nicename, $bp->displayed_user->userdata->user_login );
 		} else {
 			$username = '';
 		}
@@ -2213,12 +2096,14 @@ function bp_displayed_user_username() {
  * @since 1.2.0
  */
 function bp_loggedin_user_username() {
-	echo esc_html( bp_get_loggedin_user_username() );
+	echo bp_get_loggedin_user_username();
 }
 	/**
 	 * Get the username of the logged-in user.
 	 *
 	 * @since 1.2.0
+	 *
+	 * @global BuddyPress $bp The one true BuddyPress instance.
 	 *
 	 * @return string
 	 */
@@ -2226,7 +2111,7 @@ function bp_loggedin_user_username() {
 		$bp = buddypress();
 
 		if ( bp_loggedin_user_id() ) {
-			$username = bp_members_get_user_slug( bp_loggedin_user_id() );
+			$username = bp_core_get_username( bp_loggedin_user_id(), $bp->loggedin_user->userdata->user_nicename, $bp->loggedin_user->userdata->user_login );
 		} else {
 			$username = '';
 		}
@@ -2247,7 +2132,7 @@ function bp_loggedin_user_username() {
  * @since 2.3.0
  */
 function bp_current_member_type_message() {
-	echo wp_kses( bp_get_current_member_type_message(), array( 'strong' => true ) );
+	echo bp_get_current_member_type_message();
 }
 	/**
 	 * Generate the current member type message.
@@ -2280,7 +2165,6 @@ function bp_current_member_type_message() {
  * @param string $member_type Unique member type identifier as used in bp_register_member_type().
  */
 function bp_member_type_directory_link( $member_type = '' ) {
-	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo bp_get_member_type_directory_link( $member_type );
 }
 	/**
@@ -2329,7 +2213,6 @@ function bp_member_type_directory_link( $member_type = '' ) {
  * @param array $r       Optional. Member type list arguments. Default empty array.
  */
 function bp_member_type_list( $user_id = 0, $r = array() ) {
-	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo bp_get_member_type_list( $user_id, $r );
 }
 	/**
@@ -2495,15 +2378,9 @@ function bp_signup_page() {
 	 */
 	function bp_get_signup_page() {
 		if ( bp_has_custom_signup_page() ) {
-			$page = bp_rewrites_get_url(
-				array(
-					'component_id'    => 'members',
-					'member_register' => 1,
-				)
-			);
-
+			$page = trailingslashit( bp_get_root_domain() . '/' . bp_get_signup_slug() );
 		} else {
-			$page = trailingslashit( bp_get_root_url() ) . 'wp-signup.php';
+			$page = bp_get_root_domain() . '/wp-signup.php';
 		}
 
 		/**
@@ -2550,15 +2427,9 @@ function bp_activation_page() {
 	 */
 	function bp_get_activation_page() {
 		if ( bp_has_custom_activation_page() ) {
-			$page = bp_rewrites_get_url(
-				array(
-					'component_id'    => 'members',
-					'member_activate' => 1,
-				)
-			);
-
+			$page = trailingslashit( bp_get_root_domain() . '/' . bp_get_activate_slug() );
 		} else {
-			$page = trailingslashit( bp_get_root_url() ) . 'wp-activate.php';
+			$page = trailingslashit( bp_get_root_domain() ) . 'wp-activate.php';
 		}
 
 		/**
@@ -2605,7 +2476,7 @@ function bp_get_current_activation_key() {
  * @since 1.1.0
  */
 function bp_signup_username_value() {
-	echo esc_html( bp_get_signup_username_value() );
+	echo bp_get_signup_username_value();
 }
 	/**
 	 * Get the username submitted during signup.
@@ -2637,7 +2508,7 @@ function bp_signup_username_value() {
  * @since 1.1.0
  */
 function bp_signup_email_value() {
-	echo esc_html( bp_get_signup_email_value() );
+	echo bp_get_signup_email_value();
 }
 	/**
 	 * Get the email address submitted during signup.
@@ -2675,7 +2546,7 @@ function bp_signup_email_value() {
  * @since 1.1.0
  */
 function bp_signup_with_blog_value() {
-	echo intval( bp_get_signup_with_blog_value() );
+	echo bp_get_signup_with_blog_value();
 }
 	/**
 	 * Get the 'signup_with_blog' value submitted during signup.
@@ -2705,7 +2576,7 @@ function bp_signup_with_blog_value() {
  * @since 1.1.0
  */
 function bp_signup_blog_url_value() {
-	echo esc_url( bp_get_signup_blog_url_value() );
+	echo bp_get_signup_blog_url_value();
 }
 	/**
 	 * Get the 'signup_blog_url' value submitted at signup.
@@ -2737,7 +2608,7 @@ function bp_signup_blog_url_value() {
  * @since 2.1.0
  */
 function bp_signup_subdomain_base() {
-	echo esc_attr( bp_signup_get_subdomain_base() );
+	echo bp_signup_get_subdomain_base();
 }
 	/**
 	 * Return the base URL for subdomain installations of WordPress Multisite.
@@ -2773,7 +2644,7 @@ function bp_signup_subdomain_base() {
  * @since 1.1.0
  */
 function bp_signup_blog_title_value() {
-	echo esc_html( bp_get_signup_blog_title_value() );
+	echo bp_get_signup_blog_title_value();
 }
 	/**
 	 * Get the 'signup_blog_title' value submitted at signup.
@@ -2805,7 +2676,7 @@ function bp_signup_blog_title_value() {
  * @since 1.1.0
  */
 function bp_signup_blog_privacy_value() {
-	echo esc_html( bp_get_signup_blog_privacy_value() );
+	echo bp_get_signup_blog_privacy_value();
 }
 	/**
 	 * Get the 'signup_blog_privacy' value submitted at signup.
@@ -2837,12 +2708,14 @@ function bp_signup_blog_privacy_value() {
  * @since 1.1.0
  */
 function bp_signup_avatar_dir_value() {
-	echo esc_html( bp_get_signup_avatar_dir_value() );
+	echo bp_get_signup_avatar_dir_value();
 }
 	/**
 	 * Get the avatar dir used during signup.
 	 *
 	 * @since 1.1.0
+	 *
+	 * @global BuddyPress $bp The one true BuddyPress instance.
 	 *
 	 * @return string
 	 */
@@ -2850,17 +2723,16 @@ function bp_signup_avatar_dir_value() {
 		$bp = buddypress();
 
 		// Check if signup_avatar_dir is passed.
-		if ( ! empty( $_POST['signup_avatar_dir'] ) ) {
+		if ( !empty( $_POST['signup_avatar_dir'] ) )
 			$signup_avatar_dir = $_POST['signup_avatar_dir'];
 
-			// If not, check if global is set.
-		} elseif ( ! empty( $bp->signup->avatar_dir ) ) {
+		// If not, check if global is set.
+		elseif ( !empty( $bp->signup->avatar_dir ) )
 			$signup_avatar_dir = $bp->signup->avatar_dir;
 
-			// If not, set false.
-		} else {
+		// If not, set false.
+		else
 			$signup_avatar_dir = false;
-		}
 
 		/**
 		 * Filters the avatar dir used during signup.
@@ -2901,12 +2773,14 @@ function bp_signup_requires_privacy_policy_acceptance() {
  * @since 1.1.0
  */
 function bp_current_signup_step() {
-	echo esc_html( bp_get_current_signup_step() );
+	echo bp_get_current_signup_step();
 }
 	/**
 	 * Get the current signup step.
 	 *
 	 * @since 1.1.0
+	 *
+	 * @global BuddyPress $bp The one true BuddyPress instance.
 	 *
 	 * @return string
 	 */
@@ -2924,13 +2798,14 @@ function bp_current_signup_step() {
  * @param array|string $args See {@link bp_get_signup_avatar(}.
  */
 function bp_signup_avatar( $args = '' ) {
-	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo bp_get_signup_avatar( $args );
 }
 	/**
 	 * Get the user avatar during signup.
 	 *
 	 * @since 1.1.0
+	 *
+	 * @global BuddyPress $bp The one true BuddyPress instance.
 	 *
 	 * @see bp_core_fetch_avatar() for description of arguments.
 	 *
@@ -2954,6 +2829,8 @@ function bp_signup_avatar( $args = '' ) {
 			)
 		);
 
+		extract( $r, EXTR_SKIP );
+
 		$signup_avatar_dir = bp_get_signup_avatar_dir_value();
 
 		// Avatar DIR is found.
@@ -2963,10 +2840,10 @@ function bp_signup_avatar( $args = '' ) {
 				'object'     => 'signup',
 				'avatar_dir' => 'avatars/signups',
 				'type'       => 'full',
-				'width'      => $r['size'],
-				'height'     => $r['size'],
-				'alt'        => $r['alt'],
-				'class'      => $r['class'],
+				'width'      => $size,
+				'height'     => $size,
+				'alt'        => $alt,
+				'class'      => $class,
 			) );
 
 			// No avatar DIR was found.
@@ -2990,7 +2867,7 @@ function bp_signup_avatar( $args = '' ) {
 			 */
 			$gravatar_url    = apply_filters( 'bp_gravatar_url', '//www.gravatar.com/avatar/' );
 			$md5_lcase_email = md5( strtolower( bp_get_signup_email_value() ) );
-			$gravatar_img    = '<img src="' . $gravatar_url . $md5_lcase_email . '?d=' . $default_grav . '&amp;s=' . $r['size'] . '" width="' . esc_attr( $r['size'] ) . '" height="' . esc_attr( $r['size'] ) . '" alt="' . esc_attr( $r['alt'] ) . '" class="' . esc_attr( $r['class'] ) . '" />';
+			$gravatar_img    = '<img src="' . $gravatar_url . $md5_lcase_email . '?d=' . $default_grav . '&amp;s=' . $size . '" width="' . $size . '" height="' . $size . '" alt="' . $alt . '" class="' . $class . '" />';
 		}
 
 		/**
@@ -3012,7 +2889,6 @@ function bp_signup_avatar( $args = '' ) {
  * @todo Remove this function. Echoing a bool is pointless.
  */
 function bp_signup_allowed() {
-	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo bp_get_signup_allowed();
 }
 	/**
@@ -3110,14 +2986,12 @@ function bp_allow_access_to_registration_pages() {
  * @since 1.5.0
  */
 function bp_members_activity_feed() {
-	if ( ! bp_is_active( 'activity' ) || ! bp_is_user() ) {
-		return;
-	}
-	// phpcs:disable WordPress.Security.EscapeOutput
-	?>
-	<link rel="alternate" type="application/rss+xml" title="<?php bloginfo( 'name' ) ?> | <?php bp_displayed_user_fullname() ?> | <?php esc_attr_e( 'Activity RSS Feed', 'buddypress' ) ?>" href="<?php bp_member_activity_feed_link() ?>" />
-	<?php
-	// phpcs:enable
+	if ( !bp_is_active( 'activity' ) || !bp_is_user() )
+		return; ?>
+
+	<link rel="alternate" type="application/rss+xml" title="<?php bloginfo( 'name' ) ?> | <?php bp_displayed_user_fullname() ?> | <?php _e( 'Activity RSS Feed', 'buddypress' ) ?>" href="<?php bp_member_activity_feed_link() ?>" />
+
+<?php
 }
 add_action( 'bp_head', 'bp_members_activity_feed' );
 
@@ -3141,6 +3015,8 @@ function bp_members_component_link( $component, $action = '', $query_args = '', 
 	 *
 	 * @since 1.5.0
 	 *
+	 * @global BuddyPress $bp The one true BuddyPress instance.
+	 *
 	 * @param string       $component  ID of the component (eg 'friends').
 	 * @param string       $action     Optional. 'action' slug (eg 'invites').
 	 * @param array|string $query_args Optional. Array of URL params to add to the
@@ -3162,18 +3038,15 @@ function bp_members_component_link( $component, $action = '', $query_args = '', 
 			$component = 'profile';
 		}
 
-		$path_chunks = array( $bp->{$component}->slug );
-
-		// Append $action to $url if needed.
+		// Append $action to $url if there is no $type.
 		if ( ! empty( $action ) ) {
-			$path_chunks[] = $action;
+			$url = bp_displayed_user_domain() . $bp->{$component}->slug . '/' . $action;
+		} else {
+			$url = bp_displayed_user_domain() . $bp->{$component}->slug;
 		}
 
-		// Check for slugs customization.
-		$path_chunks = bp_members_get_path_chunks( $path_chunks );
-
-		// Generate user url.
-		$url = bp_displayed_user_url( $path_chunks );
+		// Add a slash at the end of our user url.
+		$url = trailingslashit( $url );
 
 		// Add possible query arg.
 		if ( ! empty( $query_args ) && is_array( $query_args ) ) {
@@ -3201,7 +3074,7 @@ function bp_members_component_link( $component, $action = '', $query_args = '', 
  * @since 6.0.0 Moved from /bp-xprofile/bp-xprofile-template.php to this file.
  */
 function bp_avatar_delete_link() {
-	echo esc_url( bp_get_avatar_delete_link() );
+	echo bp_get_avatar_delete_link();
 }
 	/**
 	 * Return an avatar delete link.
@@ -3212,22 +3085,15 @@ function bp_avatar_delete_link() {
 	 * @return string
 	 */
 	function bp_get_avatar_delete_link() {
-		$profile_slug = bp_get_profile_slug();
-		$url          = wp_nonce_url(
-			bp_displayed_user_url(
-				bp_members_get_path_chunks( array( $profile_slug, 'change-avatar', array( 'delete-avatar' ) ) )
-			),
-			'bp_delete_avatar_link'
-		);
 
 		/**
 		 * Filters the link used for deleting an avatar.
 		 *
 		 * @since 1.1.0
 		 *
-		 * @param string $url Nonced URL used for deleting an avatar.
+		 * @param string $value Nonced URL used for deleting an avatar.
 		 */
-		return apply_filters( 'bp_get_avatar_delete_link', $url );
+		return apply_filters( 'bp_get_avatar_delete_link', wp_nonce_url( bp_displayed_user_domain() . bp_get_profile_slug() . '/change-avatar/delete-avatar/', 'bp_delete_avatar_link' ) );
 	}
 
 
@@ -3241,6 +3107,8 @@ function bp_avatar_delete_link() {
  * templates and template functions to display a list of invitations.
  *
  * @since 8.0.0
+ *
+ * @global BuddyPress $bp The one true BuddyPress instance.
  *
  * @param array|string $args {
  *     Arguments for limiting the contents of the invitations loop. Can be
@@ -3320,6 +3188,8 @@ function bp_has_members_invitations( $args = '' ) {
  *
  * @since 8.0.0
  *
+ * @global BuddyPress $bp The one true BuddyPress instance.
+ *
  * @return array List of network invitations.
  */
 function bp_the_members_invitations() {
@@ -3330,6 +3200,8 @@ function bp_the_members_invitations() {
  * Get the current network invitation object in the loop.
  *
  * @since 8.0.0
+ *
+ * @global BuddyPress $bp The one true BuddyPress instance.
  *
  * @return object The current network invitation within the loop.
  */
@@ -3343,12 +3215,14 @@ function bp_the_members_invitation() {
  * @since 8.0.0
  */
 function bp_members_invitations_pagination_count() {
-	echo esc_html( bp_get_members_invitations_pagination_count() );
+	echo bp_get_members_invitations_pagination_count();
 }
 	/**
 	 * Return the pagination count for the current network invitation loop.
 	 *
 	 * @since 8.0.0
+	 *
+	 * @global BuddyPress $bp The one true BuddyPress instance.
 	 *
 	 * @return string HTML for the pagination count.
 	 */
@@ -3383,13 +3257,14 @@ function bp_members_invitations_pagination_count() {
  * @since 8.0.0
  */
 function bp_members_invitations_pagination_links() {
-	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo bp_get_members_invitations_pagination_links();
 }
 	/**
 	 * Return the pagination links for the current network invitations loop.
 	 *
 	 * @since 8.0.0
+	 *
+	 * @global BuddyPress $bp The one true BuddyPress instance.
 	 *
 	 * @return string HTML for the pagination links.
 	 */
@@ -3420,22 +3295,16 @@ function bp_the_members_invitation_property( $property = '', $context = 'html' )
 		return;
 	}
 
-	// phpcs:ignore WordPress.Security.EscapeOutput
-	echo apply_filters(
-		/**
-		 * Use this filter to sanitize the output.
-		 *
-		 * @since 8.0.0
-		 *
-		 * @param int|string $value    The value for the requested property.
-		 * @param string     $property The name of the requested property.
-		 * @param string     $context  The context of display.
-		 */
-		'bp_the_members_invitation_property',
-		bp_get_the_members_invitation_property( $property ),
-		$property,
-		$context
-	);
+	/**
+	 * Use this filter to sanitize the output.
+	 *
+	 * @since 8.0.0
+	 *
+	 * @param int|string $value    The value for the requested property.
+	 * @param string     $property The name of the requested property.
+	 * @param string     $context  The context of display.
+	 */
+	echo apply_filters( 'bp_the_members_invitation_property', bp_get_the_members_invitation_property( $property ), $property, $context );
 }
 	/**
 	 * Return the value for a property of the network invitation currently being iterated on.
@@ -3490,7 +3359,6 @@ function bp_the_members_invitation_property( $property = '', $context = 'html' )
  * @param array|string $args Array of arguments.
  */
 function bp_the_members_invitation_action_links( $args = '' ) {
-	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo bp_get_the_members_invitation_action_links( $args );
 }
 	/**
@@ -3547,7 +3415,6 @@ function bp_the_members_invitation_action_links( $args = '' ) {
  * @param int $user_id The user ID.
  */
 function bp_the_members_invitations_resend_link( $user_id = 0 ) {
-	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo bp_get_the_members_invitation_delete_link( $user_id );
 }
 	/**
@@ -3567,7 +3434,7 @@ function bp_the_members_invitations_resend_link( $user_id = 0 ) {
 			return;
 		}
 
-		$retval = sprintf( '<a href="%1$s" class="resend secondary confirm bp-tooltip">%2$s</a>', esc_url( bp_get_the_members_invitations_resend_url( $user_id ) ), esc_html__( 'Resend', 'buddypress' ) );
+		$retval = sprintf( '<a href="%1$s" class="resend secondary confirm bp-tooltip">%2$s</a>', esc_url( bp_get_the_members_invitations_resend_url( $user_id ) ), __( 'Resend', 'buddypress' ) );
 
 		/**
 		 * Filters the resend link for the current invitation.
@@ -3639,7 +3506,6 @@ function bp_the_members_invitations_resend_url( $user_id = 0 ) {
  * @param int $user_id The user ID.
  */
 function bp_the_members_invitations_delete_link( $user_id = 0 ) {
-	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo bp_get_the_members_invitation_delete_link( $user_id );
 }
 	/**
@@ -3737,7 +3603,7 @@ function bp_the_members_invitations_delete_url( $user_id = 0 ) {
  * @param int $user_id The user ID.
  */
 function bp_members_invitations_list_invites_permalink( $user_id = 0 ) {
-	echo esc_url( bp_get_members_invitations_list_invites_permalink( $user_id ) );
+	echo bp_get_members_invitations_list_invites_permalink( $user_id );
 }
 	/**
 	 * Return the members invitations list permalink for a user.
@@ -3749,12 +3615,12 @@ function bp_members_invitations_list_invites_permalink( $user_id = 0 ) {
 	function bp_get_members_invitations_list_invites_permalink( $user_id = 0 ) {
 		if ( 0 === $user_id ) {
 			$user_id = bp_loggedin_user_id();
+			$domain  = bp_loggedin_user_domain();
+		} else {
+			$domain = bp_core_get_user_domain( (int) $user_id );
 		}
 
-		$retval = bp_members_get_user_url(
-			(int) $user_id,
-			bp_members_get_path_chunks( array( bp_get_members_invitations_slug(), 'list-invites' ) )
-		);
+		$retval = trailingslashit( $domain . bp_get_members_invitations_slug() . '/list-invites' );
 
 		/**
 		 * Filters the members invitations list permalink for a user.
@@ -3775,7 +3641,7 @@ function bp_members_invitations_list_invites_permalink( $user_id = 0 ) {
  * @param int $user_id The user ID.
  */
 function bp_members_invitations_send_invites_permalink( $user_id = 0 ) {
-	echo esc_url( bp_get_members_invitations_send_invites_permalink( $user_id ) );
+	echo bp_get_members_invitations_send_invites_permalink( $user_id );
 }
 	/**
 	 * Return the send invitations permalink.
@@ -3788,12 +3654,12 @@ function bp_members_invitations_send_invites_permalink( $user_id = 0 ) {
 	function bp_get_members_invitations_send_invites_permalink( $user_id = 0 ) {
 		if ( 0 === $user_id ) {
 			$user_id = bp_loggedin_user_id();
+			$domain  = bp_loggedin_user_domain();
+		} else {
+			$domain = bp_core_get_user_domain( (int) $user_id );
 		}
 
-		$retval = bp_members_get_user_url(
-			(int) $user_id,
-			bp_members_get_path_chunks( array( bp_get_members_invitations_slug(), 'send-invites' ) )
-		);
+		$retval = trailingslashit( $domain . bp_get_members_invitations_slug() . '/send-invites' );
 
 		/**
 		 * Filters the send invitations permalink.

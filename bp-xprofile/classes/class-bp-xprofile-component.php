@@ -18,7 +18,6 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 1.5.0
  */
-#[AllowDynamicProperties]
 class BP_XProfile_Component extends BP_Component {
 
 	/**
@@ -47,10 +46,10 @@ class BP_XProfile_Component extends BP_Component {
 	public function __construct() {
 		parent::start(
 			'xprofile',
-			'Extended Profiles',
+			_x( 'Extended Profiles', 'Component page <title>', 'buddypress' ),
 			buddypress()->plugin_dir,
 			array(
-				'adminbar_myaccount_order' => 20,
+				'adminbar_myaccount_order' => 20
 			)
 		);
 
@@ -111,44 +110,43 @@ class BP_XProfile_Component extends BP_Component {
 
 		// User nav.
 		if ( bp_is_profile_component() ) {
-			require_once $this->path . 'bp-xprofile/screens/public.php';
+			require $this->path . 'bp-xprofile/screens/public.php';
 
 			// Sub-nav items.
 			if ( is_user_logged_in() && 'edit' === bp_current_action() ) {
-				require_once $this->path . 'bp-xprofile/screens/edit.php';
+				require $this->path . 'bp-xprofile/screens/edit.php';
 			}
 		}
 
 		// Settings.
 		if ( is_user_logged_in() && bp_is_user_settings_profile() ) {
-			require_once $this->path . 'bp-xprofile/screens/settings-profile.php';
+			require $this->path . 'bp-xprofile/screens/settings-profile.php';
 		}
 	}
 
 	/**
 	 * Setup globals.
 	 *
-	 * The BP_XPROFILE_SLUG constant is deprecated.
+	 * The BP_XPROFILE_SLUG constant is deprecated, and only used here for
+	 * backwards compatibility.
 	 *
 	 * @since 1.5.0
 	 *
 	 * @param array $args Array of globals to set up.
 	 */
 	public function setup_globals( $args = array() ) {
-		$bp           = buddypress();
-		$default_slug = 'profile';
+		$bp = buddypress();
 
-		// @deprecated.
-		if ( defined( 'BP_XPROFILE_SLUG' ) ) {
-			_doing_it_wrong( 'BP_XPROFILE_SLUG', esc_html__( 'Slug constants are deprecated.', 'buddypress' ), 'BuddyPress 12.0.0' );
-			$default_slug = BP_XPROFILE_SLUG;
+		// Define a slug, if necessary.
+		if ( !defined( 'BP_XPROFILE_SLUG' ) ) {
+			define( 'BP_XPROFILE_SLUG', 'profile' );
 		}
 
 		// Assign the base group and fullname field names to constants
 		// to use in SQL statements.
 		// Defined conditionally to accommodate unit tests.
 		if ( ! defined( 'BP_XPROFILE_BASE_GROUP_NAME' ) ) {
-			define( 'BP_XPROFILE_BASE_GROUP_NAME', stripslashes( bp_core_get_root_option( 'bp-xprofile-base-group-name' ) ) );
+			define( 'BP_XPROFILE_BASE_GROUP_NAME', stripslashes( bp_core_get_root_option( 'avatar_default' ) ) );
 		}
 
 		if ( ! defined( 'BP_XPROFILE_FULLNAME_FIELD_NAME' ) ) {
@@ -175,22 +173,22 @@ class BP_XProfile_Component extends BP_Component {
 		$this->visibility_levels = array(
 			'public' => array(
 				'id'	  => 'public',
-				'label' => _x( 'Everyone', 'Visibility level setting', 'buddypress' ),
+				'label' => _x( 'Everyone', 'Visibility level setting', 'buddypress' )
 			),
 			'adminsonly' => array(
 				'id'	  => 'adminsonly',
-				'label' => _x( 'Only Me', 'Visibility level setting', 'buddypress' ),
+				'label' => _x( 'Only Me', 'Visibility level setting', 'buddypress' )
 			),
 			'loggedin' => array(
 				'id'	  => 'loggedin',
-				'label' => _x( 'All Members', 'Visibility level setting', 'buddypress' ),
-			),
+				'label' => _x( 'All Members', 'Visibility level setting', 'buddypress' )
+			)
 		);
 
 		if ( bp_is_active( 'friends' ) ) {
 			$this->visibility_levels['friends'] = array(
 				'id'	=> 'friends',
-				'label'	=> _x( 'My Friends', 'Visibility level setting', 'buddypress' ),
+				'label'	=> _x( 'My Friends', 'Visibility level setting', 'buddypress' )
 			);
 		}
 
@@ -209,7 +207,7 @@ class BP_XProfile_Component extends BP_Component {
 		);
 
 		$globals = array(
-			'slug'                  => $default_slug,
+			'slug'                  => BP_XPROFILE_SLUG,
 			'has_directory'         => false,
 			'notification_callback' => 'xprofile_format_notifications',
 			'global_tables'         => $global_tables,
@@ -220,15 +218,29 @@ class BP_XProfile_Component extends BP_Component {
 	}
 
 	/**
-	 * Register component navigation.
+	 * Set up navigation.
 	 *
-	 * @since 12.0.0
+	 * @since 1.5.0
 	 *
-	 * @param array $main_nav See `BP_Component::register_nav()` for details.
-	 * @param array $sub_nav  See `BP_Component::register_nav()` for details.
+	 * @global BuddyPress $bp The one true BuddyPress instance
+	 *
+	 * @param array $main_nav Array of main nav items to set up.
+	 * @param array $sub_nav  Array of sub nav items to set up.
 	 */
-	public function register_nav( $main_nav = array(), $sub_nav = array() ) {
-		$slug = bp_get_profile_slug();
+	public function setup_nav( $main_nav = array(), $sub_nav = array() ) {
+
+		// Determine user to use.
+		if ( bp_displayed_user_domain() ) {
+			$user_domain = bp_displayed_user_domain();
+		} elseif ( bp_loggedin_user_domain() ) {
+			$user_domain = bp_loggedin_user_domain();
+		} else {
+			return;
+		}
+
+		$access       = bp_core_can_edit_settings();
+		$slug         = bp_get_profile_slug();
+		$profile_link = trailingslashit( $user_domain . $slug );
 
 		// Add 'Profile' to the main navigation.
 		$main_nav = array(
@@ -237,30 +249,35 @@ class BP_XProfile_Component extends BP_Component {
 			'position'            => 20,
 			'screen_function'     => 'xprofile_screen_display_profile',
 			'default_subnav_slug' => 'public',
-			'item_css_id'         => $this->id,
+			'item_css_id'         => $this->id
 		);
 
 		// Add the subnav items to the profile.
 		$sub_nav[] = array(
 			'name'            => _x( 'View', 'Profile header sub menu', 'buddypress' ),
 			'slug'            => 'public',
+			'parent_url'      => $profile_link,
 			'parent_slug'     => $slug,
 			'screen_function' => 'xprofile_screen_display_profile',
-			'position'        => 10,
+			'position'        => 10
 		);
 
 		// Edit Profile.
 		$sub_nav[] = array(
-			'name'                     => _x( 'Edit','Profile header sub menu', 'buddypress' ),
-			'slug'                     => 'edit',
-			'parent_slug'              => $slug,
-			'screen_function'          => 'xprofile_screen_edit_profile',
-			'position'                 => 20,
-			'user_has_access'          => false,
-			'user_has_access_callback' => 'bp_core_can_edit_settings',
+			'name'            => _x( 'Edit','Profile header sub menu', 'buddypress' ),
+			'slug'            => 'edit',
+			'parent_url'      => $profile_link,
+			'parent_slug'     => $slug,
+			'screen_function' => 'xprofile_screen_edit_profile',
+			'position'        => 20,
+			'user_has_access' => $access
 		);
 
-		parent::register_nav( $main_nav, $sub_nav );
+		// The Settings > Profile nav item can only be set up after
+		// the Settings component has run its own nav routine.
+		add_action( 'bp_settings_setup_nav', array( $this, 'setup_settings_nav' ) );
+
+		parent::setup_nav( $main_nav, $sub_nav );
 	}
 
 	/**
@@ -270,10 +287,33 @@ class BP_XProfile_Component extends BP_Component {
 	 * be loaded in time for BP_XProfile_Component::setup_nav().
 	 *
 	 * @since 2.1.0
-	 * @deprecated 12.0.0
 	 */
 	public function setup_settings_nav() {
-		_deprecated_function( __METHOD__, '12.0.0' );
+		if ( ! bp_is_active( 'settings' ) ) {
+			return;
+		}
+
+		// Determine user to use.
+		if ( bp_displayed_user_domain() ) {
+			$user_domain = bp_displayed_user_domain();
+		} elseif ( bp_loggedin_user_domain() ) {
+			$user_domain = bp_loggedin_user_domain();
+		} else {
+			return;
+		}
+
+		// Get the settings slug.
+		$settings_slug = bp_get_settings_slug();
+
+		bp_core_new_subnav_item( array(
+			'name'            => _x( 'Profile Visibility', 'Profile settings sub nav', 'buddypress' ),
+			'slug'            => 'profile',
+			'parent_url'      => trailingslashit( $user_domain . $settings_slug ),
+			'parent_slug'     => $settings_slug,
+			'screen_function' => 'bp_xprofile_screen_settings',
+			'position'        => 30,
+			'user_has_access' => bp_core_can_edit_settings()
+		), 'members' );
 	}
 
 	/**
@@ -287,14 +327,16 @@ class BP_XProfile_Component extends BP_Component {
 
 		// Menus for logged in user.
 		if ( is_user_logged_in() ) {
-			$profile_slug = bp_get_profile_slug();
+
+			// Profile link.
+			$profile_link = trailingslashit( bp_loggedin_user_domain() . bp_get_profile_slug() );
 
 			// Add the "Profile" sub menu.
 			$wp_admin_nav[] = array(
 				'parent' => buddypress()->my_account_menu_id,
 				'id'     => 'my-account-' . $this->id,
 				'title'  => _x( 'Profile', 'My Account Profile', 'buddypress' ),
-				'href'   => bp_loggedin_user_url( bp_members_get_path_chunks( array( $profile_slug ) ) ),
+				'href'   => $profile_link
 			);
 
 			// View Profile.
@@ -302,8 +344,8 @@ class BP_XProfile_Component extends BP_Component {
 				'parent'   => 'my-account-' . $this->id,
 				'id'       => 'my-account-' . $this->id . '-public',
 				'title'    => _x( 'View', 'My Account Profile sub nav', 'buddypress' ),
-				'href'     => bp_loggedin_user_url( bp_members_get_path_chunks( array( $profile_slug, 'public' ) ) ),
-				'position' => 10,
+				'href'     => trailingslashit( $profile_link . 'public' ),
+				'position' => 10
 			);
 
 			// Edit Profile.
@@ -311,8 +353,8 @@ class BP_XProfile_Component extends BP_Component {
 				'parent'   => 'my-account-' . $this->id,
 				'id'       => 'my-account-' . $this->id . '-edit',
 				'title'    => _x( 'Edit', 'My Account Profile sub nav', 'buddypress' ),
-				'href'     => bp_loggedin_user_url( bp_members_get_path_chunks( array( $profile_slug, 'edit' ) ) ),
-				'position' => 20,
+				'href'     => trailingslashit( $profile_link . 'edit' ),
+				'position' => 20
 			);
 		}
 
@@ -346,7 +388,7 @@ class BP_XProfile_Component extends BP_Component {
 					'type'    => 'thumb',
 
 					/* translators: %s: member name */
-					'alt'	  => sprintf( _x( 'Profile picture of %s', 'Avatar alt', 'buddypress' ), bp_get_displayed_user_fullname() ),
+					'alt'	  => sprintf( _x( 'Profile picture of %s', 'Avatar alt', 'buddypress' ), bp_get_displayed_user_fullname() )
 				) );
 				$bp->bp_options_title = bp_get_displayed_user_fullname();
 			}
@@ -384,12 +426,16 @@ class BP_XProfile_Component extends BP_Component {
 	 * @return array
 	 */
 	public function setup_settings_admin_nav( $wp_admin_nav ) {
+
+		// Setup the logged in user variables.
+		$settings_link = trailingslashit( bp_loggedin_user_domain() . bp_get_settings_slug() );
+
 		// Add the "Profile" subnav item.
 		$wp_admin_nav[] = array(
 			'parent' => 'my-account-' . buddypress()->settings->id,
 			'id'     => 'my-account-' . buddypress()->settings->id . '-profile',
 			'title'  => _x( 'Profile', 'My Account Settings sub nav', 'buddypress' ),
-			'href'   => bp_loggedin_user_url( bp_members_get_path_chunks( array( bp_get_settings_slug(), 'profile' ) ) ),
+			'href'   => trailingslashit( $settings_link . 'profile' )
 		);
 
 		return $wp_admin_nav;

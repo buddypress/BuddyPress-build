@@ -21,104 +21,96 @@ class BP_Groups_Template {
 	/**
 	 * The loop iterator.
 	 *
-	 * @since 1.2.0
 	 * @var int
+	 * @since 1.2.0
 	 */
 	public $current_group = -1;
 
 	/**
 	 * The number of groups returned by the paged query.
 	 *
-	 * @since 1.2.0
 	 * @var int
+	 * @since 1.2.0
 	 */
 	public $group_count;
 
 	/**
 	 * Array of groups located by the query.
 	 *
-	 * @since 1.2.0
 	 * @var array
+	 * @since 1.2.0
 	 */
 	public $groups;
 
 	/**
 	 * The group object currently being iterated on.
 	 *
-	 * @since 1.2.0
 	 * @var object
+	 * @since 1.2.0
 	 */
 	public $group;
 
 	/**
 	 * A flag for whether the loop is currently being iterated.
 	 *
-	 * @since 1.2.0
 	 * @var bool
+	 * @since 1.2.0
 	 */
 	public $in_the_loop;
 
 	/**
 	 * The page number being requested.
 	 *
-	 * @since 1.2.0
 	 * @var string
+	 * @since 1.2.0
 	 */
 	public $pag_page;
 
 	/**
 	 * The number of items being requested per page.
 	 *
-	 * @since 1.2.0
 	 * @var string
+	 * @since 1.2.0
 	 */
 	public $pag_num;
 
 	/**
-	 * URL argument used for the pagination param.
-	 *
-	 * @since 1.2.0
-	 * @var string
-	 */
-	public $pag_arg;
-
-	/**
 	 * An HTML string containing pagination links.
 	 *
-	 * @since 1.2.0
 	 * @var string
+	 * @since 1.2.0
 	 */
 	public $pag_links;
 
 	/**
 	 * The total number of groups matching the query parameters.
 	 *
-	 * @since 1.2.0
 	 * @var int
+	 * @since 1.2.0
 	 */
 	public $total_group_count;
 
 	/**
 	 * Whether the template loop is for a single group page.
 	 *
-	 * @since 1.2.0
 	 * @var bool
+	 * @since 1.2.0
 	 */
 	public $single_group = false;
 
 	/**
 	 * Field to sort by.
 	 *
-	 * @since 1.2.0
 	 * @var string
+	 * @since 1.2.0
 	 */
 	public $sort_by;
 
 	/**
 	 * Sort order.
 	 *
-	 * @since 1.2.0
 	 * @var string
+	 * @since 1.2.0
 	 */
 	public $order;
 
@@ -138,7 +130,7 @@ class BP_Groups_Template {
 	function __construct( ...$args ){
 		// Backward compatibility with old method of passing arguments.
 		if ( ! is_array( $args[0] ) || count( $args ) > 1 ) {
-			_deprecated_argument( __METHOD__, '1.7', sprintf( esc_html__( 'Arguments passed to %1$s should be in an associative array. See the inline documentation at %2$s for more details.', 'buddypress' ), __METHOD__, __FILE__ ) );
+			_deprecated_argument( __METHOD__, '1.7', sprintf( __( 'Arguments passed to %1$s should be in an associative array. See the inline documentation at %2$s for more details.', 'buddypress' ), __METHOD__, __FILE__ ) );
 
 			$old_args_keys = array(
 				0  => 'user_id',

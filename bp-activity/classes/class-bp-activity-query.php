@@ -108,8 +108,6 @@ class BP_Activity_Query extends BP_Recursive_Query {
 	 *
 	 * @since 2.2.0
 	 *
-	 * @global wpdb $wpdb WordPress database object.
-	 *
 	 * @param  array $clause       Array of arguments belonging to the clause.
 	 * @param  array $parent_query Parent query to which the clause belongs.
 	 * @return array {
@@ -164,7 +162,7 @@ class BP_Activity_Query extends BP_Recursive_Query {
 			}
 
 			// Tinyint.
-			if ( ! empty( $column ) && true === in_array( $column, array( 'hide_sitewide', 'is_spam' ) ) && is_int( $value ) ) {
+			if ( ! empty( $column ) && true === in_array( $column, array( 'hide_sitewide', 'is_spam' ) ) ) {
 				$sql_chunks['where'][] = $wpdb->prepare( "{$alias}{$column} = %d", $value );
 
 			} else {

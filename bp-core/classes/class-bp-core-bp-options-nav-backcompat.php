@@ -2,31 +2,26 @@
 /**
  * Backward compatibility for the $bp->bp_options_nav global.
  *
- * @package BuddyPress
- * @subpackage Core
  * @since 2.6.0
- * @deprecated 12.0.0
  */
 
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
 /**
+ * bp_options_nav backward compatibility class.
+ *
  * This class is used to provide backward compatibility for extensions that access and modify
  * the $bp->bp_options_nav global.
  *
- * Backward compatibility class for `bp_options_nav`.
- *
  * @since 2.6.0
- * @deprecated 12.0.0
  */
 class BP_Core_BP_Options_Nav_BackCompat extends BP_Core_BP_Nav_BackCompat {
-
 	/**
 	 * Parent slug of the current nav item.
 	 *
 	 * @since 2.6.0
-	 *
+	 * @access protected
 	 * @var string
 	 */
 	protected $parent_slug = '';
@@ -35,66 +30,109 @@ class BP_Core_BP_Options_Nav_BackCompat extends BP_Core_BP_Nav_BackCompat {
 	 * Get a value of the nav array at the specified offset.
 	 *
 	 * @since 2.6.0
-	 * @deprecated 12.0.0
 	 *
 	 * @param mixed $offset Array offset.
+	 * @return BP_Core_BP_Nav_BackCompat
 	 */
 	public function offsetGet( $offset ) {
 		_doing_it_wrong(
 			'bp_nav',
-			esc_html__( 'These globals should not be used directly and are deprecated. Please use the BuddyPress nav functions instead.', 'buddypress' ),
+			__( 'These globals should not be used directly and are deprecated. Please use the BuddyPress nav functions instead.', 'buddypress' ),
 			'2.6.0'
 		);
-		_deprecated_function( __METHOD__, '12.0.0' );
+
+		if ( empty( $this->backcompat_nav[ $offset ] ) ) {
+			$nav = $this->get_nav( $offset );
+			if ( $nav ) {
+				$subnavs = $this->get_component_nav( $offset )->get_secondary( array( 'parent_slug' => $offset ) );
+				$subnav_keyed = array();
+				if ( $subnavs ) {
+					foreach ( $subnavs as $subnav ) {
+						$subnav_keyed[ $subnav->slug ] = (array) $subnav;
+					}
+				}
+
+				$subnav_object = new self( $subnav_keyed );
+				$subnav_object->set_component( $this->get_component() );
+				$subnav_object->set_parent_slug( $offset );
+
+				$this->backcompat_nav[ $offset ] = $subnav_object;
+			}
+		}
+
+		if ( isset( $this->backcompat_nav[ $offset ] ) ) {
+			return $this->backcompat_nav[ $offset ];
+		}
+
+		return false;
 	}
 
 	/**
 	 * Unset a nav array value at the specified offset.
 	 *
 	 * @since 2.6.0
-	 * @deprecated 12.0.0
 	 *
 	 * @param mixed $offset Array offset.
 	 */
-	#[ReturnTypeWillChange]
 	public function offsetUnset( $offset ) {
 		_doing_it_wrong(
 			'bp_nav',
-			esc_html__( 'These globals should not be used directly and are deprecated. Please use the BuddyPress nav functions instead.', 'buddypress' ),
+			__( 'These globals should not be used directly and are deprecated. Please use the BuddyPress nav functions instead.', 'buddypress' ),
 			'2.6.0'
 		);
-		_deprecated_function( __METHOD__, '12.0.0' );
+
+		$this->get_component_nav( $offset )->delete_nav( $offset, $this->get_parent_slug() );
+
+		// Clear the cached nav.
+		unset( $this->backcompat_nav[ $offset ] );
 	}
 
 	/**
 	 * Get the parent slug of the current nav item.
 	 *
 	 * @since 2.6.0
-	 * @deprecated 12.0.0
+	 *
+	 * @return string
 	 */
 	public function get_parent_slug() {
-		_deprecated_function( __METHOD__, '12.0.0' );
+		return $this->parent_slug;
 	}
 
 	/**
 	 * Set the parent slug of the current nav item.
 	 *
 	 * @since 2.6.0
-	 * @deprecated 12.0.0
 	 */
-	public function set_parent_slug() {
-		_deprecated_function( __METHOD__, '12.0.0' );
+	public function set_parent_slug( $slug ) {
+		$this->parent_slug = $slug;
 	}
 
 	/**
 	 * Get the nav object corresponding to the specified offset.
 	 *
 	 * @since 2.6.0
-	 * @deprecated 12.0.0
 	 *
 	 * @param mixed $offset Array offset.
+	 * @return bool|array
 	 */
 	public function get_nav( $offset ) {
-		_deprecated_function( __METHOD__, '12.0.0' );
+		$nav = parent::get_nav( $offset );
+
+		if ( ! $nav ) {
+			$component_nav = $this->get_component_nav( $offset );
+			$secondary_nav = $component_nav->get_secondary( array( 'slug' => $offset ), false );
+
+			$nav = array();
+
+			if ( empty( $primary_nav ) ) {
+				return $nav;
+			}
+
+			foreach ( $primary_nav as $item ) {
+				$nav[ $item->slug ] = (array) $item;
+			}
+		}
+
+		return $nav;
 	}
 }

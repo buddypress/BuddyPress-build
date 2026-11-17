@@ -18,7 +18,6 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 1.0.0
  */
-#[AllowDynamicProperties]
 class BP_Blogs_Blog {
 
 	/**
@@ -71,7 +70,7 @@ class BP_Blogs_Blog {
 	/**
 	 * Save the BP blog data to the database.
 	 *
-	 * @return bool
+	 * @return bool True on success, false on failure.
 	 */
 	public function save() {
 		global $wpdb;
@@ -81,8 +80,8 @@ class BP_Blogs_Blog {
 		 *
 		 * @since 1.0.0
 		 *
-		 * @param int $user_id User ID.
-		 * @param int $site_id Site ID.
+		 * @param int $value User ID.
+		 * @param int $value Site ID.
 		 */
 		$this->user_id = apply_filters( 'bp_blogs_blog_user_id_before_save', $this->user_id, $this->id );
 
@@ -91,8 +90,8 @@ class BP_Blogs_Blog {
 		 *
 		 * @since 1.0.0
 		 *
-		 * @param int $blog_id Blog ID.
-		 * @param int $site_id Site ID.
+		 * @param int $value Blog ID.
+		 * @param int $value Site ID.
 		 */
 		$this->blog_id = apply_filters( 'bp_blogs_blog_id_before_save', $this->blog_id, $this->id );
 
@@ -165,7 +164,7 @@ class BP_Blogs_Blog {
 	 * Retrieve a set of blog-user associations.
 	 *
 	 * @since 1.2.0
-	 * @since 10.0.0 Converted to array as main function argument. Added `$date_query` parameter.
+	 * @since 10.0.0 Converted to array as main function argument. Added $date_query parameter.
 	 *
 	 * @param array $data {
 	 *     Array of site data to query for.
@@ -197,7 +196,7 @@ class BP_Blogs_Blog {
 
 		// Backward compatibility with old method of passing arguments.
 		if ( ! is_array( $args[0] ) || count( $args ) > 1 ) {
-			_deprecated_argument( __METHOD__, '10.0.0', sprintf( esc_html__( 'Arguments passed to %1$s should be in an associative array. See the inline documentation at %2$s for more details.', 'buddypress' ), __METHOD__, __FILE__ ) );
+			_deprecated_argument( __METHOD__, '10.0.0', sprintf( __( 'Arguments passed to %1$s should be in an associative array. See the inline documentation at %2$s for more details.', 'buddypress' ), __METHOD__, __FILE__ ) );
 
 			$old_args_keys = [
 				0  => 'type',
@@ -265,16 +264,10 @@ class BP_Blogs_Blog {
 		}
 
 		if ( ! empty( $r['search_terms'] ) ) {
-			$search_terms_left_join = 'LEFT JOIN ' . $bp->blogs->table_name_blogmeta . ' bm_description ON (b.blog_id = bm_description.blog_id)';
-			$search_terms_like      = '%' . bp_esc_like( $r['search_terms'] ) . '%';
-			$search_terms_sql       = $wpdb->prepare(
-				'AND bm_description.meta_key = \'description\' AND (bm_name.meta_value LIKE %s OR bm_description.meta_value LIKE %s)',
-				$search_terms_like,
-				$search_terms_like
-			);
+			$search_terms_like = '%' . bp_esc_like( $r['search_terms'] ) . '%';
+			$search_terms_sql  = $wpdb->prepare( 'AND (bm_name.meta_value LIKE %s OR bm_description.meta_value LIKE %s)', $search_terms_like, $search_terms_like );
 		} else {
-			$search_terms_left_join = '';
-			$search_terms_sql       = '';
+			$search_terms_sql = '';
 		}
 
 		$paged_blogs = $wpdb->get_results( "
@@ -283,12 +276,12 @@ class BP_Blogs_Blog {
 			  {$bp->blogs->table_name} b
 			  LEFT JOIN {$bp->blogs->table_name_blogmeta} bm ON (b.blog_id = bm.blog_id)
 			  LEFT JOIN {$bp->blogs->table_name_blogmeta} bm_name ON (b.blog_id = bm_name.blog_id)
-			  {$search_terms_left_join}
+			  LEFT JOIN {$bp->blogs->table_name_blogmeta} bm_description ON (b.blog_id = bm_description.blog_id)
 			  LEFT JOIN {$wpdb->base_prefix}blogs wb ON (b.blog_id = wb.blog_id)
 			  LEFT JOIN {$wpdb->users} u ON (b.user_id = u.ID)
 			WHERE
 			  wb.archived = '0' AND wb.spam = 0 AND wb.mature = 0 AND wb.deleted = 0 {$hidden_sql}
-			  AND bm.meta_key = 'last_activity' AND bm_name.meta_key = 'name'
+			  AND bm.meta_key = 'last_activity' AND bm_name.meta_key = 'name' AND bm_description.meta_key = 'description'
 			  {$search_terms_sql} {$user_sql} {$include_sql} {$date_query_sql}
 			GROUP BY b.blog_id {$order_sql} {$pag_sql}
 		" );
@@ -300,10 +293,10 @@ class BP_Blogs_Blog {
 			  LEFT JOIN {$wpdb->base_prefix}blogs wb ON (b.blog_id = wb.blog_id)
 			  LEFT JOIN {$bp->blogs->table_name_blogmeta} bm ON (b.blog_id = bm.blog_id)
 			  LEFT JOIN {$bp->blogs->table_name_blogmeta} bm_name ON (b.blog_id = bm_name.blog_id)
-			  {$search_terms_left_join}
+			  LEFT JOIN {$bp->blogs->table_name_blogmeta} bm_description ON (b.blog_id = bm_description.blog_id)
 			WHERE
 			  wb.archived = '0' AND wb.spam = 0 AND wb.mature = 0 AND wb.deleted = 0 {$hidden_sql}
-			  AND bm.meta_key = 'last_activity' AND bm_name.meta_key = 'name'
+			  AND bm.meta_key = 'last_activity' AND bm_name.meta_key = 'name' AND bm_description.meta_key = 'description'
 			  {$search_terms_sql} {$user_sql} {$include_sql} {$date_query_sql}
 		" );
 

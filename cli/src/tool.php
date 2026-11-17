@@ -9,17 +9,11 @@ use WP_CLI;
  *
  * ## EXAMPLES
  *
- *     # Repair the friend count.
  *     $ wp bp tool repair friend-count
  *     Success: Counting the number of friends for each user. Complete!
  *
- *     # Display BuddyPress version.
  *     $ wp bp tool version
  *     BuddyPress: 6.0.0
- *
- *     # Activate the signup tool.
- *     $ wp bp tool signup 1
- *     Success: Signup tool updated.
  *
  * @since 1.5.0
  */
@@ -47,11 +41,11 @@ class Tool extends BuddyPressCommand {
 	 *   - group-count
 	 *   - blog-records
 	 *   - count-members
+	 *   - last-activity
 	 * ---
 	 *
-	 * ## EXAMPLES
+	 * ## EXAMPLE
 	 *
-	 *     # Repair the friend count.
 	 *     $ wp bp tool repair friend-count
 	 *     Success: Counting the number of friends for each user. Complete!
 	 *
@@ -83,7 +77,6 @@ class Tool extends BuddyPressCommand {
 	 *
 	 * ## EXAMPLE
 	 *
-	 *     # Display BuddyPress version.
 	 *     $ wp bp tool version
 	 *     BuddyPress: 6.0.0
 	 */
@@ -92,40 +85,21 @@ class Tool extends BuddyPressCommand {
 	}
 
 	/**
-	 * (De)Activate the signup feature.
+	 * (De)Activate the Signup feature.
 	 *
 	 * <status>
 	 * : Status of the feature.
 	 *
 	 * ## EXAMPLES
 	 *
-	 *     # Activate the signup tool.
 	 *     $ wp bp tool signup 1
 	 *     Success: Signup tool updated.
 	 *
-	 *     # Deactivate the signup tool.
 	 *     $ wp bp tool signup 0
 	 *     Success: Signup tool updated.
 	 */
 	public function signup( $args ) {
-		$status = wp_validate_boolean( $args[0] );
-
-		if ( is_multisite() ) {
-			$retval = get_site_option( 'registration' );
-
-			if ( 'all' === $retval && $status ) {
-				WP_CLI::error( 'Both sites and user accounts registration is already allowed.' );
-			}
-
-			$current = $status ? 'all' : 'none';
-			update_site_option( 'registration', $current );
-		} else {
-			if ( bp_get_signup_allowed() && $status ) {
-				WP_CLI::error( 'The BuddyPress signup feature is already allowed.' );
-			}
-
-			bp_update_option( 'users_can_register', $status );
-		}
+		bp_update_option( 'users_can_register', $args[0] );
 
 		WP_CLI::success( 'Signup tool updated.' );
 	}

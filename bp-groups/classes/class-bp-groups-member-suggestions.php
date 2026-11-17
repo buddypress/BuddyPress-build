@@ -38,6 +38,7 @@ class BP_Groups_Member_Suggestions extends BP_Members_Suggestions {
 		'type'         => '',
 	);
 
+
 	/**
 	 * Validate and sanitise the parameters for the suggestion service query.
 	 *

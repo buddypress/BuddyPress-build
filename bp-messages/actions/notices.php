@@ -86,7 +86,8 @@ function bp_messages_action_edit_notice() {
 	}
 
 	// Redirect.
-	$redirect_to = bp_loggedin_user_url( bp_members_get_path_chunks( array( bp_get_messages_slug(), 'notices' ) ) );
+	$member_notices = trailingslashit( bp_loggedin_user_domain() . bp_get_messages_slug() );
+	$redirect_to    = trailingslashit( $member_notices . 'notices' );
 
 	bp_core_redirect( $redirect_to );
 }
@@ -130,7 +131,7 @@ function bp_messages_action_dismiss_notice() {
 	bp_core_add_message( $feedback, $type );
 
 	// Redirect.
-	$redirect_to = bp_loggedin_user_url( bp_members_get_path_chunks( array( bp_get_messages_slug() ) ) );
+	$redirect_to = trailingslashit( bp_loggedin_user_domain() . bp_get_messages_slug() );
 
 	bp_core_redirect( $redirect_to );
 }

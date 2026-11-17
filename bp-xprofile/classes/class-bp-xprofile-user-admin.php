@@ -173,7 +173,7 @@ class BP_XProfile_User_Admin {
 				bp_xprofile_maybe_format_datebox_post_data( $field_id );
 
 				$is_required[ $field_id ] = xprofile_check_is_required_field( $field_id ) && ! bp_current_user_can( 'bp_moderate' );
-				if ( $is_required[ $field_id ] && empty( $_POST[ 'field_' . $field_id ] ) ) {
+				if ( $is_required[ $field_id ] && empty( $_POST['field_' . $field_id ] ) ) {
 					$redirect_to = add_query_arg( 'error', '2', $redirect_to );
 					bp_core_redirect( $redirect_to );
 				}
@@ -191,9 +191,9 @@ class BP_XProfile_User_Admin {
 				 * through empty. Save them as an empty array so that they don't
 				 * get overwritten by the default on the next edit.
 				 */
-				$value = isset( $_POST[ 'field_' . $field_id ] ) ? $_POST[ 'field_' . $field_id ] : '';
+				$value = isset( $_POST['field_' . $field_id] ) ? $_POST['field_' . $field_id] : '';
 
-				$visibility_level = ! empty( $_POST[ 'field_' . $field_id . '_visibility' ] ) ? $_POST[ 'field_' . $field_id . '_visibility' ] : 'public';
+				$visibility_level = ! empty( $_POST['field_' . $field_id . '_visibility'] ) ? $_POST['field_' . $field_id . '_visibility'] : 'public';
 				/*
 				 * Save the old and new values. They will be
 				 * passed to the filter and used to determine
@@ -261,7 +261,7 @@ class BP_XProfile_User_Admin {
 	 * @since 2.0.0
 	 *
 	 * @param WP_User|null $user The WP_User object for the user being edited.
-	 * @param array        $args Array of arguments for metaboxes.
+	 * @param array        $args Aray of arguments for metaboxes.
 	 */
 	public function user_admin_profile_metaboxes( $user = null, $args = array() ) {
 
@@ -325,8 +325,8 @@ class BP_XProfile_User_Admin {
 
 						<?php
 						printf(
-							esc_html__( 'This field can be seen by: %s', 'buddypress' ),
-							'<span class="current-visibility-level">' . esc_html( bp_get_the_profile_field_visibility_level_label() ) . '</span>'
+							__( 'This field can be seen by: %s', 'buddypress' ),
+							'<span class="current-visibility-level">' . bp_get_the_profile_field_visibility_level_label() . '</span>'
 						);
 						?>
 						</span>
@@ -342,7 +342,7 @@ class BP_XProfile_User_Admin {
 
 						<div class="field-visibility-settings" id="field-visibility-settings-<?php bp_the_profile_field_id() ?>">
 							<fieldset>
-								<legend><?php esc_html_e( 'Who can see this field?', 'buddypress' ); ?></legend>
+								<legend><?php _e( 'Who can see this field?', 'buddypress' ); ?></legend>
 
 								<?php bp_profile_visibility_radio_buttons(); ?>
 
@@ -378,7 +378,7 @@ class BP_XProfile_User_Admin {
 	 */
 	public function user_admin_spammer_metabox( $user = null ) {
 	?>
-		<p><?php printf( esc_html__( '%s has been marked as a spammer. All BuddyPress data associated with the user has been removed', 'buddypress' ), esc_html( bp_core_get_user_displayname( $user->ID ) ) ) ;?></p>
+		<p><?php printf( __( '%s has been marked as a spammer. All BuddyPress data associated with the user has been removed', 'buddypress' ), esc_html( bp_core_get_user_displayname( $user->ID ) ) ) ;?></p>
 	<?php
 	}
 

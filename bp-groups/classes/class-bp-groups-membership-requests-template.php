@@ -60,17 +60,9 @@ class BP_Groups_Membership_Requests_Template {
 
 	/**
 	 * @since 1.0.0
-	 * @var array|string|null
+	 * @var array|string|void
 	 */
 	public $pag_links;
-
-	/**
-	 * URL argument used for the pagination param.
-	 *
-	 * @since 1.0.0
-	 * @var string
-	 */
-	public $pag_arg;
 
 	/**
 	 * @since 1.0.0
@@ -98,7 +90,7 @@ class BP_Groups_Membership_Requests_Template {
 		// Backward compatibility with old method of passing arguments.
 		if ( ! is_array( $args ) || count( $function_args ) > 1 ) {
 			/* translators: 1: the name of the method. 2: the name of the file. */
-			_deprecated_argument( __METHOD__, '2.0.0', sprintf( esc_html__( 'Arguments passed to %1$s should be in an associative array. See the inline documentation at %2$s for more details.', 'buddypress' ), __METHOD__, __FILE__ ) );
+			_deprecated_argument( __METHOD__, '2.0.0', sprintf( __( 'Arguments passed to %1$s should be in an associative array. See the inline documentation at %2$s for more details.', 'buddypress' ), __METHOD__, __FILE__ ) );
 
 			$old_args_keys = array(
 				0 => 'group_id',

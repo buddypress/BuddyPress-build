@@ -107,7 +107,7 @@ class BP_Messages_Thread_Template {
 	/**
 	 * Set up the next message and iterate index.
 	 *
-	 * @return object The next message to iterate over.
+	 * @return BP_Messages_Message The next message to iterate over.
 	 */
 	public function next_message() {
 		$this->current_message++;

@@ -62,7 +62,6 @@ function bp_messages_is_message_starred( $mid = 0, $user_id = 0 ) {
  * @param array $args See bp_get_the_message_star_action_link() for full documentation.
  */
 function bp_the_message_star_action_link( $args = array() ) {
-	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo bp_get_the_message_star_action_link( $args );
 }
 	/**
@@ -114,14 +113,29 @@ function bp_the_message_star_action_link( $args = array() ) {
 			'messages_star_action_link'
 		);
 
-		// Check user ID.
-		$user_id = (int) $r['user_id'];
-		if ( empty( $user_id ) ) {
-			return '';
+		// Check user ID and determine base user URL.
+		switch ( $r['user_id'] ) {
+
+			// Current user.
+			case bp_loggedin_user_id() :
+				$user_domain = bp_loggedin_user_domain();
+				break;
+
+			// Displayed user.
+			case bp_displayed_user_id() :
+				$user_domain = bp_displayed_user_domain();
+				break;
+
+			// Empty or other.
+			default :
+				$user_domain = bp_core_get_user_domain( $r['user_id'] );
+				break;
 		}
 
-		// Init path chunks.
-		$path_chunks = array( bp_get_messages_slug() );
+		// Bail if no user domain was calculated.
+		if ( empty( $user_domain ) ) {
+			return '';
+		}
 
 		// Define local variables.
 		$retval = $bulk_attr = '';
@@ -168,14 +182,12 @@ function bp_the_message_star_action_link( $args = array() ) {
 			$nonce = wp_create_nonce( "bp-messages-star-{$message_id}" );
 
 			if ( true === $is_starred ) {
-				$action        = 'unstar';
-				$bulk_attr     = ' data-star-bulk="1"';
-				$path_chunks[] = $action;
-				$path_chunks[] = array( $message_id, $nonce, 'all' );
+				$action    = 'unstar';
+				$bulk_attr = ' data-star-bulk="1"';
+				$retval    = $user_domain . bp_get_messages_slug() . '/unstar/' . $message_id . '/' . $nonce . '/all/';
 			} else {
-				$action        = 'star';
-				$path_chunks[] = $action;
-				$path_chunks[] = array( $message_id, $nonce );
+				$action    = 'star';
+				$retval    = $user_domain . bp_get_messages_slug() . '/star/' . $message_id . '/' . $nonce . '/';
 			}
 
 			$title = $r["title_{$action}_thread"];
@@ -188,26 +200,24 @@ function bp_the_message_star_action_link( $args = array() ) {
 
 			if ( true === $is_starred ) {
 				$action = 'unstar';
+				$retval = $user_domain . bp_get_messages_slug() . '/unstar/' . $message_id . '/' . $nonce . '/';
 			} else {
 				$action = 'star';
+				$retval = $user_domain . bp_get_messages_slug() . '/star/' . $message_id . '/' . $nonce . '/';
 			}
 
-			$path_chunks[] = $action;
-			$path_chunks[] = array( $message_id, $nonce );
-			$title         = $r["title_{$action}"];
+			$title = $r["title_{$action}"];
 		}
-
-		$url = bp_members_get_user_url( $user_id, bp_members_get_path_chunks( $path_chunks ) );
 
 		/**
 		 * Filters the star action URL for starring / unstarring a message.
 		 *
 		 * @since 2.3.0
 		 *
-		 * @param string $url URL for starring / unstarring a message.
-		 * @param array  $r   Parsed link arguments. See $args in bp_get_the_message_star_action_link().
+		 * @param string $retval URL for starring / unstarring a message.
+		 * @param array  $r      Parsed link arguments. See $args in bp_get_the_message_star_action_link().
 		 */
-		$retval = esc_url( apply_filters( 'bp_get_the_message_star_action_urlonly', $url, $r ) );
+		$retval = esc_url( apply_filters( 'bp_get_the_message_star_action_urlonly', $retval, $r ) );
 		if ( true === (bool) $r['url_only'] ) {
 			return $retval;
 		}
@@ -233,7 +243,7 @@ function bp_the_message_star_action_link( $args = array() ) {
  *     @type string $action     The star action. Either 'star' or 'unstar'. Default: 'star'.
  *     @type int    $thread_id  The message thread ID. Default: 0. If not zero, this takes precedence over
  *                              $message_id.
- *     @type int    $message_id The individual message ID to star or unstar.  Default: 0.
+ *     @type int    $message_id The indivudal message ID to star or unstar.  Default: 0.
  *     @type int    $user_id    The user ID. Defaults to the logged-in user ID.
  *     @type bool   $bulk       Whether to mark all messages in a thread as a certain action. Only relevant
  *                              when $action is 'unstar' at the moment. Default: false.
@@ -330,8 +340,8 @@ add_action( 'bp_enqueue_scripts', 'bp_messages_star_enqueue_scripts' );
 function bp_messages_star_bulk_management_dropdown() {
 ?>
 
-	<option value="star"><?php esc_html_e( 'Add star', 'buddypress' ); ?></option>
-	<option value="unstar"><?php esc_html_e( 'Remove star', 'buddypress' ); ?></option>
+	<option value="star"><?php _e( 'Add star', 'buddypress' ); ?></option>
+	<option value="unstar"><?php _e( 'Remove star', 'buddypress' ); ?></option>
 
 <?php
 }

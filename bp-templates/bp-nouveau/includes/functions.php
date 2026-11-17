@@ -3,7 +3,7 @@
  * Common functions
  *
  * @since 3.0.0
- * @version 14.0.0
+ * @version 10.0.0
  */
 
 // Exit if accessed directly.
@@ -304,7 +304,7 @@ function bp_nouveau_wrapper( $args = array() ) {
 		$container_classes = ' class="' . join( ' ', array_map( 'sanitize_html_class', $r['container_classes'] ) ) . '"';
 	}
 
-	// phpcs:ignore WordPress.Security.EscapeOutput
+	// Print the wrapper and its content.
 	printf( '<%1$s%2$s%3$s>%4$s</%1$s>', $container, $container_id, $container_classes, $output );
 }
 
@@ -520,14 +520,14 @@ function bp_nouveau_parse_hooked_options( $hook = '', $filters = array() ) {
 }
 
 /**
- * Get Dropdown filters for the current component of the one passed in params.
+ * Get Dropdawn filters for the current component of the one passed in params
  *
  * @since 3.0.0
  *
- * @param string $context   'directory', 'user' or 'group'.
- * @param string $component The BuddyPress component ID.
+ * @param string $context   'directory', 'user' or 'group'
+ * @param string $component The BuddyPress component ID
  *
- * @return array the dropdown filters.
+ * @return array the dropdown filters
  */
 function bp_nouveau_get_component_filters( $context = '', $component = '' ) {
 	$filters = array();
@@ -640,6 +640,7 @@ function bp_nouveau_get_temporary_setting( $option = '', $retval = false ) {
  */
 function bp_nouveau_get_appearance_settings( $option = '' ) {
 	$default_args = array(
+		'avatar_style'       => 0,
 		'global_alignment'   => 'alignwide',
 		'user_front_page'    => 0,
 		'user_front_bio'     => 0,
@@ -662,33 +663,27 @@ function bp_nouveau_get_appearance_settings( $option = '' ) {
 	}
 
 	if ( bp_is_active( 'groups' ) ) {
-		$default_args = array_merge(
-			$default_args,
-			array(
-				'group_front_page'        => 0,
-				'group_front_boxes'       => 0,
-				'group_front_description' => 0,
-				'group_nav_display'       => 0, // O is default (horizontally). 1 is vertically.
-				'group_nav_order'         => array(),
-				'group_nav_tabs'          => 0,
-				'group_subnav_tabs'       => 0,
-				'groups_create_tabs'      => 1,
-				'groups_layout'           => 1,
-				'members_group_layout'    => 1,
-				'groups_dir_layout'       => 0,
-				'groups_dir_tabs'         => 0,
-			)
-		);
+		$default_args = array_merge( $default_args, array(
+			'group_front_page'        => 0,
+			'group_front_boxes'       => 0,
+			'group_front_description' => 0,
+			'group_nav_display'       => 0,       // O is default (horizontally). 1 is vertically.
+			'group_nav_order'         => array(),
+			'group_nav_tabs'          => 0,
+			'group_subnav_tabs'       => 0,
+			'groups_create_tabs'      => 1,
+			'groups_layout'           => 1,
+			'members_group_layout'    => 1,
+			'groups_dir_layout'       => 0,
+			'groups_dir_tabs'         => 0,
+		) );
 	}
 
 	if ( is_multisite() && bp_is_active( 'blogs' ) ) {
-		$default_args = array_merge(
-			$default_args,
-			array(
-				'sites_dir_layout' => 0,
-				'sites_dir_tabs'   => 0,
-			)
-		);
+		$default_args = array_merge( $default_args, array(
+			'sites_dir_layout' => 0,
+			'sites_dir_tabs'   => 0,
+		) );
 	}
 
 	$settings = bp_parse_args(
@@ -696,15 +691,6 @@ function bp_nouveau_get_appearance_settings( $option = '' ) {
 		$default_args,
 		'nouveau_appearance_settings'
 	);
-
-	// Override some settings to better suits block themes.
-	if ( bp_nouveau()->is_block_theme ) {
-		$settings['global_alignment'] = 'alignnone';
-
-		if ( isset( $settings['groups_create_tabs'] ) ) {
-			$settings['groups_create_tabs'] = 0;
-		}
-	}
 
 	if ( ! empty( $option ) ) {
 		if ( isset( $settings[ $option ] ) ) {
@@ -752,10 +738,7 @@ function bp_nouveau_customizer_grid_choices( $type = 'option' ) {
  * @return array An array of nav items slugs.
  */
 function bp_nouveau_sanitize_nav_order( $option = '' ) {
-	if ( ! is_array( $option ) ) {
-		$option = explode( ',', $option );
-	}
-
+	$option = explode( ',', $option );
 	return array_map( 'sanitize_key', $option );
 }
 
@@ -1430,7 +1413,7 @@ function bp_nouveau_get_submit_button( $action = '' ) {
  * @param array  $order       A list of slugs ordered (eg: array( 'profile', 'activity', etc..) )
  * @param string $parent_slug A parent slug if it's a secondary nav we are reordering (case of the Groups single item)
  *
- * @return bool False otherwise.
+ * @return bool True on success. False otherwise.
  */
 function bp_nouveau_set_nav_item_order( $nav = null, $order = array(), $parent_slug = '' ) {
 	if ( ! is_object( $nav ) || empty( $order ) || ! is_array( $order ) ) {
@@ -1521,15 +1504,35 @@ function bp_nouveau_get_component_slug( $component_id = '' ) {
  * Registers the 'bp/primary-nav' Widget Block.
  *
  * @since 9.0.0
- * @since 12.0.0 Use the WP Blocks API v2.
  *
  * @param array $blocks The Core Blocks list.
  * @return array The Core Blocks list.
  */
 function bp_nouveau_register_primary_nav_widget_block( $blocks = array() ) {
+	$editor_style = bp_locate_template_asset( 'css/primary-nav.css' );
+
 	$blocks['bp/primary-nav'] = array(
-		'metadata'        => trailingslashit( buddypress()->plugin_dir ) . 'bp-core/blocks/primary-nav',
-		'render_callback' => 'bp_nouveau_render_primary_nav_block',
+		'name'               => 'bp/primary-nav',
+		'editor_script'      => 'bp-primary-nav-block',
+		'editor_script_url'  => trailingslashit( buddypress()->plugin_url . 'bp-core' ) . 'js/blocks/primary-nav.js',
+		'editor_script_deps' => array(
+			'wp-blocks',
+			'wp-element',
+			'wp-components',
+			'wp-i18n',
+			'wp-block-editor',
+			'wp-server-side-render',
+			'bp-block-data',
+		),
+		'editor_style'       => 'bp-primary-nav-block',
+		'editor_style_url'   => $editor_style['uri'],
+		'attributes'         => array(
+			'displayTitle' => array(
+				'type'    => 'boolean',
+				'default' => true,
+			),
+		),
+		'render_callback'    => 'bp_nouveau_render_primary_nav_block',
 	);
 
 	return $blocks;
@@ -1665,8 +1668,8 @@ function bp_nouveau_get_theme_layout_widths() {
 		);
 	}
 
-	// Use Block Theme global settings for Block Themes.
-	if ( wp_is_block_theme() ) {
+	// `wp_get_global_settings()` has been introduced in WordPress 5.9
+	if ( function_exists( 'wp_get_global_settings' ) ) {
 		$theme_layouts = wp_get_global_settings( array( 'layout' ) );
 
 		if ( isset( $theme_layouts['wideSize'] ) && $theme_layouts['wideSize'] ) {
@@ -1685,54 +1688,4 @@ function bp_nouveau_get_theme_layout_widths() {
 	 * @param array $layout_widths The available theme layout widths.
 	 */
 	return apply_filters( 'bp_nouveau_get_theme_layout_widths', $layout_widths );
-}
-
-/**
- * Get the current displayed object for the priority nav.
- *
- * @since 12.0.0
- *
- * @return string The current displayed object (`member` or `group`).
- */
-function bp_nouveau_get_current_priority_nav_object() {
-	$object = '';
-
-	if ( bp_is_user() ) {
-		$object = 'member';
-	} elseif ( bp_is_group() ) {
-		$object = 'group';
-	}
-
-	return $object;
-}
-
-/**
- * Checks whether a single item supports priority nav.
- *
- * @since 12.0.0
- *
- * @param string $single_item The single item object name. Possible valuers are 'member' or 'group'.
- * @return bool True if the single item supports priority nav. False otherwise.
- */
-function bp_nouveau_single_item_supports_priority_nav( $single_item = '' ) {
-	$retval  = false;
-	$feature = bp_get_theme_compat_feature( 'priority_item_nav' );
-
-	if ( isset( $feature->single_items ) && is_array( $feature->single_items ) ) {
-		$retval = ! empty( $feature->single_items );
-
-		if ( $single_item ) {
-			$retval = in_array( $single_item, $feature->single_items, true );
-		}
-	}
-
-	/**
-	 * Use this filter to disallow/allow the Priority nav support.
-	 *
-	 * @since 12.0.0
-	 *
-	 * @param bool   $retval      True if the single item supports priority nav. False otherwise.
-	 * @param string $single_item The single item object name. Possible valuers are 'member' or 'group'.
-	 */
-	return apply_filters( 'bp_nouveau_single_item_supports_priority_nav', $retval, $single_item );
 }

@@ -9,12 +9,10 @@ use WP_CLI;
  *
  *  ## EXAMPLES
  *
- *     # Create message.
  *     $ wp bp message create --from=user1 --to=user2 --subject="Message Title" --content="We are ready"
  *     Success: Message successfully created.
  *
- *     # Delete a thread.
- *     $ wp bp message delete-thread 564 5465465 456456 --user-id=user_login --yes
+ *     $ wp bp message delete-thread 564 5465465 456456 --user-id=user_logon --yes
  *     Success: Thread successfully deleted.
  *
  * @since 1.6.0
@@ -37,14 +35,14 @@ class Messages extends BuddyPressCommand {
 	 *
 	 * @var array
 	 */
-	protected $obj_fields = [
+	protected $obj_fields = array(
 		'id',
 		'subject',
 		'message',
 		'thread_id',
 		'sender_id',
 		'date_sent',
-	];
+	);
 
 	/**
 	 * Add a message.
@@ -68,7 +66,7 @@ class Messages extends BuddyPressCommand {
 	 * : Thread ID.
 	 *
 	 * [--date-sent=<date-sent>]
-	 * : GMT timestamp, in Y-m-d h:i:s format.
+	 * : MySQL-formatted date.
 	 *
 	 * [--silent]
 	 * : Whether to silent the message creation.
@@ -78,11 +76,9 @@ class Messages extends BuddyPressCommand {
 	 *
 	 * ## EXAMPLES
 	 *
-	 *     # Add a message.
-	 *     $ wp bp message add --from=user1 --to=user2 --subject="Message Title" --content="We are ready"
+	 *     $ wp bp message create --from=user1 --to=user2 --subject="Message Title" --content="We are ready"
 	 *     Success: Message successfully created.
 	 *
-	 *     # Create a message.
 	 *     $ wp bp message create --from=545 --to=313 --subject="Another Message Title" --content="Message OK"
 	 *     Success: Message successfully created.
 	 *
@@ -91,11 +87,11 @@ class Messages extends BuddyPressCommand {
 	public function create( $args, $assoc_args ) {
 		$r = wp_parse_args(
 			$assoc_args,
-			[
+			array(
 				'to'        => '',
 				'thread-id' => false,
 				'date-sent' => bp_core_current_time(),
-			]
+			)
 		);
 
 		$user = $this->get_user_id_from_identifier( $assoc_args['from'] );
@@ -106,17 +102,17 @@ class Messages extends BuddyPressCommand {
 		}
 
 		// Existing thread recipients will be assumed.
-		$recipient = ! empty( $r['thread-id'] ) ? [] : [ $recipient->ID ];
+		$recipient = ! empty( $r['thread-id'] ) ? array() : array( $recipient->ID );
 
 		$thread_id = messages_new_message(
-			[
+			array(
 				'sender_id'  => $user->ID,
 				'thread_id'  => $r['thread-id'],
 				'recipients' => $recipient,
 				'subject'    => $assoc_args['subject'],
 				'content'    => $assoc_args['content'],
 				'date_sent'  => $r['date-sent'],
-			]
+			)
 		);
 
 		// Silent it before it errors.
@@ -165,17 +161,13 @@ class Messages extends BuddyPressCommand {
 
 		WP_CLI::confirm( 'Are you sure you want to delete this thread(s)?', $assoc_args );
 
-		parent::_delete(
-			$args,
-			$assoc_args,
-			function ( $thread_id ) use ( $user ) {
-				if ( messages_delete_thread( $thread_id, $user->ID ) ) {
-					return [ 'success', 'Thread successfully deleted.' ];
-				}
-
-				return [ 'error', 'Could not delete the thread.' ];
+		parent::_delete( $args, $assoc_args, function( $thread_id ) use ( $user ) {
+			if ( messages_delete_thread( $thread_id, $user->ID ) ) {
+				return array( 'success', 'Thread successfully deleted.' );
+			} else {
+				return array( 'error', 'Could not delete the thread.' );
 			}
-		);
+		});
 	}
 
 	/**
@@ -196,34 +188,18 @@ class Messages extends BuddyPressCommand {
 	 * options:
 	 *   - table
 	 *   - json
-	 *   - csv
-	 *   - yaml
+	 *   - haml
 	 * ---
 	 *
 	 * ## EXAMPLES
 	 *
-	 *     # Get message by ID.
 	 *     $ wp bp message get 5465
-	 *
-	 *     # Get message with a string
-	 *     $ wp bp message get invalid-id
-	 *     Error: Please provide a numeric message ID.
+	 *     $ wp bp message see 5454
 	 *
 	 * @alias see
 	 */
 	public function get( $args, $assoc_args ) {
-		$message_id = $args[0];
-
-		if ( ! is_numeric( $message_id ) ) {
-			WP_CLI::error( 'Please provide a numeric message ID.' );
-		}
-
-		$message = new \BP_Messages_Message( $message_id );
-
-		if ( empty( $message->id ) ) {
-			WP_CLI::error( 'No message found.' );
-		}
-
+		$message     = new \BP_Messages_Message( $args[0] );
 		$message_arr = get_object_vars( $message );
 
 		if ( empty( $assoc_args['fields'] ) ) {
@@ -247,6 +223,12 @@ class Messages extends BuddyPressCommand {
 	 * [--fields=<fields>]
 	 * : Fields to display.
 	 *
+	 * [--count=<number>]
+	 * : How many messages to list.
+	 * ---
+	 * default: 10
+	 * ---
+	 *
 	 * [--box=<box>]
 	 * : Box of the message.
 	 * ---
@@ -267,12 +249,6 @@ class Messages extends BuddyPressCommand {
 	 *   - all
 	 * ---
 	 *
-	 * [--count=<number>]
-	 * : How many messages to list.
-	 * ---
-	 * default: 50
-	 * ---
-	 *
 	 * [--format=<format>]
 	 * : Render output in a particular format.
 	 * ---
@@ -283,52 +259,39 @@ class Messages extends BuddyPressCommand {
 	 *   - count
 	 *   - csv
 	 *   - json
-	 *   - yaml
+	 *   - haml
 	 * ---
-	 *
-	 * ## AVAILABLE FIELDS
-	 *
-	 * These fields will be displayed by default for each message:
-	 *
-	 * * id
-	 * * subject
-	 * * message
-	 * * thread_id
-	 * * sender_id
-	 * * date_sent
 	 *
 	 * ## EXAMPLES
 	 *
-	 *     # Get a list of messages for a specific user.
 	 *     $ wp bp message list --user-id=544 --format=count
 	 *     10
 	 *
-	 *     # Get a list of messages for a specific user and output only the IDs.
 	 *     $ wp bp message list --user-id=user_login --count=3 --format=ids
 	 *     5454 45454 4545 465465
 	 *
-	 *     # Get a list of messages.
-	 *     # wp bp message list --user-id=1 --count=2
-	 *     +----+----------------------+--------------------------+-----------+-----------+---------------------+
-	 *     | id | subject              | message                  | thread_id | sender_id | date_sent           |
-	 *     +----+----------------------+--------------------------+-----------+-----------+---------------------+
-	 *     | 35 | Another Thread       | <p>Another thread</p>    | 2         | 1         | 2022-10-27 16:29:29 |
-	 *     | 37 | Message Subject - #0 | Here is some random text | 2         | 7         | 2022-10-27 19:06:54 |
-	 *     +----+----------------------+--------------------------+-----------+-----------+---------------------+
-	 *
 	 * @subcommand list
 	 */
-	public function list_( $args, $assoc_args ) {
+	public function list_( $args, $assoc_args ) { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
 		$formatter = $this->get_formatter( $assoc_args );
-		$user      = $this->get_user_id_from_identifier( $assoc_args['user-id'] );
-		$inbox     = new \BP_Messages_Box_Template(
-			[
-				'user_id'           => $user->ID,
-				'box'               => $assoc_args['box'],
-				'type'              => $assoc_args['type'],
-				'messages_page'     => 1,
-				'messages_per_page' => $assoc_args['count'],
-			]
+
+		$r = wp_parse_args(
+			$assoc_args,
+			array(
+				'search' => '',
+			)
+		);
+
+		$user = $this->get_user_id_from_identifier( $assoc_args['user-id'] );
+
+		$inbox = new \BP_Messages_Box_Template(
+			array(
+				'user_id'      => $user->ID,
+				'box'          => $r['box'],
+				'type'         => $r['type'],
+				'max'          => $r['count'],
+				'search_terms' => $r['search'],
+			)
 		);
 
 		if ( ! $inbox->has_threads() ) {
@@ -337,19 +300,17 @@ class Messages extends BuddyPressCommand {
 
 		$messages = $inbox->threads[0]->messages;
 
-		$formatter->display_items( 'ids' === $formatter->format ? wp_list_pluck( $messages, 'id' ) : $messages );
+		if ( 'ids' === $formatter->format ) {
+			echo implode( ' ', wp_list_pluck( $messages, 'id' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		} else {
+			$formatter->display_items( $messages );
+		}
 	}
 
 	/**
 	 * Generate random messages.
 	 *
 	 * ## OPTIONS
-	 *
-	 * [--count=<number>]
-	 * : How many messages to generate.
-	 * ---
-	 * default: 100
-	 * ---
 	 *
 	 * [--from=<user>]
 	 * : Identifier for the user. Accepts either a user_login or a numeric ID.
@@ -361,74 +322,41 @@ class Messages extends BuddyPressCommand {
 	 * [--thread-id=<thread-id>]
 	 * : Thread ID to generate messages against.
 	 * ---
-	 *
-	 * [--format=<format>]
-	 * : Render output in a particular format.
+	 * default: 0
 	 * ---
-	 * default: progress
-	 * options:
-	 *   - progress
-	 *   - ids
+	 *
+	 * [--count=<number>]
+	 * : How many messages to generate.
+	 * ---
+	 * default: 20
 	 * ---
 	 *
 	 * ## EXAMPLES
 	 *
-	 *     # Generate messages against a thread with a specific user.
 	 *     $ wp bp message generate --from=1 --to=2 --thread-id=6465 --count=30
-	 *     Generating messages  100% [======================] 0:00 / 0:00
-	 *
-	 *     # Generate messages against a thread.
 	 *     $ wp bp message generate --thread-id=6465 --count=10
-	 *     Generating messages  100% [======================] 0:00 / 0:00
-	 *
-	 *     # Generate 5 messages against a thread and output only the IDs.
-	 *     $ wp bp message generate --thread-id=5665456 --count=5 --format=ids
-	 *     70 71 72 73 74
+	 *     $ wp bp message generate --count=100
 	 */
 	public function generate( $args, $assoc_args ) {
-		$from_user_id = null;
-		$to_user_id   = null;
+		$notify = WP_CLI\Utils\make_progress_bar( 'Generating messages', $assoc_args['count'] );
 
-		if ( isset( $assoc_args['from'] ) ) {
-			$user         = $this->get_user_id_from_identifier( $assoc_args['from'] );
-			$from_user_id = $user->ID;
-		}
-
-		if ( isset( $assoc_args['to'] ) ) {
-			$user       = $this->get_user_id_from_identifier( $assoc_args['to'] );
-			$to_user_id = $user->ID;
-		}
-
-		$this->generate_callback(
-			'Generating messages',
-			$assoc_args,
-			function ( $assoc_args, $format ) use ( $from_user_id, $to_user_id ) {
-
-				if ( ! $from_user_id ) {
-					$from_user_id = $this->get_random_user_id();
-				}
-
-				if ( ! $to_user_id ) {
-					$to_user_id = $this->get_random_user_id();
-				}
-
-				$params = [
-					'from'      => $from_user_id,
-					'to'        => $to_user_id,
-					'subject'   => sprintf( 'Message Subject - #%d', wp_rand() ),
+		for ( $i = 0; $i < $assoc_args['count']; $i++ ) {
+			$this->create(
+				array(),
+				array(
+					'from'      => empty( $assoc_args['from'] ) ? $this->get_random_user_id() : $assoc_args['from'],
+					'to'        => empty( $assoc_args['to'] ) ? $this->get_random_user_id() : $assoc_args['to'],
+					'subject'   => sprintf( 'Message Subject - #%d', $i ),
 					'content'   => $this->generate_random_text(),
 					'thread-id' => empty( $assoc_args['thread-id'] ) ? false : $assoc_args['thread-id'],
-				];
+					'silent',
+				)
+			);
 
-				if ( 'ids' === $format ) {
-					$params['porcelain'] = true;
-				} else {
-					$params['silent'] = true;
-				}
+			$notify->tick();
+		}
 
-				return $this->create( [], $params );
-			}
-		);
+		$notify->finish();
 	}
 
 	/**
@@ -444,29 +372,23 @@ class Messages extends BuddyPressCommand {
 	 *
 	 * ## EXAMPLE
 	 *
-	 *     # Star a message.
 	 *     $ wp bp message star 3543 --user-id=user_login
 	 *     Success: Message was successfully starred.
 	 */
 	public function star( $args, $assoc_args ) {
-		$message_id = $args[0];
-
-		if ( ! is_numeric( $message_id ) ) {
-			WP_CLI::error( 'Please provide a numeric message ID.' );
-		}
-
 		$user    = $this->get_user_id_from_identifier( $assoc_args['user-id'] );
 		$user_id = $user->ID;
+		$msg_id  = (int) $args[0];
 
-		if ( bp_messages_is_message_starred( $message_id, $user_id ) ) {
+		if ( bp_messages_is_message_starred( $msg_id, $user_id ) ) {
 			WP_CLI::error( 'The message is already starred.' );
 		}
 
-		$star_args = [
+		$star_args = array(
 			'action'     => 'star',
-			'message_id' => $message_id,
+			'message_id' => $msg_id,
 			'user_id'    => $user_id,
-		];
+		);
 
 		if ( bp_messages_star_set_action( $star_args ) ) {
 			WP_CLI::success( 'Message was successfully starred.' );
@@ -488,30 +410,24 @@ class Messages extends BuddyPressCommand {
 	 *
 	 * ## EXAMPLE
 	 *
-	 *     # Unstar a message.
 	 *     $ wp bp message unstar 212 --user-id=another_user_login
 	 *     Success: Message was successfully unstarred.
 	 */
 	public function unstar( $args, $assoc_args ) {
-		$message_id = $args[0];
-
-		if ( ! is_numeric( $message_id ) ) {
-			WP_CLI::error( 'Please provide a numeric message ID.' );
-		}
-
 		$user    = $this->get_user_id_from_identifier( $assoc_args['user-id'] );
 		$user_id = $user->ID;
+		$msg_id  = (int) $args[0];
 
 		// Check if the message is starred first.
-		if ( ! bp_messages_is_message_starred( $message_id, $user_id ) ) {
+		if ( ! bp_messages_is_message_starred( $msg_id, $user_id ) ) {
 			WP_CLI::error( 'You need to star a message first before unstarring it.' );
 		}
 
-		$star_args = [
+		$star_args = array(
 			'action'     => 'unstar',
-			'message_id' => $message_id,
+			'message_id' => $msg_id,
 			'user_id'    => $user_id,
-		];
+		);
 
 		if ( bp_messages_star_set_action( $star_args ) ) {
 			WP_CLI::success( 'Message was successfully unstarred.' );
@@ -533,20 +449,14 @@ class Messages extends BuddyPressCommand {
 	 *
 	 * ## EXAMPLE
 	 *
-	 *     # Star a thread.
 	 *     $ wp bp message star-thread 212 --user-id=another_user_login
 	 *     Success: Thread was successfully starred.
 	 *
 	 * @alias star-thread
 	 */
 	public function star_thread( $args, $assoc_args ) {
-		$thread_id = $args[0];
-
-		if ( ! is_numeric( $thread_id ) ) {
-			WP_CLI::error( 'Please provide a numeric thread ID.' );
-		}
-
-		$user = $this->get_user_id_from_identifier( $assoc_args['user-id'] );
+		$user      = $this->get_user_id_from_identifier( $assoc_args['user-id'] );
+		$thread_id = (int) $args[0];
 
 		// Check if it is a valid thread.
 		if ( ! messages_is_valid_thread( $thread_id ) ) {
@@ -555,17 +465,16 @@ class Messages extends BuddyPressCommand {
 
 		// Check if the user has access to this thread.
 		$id = messages_check_thread_access( $thread_id, $user->ID );
-
 		if ( ! is_numeric( $id ) ) {
 			WP_CLI::error( 'User has no access to this thread.' );
 		}
 
-		$star_args = [
+		$star_args = array(
 			'action'    => 'star',
 			'thread_id' => $thread_id,
 			'user_id'   => $user->ID,
 			'bulk'      => true,
-		];
+		);
 
 		if ( bp_messages_star_set_action( $star_args ) ) {
 			WP_CLI::success( 'Thread was successfully starred.' );
@@ -587,20 +496,14 @@ class Messages extends BuddyPressCommand {
 	 *
 	 * ## EXAMPLE
 	 *
-	 *     # Unstar a thread.
 	 *     $ wp bp message unstar-thread 212 --user-id=another_user_login
 	 *     Success: Thread was successfully unstarred.
 	 *
 	 * @alias unstar-thread
 	 */
 	public function unstar_thread( $args, $assoc_args ) {
-		$thread_id = $args[0];
-
-		if ( ! is_numeric( $thread_id ) ) {
-			WP_CLI::error( 'Please provide a numeric thread ID.' );
-		}
-
-		$user = $this->get_user_id_from_identifier( $assoc_args['user-id'] );
+		$user      = $this->get_user_id_from_identifier( $assoc_args['user-id'] );
+		$thread_id = (int) $args[0];
 
 		// Check if it is a valid thread.
 		if ( ! messages_is_valid_thread( $thread_id ) ) {
@@ -609,17 +512,16 @@ class Messages extends BuddyPressCommand {
 
 		// Check if the user has access to this thread.
 		$id = messages_check_thread_access( $thread_id, $user->ID );
-
 		if ( ! is_numeric( $id ) ) {
 			WP_CLI::error( 'User has no access to this thread.' );
 		}
 
-		$star_args = [
+		$star_args = array(
 			'action'    => 'unstar',
 			'thread_id' => $thread_id,
 			'user_id'   => $user->ID,
 			'bulk'      => true,
-		];
+		);
 
 		if ( bp_messages_star_set_action( $star_args ) ) {
 			WP_CLI::success( 'Thread was successfully unstarred.' );
@@ -641,7 +543,6 @@ class Messages extends BuddyPressCommand {
 	 *
 	 * ## EXAMPLE
 	 *
-	 *     # Send a notice.
 	 *     $ wp bp message send-notice --subject="Important notice" --content="We need to improve"
 	 *     Success: Notice was successfully sent.
 	 *

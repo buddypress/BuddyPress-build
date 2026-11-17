@@ -13,34 +13,30 @@
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
-if ( ! function_exists( 'bp_core_clear_cache' ) ) {
+/**
+ * Prune the WP Super Cache.
+ *
+ * When WP Super Cache is installed, this function will clear cached pages
+ * so that success/error messages or time-sensitive content are not cached.
+ *
+ * @since 1.0.0
+ *
+ * @see prune_super_cache()
+ *
+ * @return int
+ */
+function bp_core_clear_cache() {
+	global $cache_path;
 
-	/**
-	 * Prune the WP Super Cache.
-	 *
-	 * When WP Super Cache is installed, this function will clear cached pages
-	 * so that success/error messages or time-sensitive content are not cached.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @global string $cache_path Path directory.
-	 *
-	 * @see prune_super_cache()
-	 */
-	function bp_core_clear_cache() {
-		global $cache_path;
+	if ( function_exists( 'prune_super_cache' ) ) {
 
-		if ( function_exists( 'prune_super_cache' ) ) {
-
-			/**
-			 * Fires before the pruning of WP Super Cache.
-			 *
-			 * @since 1.0.0
-			 */
-			do_action( 'bp_core_clear_cache' );
-
-			prune_super_cache( $cache_path, true );
-		}
+		/**
+		 * Fires before the pruning of WP Super Cache.
+		 *
+		 * @since 1.0.0
+		 */
+		do_action( 'bp_core_clear_cache' );
+		return prune_super_cache( $cache_path, true );
 	}
 }
 
@@ -64,11 +60,11 @@ function bp_core_clear_member_count_caches() {
 	wp_cache_delete( 'bp_total_member_count', 'bp' );
 	delete_transient( 'bp_active_member_count' );
 }
-add_action( 'bp_core_activated_user', 'bp_core_clear_member_count_caches' );
+add_action( 'bp_core_activated_user',         'bp_core_clear_member_count_caches' );
 add_action( 'bp_core_process_spammer_status', 'bp_core_clear_member_count_caches' );
-add_action( 'bp_core_deleted_account', 'bp_core_clear_member_count_caches' );
-add_action( 'bp_first_activity_for_member', 'bp_core_clear_member_count_caches' );
-add_action( 'deleted_user', 'bp_core_clear_member_count_caches' );
+add_action( 'bp_core_deleted_account',        'bp_core_clear_member_count_caches' );
+add_action( 'bp_first_activity_for_member',   'bp_core_clear_member_count_caches' );
+add_action( 'deleted_user',                   'bp_core_clear_member_count_caches' );
 
 /**
  * Clear the directory_pages cache when one of the pages is updated.
@@ -92,7 +88,7 @@ function bp_core_clear_directory_pages_cache_page_edit( $post_id = 0 ) {
 	$page_ids = bp_core_get_directory_page_ids( 'all' );
 
 	// Bail if post ID is not a directory page.
-	if ( ! in_array( $post_id, $page_ids, true ) ) {
+	if ( ! in_array( $post_id, $page_ids ) ) {
 		return;
 	}
 
@@ -133,19 +129,16 @@ function bp_core_clear_root_options_cache( $option ) {
 		add_action( $action, 'bp_core_clear_root_options_cache' );
 	}
 
-	$keys = array_merge(
-		$keys,
-		array(
-			'registration',
-			'avatar_default',
-			'tags_blog_id',
-			'sitewide_tags_blog',
-			'registration',
-			'fileupload_mask',
-		)
-	);
+	$keys = array_merge( $keys, array(
+		'registration',
+		'avatar_default',
+		'tags_blog_id',
+		'sitewide_tags_blog',
+		'registration',
+		'fileupload_mask',
+	) );
 
-	if ( in_array( $option, $keys, true ) ) {
+	if ( in_array( $option, $keys ) ) {
 		wp_cache_delete( 'root_blog_options', 'bp' );
 	}
 }
@@ -187,7 +180,7 @@ function bp_get_non_cached_ids( $item_ids, $cache_group ) {
  *
  * @since 1.6.0
  *
- * @global wpdb $wpdb WordPress database object.
+ * @global object $wpdb WordPress database object for queries..
  *
  * @param array $args {
  *     Array of arguments.
@@ -209,10 +202,10 @@ function bp_update_meta_cache( $args = array() ) {
 	$r = bp_parse_args(
 		$args,
 		array(
-			'object_ids'       => array(), // Comma-separated list or array of item ids.
-			'object_type'      => '',      // Canonical component id: groups, members, etc.
+			'object_ids' 	   => array(), // Comma-separated list or array of item ids.
+			'object_type' 	   => '',      // Canonical component id: groups, members, etc.
 			'cache_group'      => '',      // Cache group.
-			'meta_table'       => '',      // Name of the table containing the metadata.
+			'meta_table' 	   => '',      // Name of the table containing the metadata.
 			'object_column'    => '',      // DB column for the object ids (group_id, etc).
 			'cache_key_prefix' => '',      // Prefix to use when creating cache key names. Eg 'bp_groups_groupmeta'.
 		)
@@ -248,20 +241,18 @@ function bp_update_meta_cache( $args = array() ) {
 
 		if ( ! empty( $meta_list ) ) {
 			foreach ( $meta_list as $metarow ) {
-				$mpid = intval( $metarow[ $object_column ] );
+				$mpid = intval( $metarow[$object_column] );
 				$mkey = $metarow['meta_key'];
 				$mval = $metarow['meta_value'];
 
 				// Force subkeys to be array type.
-				if ( ! isset( $cache[ $mpid ] ) || ! is_array( $cache[ $mpid ] ) ) {
-					$cache[ $mpid ] = array();
-				}
-				if ( ! isset( $cache[ $mpid ][ $mkey ] ) || ! is_array( $cache[ $mpid ][ $mkey ] ) ) {
-					$cache[ $mpid ][ $mkey ] = array();
-				}
+				if ( !isset( $cache[$mpid] ) || !is_array( $cache[$mpid] ) )
+					$cache[$mpid] = array();
+				if ( !isset( $cache[$mpid][$mkey] ) || !is_array( $cache[$mpid][$mkey] ) )
+					$cache[$mpid][$mkey] = array();
 
 				// Add a value to the current pid/key.
-				$cache[ $mpid ][ $mkey ][] = $mval;
+				$cache[$mpid][$mkey][] = $mval;
 			}
 		}
 
@@ -328,7 +319,7 @@ function bp_core_set_incremented_cache( $key, $group, $ids ) {
  *
  * @param string $key   Unique key for the query. Usually a SQL string.
  * @param string $group Cache group. Eg 'bp_activity'.
- * @return bool
+ * @return bool True on successful removal, false on failure.
  */
 function bp_core_delete_incremented_cache( $key, $group ) {
 	$cache_key = bp_core_get_incremented_cache_key( $key, $group );
@@ -349,7 +340,7 @@ function bp_core_delete_incremented_cache( $key, $group ) {
  */
 function bp_core_get_incremented_cache_key( $key, $group ) {
 	$incrementor = bp_core_get_incrementor( $group );
-	$cache_key   = md5( $key . $incrementor );
+	$cache_key = md5( $key . $incrementor );
 	return $cache_key;
 }
 
@@ -386,7 +377,7 @@ function bp_core_get_incrementor( $group ) {
  * @since 2.7.0
  *
  * @param string $group Cache group. Eg 'bp_activity'.
- * @return bool
+ * @return bool True on success, false on failure.
  */
 function bp_core_reset_incrementor( $group ) {
 	return wp_cache_delete( 'incrementor', $group );
@@ -418,15 +409,15 @@ add_action( 'bp_setup_cache_groups', 'bp_set_object_type_terms_cache_group' );
  *
  * @since 7.0.0
  *
- * @param int    $type_id The Type's term ID.
+ * @param int $type_id The Type's term ID.
  * @param string $taxonomy The Type's taxonomy name.
  */
 function bp_clear_object_type_terms_cache( $type_id = 0, $taxonomy = '' ) {
 	wp_cache_delete( $taxonomy, 'bp_object_terms' );
 }
-add_action( 'bp_type_inserted', 'bp_clear_object_type_terms_cache', 10, 2 );
-add_action( 'bp_type_updated', 'bp_clear_object_type_terms_cache', 10, 2 );
-add_action( 'bp_type_deleted', 'bp_clear_object_type_terms_cache', 10, 2 );
+add_action( 'bp_type_inserted', 'bp_clear_object_type_terms_cache' );
+add_action( 'bp_type_updated', 'bp_clear_object_type_terms_cache' );
+add_action( 'bp_type_deleted', 'bp_clear_object_type_terms_cache' );
 
 /**
  * Resets all incremented bp_optout caches.

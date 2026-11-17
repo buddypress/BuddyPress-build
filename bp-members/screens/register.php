@@ -27,7 +27,7 @@ function bp_core_screen_signup() {
 
 		$redirect_to = bp_is_component_front_page( 'register' )
 			? bp_get_members_directory_permalink()
-			: bp_get_root_url();
+			: bp_get_root_domain();
 
 		/**
 		 * Filters the URL to redirect logged in users to when visiting registration page.
@@ -172,7 +172,7 @@ function bp_core_screen_signup() {
 
 				// This situation doesn't naturally occur so bounce to website root.
 			} else {
-				bp_core_redirect( bp_get_root_url() );
+				bp_core_redirect( bp_get_root_domain() );
 			}
 		}
 
@@ -211,22 +211,17 @@ function bp_core_screen_signup() {
 				 * @param string $value     Error message wrapped in html.
 				 * @param string $fieldname The name of the signup field.
 				 */
-				add_action( 'bp_' . $fieldname . '_errors', function () use ( $error_message, $fieldname ) {
-					echo wp_kses(
-						/**
-						 * Filter here to edit the error message about the invalid field value.
-						 *
-						 * @since 1.5.0
-						 * @since 8.0.0 Adds the `$fieldname` parameter.
-						 *
-						 * @param string $value     Error message wrapped in html.
-						 * @param string $fieldname The name of the signup field.
-						 */
-						apply_filters( 'bp_members_signup_error_message', "<div class=\"error\">" . $error_message . "</div>", $fieldname ),
-						array(
-							'div' => array( 'class' => true ),
-						)
-					);
+				add_action( 'bp_' . $fieldname . '_errors', function() use ( $error_message, $fieldname ) {
+					/**
+					 * Filter here to edit the error message about the invalid field value.
+					 *
+					 * @since 1.5.0
+					 * @since 8.0.0 Adds the `$fieldname` parameter.
+					 *
+					 * @param string $value     Error message wrapped in html.
+					 * @param string $fieldname The name of the signup field.
+					 */
+					echo apply_filters( 'bp_members_signup_error_message', "<div class=\"error\">" . $error_message . "</div>", $fieldname );
 				} );
 			}
 		} else {
@@ -316,11 +311,8 @@ function bp_core_screen_signup() {
 	 *
 	 * @since 1.5.0
 	 *
-	 * @param string[] $value Path to the list of Member registration templates to load.
+	 * @param string $value Path to the Member registration template to load.
 	 */
-	$templates   = apply_filters( 'bp_core_template_register', array( 'register', 'registration/register' ) );
-	$templates[] = 'members/register';
-
-	bp_core_load_template( $templates );
+	bp_core_load_template( apply_filters( 'bp_core_template_register', array( 'register', 'registration/register' ) ) );
 }
 add_action( 'bp_screens', 'bp_core_screen_signup' );

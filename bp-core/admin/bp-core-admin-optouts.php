@@ -19,33 +19,14 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 8.0.0
  *
- * @global object $bp_optouts_list_table List table instance for nonmember opt-outs admin page.
+ * @global $bp_optouts_list_table
  */
 function bp_core_optouts_admin_load() {
 	global $bp_optouts_list_table;
 
 	// Build redirection URL.
-	$redirect_to = remove_query_arg(
-		array(
-			'action',
-			'error',
-			'updated',
-			'activated',
-			'notactivated',
-			'deleted',
-			'notdeleted',
-			'resent',
-			'notresent',
-			'do_delete',
-			'do_resend',
-			'do_activate',
-			'_wpnonce',
-			'signup_ids',
-		),
-		$_SERVER['REQUEST_URI']
-	);
-
-	$doaction = bp_admin_list_table_current_bulk_action();
+	$redirect_to = remove_query_arg( array( 'action', 'error', 'updated', 'activated', 'notactivated', 'deleted', 'notdeleted', 'resent', 'notresent', 'do_delete', 'do_resend', 'do_activate', '_wpnonce', 'signup_ids' ), $_SERVER['REQUEST_URI'] );
+	$doaction    = bp_admin_list_table_current_bulk_action();
 
 	/**
 	 * Fires at the start of the nonmember opt-outs admin load.
@@ -64,11 +45,11 @@ function bp_core_optouts_admin_load() {
 	 *
 	 * @param array $value Array of allowed actions to use.
 	 */
-	$allowed_actions = apply_filters( 'bp_optouts_admin_allowed_actions', array( 'do_delete', 'do_resend' ) );
+	$allowed_actions = apply_filters( 'bp_optouts_admin_allowed_actions', array( 'do_delete',  'do_resend' ) );
 
-	if ( ! in_array( $doaction, $allowed_actions, true ) || ( -1 === $doaction ) ) {
+	if ( ! in_array( $doaction, $allowed_actions ) || ( -1 == $doaction ) ) {
 
-		require_once ABSPATH . 'wp-admin/includes/class-wp-users-list-table.php';
+		require_once( ABSPATH . 'wp-admin/includes/class-wp-users-list-table.php' );
 		$bp_optouts_list_table = new BP_Optouts_List_Table();
 
 		// The per_page screen option.
@@ -119,13 +100,13 @@ function bp_core_optouts_admin_load() {
 		);
 
 	} else {
-		if ( empty( $_REQUEST['optout_ids'] ) ) {
+		if ( empty( $_REQUEST['optout_ids' ] ) ) {
 			return;
 		}
-		$optout_ids = wp_parse_id_list( $_REQUEST['optout_ids'] );
+		$optout_ids = wp_parse_id_list( $_REQUEST['optout_ids' ] );
 
 		// Handle optout deletion.
-		if ( 'do_delete' === $doaction ) {
+		if ( 'do_delete' == $doaction ) {
 
 			// Nonce check.
 			check_admin_referer( 'optouts_delete' );
@@ -133,7 +114,7 @@ function bp_core_optouts_admin_load() {
 			$success = 0;
 			foreach ( $optout_ids as $optout_id ) {
 				if ( bp_delete_optout_by_id( $optout_id ) ) {
-					++$success;
+					$success++;
 				}
 			}
 
@@ -152,7 +133,7 @@ function bp_core_optouts_admin_load() {
 
 			bp_core_redirect( $redirect_to );
 
-			// Plugins can update other stuff from here.
+		// Plugins can update other stuff from here.
 		} else {
 
 			/**
@@ -171,7 +152,7 @@ function bp_core_optouts_admin_load() {
 		}
 	}
 }
-add_action( 'load-tools_page_bp-optouts', 'bp_core_optouts_admin_load' );
+add_action( "load-tools_page_bp-optouts", 'bp_core_optouts_admin_load' );
 
 /**
  * Get admin notice when viewing the optouts management page.
@@ -189,16 +170,15 @@ function bp_core_get_optouts_notice() {
 	if ( ! empty( $_REQUEST['updated'] ) && 'deleted' === $_REQUEST['updated'] ) {
 		$notice = array(
 			'class'   => 'updated',
-			'message' => '',
+			'message' => ''
 		);
 
 		if ( ! empty( $_REQUEST['deleted'] ) ) {
 			$deleted            = absint( $_REQUEST['deleted'] );
 			$notice['message'] .= sprintf(
-				/* translators: %s: number of deleted optouts */
 				_nx(
-					'%s opt-out successfully deleted!',
-					'%s opt-outs successfully deleted!',
+					/* translators: %s: number of deleted optouts */
+					'%s opt-out successfully deleted!', '%s opt-outs successfully deleted!',
 					$deleted,
 					'nonmembers opt-out deleted',
 					'buddypress'
@@ -210,10 +190,9 @@ function bp_core_get_optouts_notice() {
 		if ( ! empty( $_REQUEST['notdeleted'] ) ) {
 			$notdeleted         = absint( $_REQUEST['notdeleted'] );
 			$notice['message'] .= sprintf(
-				/* translators: %s: number of optouts that failed to be deleted */
 				_nx(
-					'%s opt-out was not deleted.',
-					'%s opt-outs were not deleted.',
+					/* translators: %s: number of optouts that failed to be deleted */
+					'%s opt-out was not deleted.', '%s opt-outs were not deleted.',
 					$notdeleted,
 					'nonmembers opt-out not deleted',
 					'buddypress'
@@ -261,7 +240,7 @@ function bp_core_optouts_admin() {
 
 			<div id="message" class="<?php echo esc_attr( $notice['class'] ); ?> notice is-dismissible">
 
-		<?php else : ?>
+		<?php else: ?>
 
 			<div class="<?php echo esc_attr( $notice['class'] ); ?> notice is-dismissible">
 
@@ -270,12 +249,11 @@ function bp_core_optouts_admin() {
 			<p><?php echo esc_html( $notice['message'] ); ?></p>
 		</div>
 
-		<?php
-	endif;
+	<?php endif;
 
 	// Show the proper screen.
 	switch ( $doaction ) {
-		case 'delete':
+		case 'delete' :
 			bp_core_optouts_admin_manage( $doaction );
 			break;
 
@@ -290,8 +268,8 @@ function bp_core_optouts_admin() {
  *
  * @since 8.0.0
  *
- * @global string $plugin_page
- * @global object $bp_optouts_list_table List table instance for nonmember opt-outs admin page.
+ * @global $plugin_page
+ * @global $bp_optouts_list_table
  */
 function bp_core_optouts_admin_index() {
 	global $plugin_page, $bp_optouts_list_table;
@@ -333,7 +311,7 @@ function bp_core_optouts_admin_index() {
 			'do_resend',
 			'action2',
 			'_wpnonce',
-			'optout_ids',
+			'optout_ids'
 		),
 		$_SERVER['REQUEST_URI']
 	);
@@ -362,16 +340,16 @@ function bp_core_optouts_admin_index() {
 		<?php // Display each opt-out on its own row. ?>
 		<?php $bp_optouts_list_table->views(); ?>
 
-		<form id="bp-optouts-search-form" action="<?php echo esc_url( $search_form_url ); ?>">
+		<form id="bp-optouts-search-form" action="<?php echo esc_url( $search_form_url ) ;?>">
 			<input type="hidden" name="page" value="<?php echo esc_attr( $plugin_page ); ?>" />
 			<?php $bp_optouts_list_table->search_box( esc_html__( 'Search for a specific email address', 'buddypress' ), 'bp-optouts' ); ?>
 		</form>
 
-		<form id="bp-optouts-form" action="<?php echo esc_url( $form_url ); ?>" method="post">
+		<form id="bp-optouts-form" action="<?php echo esc_url( $form_url );?>" method="post">
 			<?php $bp_optouts_list_table->display(); ?>
 		</form>
 	</div>
-	<?php
+<?php
 }
 
 /**
@@ -390,23 +368,27 @@ function bp_core_optouts_admin_manage( $action = '' ) {
 	}
 
 	// Get the IDs from the URL.
-	$ids = 0;
+	$ids = false;
 	if ( ! empty( $_POST['optout_ids'] ) ) {
 		$ids = wp_parse_id_list( $_POST['optout_ids'] );
 	} elseif ( ! empty( $_GET['optout_id'] ) ) {
 		$ids = absint( $_GET['optout_id'] );
 	}
 
+	if ( empty( $ids ) ) {
+		return false;
+	}
+
 	// Query for matching optouts, and filter out bad IDs.
-	$args       = array(
-		'id' => $ids,
+	$args = array(
+		'id'     => $ids,
 	);
 	$optouts    = bp_get_optouts( $args );
 	$optout_ids = wp_list_pluck( $optouts, 'id' );
 
 	// Check optout IDs and set up strings.
 	switch ( $action ) {
-		case 'delete':
+		case 'delete' :
 			if ( 0 === count( $optouts ) ) {
 				$helper_text = __( 'No opt-out requests were found.', 'buddypress' );
 			} else {
@@ -421,7 +403,7 @@ function bp_core_optouts_admin_manage( $action = '' ) {
 	// These arguments are only added when performing an action.
 	$action_args = array(
 		'action'     => 'do_' . $action,
-		'optout_ids' => implode( ',', $optout_ids ),
+		'optout_ids' => implode( ',', $optout_ids )
 	);
 
 	if ( is_network_admin() ) {
@@ -447,15 +429,15 @@ function bp_core_optouts_admin_manage( $action = '' ) {
 		<p><?php echo esc_html( $helper_text ); ?></p>
 
 		<ol class="bp-optouts-list">
-		<?php foreach ( $optouts as $optout ) : ?>
+		<?php foreach ( $optouts as $optout ) :	?>
 
 			<li>
-				<strong><?php echo esc_html( $optout->email_address ); ?></strong>
+				<strong><?php echo esc_html( $optout->email_address ) ?></strong>
 				<p class="description">
 					<?php
 					$last_modified = mysql2date( 'Y/m/d g:i:s a', $optout->date_modified );
 					/* translators: %s: modification date */
-					printf( esc_html__( 'Date modified: %s', 'buddypress' ), esc_html( $last_modified ) );
+					printf( esc_html__( 'Date modified: %s', 'buddypress'), $last_modified );
 					?>
 				</p>
 			</li>
@@ -465,9 +447,9 @@ function bp_core_optouts_admin_manage( $action = '' ) {
 
 		<?php if ( 'delete' === $action && count( $optouts ) ) : ?>
 
-			<p><strong><?php esc_html_e( 'This action cannot be undone.', 'buddypress' ); ?></strong></p>
+			<p><strong><?php esc_html_e( 'This action cannot be undone.', 'buddypress' ) ?></strong></p>
 
-		<?php endif; ?>
+		<?php endif ; ?>
 
 		<?php if ( count( $optouts ) ) : ?>
 
@@ -475,7 +457,7 @@ function bp_core_optouts_admin_manage( $action = '' ) {
 
 		<?php endif; ?>
 
-		<a class="button" href="<?php echo esc_url( $cancel_url ); ?>"><?php esc_html_e( 'Cancel', 'buddypress' ); ?></a>
+		<a class="button" href="<?php echo esc_url( $cancel_url ); ?>"><?php esc_html_e( 'Cancel', 'buddypress' ) ?></a>
 	</div>
 
 	<?php

@@ -60,32 +60,9 @@ class BP_Groups_Group_Members_Template {
 
 	/**
 	 * @since 1.0.0
-	 * @var array|string|null
+	 * @var array|string|void
 	 */
 	public $pag_links;
-
-	/**
-	 * URL argument used for the pagination param.
-	 *
-	 * @since 1.0.0
-	 * @var string
-	 */
-	public $pag_arg;
-
-	/**
-	 * The type of member being requested. Used for ordering results.
-	 *
-	 * @since 2.3.0
-	 * @var string
-	 */
-	public $type = '';
-
-	/**
-	 * The total number of members.
-	 *
-	 * @var int
-	 */
-	public $total_member_count;
 
 	/**
 	 * @since 1.0.0
@@ -121,7 +98,7 @@ class BP_Groups_Group_Members_Template {
 		// Backward compatibility with old method of passing arguments.
 		if ( ! is_array( $args ) || count( $function_args ) > 1 ) {
 			/* translators: 1: the name of the method. 2: the name of the file. */
-			_deprecated_argument( __METHOD__, '2.0.0', sprintf( esc_html__( 'Arguments passed to %1$s should be in an associative array. See the inline documentation at %2$s for more details.', 'buddypress' ), __METHOD__, __FILE__ ) );
+			_deprecated_argument( __METHOD__, '2.0.0', sprintf( __( 'Arguments passed to %1$s should be in an associative array. See the inline documentation at %2$s for more details.', 'buddypress' ), __METHOD__, __FILE__ ) );
 
 			$old_args_keys = array(
 				0 => 'group_id',
@@ -168,15 +145,10 @@ class BP_Groups_Group_Members_Template {
 		}
 
 		// Assemble the base URL for pagination.
-		$chunks = array( bp_current_action() );
+		$base_url = trailingslashit( bp_get_group_permalink( $current_group ) . bp_current_action() );
 		if ( bp_action_variable() ) {
-			$chunks[] = bp_action_variable();
+			$base_url = trailingslashit( $base_url . bp_action_variable() );
 		}
-
-		$base_url = bp_get_group_url(
-			$current_group,
-			bp_groups_get_path_chunks( $chunks )
-		);
 
 		$members_args = $r;
 

@@ -19,19 +19,14 @@ function bp_settings_screen_general() {
 		return;
 	}
 
-	$templates = array(
-		/**
-		 * Filters the template file path to use for the general settings screen.
-		 *
-		 * @since 1.6.0
-		 *
-		 * @param string $template Directory path to look in for the template file.
-		 */
-		apply_filters( 'bp_settings_screen_general_settings', 'members/single/settings/general' ),
-		'members/single/index',
-	);
-
-	bp_core_load_template( $templates );
+	/**
+	 * Filters the template file path to use for the general settings screen.
+	 *
+	 * @since 1.6.0
+	 *
+	 * @param string $value Directory path to look in for the template file.
+	 */
+	bp_core_load_template( apply_filters( 'bp_settings_screen_general_settings', 'members/single/settings/general' ) );
 }
 
 /**
@@ -41,7 +36,7 @@ function bp_settings_screen_general() {
  */
 function bp_settings_remove_email_subnav() {
 	if ( ! has_action( 'bp_notification_settings' ) ) {
-		bp_core_remove_subnav_item( bp_get_settings_slug(), 'notifications' );
+		bp_core_remove_subnav_item( BP_SETTINGS_SLUG, 'notifications' );
 	}
 }
 add_action( 'bp_actions', 'bp_settings_remove_email_subnav' );

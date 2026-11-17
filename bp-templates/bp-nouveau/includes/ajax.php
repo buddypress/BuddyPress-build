@@ -3,7 +3,7 @@
  * Common functions only loaded on AJAX requests.
  *
  * @since 3.0.0
- * @version 12.0.0
+ * @version 10.0.0
  */
 
 // Exit if accessed directly.
@@ -48,10 +48,6 @@ function bp_nouveau_ajax_object_template_loader() {
 		wp_send_json_error( $response );
 	}
 
-	if ( ! bp_current_user_can( 'bp_view', array( 'bp_component' => $object ) ) ) {
-		wp_send_json_error( $response );
-	}
-
 	$ajax_actions = array( 'activity_filter', 'blogs_filter', 'groups_filter', 'members_filter' );
 
 	if ( in_array( $action, $ajax_actions, true ) ) {
@@ -78,16 +74,16 @@ function bp_nouveau_ajax_object_template_loader() {
 		// We need to calculate and return the feed URL for each scope.
 		switch ( $scope ) {
 			case 'friends':
-				$feed_url = bp_loggedin_user_url( bp_members_get_path_chunks( array( bp_nouveau_get_component_slug( 'activity' ), 'friends', array( 'feed' ) ) ) );
+				$feed_url = bp_loggedin_user_domain() . bp_nouveau_get_component_slug( 'activity' ) . '/friends/feed/';
 				break;
 			case 'groups':
-				$feed_url = bp_loggedin_user_url( bp_members_get_path_chunks( array( bp_nouveau_get_component_slug( 'activity' ), 'groups', array( 'feed' ) ) ) );
+				$feed_url = bp_loggedin_user_domain() . bp_nouveau_get_component_slug( 'activity' ) . '/groups/feed/';
 				break;
 			case 'favorites':
-				$feed_url = bp_loggedin_user_url( bp_members_get_path_chunks( array( bp_nouveau_get_component_slug( 'activity' ), 'favorites', array( 'feed' ) ) ) );
+				$feed_url = bp_loggedin_user_domain() . bp_nouveau_get_component_slug( 'activity' ) . '/favorites/feed/';
 				break;
 			case 'mentions':
-				$feed_url = bp_loggedin_user_url( bp_members_get_path_chunks( array( bp_nouveau_get_component_slug( 'activity' ), 'mentions', array( 'feed' ) ) ) );
+				$feed_url = bp_loggedin_user_domain() . bp_nouveau_get_component_slug( 'activity' ) . '/mentions/feed/';
 
 				// Get user new mentions
 				$new_mentions = bp_get_user_meta( bp_loggedin_user_id(), 'bp_new_mentions', true );

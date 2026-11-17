@@ -3,7 +3,7 @@
  * Blogs functions
  *
  * @since 3.0.0
- * @version 12.0.0
+ * @version 3.1.0
  */
 
 // Exit if accessed directly.
@@ -19,7 +19,7 @@ function bp_nouveau_get_blogs_directory_nav_items() {
 		'component' => 'blogs',
 		'slug'      => 'all', // slug is used because BP_Core_Nav requires it, but it's the scope
 		'li_class'  => array( 'selected' ),
-		'link'      => bp_get_blogs_directory_url(),
+		'link'      => bp_get_root_domain() . '/' . bp_get_blogs_root_slug(),
 		'text'      => __( 'All Sites', 'buddypress' ),
 		'count'     => bp_get_total_blog_count(),
 		'position'  => 5,
@@ -34,7 +34,7 @@ function bp_nouveau_get_blogs_directory_nav_items() {
 				'component' => 'blogs',
 				'slug'      => 'personal', // slug is used because BP_Core_Nav requires it, but it's the scope
 				'li_class'  => array(),
-				'link'      => bp_loggedin_user_url( bp_members_get_path_chunks( array( bp_nouveau_get_component_slug( 'blogs' ) ) ) ),
+				'link'      => bp_loggedin_user_domain() . bp_nouveau_get_component_slug( 'blogs' ),
 				'text'      => __( 'My Sites', 'buddypress' ),
 				'count'     => $my_blogs_count,
 				'position'  => 15,
@@ -43,17 +43,11 @@ function bp_nouveau_get_blogs_directory_nav_items() {
 
 		// If the user can create blogs, add the create nav
 		if ( bp_blog_signup_enabled() ) {
-			$url = bp_get_blogs_directory_url(
-				array(
-					'create_single_item' => 1,
-				)
-			);
-
 			$nav_items['create'] = array(
 				'component' => 'blogs',
 				'slug'      => 'create', // slug is used because BP_Core_Nav requires it, but it's the scope
 				'li_class'  => array( 'no-ajax', 'site-create', 'create-button' ),
-				'link'      => $url,
+				'link'      => trailingslashit( bp_get_blogs_directory_permalink() . 'create' ),
 				'text'      => __( 'Create a Site', 'buddypress' ),
 				'count'     => false,
 				'position'  => 999,
@@ -184,7 +178,7 @@ function bp_nouveau_blogs_customizer_controls( $controls = array() ) {
  */
 function bp_nouveau_get_blog_signup_inline_script() {
 	return '
-		( function ( $ ) {
+		( function( $ ) {
 			if ( $( \'body\' ).hasClass( \'register\' ) ) {
 				var blog_checked = $( \'#signup_with_blog\' );
 
@@ -194,9 +188,9 @@ function bp_nouveau_get_blog_signup_inline_script() {
 				}
 
 				// toggle "Blog Details" block whenever checkbox is checked
-				blog_checked.change( function ( event ) {
+				blog_checked.change( function( event ) {
 					// Toggle HTML5 required attribute.
-					$.each( $( \'#blog-details\' ).find( \'[aria-required]\' ), function ( i, input ) {
+					$.each( $( \'#blog-details\' ).find( \'[aria-required]\' ), function( i, input ) {
 						$( input ).prop( \'required\',  $( event.target ).prop( \'checked\' ) );
 					} );
 
@@ -221,12 +215,3 @@ function bp_nouveau_blog_loop_item_has_lastest_post( $classes ) {
 	return $classes;
 }
 add_filter( 'bp_get_blog_class', 'bp_nouveau_blog_loop_item_has_lastest_post' );
-
-/**
- * Register Blogs Ajax actions.
- *
- * @since 12.0.0
- */
-function bp_nouveau_register_blogs_ajax_actions() {
-	bp_ajax_register_action( 'blogs_filter' );
-}

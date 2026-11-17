@@ -103,7 +103,7 @@ function bp_activity_find_mentions( $content ) {
 	$mentioned_users = array();
 
 	// We've found some mentions! Check to see if users exist.
-	foreach ( (array) array_values( $usernames ) as $username ) {
+	foreach( (array) array_values( $usernames ) as $username ) {
 		$user_id = bp_activity_get_userid_from_mentionname( $username );
 
 		// The user ID exists, so let's add it to our array.
@@ -172,7 +172,7 @@ function bp_activity_adjust_mention_count( $activity_id = 0, $action = 'add' ) {
 	$activity  = new BP_Activity_Activity( $activity_id );
 
 	// Try to find mentions.
-	$usernames = bp_activity_find_mentions( wp_strip_all_tags( $activity->content ) );
+	$usernames = bp_activity_find_mentions( strip_tags( $activity->content ) );
 
 	// Still empty? Stop now.
 	if ( empty( $usernames ) ) {
@@ -180,7 +180,7 @@ function bp_activity_adjust_mention_count( $activity_id = 0, $action = 'add' ) {
 	}
 
 	// Increment mention count foreach mentioned user.
-	foreach ( (array) array_keys( $usernames ) as $user_id ) {
+	foreach( (array) array_keys( $usernames ) as $user_id ) {
 		bp_activity_update_mention_count_for_user( $user_id, $activity_id, $action );
 	}
 }
@@ -271,14 +271,10 @@ function bp_activity_get_user_mentionname( $user_id ) {
  *
  * @since 1.9.0
  *
- * @global wpdb $wpdb WordPress database object.
- *
  * @param string $mentionname Username of user in @-mentions.
  * @return int|bool ID of the user, if one is found. Otherwise false.
  */
 function bp_activity_get_userid_from_mentionname( $mentionname ) {
-	global $wpdb;
-
 	$user_id = false;
 
 	/*
@@ -296,6 +292,7 @@ function bp_activity_get_userid_from_mentionname( $mentionname ) {
 		// Doing a direct query to use proper regex. Necessary to
 		// account for hyphens + spaces in the same user_login.
 		if ( empty( $userdata ) || ! is_a( $userdata, 'WP_User' ) ) {
+			global $wpdb;
 			$regex   = esc_sql( str_replace( '-', '[ \-]', $mentionname ) );
 			$user_id = $wpdb->get_var( "SELECT ID FROM {$wpdb->users} WHERE user_login REGEXP '{$regex}'" );
 		} else {
@@ -307,6 +304,7 @@ function bp_activity_get_userid_from_mentionname( $mentionname ) {
 	} else {
 		$user_id = bp_core_get_userid_from_nicename( $mentionname );
 	}
+
 
 	return $user_id;
 }
@@ -402,7 +400,7 @@ function bp_activity_set_action( $component_id, $type, $description, $format_cal
  *
  * @since 2.2.0
  *
- * @global array $wp_post_types
+ * @global $wp_post_types
  *
  * @param string $post_type The name of the post type, as registered with WordPress. Eg 'post' or 'page'.
  * @param array  $args {
@@ -921,7 +919,7 @@ function bp_activity_get_types_list() {
 
 	$types = array();
 	foreach ( $actions_array as $component => $actions ) {
-		$new_types = wp_list_pluck( (array) $actions, 'label', 'key' );
+		$new_types = wp_list_pluck( $actions, 'label', 'key' );
 
 		if ( $types ) {
 			// Makes sure activity types are unique.
@@ -1014,39 +1012,6 @@ function bp_activity_get_actions_for_context( $context = '' ) {
 /** Favorites ****************************************************************/
 
 /**
- * Sanitize callback for the User's favorites meta.
- *
- * @since 12.0.0
- *
- * @param array $value The list of favorited activity IDs.
- * @return array The sanitized list of favorited activity IDs.
- */
-function bp_activity_sanitize_user_favorites_meta( $value = array() ) {
-	return array_filter( wp_parse_id_list( $value ) );
-}
-
-/**
- * Use WordPress Meta API to deal with favorites meta properties and sanitization.
- *
- * @since 12.0.0
- */
-function bp_activity_register_user_favorites_meta() {
-	register_meta(
-		'user',
-		'bp_favorite_activities',
-		array(
-			'single'            => true,
-			'type'              => 'array',
-			'description'       => __( 'The list of Activity IDs a user favorited.', 'buddypress' ),
-			'show_in_rest'      => false, // We're not showing this meta into the WP users REST endpoint.
-			'sanitize_callback' => 'bp_activity_sanitize_user_favorites_meta',
-			'default'           => array(),
-		)
-	);
-}
-add_action( 'bp_init', 'bp_activity_register_user_favorites_meta' );
-
-/**
  * Get a users favorite activity stream items.
  *
  * @since 1.2.0
@@ -1081,30 +1046,22 @@ function bp_activity_get_user_favorites( $user_id = 0 ) {
  *
  * @param int $activity_id ID of the activity item being favorited.
  * @param int $user_id     ID of the user favoriting the activity item.
- * @return bool
+ * @return bool True on success, false on failure.
  */
 function bp_activity_add_user_favorite( $activity_id, $user_id = 0 ) {
-	// Cast as an integer to make sure we're only saving integers into the user's meta.
-	if ( ! empty( $activity_id ) ) {
-		$activity_id = (int) $activity_id;
-	} else {
-		$activity_id = 0;
-	}
-
-	if ( ! $activity_id ) {
-		return false;
-	}
 
 	// Fallback to logged in user if no user_id is passed.
 	if ( empty( $user_id ) ) {
 		$user_id = bp_loggedin_user_id();
 	}
 
-	// Get user's existing favorites.
-	$my_favs = bp_activity_get_user_favorites( $user_id );
+	$my_favs = bp_get_user_meta( $user_id, 'bp_favorite_activities', true );
+	if ( empty( $my_favs ) || ! is_array( $my_favs ) ) {
+		$my_favs = array();
+	}
 
 	// Bail if the user has already favorited this activity item.
-	if ( in_array( $activity_id, $my_favs, true ) ) {
+	if ( in_array( $activity_id, $my_favs ) ) {
 		return false;
 	}
 
@@ -1112,12 +1069,8 @@ function bp_activity_add_user_favorite( $activity_id, $user_id = 0 ) {
 	$my_favs[] = $activity_id;
 
 	// Update the total number of users who have favorited this activity.
-	$fav_count = (int) bp_activity_get_meta( $activity_id, 'favorite_count' );
-	if ( ! empty( $fav_count ) ) {
-		$fav_count += 1;
-	} else {
-		$fav_count = 1;
-	}
+	$fav_count = bp_activity_get_meta( $activity_id, 'favorite_count' );
+	$fav_count = !empty( $fav_count ) ? (int) $fav_count + 1 : 1;
 
 	// Update user meta.
 	bp_update_user_meta( $user_id, 'bp_favorite_activities', $my_favs );
@@ -1162,7 +1115,7 @@ function bp_activity_add_user_favorite( $activity_id, $user_id = 0 ) {
  *
  * @param int $activity_id ID of the activity item being unfavorited.
  * @param int $user_id     ID of the user unfavoriting the activity item.
- * @return bool
+ * @return bool True on success, false on failure.
  */
 function bp_activity_remove_user_favorite( $activity_id, $user_id = 0 ) {
 
@@ -1171,8 +1124,8 @@ function bp_activity_remove_user_favorite( $activity_id, $user_id = 0 ) {
 		$user_id = bp_loggedin_user_id();
 	}
 
-	$my_favs = bp_activity_get_user_favorites( $user_id );
-	$my_favs = array_flip( $my_favs );
+	$my_favs = bp_get_user_meta( $user_id, 'bp_favorite_activities', true );
+	$my_favs = array_flip( (array) $my_favs );
 
 	// Bail if the user has not previously favorited the item.
 	if ( ! isset( $my_favs[ $activity_id ] ) ) {
@@ -1180,7 +1133,7 @@ function bp_activity_remove_user_favorite( $activity_id, $user_id = 0 ) {
 	}
 
 	// Remove the fav from the user's favs.
-	unset( $my_favs[ $activity_id ] );
+	unset( $my_favs[$activity_id] );
 	$my_favs = array_unique( array_flip( $my_favs ) );
 
 	// Update the total number of users who have favorited this activity.
@@ -1286,6 +1239,8 @@ function bp_activity_total_favorites_for_user( $user_id = 0 ) {
  *
  * @since 1.2.0
  *
+ * @global object $wpdb WordPress database access object.
+ *
  * @param int    $activity_id ID of the activity item whose metadata is being deleted.
  * @param string $meta_key    Optional. The key of the metadata being deleted. If
  *                            omitted, all metadata associated with the activity
@@ -1296,7 +1251,7 @@ function bp_activity_total_favorites_for_user( $user_id = 0 ) {
  *                            for all objects, ignoring the specified object_id. Otherwise,
  *                            only delete matching metadata entries for the specified
  *                            activity item. Default: false.
- * @return bool
+ * @return bool True on success, false on failure.
  */
 function bp_activity_delete_meta( $activity_id, $meta_key = '', $meta_value = '', $delete_all = false ) {
 
@@ -1454,7 +1409,7 @@ add_action( 'delete_user', 'bp_activity_remove_all_user_data_on_delete_user' );
  *
  * @since 1.6.0
  *
- * @global wpdb $wpdb WordPress database object.
+ * @global object $wpdb WordPress database access object.
  *
  * @param int $user_id ID of the user whose activity is being spammed.
  * @return bool
@@ -1523,7 +1478,7 @@ add_action( 'bp_make_spam_user', 'bp_activity_spam_all_user_data' );
  *
  * @since 1.6.0
  *
- * @global wpdb $wpdb WordPress database object.
+ * @global object $wpdb WordPress database access object.
  *
  * @param int $user_id ID of the user whose activity is being hammed.
  * @return bool
@@ -2464,7 +2419,7 @@ function bp_activity_post_type_update( $post = null ) {
  *
  * @param int          $post_id ID of the post being unpublished.
  * @param WP_Post|null $post    Post object.
- * @return bool
+ * @return bool True on success, false on failure.
  */
 function bp_activity_post_type_unpublish( $post_id = 0, $post = null ) {
 
@@ -2706,18 +2661,18 @@ add_action( 'edit_comment', 'bp_activity_post_type_comment', 10    );
  *
  * @param  int         $comment_id           ID of the comment.
  * @param  object|null $activity_post_object The post type tracking args object.
- * @return bool
+ * @return bool True on success. False on error.
  */
 function bp_activity_post_type_remove_comment( $comment_id = 0, $activity_post_object = null ) {
 	if ( empty( $activity_post_object ) ) {
 		$comment = get_comment( $comment_id );
 		if ( ! $comment ) {
-			return false;
+			return;
 		}
 
 		$post_type = get_post_type( $comment->comment_post_ID );
 		if ( ! $post_type ) {
-			return false;
+			return;
 		}
 
 		// Get the post type tracking args.
@@ -3003,7 +2958,7 @@ function bp_activity_get_activity_id( $args = '' ) {
  *                           filters for item deletion, the argument format is
  *                           the same as BP_Activity_Activity::get().
  *                           See that method for a description.
- * @return bool
+ * @return bool True on success, false on failure.
  */
 function bp_activity_delete( $args = '' ) {
 
@@ -3087,7 +3042,7 @@ function bp_activity_delete( $args = '' ) {
 	 *
 	 * @param array|string $args See BP_Activity_Activity::get for a
 	 *                           description of accepted arguments.
-	 * @return bool
+	 * @return bool True on success, false on failure.
 	 */
 	function bp_activity_delete_by_item_id( $args = '' ) {
 
@@ -3112,7 +3067,7 @@ function bp_activity_delete( $args = '' ) {
 	 *
 	 *
 	 * @param int $activity_id ID of the activity item to be deleted.
-	 * @return bool
+	 * @return bool True on success, false on failure.
 	 */
 	function bp_activity_delete_by_activity_id( $activity_id ) {
 		return bp_activity_delete( array( 'id' => $activity_id ) );
@@ -3131,7 +3086,7 @@ function bp_activity_delete( $args = '' ) {
 	 * @param string $content   The activity id.
 	 * @param string $component The activity component.
 	 * @param string $type      The activity type.
-	 * @return bool
+	 * @return bool True on success, false on failure.
 	 */
 	function bp_activity_delete_by_content( $user_id, $content, $component, $type ) {
 		return bp_activity_delete( array(
@@ -3153,7 +3108,7 @@ function bp_activity_delete( $args = '' ) {
 	 *
 	 * @param int    $user_id   The user id.
 	 * @param string $component The activity component.
-	 * @return bool
+	 * @return bool True on success, false on failure.
 	 */
 	function bp_activity_delete_for_user_by_component( $user_id, $component ) {
 		return bp_activity_delete( array(
@@ -3175,7 +3130,7 @@ function bp_activity_delete( $args = '' ) {
  * @param int $activity_id The ID of the "root" activity, ie the comment's
  *                         oldest ancestor.
  * @param int $comment_id  The ID of the comment to be deleted.
- * @return bool
+ * @return bool True on success, false on failure.
  */
 function bp_activity_delete_comment( $activity_id, $comment_id ) {
 	$deleted = false;
@@ -3255,7 +3210,7 @@ function bp_activity_delete_comment( $activity_id, $comment_id ) {
 
 		// Recursively delete all children of this comment.
 		if ( ! empty( $children ) ) {
-			foreach ( (array) $children as $child ) {
+			foreach( (array) $children as $child ) {
 				bp_activity_delete_children( $activity_id, $child->id );
 			}
 		}
@@ -3307,18 +3262,10 @@ function bp_activity_get_permalink( $activity_id, $activity_obj = false ) {
 	if ( false !== array_search( $activity_obj->type, $use_primary_links ) ) {
 		$link = $activity_obj->primary_link;
 	} else {
-		$path_chunks = array(
-			'component_id'                 => 'activity',
-			'single_item_action'           => 'p',
-			'single_item_action_variables' => array( $activity_obj->id ),
-		);
-
-		if ( 'activity_comment' === $activity_obj->type ) {
-			$path_chunks['single_item_action_variables'] = array( $activity_obj->item_id );
-
-			$link = bp_rewrites_get_url( $path_chunks ) . '#acomment-' . $activity_obj->id;
+		if ( 'activity_comment' == $activity_obj->type ) {
+			$link = bp_get_root_domain() . '/' . bp_get_activity_root_slug() . '/p/' . $activity_obj->item_id . '/#acomment-' . $activity_obj->id;
 		} else {
-			$link = bp_rewrites_get_url( $path_chunks );
+			$link = bp_get_root_domain() . '/' . bp_get_activity_root_slug() . '/p/' . $activity_obj->id . '/';
 		}
 	}
 
@@ -3339,7 +3286,7 @@ function bp_activity_get_permalink( $activity_id, $activity_obj = false ) {
  *
  * @param  BP_Activity_Activity $activity Activity object.
  * @param  integer              $user_id  User ID.
- * @return bool
+ * @return boolean True on success, false on failure.
  */
 function bp_activity_user_can_read( $activity, $user_id = 0 ) {
 	$retval = true;
@@ -3347,10 +3294,6 @@ function bp_activity_user_can_read( $activity, $user_id = 0 ) {
 	// Fallback.
 	if ( empty( $user_id ) ) {
 		$user_id = bp_loggedin_user_id();
-	}
-
-	if ( ! bp_current_user_can( 'bp_view', array( 'bp_component' => 'activity' ) ) ) {
-		$retval = false;
 	}
 
 	// Get parent activity item for activity comment.
@@ -3410,7 +3353,7 @@ function bp_activity_user_can_read( $activity, $user_id = 0 ) {
  * @since 1.2.0
  *
  * @param int $user_id The ID of the user whose activity is being hidden.
- * @return bool
+ * @return bool True on success, false on failure.
  */
 function bp_activity_hide_user_activity( $user_id ) {
 	return BP_Activity_Activity::hide_all_for_user( $user_id );
@@ -3862,7 +3805,7 @@ function bp_activity_at_message_notification( $activity_id, $receiver_user_id ) 
 	$notifications = BP_Core_Notification::get_all_for_user( $receiver_user_id, 'all' );
 
 	// Don't leave multiple notifications for the same activity item.
-	foreach ( $notifications as $notification ) {
+	foreach( $notifications as $notification ) {
 		if ( $activity_id == $notification->item_id ) {
 			return;
 		}
@@ -4131,7 +4074,7 @@ add_action( 'bp_before_activity_comment', 'bp_activity_comment_embed' );
 function bp_dtheme_embed_read_more( $activity ) {
 	buddypress()->activity->read_more_id = $activity->id;
 
-	add_filter( 'embed_post_id',         function () { return buddypress()->activity->read_more_id; } );
+	add_filter( 'embed_post_id',         function() { return buddypress()->activity->read_more_id; } );
 	add_filter( 'bp_embed_get_cache',    'bp_embed_activity_cache',      10, 3 );
 	add_action( 'bp_embed_update_cache', 'bp_embed_activity_save_cache', 10, 3 );
 }
@@ -4447,9 +4390,11 @@ add_action( 'transition_comment_status', 'bp_activity_transition_post_type_comme
  * @return array An array of personal data.
  */
 function bp_activity_personal_data_exporter( $email_address, $page ) {
-	$number              = 50;
-	$email_address       = trim( $email_address );
-	$user_data_to_export = array();
+	$number = 50;
+
+	$email_address = trim( $email_address );
+
+	$data_to_export = array();
 
 	$user = get_user_by( 'email', $email_address );
 
@@ -4470,6 +4415,7 @@ function bp_activity_personal_data_exporter( $email_address, $page ) {
 		),
 	) );
 
+	$user_data_to_export = array();
 	$activity_actions    = bp_activity_get_actions();
 
 	foreach ( $activities['activities'] as $activity ) {
@@ -4517,7 +4463,7 @@ function bp_activity_personal_data_exporter( $email_address, $page ) {
 		 */
 		$item_data = apply_filters( 'bp_activity_personal_data_export_item_data', $item_data, $activity );
 
-		$user_data_to_export[] = array(
+		$data_to_export[] = array(
 			'group_id'    => 'bp_activity',
 			'group_label' => __( 'Activity', 'buddypress' ),
 			'item_id'     => "bp-activity-{$activity->id}",
@@ -4529,7 +4475,7 @@ function bp_activity_personal_data_exporter( $email_address, $page ) {
 	$done = count( $activities['activities'] ) < $number;
 
 	return array(
-		'data' => $user_data_to_export,
+		'data' => $data_to_export,
 		'done' => $done,
 	);
 }
@@ -4538,22 +4484,19 @@ function bp_activity_personal_data_exporter( $email_address, $page ) {
  * Checks whether an activity feed is enabled.
  *
  * @since 8.0.0
- * @since 12.0.0 Added bp_current_user_can( 'bp_view' ) check.
  *
  * @param string $feed_id The feed identifier. Possible values are:
  *                        'sitewide', 'personal', 'friends', 'mygroups', 'mentions', 'favorites'.
  */
 function bp_activity_is_feed_enable( $feed_id = '' ) {
-	$retval = bp_current_user_can( 'bp_view', array( 'bp_component' => 'activity' ) );
-
 	/**
 	 * Filters if BuddyPress should consider feeds enabled. If disabled, it will return early.
 	 *
 	 * @since 1.8.0
 	 * @since 8.0.0 Adds the `$feed_id` parameter.
 	 *
-	 * @param bool   $retval  Whether this feed is enabled or not.
+	 * @param bool   $value   Defaults to true aka feeds are enabled.
 	 * @param string $feed_id The feed identifier.
 	 */
-	return (bool) apply_filters( 'bp_activity_enable_feeds', $retval, $feed_id );
+	return (bool) apply_filters( 'bp_activity_enable_feeds', true, $feed_id );
 }

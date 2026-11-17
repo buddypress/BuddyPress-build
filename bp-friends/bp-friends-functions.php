@@ -28,7 +28,7 @@ defined( 'ABSPATH' ) || exit;
  *                               running friends_add_friend() will result in a friendship request.
  *                               When true, running friends_add_friend() will result in an accepted
  *                               friendship, with no notifications being sent. Default: false.
- * @return bool
+ * @return bool True on success, false on failure.
  */
 function friends_add_friend( $initiator_userid, $friend_userid, $force_accept = false ) {
 
@@ -96,7 +96,7 @@ function friends_add_friend( $initiator_userid, $friend_userid, $force_accept = 
  *
  * @param int $initiator_userid ID of the friendship initiator.
  * @param int $friend_userid    ID of the friend user.
- * @return bool
+ * @return bool True on success, false on failure.
  */
 function friends_remove_friend( $initiator_userid, $friend_userid ) {
 
@@ -156,7 +156,7 @@ function friends_remove_friend( $initiator_userid, $friend_userid ) {
  * @since 1.0.0
  *
  * @param int $friendship_id ID of the pending friendship object.
- * @return bool
+ * @return bool True on success, false on failure.
  */
 function friends_accept_friendship( $friendship_id ) {
 
@@ -193,7 +193,7 @@ function friends_accept_friendship( $friendship_id ) {
  * @since 1.0.0
  *
  * @param int $friendship_id ID of the pending friendship object.
- * @return bool
+ * @return bool True on success, false on failure.
  */
 function friends_reject_friendship( $friendship_id ) {
 	$friendship = new BP_Friends_Friendship( $friendship_id, false, false );
@@ -224,7 +224,7 @@ function friends_reject_friendship( $friendship_id ) {
  * @param int $initiator_userid ID of the friendship initiator - this is the
  *                              user who requested the friendship, and is doing the withdrawing.
  * @param int $friend_userid    ID of the requested friend.
- * @return bool
+ * @return bool True on success, false on failure.
  */
 function friends_withdraw_friendship( $initiator_userid, $friend_userid ) {
 	$friendship_id = BP_Friends_Friendship::get_friendship_id( $initiator_userid, $friend_userid );
@@ -271,7 +271,7 @@ function friends_check_friendship( $user_id, $possible_friend_id ) {
  *
  * @since 1.2.0
  *
- * @global BP_Core_Members_Template $members_template The main member template loop class.
+ * @global BP_Core_Members_Template $members_template
  *
  * @param int $user_id            ID of the first user.
  * @param int $possible_friend_id ID of the other user.
@@ -877,16 +877,11 @@ function friends_notification_new_request( $friendship_id, $initiator_id, $frien
 
 	$args = array(
 		'tokens' => array(
-			'friend-requests.url' => esc_url(
-				bp_members_get_user_url(
-					$friend_id,
-					bp_members_get_path_chunks( array( bp_get_friends_slug(), 'requests' ) )
-				)
-			),
+			'friend-requests.url' => esc_url( bp_core_get_user_domain( $friend_id ) . bp_get_friends_slug() . '/requests/' ),
 			'friend.id'           => $friend_id,
 			'friendship.id'       => $friendship_id,
 			'initiator.id'        => $initiator_id,
-			'initiator.url'       => esc_url( bp_members_get_user_url( $initiator_id ) ),
+			'initiator.url'       => esc_url( bp_core_get_user_domain( $initiator_id ) ),
 			'initiator.name'      => bp_core_get_user_displayname( $initiator_id ),
 			'unsubscribe'         => esc_url( bp_email_get_unsubscribe_link( $unsubscribe_args ) ),
 		),
@@ -920,7 +915,7 @@ function friends_notification_accepted_request( $friendship_id, $initiator_id, $
 	$args = array(
 		'tokens' => array(
 			'friend.id'      => $friend_id,
-			'friendship.url' => esc_url( bp_members_get_user_url( $friend_id ) ),
+			'friendship.url' => esc_url( bp_core_get_user_domain( $friend_id ) ),
 			'friend.name'    => bp_core_get_user_displayname( $friend_id ),
 			'friendship.id'  => $friendship_id,
 			'initiator.id'   => $initiator_id,

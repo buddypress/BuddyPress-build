@@ -71,7 +71,7 @@ function xprofile_admin( $message = '', $type = 'error' ) {
 		'delete_field',
 		'do_delete_field',
 		'delete_option',
-		'do_delete_option',
+		'do_delete_option'
 	);
 
 	// Is an allowed mode.
@@ -99,12 +99,7 @@ function xprofile_admin( $message = '', $type = 'error' ) {
 
 		// Delete field.
 		} elseif ( ( false !== $field_id ) && ( in_array( $mode, array( 'delete_field', 'do_delete_field' ), true ) ) ) {
-			$delete_data = false;
-			if ( isset( $_GET['delete_data'] ) && $_GET['delete_data'] ) {
-				$delete_data = true;
-			}
-
-			xprofile_admin_delete_field( $field_id, 'field', $delete_data );
+			xprofile_admin_delete_field( $field_id, 'field' );
 
 		// Delete option.
 		} elseif ( ! empty( $option_id ) && in_array( $mode, array( 'delete_option', 'do_delete_option' ), true ) ) {
@@ -138,7 +133,7 @@ function xprofile_admin_screen( $message = '', $type = 'error' ) {
 	// Add Group.
 	$add_group_url = add_query_arg( array(
 		'page' => 'bp-profile-setup',
-		'mode' => 'add_group',
+		'mode' => 'add_group'
 	), $url );
 
 	// Validate type.
@@ -146,13 +141,13 @@ function xprofile_admin_screen( $message = '', $type = 'error' ) {
 
 	// Get all of the profile groups & fields.
 	$groups = bp_xprofile_get_groups( array(
-		'fetch_fields' => true,
+		'fetch_fields' => true
 	) ); ?>
 
 	<div class="wrap">
-		<h1 class="wp-heading-inline"><?php echo esc_html_x( 'Profile Fields', 'Settings page header', 'buddypress'); ?></h1>
+		<h1 class="wp-heading-inline"><?php _ex( 'Profile Fields', 'Settings page header', 'buddypress'); ?></h1>
 
-			<a id="add_group" class="page-title-action" href="<?php echo esc_url( $add_group_url ); ?>"><?php esc_html_e( 'Add New Field Group', 'buddypress' ); ?></a>
+			<a id="add_group" class="page-title-action" href="<?php echo esc_url( $add_group_url ); ?>"><?php _e( 'Add New Field Group', 'buddypress' ); ?></a>
 
 		<hr class="wp-header-end">
 
@@ -166,7 +161,7 @@ function xprofile_admin_screen( $message = '', $type = 'error' ) {
 			if ( ! empty( $message ) ) :
 				$type = ( $type == 'error' ) ? 'error' : 'updated'; ?>
 
-				<div id="message" class="<?php echo esc_attr( $type ); ?> fade notice is-dismissible">
+				<div id="message" class="<?php echo $type; ?> fade notice is-dismissible">
 					<p><?php echo esc_html( $message ); ?></p>
 				</div>
 
@@ -175,7 +170,7 @@ function xprofile_admin_screen( $message = '', $type = 'error' ) {
 			<div id="tabs" aria-live="polite" aria-atomic="true" aria-relevant="all">
 				<ul id="field-group-tabs">
 
-					<?php if ( ! empty( $groups ) ) : foreach ( $groups as $group ) : ?>
+					<?php if ( !empty( $groups ) ) : foreach ( $groups as $group ) : ?>
 
 						<li id="group_<?php echo esc_attr( $group->id ); ?>">
 							<a href="#tabs-<?php echo esc_attr( $group->id ); ?>" class="ui-tab">
@@ -184,8 +179,8 @@ function xprofile_admin_screen( $message = '', $type = 'error' ) {
 								echo esc_html( apply_filters( 'bp_get_the_profile_group_name', $group->name ) );
 								?>
 
-								<?php if ( ! $group->can_delete ) : ?>
-									<?php esc_html_e( '(Primary)', 'buddypress'); ?>
+								<?php if ( !$group->can_delete ) : ?>
+									<?php _e( '(Primary)', 'buddypress'); ?>
 								<?php endif; ?>
 
 							</a>
@@ -201,27 +196,27 @@ function xprofile_admin_screen( $message = '', $type = 'error' ) {
 
 				</ul>
 
-				<?php if ( ! empty( $groups ) ) : foreach ( $groups as $group ) :
+				<?php if ( !empty( $groups ) ) : foreach ( $groups as $group ) :
 
 					// Add Field to Group URL.
 					$add_field_url = add_query_arg( array(
 						'page'     => 'bp-profile-setup',
 						'mode'     => 'add_field',
-						'group_id' => (int) $group->id,
+						'group_id' => (int) $group->id
 					), $url );
 
 					// Edit Group URL.
 					$edit_group_url = add_query_arg( array(
 						'page'     => 'bp-profile-setup',
 						'mode'     => 'edit_group',
-						'group_id' => (int) $group->id,
+						'group_id' => (int) $group->id
 					), $url );
 
 					// Delete Group URL.
 					$delete_group_url = wp_nonce_url( add_query_arg( array(
 						'page'     => 'bp-profile-setup',
 						'mode'     => 'delete_group',
-						'group_id' => (int) $group->id,
+						'group_id' => (int) $group->id
 					), $url ), 'bp_xprofile_delete_group' ); ?>
 
 					<noscript>
@@ -234,13 +229,13 @@ function xprofile_admin_screen( $message = '', $type = 'error' ) {
 					<div id="tabs-<?php echo esc_attr( $group->id ); ?>" class="tab-wrapper">
 						<div class="tab-toolbar">
 							<div class="tab-toolbar-left">
-								<a class="button-primary" href="<?php echo esc_url( $add_field_url ); ?>"><?php esc_html_e( 'Add New Field', 'buddypress' ); ?></a>
-								<a class="button edit" href="<?php echo esc_url( $edit_group_url ); ?>"><?php echo esc_html_x( 'Edit Group', 'Edit Profile Fields Group', 'buddypress' ); ?></a>
+								<a class="button-primary" href="<?php echo esc_url( $add_field_url ); ?>"><?php _e( 'Add New Field', 'buddypress' ); ?></a>
+								<a class="button edit" href="<?php echo esc_url( $edit_group_url ); ?>"><?php _ex( 'Edit Group', 'Edit Profile Fields Group', 'buddypress' ); ?></a>
 
 								<?php if ( $group->can_delete ) : ?>
 
 									<div class="delete-button">
-										<a class="confirm submitdelete deletion ajax-option-delete" href="<?php echo esc_url( $delete_group_url ); ?>"><?php echo esc_html_x( 'Delete Group', 'Delete Profile Fields Group', 'buddypress' ); ?></a>
+										<a class="confirm submitdelete deletion ajax-option-delete" href="<?php echo esc_url( $delete_group_url ); ?>"><?php _ex( 'Delete Group', 'Delete Profile Fields Group', 'buddypress' ); ?></a>
 									</div>
 
 								<?php endif; ?>
@@ -273,12 +268,12 @@ function xprofile_admin_screen( $message = '', $type = 'error' ) {
 							<legend class="screen-reader-text"><?php
 							/** This filter is documented in bp-xprofile/bp-xprofile-template.php */
 							/* translators: accessibility text */
-							printf( esc_html__( 'Fields for "%s" Group', 'buddypress' ), esc_html( apply_filters( 'bp_get_the_profile_group_name', $group->name ) ) );
+							printf( esc_html__( 'Fields for "%s" Group', 'buddypress' ), apply_filters( 'bp_get_the_profile_group_name', $group->name ) );
 							?></legend>
 
 							<?php
 
-							if ( ! empty( $group->fields ) ) :
+							if ( !empty( $group->fields ) ) :
 								foreach ( $group->fields as $field ) {
 
 									// Load the field.
@@ -299,7 +294,7 @@ function xprofile_admin_screen( $message = '', $type = 'error' ) {
 
 							else : // !$group->fields ?>
 
-								<p class="nodrag nofields"><?php esc_html_e( 'There are no fields in this group.', 'buddypress' ); ?></p>
+								<p class="nodrag nofields"><?php _e( 'There are no fields in this group.', 'buddypress' ); ?></p>
 
 							<?php endif; // End $group->fields. ?>
 
@@ -309,8 +304,8 @@ function xprofile_admin_screen( $message = '', $type = 'error' ) {
 
 				<?php endforeach; else : ?>
 
-					<div id="message" class="error notice is-dismissible"><p><?php echo esc_html_x( 'You have no groups.', 'You have no profile fields groups.', 'buddypress' ); ?></p></div>
-					<p><a href="<?php echo esc_url( $add_group_url ); ?>"><?php echo esc_html_x( 'Add New Group', 'Add New Profile Fields Group', 'buddypress' ); ?></a></p>
+					<div id="message" class="error notice is-dismissible"><p><?php _ex( 'You have no groups.', 'You have no profile fields groups.', 'buddypress' ); ?></p></div>
+					<p><a href="<?php echo esc_url( $add_group_url ); ?>"><?php _ex( 'Add New Group', 'Add New Profile Fields Group', 'buddypress' ); ?></a></p>
 
 				<?php endif; ?>
 
@@ -348,7 +343,7 @@ function xprofile_admin_screen( $message = '', $type = 'error' ) {
 										 * This function handles the WYSIWYG profile field
 										 * display for the xprofile admin setup screen.
 										 */
-										$signup_fields[ $_signup_field->id ] = bp_xprofile_admin_get_signup_field( $_signup_field, $signup_group );
+										$signup_fields[ $_signup_field->id ] = bp_xprofile_admin_get_signup_field( $_signup_field, $signup_group, '' );
 									}
 								}
 							}
@@ -359,8 +354,6 @@ function xprofile_admin_screen( $message = '', $type = 'error' ) {
 									continue;
 								}
 
-								// Escaping is done in `xprofile_admin_field()`.
-								// phpcs:ignore WordPress.Security.EscapeOutput
 								echo $signup_fields[ $ordered_signup_field_id ];
 							}
 						}
@@ -398,7 +391,6 @@ function xprofile_admin_screen( $message = '', $type = 'error' ) {
 							printf(
 								/* translators: %s is the link to the registration settings. */
 								esc_html__( '* Fields in this group will appear on the registration page as soon as users will be able to register to your site.%s', 'buddypress' ),
-								// phpcs:ignore WordPress.Security.EscapeOutput
 								$settings_link
 							);
 							?>
@@ -415,9 +407,6 @@ function xprofile_admin_screen( $message = '', $type = 'error' ) {
  * Handles the adding or editing of groups.
  *
  * @since 1.0.0
- *
- * @global string $message The feedback message to show.
- * @global string $type    The type of feedback message to show.
  *
  * @param int|null $group_id Group ID to manage.
  */
@@ -485,9 +474,6 @@ function xprofile_admin_manage_group( $group_id = null ) {
  * Handles the deletion of profile data groups.
  *
  * @since 1.0.0
- *
- * @global string $message The feedback message to show.
- * @global string $type    The type of feedback message to show.
  *
  * @param int $group_id ID of the group to delete.
  */
@@ -568,10 +554,6 @@ function xprofile_admin_delete_group_screen( $group_id ) {
  *
  * @since 1.0.0
  *
- * @global wpdb   $wpdb    WordPress database object.
- * @global string $message The feedback message to show.
- * @global array  $groups  The list of matching xProfile field groups.
- *
  * @param int      $group_id ID of the group.
  * @param int|null $field_id ID of the field being managed.
  */
@@ -621,8 +603,8 @@ function xprofile_admin_manage_field( $group_id, $field_id = null ) {
 				$field->description = '';
 			}
 
-			if ( ! empty( $_POST[ "sort_order_{$field->type}" ] ) ) {
-				$field->order_by = $_POST[ "sort_order_{$field->type}" ];
+			if ( ! empty( $_POST["sort_order_{$field->type}"] ) ) {
+				$field->order_by = $_POST["sort_order_{$field->type}"];
 			}
 
 			$field->field_order = $wpdb->get_var( $wpdb->prepare( "SELECT field_order FROM {$bp->profile->table_name_fields} WHERE id = %d", $field_id ) );
@@ -763,7 +745,7 @@ function xprofile_admin_delete_field( $field_id, $field_type = 'field', $delete_
 	} else {
 		$field = xprofile_get_field( $field_id, null, false );
 
-		if ( ! $field->delete( (bool) $delete_data ) ) {
+		if ( !$field->delete( (bool) $delete_data ) ) {
 			/* translators: %s: the field type */
 			$message = sprintf( __( 'There was an error deleting the %s. Please try again.', 'buddypress' ), $field_type );
 			$type    = 'error';
@@ -798,7 +780,7 @@ function xprofile_admin_delete_field_screen( $field_id, $field_type ) {
 
 	$field = xprofile_get_field( $field_id, null, false );
 
-	$base_url = remove_query_arg( array( 'page', 'mode', 'field_id', 'bp_xprofile_delete_field' ), $_SERVER['REQUEST_URI'] ); ?>
+	$base_url = remove_query_arg( array( 'mode', 'field_id', 'bp_xprofile_delete_field' ), $_SERVER['REQUEST_URI'] ); ?>
 
 	<div class="wrap">
 		<h1 class="wp-heading-inline">
@@ -806,7 +788,7 @@ function xprofile_admin_delete_field_screen( $field_id, $field_type ) {
 			printf(
 				/* translators: %s is the field type name. */
 				esc_html__( 'Delete %s', 'buddypress' ),
-				esc_html( $field_type )
+				$field_type
 			);
 			?>
 		</h1>
@@ -816,32 +798,23 @@ function xprofile_admin_delete_field_screen( $field_id, $field_type ) {
 		<p>
 			<?php
 			printf(
-				/* translators: 1 is the field type name. 2 is the field name */
-				esc_html__( 'You are about to delete the following %1$s: %2$s.', 'buddypress' ),
-				esc_html( $field_type ),
-				'<strong>' . esc_html( $field->name ) . '</strong>'
+				/* translators: %s is the field type name. */
+				esc_html__( 'You are about to delete the following %s:', 'buddypress' ),
+				$field_type
 			);
 			?>
 		</p>
 
-		<form action="<?php echo esc_url( $base_url ); ?>" method="get">
-			<label>
-				<input type="checkbox" name="delete_data" value="1" <?php checked( true ); ?>/>
-				<?php esc_html_e( 'Also remove the deleted field corresponding data.', 'buddypress' ); ?>
-			</label>
-			<p><strong><?php esc_html_e( 'This action cannot be undone.', 'buddypress' ); ?></strong></p>
-			<p>
-				<input type="hidden" name="page" value="bp-profile-setup" />
-				<input type="hidden" name="mode" value="do_delete_field" />
-				<input type="hidden" name="field_id" value="<?php echo esc_attr( $field_id ); ?>" />
-				<?php
-				wp_nonce_field( 'bp_xprofile_delete_field-' . $field_id, 'bp_xprofile_delete_field' );
-				submit_button( __( 'Delete Permanently', 'buddypress' ), 'primary', '', false );
-				?>
-				<a class="button" href="<?php echo esc_attr( $base_url ); ?>"><?php esc_html_e( 'Cancel', 'buddypress' ); ?></a>
-			</p>
-		</form>
+		<ul class="bp-xprofile-delete-group-list">
+			<li><?php echo esc_html( $field->name ); ?></li>
+		</ul>
+
+		<p><strong><?php esc_html_e( 'This action cannot be undone.', 'buddypress' ); ?></strong></p>
+
+		<a class="button-primary" href="<?php echo esc_url( wp_nonce_url( add_query_arg( array( 'mode' => 'do_delete_field', 'field_id' => $field_id ), $base_url ), 'bp_xprofile_delete_field-' . $field_id, 'bp_xprofile_delete_field' ) ); ?>"><?php esc_html_e( 'Delete Permanently', 'buddypress' ); ?></a>
+		<a class="button" href="<?php echo esc_attr( $base_url ); ?>"><?php esc_html_e( 'Cancel', 'buddypress' ); ?></a>
 	</div>
+
 	<?php
 }
 
@@ -1034,8 +1007,6 @@ add_action( 'wp_ajax_xprofile_reorder_groups', 'xprofile_ajax_reorder_field_grou
  * @since 1.5.0
  * @since 8.0.0 Adds the `$is_signup` parameter.
  *
- * @global BP_XProfile_Field $field The Admin field.
- *
  * @param BP_XProfile_Field   $admin_field Admin field.
  * @param object $admin_group Admin group object.
  * @param string $class       Classes to append to output.
@@ -1055,7 +1026,7 @@ function xprofile_admin_field( $admin_field, $admin_group, $class = '', $is_sign
 		'page'     => 'bp-profile-setup',
 		'mode'     => 'edit_field',
 		'group_id' => (int) $field->group_id,
-		'field_id' => (int) $field->id,
+		'field_id' => (int) $field->id
 	), $url );
 
 	// Delete.
@@ -1063,7 +1034,7 @@ function xprofile_admin_field( $admin_field, $admin_group, $class = '', $is_sign
 		$field_delete_url = add_query_arg( array(
 			'page'     => 'bp-profile-setup',
 			'mode'     => 'delete_field',
-			'field_id' => (int) $field->id,
+			'field_id' => (int) $field->id
 		), $url . '#tabs-' . (int) $field->group_id );
 	}
 
@@ -1073,7 +1044,7 @@ function xprofile_admin_field( $admin_field, $admin_group, $class = '', $is_sign
 	}
 	?>
 
-	<fieldset id="<?php echo esc_attr( $fieldset_id ); ?>" class="sortable<?php echo ' ' . esc_attr( $field->type ); if ( ! empty( $class ) ) echo ' ' . esc_attr( $class ); ?>">
+	<fieldset id="<?php echo esc_attr( $fieldset_id ); ?>" class="sortable<?php echo ' ' . $field->type; if ( !empty( $class ) ) echo ' ' . $class; ?>">
 		<legend>
 			<span>
 				<?php bp_the_profile_field_name(); ?>
@@ -1083,7 +1054,7 @@ function xprofile_admin_field( $admin_field, $admin_group, $class = '', $is_sign
 				<?php if ( $field->get_signup_position() ) : ?>
 					<span class="bp-signup-field-label"><?php esc_html_e( '(Sign-up)', 'buddypress' );?></span>
 				<?php endif; ?>
-				<?php if ( bp_get_member_types() ) : echo wp_kses( $field->get_member_type_label(), array( 'span' => array( 'class' => true ) ) ); endif; ?>
+				<?php if ( bp_get_member_types() ) : echo $field->get_member_type_label(); endif; ?>
 
 				<?php
 
@@ -1126,12 +1097,12 @@ function xprofile_admin_field( $admin_field, $admin_group, $class = '', $is_sign
 			<?php endif; ?>
 
 			<div class="actions">
-				<a class="button edit" href="<?php echo esc_url( $field_edit_url ); ?>"><?php echo esc_html_x( 'Edit', 'Edit field link', 'buddypress' ); ?></a>
+				<a class="button edit" href="<?php echo esc_url( $field_edit_url ); ?>"><?php _ex( 'Edit', 'Edit field link', 'buddypress' ); ?></a>
 
 				<?php if ( $field->can_delete && ! $is_signup ) : ?>
 
 					<div class="delete-button">
-						<a class="confirm submit-delete deletion" href="<?php echo esc_url( wp_nonce_url( $field_delete_url, 'bp_xprofile_delete_field-' . $field->id, 'bp_xprofile_delete_field' ) ); ?>"><?php echo esc_html_x( 'Delete', 'Delete field link', 'buddypress' ); ?></a>
+						<a class="confirm submit-delete deletion" href="<?php echo esc_url( wp_nonce_url( $field_delete_url, 'bp_xprofile_delete_field-' . $field->id, 'bp_xprofile_delete_field' ) ); ?>"><?php _ex( 'Delete', 'Delete field link', 'buddypress' ); ?></a>
 					</div>
 
 				<?php endif; ?>
@@ -1204,7 +1175,7 @@ function bp_xprofile_admin_get_signup_field( $signup_field, $field_group = null,
 function bp_xprofile_admin_form_field_types( $select_field_type ) {
 	$categories = array();
 
-	if ( empty( $select_field_type ) ) {
+	if ( is_null( $select_field_type ) ) {
 		$select_field_type = 'textbox';
 	}
 
@@ -1218,10 +1189,10 @@ function bp_xprofile_admin_form_field_types( $select_field_type ) {
 			$the_category = _x( 'Other', 'xprofile field type category', 'buddypress' );
 		}
 
-		if ( isset( $categories[ $the_category ] ) ) {
-			$categories[ $the_category ][] = array( $field_name, $field_type_obj );
+		if ( isset( $categories[$the_category] ) ) {
+			$categories[$the_category][] = array( $field_name, $field_type_obj );
 		} else {
-			$categories[ $the_category ] = array( array( $field_name, $field_type_obj ) );
+			$categories[$the_category] = array( array( $field_name, $field_type_obj ) );
 		}
 	}
 
@@ -1233,7 +1204,7 @@ function bp_xprofile_admin_form_field_types( $select_field_type ) {
 		printf( '<optgroup label="%1$s">', esc_attr( $category ) );  // Already i18n'd in each profile type class.
 
 		// Sort these fields types alphabetically.
-		uasort( $fields, function ( $a, $b ) { return strnatcmp( $a[1]->name, $b[1]->name ); } );
+		uasort( $fields, function( $a, $b ) { return strnatcmp( $a[1]->name, $b[1]->name ); } );
 
 		foreach ( $fields as $field_type_obj ) {
 			$field_name     = $field_type_obj[0];

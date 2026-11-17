@@ -4,11 +4,6 @@
 
 .activity-list {
 
-	.bp-tooltip {
-
-		@include bp-tooltip-bottom-left;
-	}
-
 	padding: $pad-sml;
 
 	.activity-item:before,

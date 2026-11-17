@@ -79,7 +79,7 @@ class BP_XProfile_Field_Type_Telephone extends BP_XProfile_Field_Type {
 		/** This action is documented in bp-xprofile/bp-xprofile-classes */
 		do_action( bp_get_the_profile_field_errors_action() ); ?>
 
-		<input <?php $this->output_edit_field_html_elements( $r ); ?> aria-labelledby="<?php bp_the_profile_field_input_name(); ?>-1" aria-describedby="<?php bp_the_profile_field_input_name(); ?>-3">
+		<input <?php echo $this->get_edit_field_html_elements( $r ); ?> aria-labelledby="<?php bp_the_profile_field_input_name(); ?>-1" aria-describedby="<?php bp_the_profile_field_input_name(); ?>-3">
 
 		<?php if ( bp_get_the_profile_field_description() ) : ?>
 			<p class="description" id="<?php bp_the_profile_field_input_name(); ?>-3"><?php bp_the_profile_field_description(); ?></p>
@@ -110,7 +110,7 @@ class BP_XProfile_Field_Type_Telephone extends BP_XProfile_Field_Type {
 			/* translators: accessibility text */
 			esc_html_e( 'Phone Number', 'buddypress' );
 		?></label>
-		<input <?php $this->output_edit_field_html_elements( $r ); ?>>
+		<input <?php echo $this->get_edit_field_html_elements( $r ); ?>>
 
 		<?php
 	}
@@ -139,7 +139,7 @@ class BP_XProfile_Field_Type_Telephone extends BP_XProfile_Field_Type {
 	 */
 	public static function display_filter( $field_value, $field_id = '' ) {
 		$url   = wp_strip_all_tags( $field_value );
-		$parts = wp_parse_url( $url );
+		$parts = parse_url( $url );
 
 		// Add the tel:// protocol to the field value.
 		if ( isset( $parts['scheme'] ) ) {

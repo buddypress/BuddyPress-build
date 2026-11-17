@@ -3,7 +3,7 @@
  * BP Nouveau Activity
  *
  * @since 3.0.0
- * @version 12.0.0
+ * @version 8.0.0
  */
 
 // Exit if accessed directly.
@@ -14,7 +14,6 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 3.0.0
  */
-#[AllowDynamicProperties]
 class BP_Nouveau_Activity {
 	/**
 	 * Nouveau Activity directory.
@@ -62,13 +61,17 @@ class BP_Nouveau_Activity {
 		require $this->dir . 'functions.php';
 		require $this->dir . 'template-tags.php';
 
+		if ( bp_core_retain_legacy_widgets() ) {
+			require $this->dir . 'widgets.php';
+		}
+
 		// Test suite requires the AJAX functions early.
 		if ( function_exists( 'tests_add_filter' ) ) {
 			require $this->dir . 'ajax.php';
 
 		// Load AJAX code only on AJAX requests.
 		} else {
-			add_action( 'admin_init', function () {
+			add_action( 'admin_init', function() {
 				// AJAX condtion.
 				if ( defined( 'DOING_AJAX' ) && true === DOING_AJAX &&
 					// Check to see if action is activity-specific.
@@ -86,9 +89,12 @@ class BP_Nouveau_Activity {
 	 * @since 3.0.0
 	 */
 	protected function setup_actions() {
-		add_action( 'bp_init', 'bp_nouveau_register_activity_ajax_actions' );
 		add_action( 'bp_nouveau_enqueue_scripts', 'bp_nouveau_activity_enqueue_scripts' );
 		add_action( 'bp_nouveau_notifications_init_filters', 'bp_nouveau_activity_notification_filters' );
+
+		if ( bp_core_retain_legacy_widgets() ) {
+			add_action( 'bp_widgets_init', array( 'BP_Latest_Activities', 'register_widget' ) );
+		}
 
 		$bp = buddypress();
 

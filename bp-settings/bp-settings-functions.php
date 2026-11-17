@@ -360,46 +360,13 @@ function bp_settings_data_exporter_items() {
 		 * @param string $friendly_name Data exporter friendly name.
 		 * @param string $exporter      Internal exporter name.
 		 */
-		$item = apply_filters( 'bp_settings_data_exporter_name', $friendly_name, $exporter );
+		$item = apply_filters( 'bp_settings_data_exporter_name', esc_html( $friendly_name ), $exporter );
 	?>
 
-		<li><?php echo esc_html( $item ); ?></li>
+		<li><?php echo $item; ?></li>
 
 	<?php endforeach; ?>
 	</ul>
 
 <?php
-}
-
-/**
- * Whether a user can delete self account from front-end.
- *
- * @since 12.0.0
- *
- * @return bool True if user can delete self account from front-end. False otherwise.
- */
-function bp_settings_can_delete_self_account() {
-	return ! user_can( bp_displayed_user_id(), 'delete_users' );
-}
-
-/**
- * Whether to show the Delete account front-end nav.
- *
- * @since 12.0.0
- *
- * @return bool True if user can be shown the Delete account nav. False otherwise.
- */
-function bp_settings_show_delete_account_nav() {
-	return ( ! bp_disable_account_deletion() && bp_is_my_profile() ) || bp_current_user_can( 'delete_users' );
-}
-
-/**
- * Whether to show the Capability front-end nav.
- *
- * @since 12.0.0
- *
- * @return bool True if user can be shown the Capability nav. False otherwise.
- */
-function bp_settings_show_capability_nav() {
-	return ! bp_is_my_profile();
 }

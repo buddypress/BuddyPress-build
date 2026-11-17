@@ -3,7 +3,7 @@
  * BP Nouveau Groups
  *
  * @since 3.0.0
- * @version 12.0.0
+ * @version 6.1.0
  */
 
 // Exit if accessed directly.
@@ -14,7 +14,6 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 3.0.0
  */
-#[AllowDynamicProperties]
 class BP_Nouveau_Groups {
 	/**
 	 * Constructor
@@ -54,7 +53,7 @@ class BP_Nouveau_Groups {
 
 		// Load AJAX code only on AJAX requests.
 		} else {
-			add_action( 'admin_init', function () {
+			add_action( 'admin_init', function() {
 				if ( defined( 'DOING_AJAX' ) && true === DOING_AJAX && 0 === strpos( $_REQUEST['action'], 'groups_' ) ) {
 					require bp_nouveau()->groups->dir . 'ajax.php';
 				}
@@ -68,8 +67,6 @@ class BP_Nouveau_Groups {
 	 * @since 3.0.0
 	 */
 	protected function setup_actions() {
-		add_action( 'bp_init', 'bp_nouveau_register_groups_ajax_actions' );
-
 		if ( ! is_admin() || ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) {
 			add_action( 'groups_setup_nav', 'bp_nouveau_group_setup_nav' );
 		}
@@ -90,10 +87,6 @@ class BP_Nouveau_Groups {
 		if ( bp_is_active( 'friends' ) && ! bp_nouveau_groups_disallow_all_members_invites() ) {
 			add_action( 'bp_settings_setup_nav', 'bp_nouveau_groups_invites_restriction_nav' );
 		}
-
-		// Priority navs for Block Themes.
-		add_action( 'bp_group_primary_nav', 'bp_nouveau_hidden_primary_nav' );
-		add_action( 'bp_group_secondary_nav', 'bp_nouveau_hidden_secondary_nav' );
 	}
 
 	/**

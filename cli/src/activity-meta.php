@@ -28,12 +28,6 @@ use WP_CLI\CommandWithMeta;
  * @since 2.0.0
  */
 class Activity_Meta extends CommandWithMeta {
-
-	/**
-	 * Type of the meta.
-	 *
-	 * @var string
-	 */
 	protected $meta_type = 'activity';
 
 	/**

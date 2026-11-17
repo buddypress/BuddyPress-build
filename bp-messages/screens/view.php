@@ -11,12 +11,16 @@
  * Load an individual conversation screen.
  *
  * @since 1.0.0
+ *
+ * @global BuddyPress $bp The one true BuddyPress instance.
+ *
+ * @return bool False on failure.
  */
 function messages_screen_conversation() {
 
 	// Bail if not viewing a single message.
 	if ( ! bp_is_messages_component() || ! bp_is_current_action( 'view' ) ) {
-		return;
+		return false;
 	}
 
 	$thread_id = (int) bp_action_variable( 0 );
@@ -26,9 +30,7 @@ function messages_screen_conversation() {
 			bp_core_add_message( __( 'The conversation you tried to access is no longer available', 'buddypress' ), 'error' );
 		}
 
-		bp_core_redirect(
-			bp_loggedin_user_url( bp_members_get_path_chunks( array( bp_get_messages_slug() ) ) )
-		);
+		bp_core_redirect( trailingslashit( bp_displayed_user_domain() . bp_get_messages_slug() ) );
 	}
 
 	// No access.
@@ -41,10 +43,7 @@ function messages_screen_conversation() {
 		// Redirect away.
 		} else {
 			bp_core_add_message( __( 'You do not have access to that conversation.', 'buddypress' ), 'error' );
-
-			bp_core_redirect(
-				bp_loggedin_user_url( bp_members_get_path_chunks( array( bp_get_messages_slug() ) ) )
-			);
+			bp_core_redirect( trailingslashit( bp_loggedin_user_domain() . bp_get_messages_slug() ) );
 		}
 	}
 
@@ -59,12 +58,9 @@ function messages_screen_conversation() {
 	$nav_name = sprintf( __( 'Messages <span class="%1$s">%2$s</span>', 'buddypress' ), esc_attr( $class ), bp_core_number_format( $count ) );
 
 	// Edit the Navigation name.
-	$bp->members->nav->edit_nav(
-		array(
-			'name' => $nav_name,
-		),
-		$bp->messages->slug
-	);
+	$bp->members->nav->edit_nav( array(
+		'name' => $nav_name,
+	), $bp->messages->slug );
 
 	/**
 	 * Fires right before the loading of the Messages view screen template file.
@@ -73,18 +69,13 @@ function messages_screen_conversation() {
 	 */
 	do_action( 'messages_screen_conversation' );
 
-	$templates = array(
-		/**
-		 * Filters the template to load for the Messages view screen.
-		 *
-		 * @since 1.0.0
-		 *
-		 * @param string $template Path to the messages template to load.
-		 */
-		apply_filters( 'messages_template_view_message', 'members/single/home' ),
-		'members/single/index',
-	);
-
-	bp_core_load_template( $templates );
+	/**
+	 * Filters the template to load for the Messages view screen.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $template Path to the messages template to load.
+	 */
+	bp_core_load_template( apply_filters( 'messages_template_view_message', 'members/single/home' ) );
 }
 add_action( 'bp_screens', 'messages_screen_conversation' );

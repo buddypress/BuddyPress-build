@@ -17,15 +17,17 @@
  * another function handles this. See {@link bp_legacy_theme_ajax_joinleave_group()}.
  *
  * @since 1.2.4
+ *
+ * @return bool
  */
 function groups_action_leave_group() {
 	if ( ! bp_is_single_item() || ! bp_is_groups_component() || ! bp_is_current_action( 'leave-group' ) ) {
-		return;
+		return false;
 	}
 
 	// Nonce check.
 	if ( ! check_admin_referer( 'groups_leave_group' ) ) {
-		return;
+		return false;
 	}
 
 	// User wants to leave any group.
@@ -43,23 +45,18 @@ function groups_action_leave_group() {
 			bp_core_add_message( __( 'You successfully left the group.', 'buddypress' ) );
 		}
 
-		$group    = groups_get_current_group();
-		$redirect = bp_get_group_url( $group );
+		$group = groups_get_current_group();
+		$redirect = bp_get_group_permalink( $group );
 
 		if ( ! $group->is_visible ) {
-			$redirect = bp_loggedin_user_url( bp_members_get_path_chunks( array( bp_get_groups_slug() ) ) );
+			$redirect = trailingslashit( bp_loggedin_user_domain() . bp_get_groups_slug() );
 		}
 
 		bp_core_redirect( $redirect );
 	}
 
-	$templates = array(
-		/** This filter is documented in bp-groups/actions/join.php */
-		apply_filters( 'groups_template_group_home', 'groups/single/home' ),
-		'groups/single/index',
-	);
-
-	bp_core_load_template( $templates );
+	/** This filter is documented in bp-groups/bp-groups-actions.php */
+	bp_core_load_template( apply_filters( 'groups_template_group_home', 'groups/single/home' ) );
 }
 add_action( 'bp_actions', 'groups_action_leave_group' );
 
@@ -80,7 +77,7 @@ function groups_action_clean_up_invites_requests( $user_id, $group_id ) {
 	/**
 	 * Remove invitations where the deleted user is the sender.
 	 * We'll use groups_uninvite_user() so that notifications will be cleaned up.
-	 */
+	 */ 
 	$pending_invites = groups_get_invites( array(
 		'inviter_id' => $user_id,
 		'item_id'    => $group_id,

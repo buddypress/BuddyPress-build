@@ -1,15 +1,14 @@
 === BuddyPress ===
 Contributors:      johnjamesjacoby, DJPaul, boonebgorges, r-a-y, imath, mercime, tw2113, dcavins, hnla, karmatosed, slaFFik, dimensionmedia, henrywright, netweb, offereins, espellcaste, modemlooper, danbp, Venutius, apeatling, shanebp, emaralive
-Donate link:       https://wordpressfoundation.org
-Tags:              community, group, members, network, self-hosted
+Tags:              profiles, groups, activity, direct messaging, notifications, friends, community, social networking
 License:           GNU General Public License v2 or later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 Requires PHP:      5.6
-Requires at least: 6.1
-Tested up to:      7.1
-Stable tag:        14.5.6
+Requires at least: 5.7
+Tested up to:      6.8
+Stable tag:        11.6.4
 
-Get together safely, in your own way, in WordPress.
+BuddyPress helps site builders & developers add community features to their websites, with user profiles, activity streams, and more!
 
 == Description ==
 
@@ -29,16 +28,14 @@ BuddyPress themes are just WordPress themes with additional templates, and with 
 
 BuddyPress also comes with built-in support for Akismet and [bbPress](https://wordpress.org/plugins/bbpress/), two very popular and very powerful WordPress plugins. If you're using either, visit their settings pages and ensure everything is configured to your liking.
 
-= The BuddyPress Add-ons =
+= The BuddyPress ecosystem =
 
-WordPress.org is home to some amazing Add-ons for BuddyPress, including:
+WordPress.org is home to some amazing extensions for BuddyPress, including:
 
-- [BP Attachments](https://wordpress.org/plugins/bp-attachments/)
-- [BP Classic](https://wordpress.org/plugins/bp-classic/)
+- [rtMedia for WordPress, BuddyPress and bbPress](https://wordpress.org/plugins/buddypress-media/)
+- [BuddyPress Docs](https://wordpress.org/plugins/buddypress-docs/)
 
-**NB**: BP Classic is a backwards compatibility Add-on for BuddyPress 12.0 and up bringing back the BP Legacy URL parser, the BP Default theme and BP Legacy widgets.
-
-Go to [BuddyPress profile on WordPress.org](https://profiles.wordpress.org/buddypress/) to find them all!
+Search WordPress.org for "BuddyPress" to find them all!
 
 = Join our community =
 
@@ -54,11 +51,9 @@ Growing the BuddyPress community means better software for everyone!
 
 To run BuddyPress, we recommend your host supports:
 
-* PHP version 7.4 or greater.
-* MySQL version 5.7 or greater OR MariaDB version 10.4 or greater.
-* HTTPS support
-
-Note: If you are in a legacy environment where you only have older PHP or MySQL versions, WordPress also works with PHP 5.6.20+ and MySQL 5.0+, but these versions have reached official End Of Life and as such may expose your site to security vulnerabilities.
+* PHP version 7.2 or greater.
+* MySQL version 5.6 or greater, or, MariaDB version 10.0 or greater.
+* HTTPS support.
 
 = Automatic installation =
 
@@ -68,7 +63,7 @@ In the search field type "BuddyPress" and click Search Plugins. Once you've foun
 
 Once activated:
 
-1. Visit 'Settings > BuddyPress > Components' and adjust the active components to match your community (you can always toggle these later).
+1. Visit 'Settings > BuddyPress > Components' and adjust the active components to match your community. (You can always toggle these later.)
 2. Visit 'Settings > BuddyPress > Pages' and setup your directories and special pages. We create a few automatically, but suggest you customize these to fit the flow and verbiage of your site.
 3. Visit 'Settings > BuddyPress > Settings' and take a moment to match BuddyPress's settings to your expectations. We pick the most common configuration by default, but every community is different.
 
@@ -130,66 +125,23 @@ Try <a href="https://wordpress.org/plugins/bbpress/">bbPress</a>. It integrates 
 
 == Upgrade Notice ==
 
-= 14.5.6 =
-See: https://codex.buddypress.org/releases/version-14-5-6/
+= 11.6.4 =
+See: https://codex.buddypress.org/releases/version-11-6-4/
 
-= 14.5.4 =
-See: https://codex.buddypress.org/releases/version-14-5-4/
+= 11.6.3 =
+See: https://codex.buddypress.org/releases/version-11-6-3/
 
-= 14.5.3 =
-See: https://codex.buddypress.org/releases/version-14-5-3/
+= 11.6.2 =
+See: https://codex.buddypress.org/releases/version-11-6-2/
 
-= 14.5.2 =
-See: https://codex.buddypress.org/releases/version-14-5-2/
+= 11.6.0 =
+See: https://codex.buddypress.org/releases/version-11-6-0/
 
-= 14.5.0 =
-See: https://codex.buddypress.org/releases/version-14-5-0/
+= 11.5.2 =
+See: https://codex.buddypress.org/releases/version-11-5-2/
 
-= 14.4.0 =
-See: https://codex.buddypress.org/releases/version-14-4-0/
-
-= 14.3.4 =
-See: https://codex.buddypress.org/releases/version-14-3-4/
-
-= 14.3.3 =
-See: https://codex.buddypress.org/releases/version-14-3-3/
-
-= 14.3.1 =
-See: https://codex.buddypress.org/releases/version-14-3-1/
-
-= 14.2.1 =
-See: https://codex.buddypress.org/releases/version-14-2-1/
-
-= 14.1.0 =
-See: https://codex.buddypress.org/releases/version-14-1-0/
-
-= 14.0.0 =
-See: https://codex.buddypress.org/releases/version-14-0-0/
-
-= 12.5.1 =
-See: https://codex.buddypress.org/releases/version-12-5-1/
-
-= 12.5.0 =
-See: https://codex.buddypress.org/releases/version-12-5-0/
-
-= 12.4.1 =
-See: https://codex.buddypress.org/releases/version-12-4-1/
-
-= 12.4.0 =
-See: https://codex.buddypress.org/releases/version-12-4-0/
-
-= 12.3.0 =
-See: https://codex.buddypress.org/releases/version-12-3-0/
-
-= 12.2.0 =
-See: https://codex.buddypress.org/releases/version-12-2-0/
-
-= 12.1.1 =
-See: https://codex.buddypress.org/releases/version-12-1-1/
-
-= 12.0.0 =
-- See: https://codex.buddypress.org/releases/version-12-0-0/
-- Before upgrading to version 12.0.0 & if you are using one or more third party BuddyPress plugins that have not been updated lately, please make sure to download and activate the "BP Classic" backwards compatibility Add-on from your "Add New Plugin" Dashboard menu.
+= 11.5.1 =
+See: https://codex.buddypress.org/releases/version-11-5-1/
 
 = 11.4.0 =
 See: https://codex.buddypress.org/releases/version-11-4-0/
@@ -229,70 +181,38 @@ See: https://codex.buddypress.org/releases/version-10-1-0/
 
 = 10.0.0 =
 See: https://codex.buddypress.org/releases/version-10-0-0/
+
+= 9.2.0 =
+See: https://codex.buddypress.org/releases/version-9-2-0/
+
+= 9.1.1 =
+See: https://codex.buddypress.org/releases/version-9-1-1/
+
+= 9.0.0 =
+See: https://codex.buddypress.org/releases/version-9-0-0/
+
+= 8.0.0 =
+See: https://codex.buddypress.org/releases/version-8-0-0/
 
 == Changelog ==
 
-= 14.5.6 =
-See: https://codex.buddypress.org/releases/version-14-5-6/
+= 11.6.4 =
+See: https://codex.buddypress.org/releases/version-11-6-4/
 
-= 14.5.4 =
-See: https://codex.buddypress.org/releases/version-14-5-4/
+= 11.6.3 =
+See: https://codex.buddypress.org/releases/version-11-6-3/
 
-= 14.5.3 =
-See: https://codex.buddypress.org/releases/version-14-5-3/
+= 11.6.2 =
+See: https://codex.buddypress.org/releases/version-11-6-2/
 
-= 14.5.2 =
-See: https://codex.buddypress.org/releases/version-14-5-2/
+= 11.6.0 =
+See: https://codex.buddypress.org/releases/version-11-6-0/
 
-= 14.5.0 =
-See: https://codex.buddypress.org/releases/version-14-5-0/
+= 11.5.2 =
+See: https://codex.buddypress.org/releases/version-11-5-2/
 
-= 14.4.0 =
-See: https://codex.buddypress.org/releases/version-14-4-0/
-
-= 14.3.4 =
-See: https://codex.buddypress.org/releases/version-14-3-4/
-
-= 14.3.3 =
-See: https://codex.buddypress.org/releases/version-14-3-3/
-
-= 14.3.1 =
-See: https://codex.buddypress.org/releases/version-14-3-1/
-
-= 14.2.1 =
-See: https://codex.buddypress.org/releases/version-14-2-1/
-
-= 14.1.0 =
-See: https://codex.buddypress.org/releases/version-14-1-0/
-
-= 14.0.0 =
-See: https://codex.buddypress.org/releases/version-14-0-0/
-
-= 12.5.1 =
-Security fix: The Members block was vulnerable to a Stored Cross-Site Scripting. Discovered by Wesley (wcraft) from the Wordfence organization.
-See: https://codex.buddypress.org/releases/version-12-5-1/
-
-= 12.5.0 =
-See: https://codex.buddypress.org/releases/version-12-5-0/
-
-= 12.4.1 =
-Security fix: The dynamic Members, dynamic Friends & dynamic Groups blocks were vulnerable to a Stored Cross-Site Scripting. Discovered by Wesley (wcraft) from the Wordfence organization.
-See: https://codex.buddypress.org/releases/version-12-4-1/
-
-= 12.4.0 =
-See: https://codex.buddypress.org/releases/version-12-4-0/
-
-= 12.3.0 =
-See: https://codex.buddypress.org/releases/version-12-3-0/
-
-= 12.2.0 =
-See: https://codex.buddypress.org/releases/version-12-2-0/
-
-= 12.1.1 =
-See: https://codex.buddypress.org/releases/version-12-1-1/
-
-= 12.0.0 =
-See: https://codex.buddypress.org/releases/version-12-0-0/
+= 11.5.1 =
+See: https://codex.buddypress.org/releases/version-11-5-1/
 
 = 11.4.0 =
 See: https://codex.buddypress.org/releases/version-11-4-0/
@@ -332,3 +252,15 @@ See: https://codex.buddypress.org/releases/version-10-1-0/
 
 = 10.0.0 =
 See: https://codex.buddypress.org/releases/version-10-0-0/
+
+= 9.2.0 =
+See: https://codex.buddypress.org/releases/version-9-2-0/
+
+= 9.1.1 =
+See: https://codex.buddypress.org/releases/version-9-1-1/
+
+= 9.0.0 =
+See: https://codex.buddypress.org/releases/version-9-0-0/
+
+= 8.0.0 =
+See: https://codex.buddypress.org/releases/version-8-0-0/

@@ -124,9 +124,9 @@ function bp_friends_header_tabs() {
 	_deprecated_function( __FUNCTION__, '1.6', 'Since BuddyPress 1.2, BP has not supported ordering of friend lists by URL parameters.' );
 ?>
 
-	<li<?php if ( !bp_action_variable( 0 ) || bp_is_action_variable( 'recently-active', 0 ) ) : ?> class="current"<?php endif; ?>><a href="<?php echo esc_url( trailingslashit( bp_displayed_user_domain() . bp_get_friends_slug() . '/my-friends/recently-active' ) ); ?>"><?php esc_html_e( 'Recently Active', 'buddypress' ) ?></a></li>
-	<li<?php if ( bp_is_action_variable( 'newest', 0 ) ) : ?> class="current"<?php endif; ?>><a href="<?php echo esc_url( trailingslashit( bp_displayed_user_domain() . bp_get_friends_slug() . '/my-friends/newest' ) ); ?>"><?php esc_html_e( 'Newest', 'buddypress' ) ?></a></li>
-	<li<?php if ( bp_is_action_variable( 'alphabetically', 0 ) ) : ?> class="current"<?php endif; ?>><a href="<?php echo esc_url( trailingslashit( bp_displayed_user_domain() . bp_get_friends_slug() . '/my-friends/alphabetically' ) ); ?>"><?php esc_html_e( 'Alphabetically', 'buddypress' ) ?></a></li>
+	<li<?php if ( !bp_action_variable( 0 ) || bp_is_action_variable( 'recently-active', 0 ) ) : ?> class="current"<?php endif; ?>><a href="<?php echo trailingslashit( bp_displayed_user_domain() . bp_get_friends_slug() . '/my-friends/recently-active' ) ?>"><?php _e( 'Recently Active', 'buddypress' ) ?></a></li>
+	<li<?php if ( bp_is_action_variable( 'newest', 0 ) ) : ?> class="current"<?php endif; ?>><a href="<?php echo trailingslashit( bp_displayed_user_domain() . bp_get_friends_slug() . '/my-friends/newest' ) ?>"><?php _e( 'Newest', 'buddypress' ) ?></a></li>
+	<li<?php if ( bp_is_action_variable( 'alphabetically', 0 ) ) : ?> class="current"<?php endif; ?>><a href="<?php echo trailingslashit( bp_displayed_user_domain() . bp_get_friends_slug() . '/my-friends/alphabetically' ) ?>"><?php _e( 'Alphabetically', 'buddypress' ) ?></a></li>
 
 <?php
 	do_action( 'friends_header_tabs' );
@@ -145,13 +145,13 @@ function bp_friends_filter_title() {
 
 	switch ( $current_filter ) {
 		case 'recently-active': default:
-			esc_html_e( 'Recently Active', 'buddypress' );
+			_e( 'Recently Active', 'buddypress' );
 			break;
 		case 'newest':
-			esc_html_e( 'Newest', 'buddypress' );
+			_e( 'Newest', 'buddypress' );
 			break;
 		case 'alphabetically':
-			esc_html_e( 'Alphabetically', 'buddypress' );
+			_e( 'Alphabetically', 'buddypress' );
 			break;
 	}
 }
@@ -264,12 +264,12 @@ if ( !function_exists( 'bp_dtheme_register_actions' ) ) :
 		);
 
 		// For each of the problematic hooks, exit at the very end of execution.
-		foreach ( $actions as $action ) {
-			add_action( 'wp_ajax_' . $action, function () {
+		foreach( $actions as $action ) {
+			add_action( 'wp_ajax_' . $action, function() {
 				exit;
 			}, 9999 );
 
-			add_action( 'wp_ajax_nopriv_' . $action, function () {
+			add_action( 'wp_ajax_nopriv_' . $action, function() {
 				exit;
 			}, 9999 );
 		}

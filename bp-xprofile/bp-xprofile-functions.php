@@ -55,7 +55,7 @@ function bp_xprofile_get_groups( $args = array() ) {
  *    @type string      $description    Field group description.
  *    @type bool        $can_delete     Whether or not the field group can be deleted.
  * }
- * @return bool
+ * @return boolean
  */
 function xprofile_insert_field_group( $args = '' ) {
 
@@ -113,7 +113,7 @@ function xprofile_get_field_group( $field_group_id = 0 ) {
  * @since 1.0.0
  *
  * @param int $field_group_id Field group ID to delete.
- * @return bool
+ * @return boolean
  */
 function xprofile_delete_field_group( $field_group_id = 0 ) {
 
@@ -136,7 +136,7 @@ function xprofile_delete_field_group( $field_group_id = 0 ) {
  *
  * @param int $field_group_id Field group ID to update.
  * @param int $position       Field group position to update to.
- * @return bool
+ * @return boolean
  */
 function xprofile_update_field_group_position( $field_group_id = 0, $position = 0 ) {
 	return BP_XProfile_Group::update_position( $field_group_id, $position );
@@ -192,7 +192,7 @@ function bp_xprofile_get_field_types() {
 function bp_xprofile_create_field_type( $type ) {
 
 	$field = bp_xprofile_get_field_types();
-	$class = isset( $field[ $type ] ) ? $field[ $type ] : '';
+	$class = isset( $field[$type] ) ? $field[$type] : '';
 
 	/**
 	 * To handle (missing) field types, fallback to a placeholder field object if a type is unknown.
@@ -393,7 +393,7 @@ function xprofile_get_field_data( $field, $user_id = 0, $multi_format = 'array' 
 
 	if ( is_array( $values ) ) {
 		$data = array();
-		foreach ( (array) $values as $value ) {
+		foreach( (array) $values as $value ) {
 
 			/**
 			 * Filters the field data value for a specific field for the user.
@@ -427,7 +427,7 @@ function xprofile_get_field_data( $field, $user_id = 0, $multi_format = 'array' 
  * @param int        $user_id     The ID of the user.
  * @param mixed      $value       The value for the field you want to set for the user.
  * @param bool       $is_required Whether or not the field is required.
- * @return bool
+ * @return bool True on success, false on failure.
  */
 function xprofile_set_field_data( $field, $user_id, $value, $is_required = false ) {
 
@@ -537,7 +537,7 @@ function xprofile_set_field_data( $field, $user_id, $value, $is_required = false
  * @param int    $field_id         The ID of the xprofile field.
  * @param int    $user_id          The ID of the user to whom the data belongs.
  * @param string $visibility_level What the visibility setting should be.
- * @return bool
+ * @return bool True on success
  */
 function xprofile_set_field_visibility_level( $field_id = 0, $user_id = 0, $visibility_level = '' ) {
 	// Ensure $field_id is an integer. User ID is sanitized in `update_user_meta()`.
@@ -549,18 +549,18 @@ function xprofile_set_field_visibility_level( $field_id = 0, $user_id = 0, $visi
 
 	// Check against a list of registered visibility levels.
 	$allowed_values = bp_xprofile_get_visibility_levels();
-	if ( ! array_key_exists( $visibility_level, $allowed_values ) ) {
+	if ( !array_key_exists( $visibility_level, $allowed_values ) ) {
 		return false;
 	}
 
 	// Stored in an array in usermeta.
 	$current_visibility_levels = bp_get_user_meta( $user_id, 'bp_xprofile_visibility_levels', true );
 
-	if ( ! $current_visibility_levels ) {
+	if ( !$current_visibility_levels ) {
 		$current_visibility_levels = array();
 	}
 
-	$current_visibility_levels[ $field_id ] = $visibility_level;
+	$current_visibility_levels[$field_id] = $visibility_level;
 
 	return bp_update_user_meta( $user_id, 'bp_xprofile_visibility_levels', $current_visibility_levels );
 }
@@ -668,6 +668,10 @@ function xprofile_get_field_id_from_name( $field_name ) {
  *
  * @since 1.0.0
  *
+ * @global BuddyPress $bp           The one true BuddyPress instance.
+ * @global object     $wpdb         WordPress DB access object.
+ * @global object     $current_user WordPress global variable containing current logged in user information.
+ *
  * @param int  $user_id          User ID of the user to get random data for.
  * @param bool $exclude_fullname Optional; whether or not to exclude the full name field as random data.
  *                               Defaults to true.
@@ -766,14 +770,12 @@ function xprofile_override_user_fullnames() {
 		buddypress()->displayed_user->fullname = bp_core_get_user_displayname( bp_displayed_user_id() );
 	}
 }
-add_action( 'bp_parse_query', 'xprofile_override_user_fullnames', 100 );
+add_action( 'bp_setup_globals', 'xprofile_override_user_fullnames', 100 );
 
 /**
  * When search_terms are passed to BP_User_Query, search against xprofile fields.
  *
  * @since 2.0.0
- *
- * @global wpdb $wpdb WordPress database object.
  *
  * @param array         $sql   Clauses in the user_id SQL query.
  * @param BP_User_Query $query User query object.
@@ -794,7 +796,7 @@ function bp_xprofile_bp_user_query_search( $sql, BP_User_Query $query ) {
 		$search_terms_nospace = '%' . $search_terms_clean;
 		$search_terms_space   = '%' . $search_terms_clean . ' %';
 	} elseif ( $query->query_vars['search_wildcard'] === 'right' ) {
-		$search_terms_nospace = $search_terms_clean . '%';
+		$search_terms_nospace =        $search_terms_clean . '%';
 		$search_terms_space   = '% ' . $search_terms_clean . '%';
 	} else {
 		$search_terms_nospace = '%' . $search_terms_clean . '%';
@@ -904,7 +906,7 @@ add_action( 'bp_core_activated_user', 'xprofile_sync_wp_profile', 10, 3 );
  * @since 1.2.4
  *
  * @param object $errors Array of errors. Passed by reference.
- * @param bool   $update Whether or not being updated.
+ * @param bool   $update Whether or not being upated.
  * @param object $user   User object whose profile is being synced. Passed by reference.
  */
 function xprofile_sync_bp_profile( &$errors, $update, &$user ) {
@@ -973,8 +975,6 @@ add_action( 'delete_user', 'xprofile_remove_data_on_delete_user' );
  *
  * @since 1.5.0
  *
- * @global wpdb $wpdb WordPress database object.
- *
  * @param int         $object_id   ID of the object the metadata belongs to.
  * @param string      $object_type Type of object. 'group', 'field', or 'data'.
  * @param string|bool $meta_key    Key of the metadata being deleted. If omitted, all
@@ -985,7 +985,7 @@ add_action( 'delete_user', 'xprofile_remove_data_on_delete_user' );
  *                                 for all objects, ignoring the specified object_id. Otherwise, only
  *                                 delete matching metadata entries for the specified object.
  *                                 Default: false.
- * @return bool
+ * @return bool True on success, false on failure.
  */
 function bp_xprofile_delete_meta( $object_id, $object_type, $meta_key = false, $meta_value = false, $delete_all = false ) {
 	global $wpdb;
@@ -1156,8 +1156,6 @@ function bp_xprofile_update_fielddata_meta( $field_data_id, $meta_key, $meta_val
  *
  * @since 2.0.0
  *
- * @global wpdb $wpdb WordPress database object.
- *
  * @return int Field ID.
  */
 function bp_xprofile_fullname_field_id() {
@@ -1264,15 +1262,15 @@ function bp_xprofile_get_visibility_levels() {
  * @return array An array of field ids that should be excluded from the profile query
  */
 function bp_xprofile_get_hidden_fields_for_user( $displayed_user_id = 0, $current_user_id = 0 ) {
-	if ( ! $displayed_user_id ) {
+	if ( !$displayed_user_id ) {
 		$displayed_user_id = bp_displayed_user_id();
 	}
 
-	if ( ! $displayed_user_id ) {
+	if ( !$displayed_user_id ) {
 		return array();
 	}
 
-	if ( ! $current_user_id ) {
+	if ( !$current_user_id ) {
 		$current_user_id = bp_loggedin_user_id();
 	}
 
@@ -1321,16 +1319,16 @@ function bp_xprofile_get_hidden_field_types_for_user( $displayed_user_id = 0, $c
 
 		// If the current user and displayed user are friends, show all.
 		} elseif ( bp_is_active( 'friends' ) && friends_check_friendship( $displayed_user_id, $current_user_id ) ) {
-			$hidden_levels = array( 'adminsonly' );
+			$hidden_levels = array( 'adminsonly', );
 
 		// Current user is logged in but not friends, so exclude friends-only.
 		} else {
-			$hidden_levels = array( 'friends', 'adminsonly' );
+			$hidden_levels = array( 'friends', 'adminsonly', );
 		}
 
 	// Current user is not logged in, so exclude friends-only, loggedin, and adminsonly.
 	} else {
-		$hidden_levels = array( 'friends', 'loggedin', 'adminsonly' );
+		$hidden_levels = array( 'friends', 'loggedin', 'adminsonly', );
 	}
 
 	/**
@@ -1358,7 +1356,7 @@ function bp_xprofile_get_hidden_field_types_for_user( $displayed_user_id = 0, $c
  * @return array $field_ids The fields that match the requested visibility levels for the given user.
  */
 function bp_xprofile_get_fields_by_visibility_levels( $user_id, $levels = array() ) {
-	if ( ! is_array( $levels ) ) {
+	if ( !is_array( $levels ) ) {
 		$levels = (array)$levels;
 	}
 
@@ -1368,16 +1366,16 @@ function bp_xprofile_get_fields_by_visibility_levels( $user_id, $levels = array(
 	// precedence.
 	$default_visibility_levels = BP_XProfile_Group::fetch_default_visibility_levels();
 
-	foreach ( (array) $default_visibility_levels as $d_field_id => $defaults ) {
+	foreach( (array) $default_visibility_levels as $d_field_id => $defaults ) {
 		// If the admin has forbidden custom visibility levels for this field, replace
 		// the user-provided setting with the default specified by the admin.
 		if ( isset( $defaults['allow_custom'] ) && isset( $defaults['default'] ) && 'disabled' == $defaults['allow_custom'] ) {
-			$user_visibility_levels[ $d_field_id ] = $defaults['default'];
+			$user_visibility_levels[$d_field_id] = $defaults['default'];
 		}
 	}
 
 	$field_ids = array();
-	foreach ( $user_visibility_levels as $field_id => $field_visibility ) {
+	foreach( $user_visibility_levels as $field_id => $field_visibility ) {
 		if ( in_array( $field_visibility, $levels ) ) {
 			$field_ids[] = $field_id;
 		}
@@ -1386,7 +1384,7 @@ function bp_xprofile_get_fields_by_visibility_levels( $user_id, $levels = array(
 	// Never allow the fullname field to be excluded.
 	if ( in_array( 1, $field_ids ) ) {
 		$key = array_search( 1, $field_ids );
-		unset( $field_ids[ $key ] );
+		unset( $field_ids[$key] );
 	}
 
 	// Ensure that the $field_ids are integers.
@@ -1396,23 +1394,22 @@ function bp_xprofile_get_fields_by_visibility_levels( $user_id, $levels = array(
 /**
  * Formats datebox field values passed through a POST request.
  *
- * This function only changes the global $_POST that should contain
- * the datebox data.
- *
  * @since 2.8.0
  *
  * @param int $field_id The id of the current field being looped through.
+ * @return void This function only changes the global $_POST that should contain
+ *              the datebox data.
  */
 function bp_xprofile_maybe_format_datebox_post_data( $field_id ) {
-	if ( ! isset( $_POST[ 'field_' . $field_id ] ) ) {
-		if ( ! empty( $_POST[ 'field_' . $field_id . '_day' ] ) && ! empty( $_POST[ 'field_' . $field_id . '_month' ] ) && ! empty( $_POST[ 'field_' . $field_id . '_year' ] ) ) {
+	if ( ! isset( $_POST['field_' . $field_id] ) ) {
+		if ( ! empty( $_POST['field_' . $field_id . '_day'] ) && ! empty( $_POST['field_' . $field_id . '_month'] ) && ! empty( $_POST['field_' . $field_id . '_year'] ) ) {
 			// Concatenate the values.
-			$date_value = $_POST[ 'field_' . $field_id . '_day' ] . ' ' . $_POST[ 'field_' . $field_id . '_month' ] . ' ' . $_POST[ 'field_' . $field_id . '_year' ];
+			$date_value = $_POST['field_' . $field_id . '_day'] . ' ' . $_POST['field_' . $field_id . '_month'] . ' ' . $_POST['field_' . $field_id . '_year'];
 
 			// Check that the concatenated value can be turned into a timestamp.
 			if ( $timestamp = strtotime( $date_value ) ) {
 				// Add the timestamp to the global $_POST that should contain the datebox data.
-				$_POST[ 'field_' . $field_id ] = date( 'Y-m-d H:i:s', $timestamp );
+				$_POST['field_' . $field_id] = date( 'Y-m-d H:i:s', $timestamp );
 			}
 		}
 	}
@@ -1471,7 +1468,7 @@ function bp_xprofile_personal_data_exporter( $email_address ) {
 }
 
 /**
- * Returns the list of supported WordPress field meta keys.
+ * Returns the list of supporterd WordPress field meta keys.
  *
  * @since 8.0.0
  *
@@ -1488,8 +1485,6 @@ function bp_xprofile_get_wp_user_keys() {
  * Returns the signup field IDs.
  *
  * @since 8.0.0
- *
- * @global wpdb $wpdb WordPress database object.
  *
  * @return int[] The signup field IDs.
  */

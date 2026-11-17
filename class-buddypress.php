@@ -39,67 +39,66 @@ class BuddyPress {
 	/**
 	 * Primary BuddyPress navigation.
 	 *
-	 * @var BP_Core_BP_Nav_BackCompat
+	 * @var array Primary BuddyPress navigation.
 	 */
-	public $bp_nav;
+	public $bp_nav = array();
 
 	/**
 	 * Options for the BuddyPress navigation.
 	 *
-	 * @var BP_Core_BP_Options_Nav_BackCompat
+	 * @var array Secondary BuddyPress navigation to $bp_nav.
 	 */
-	public $bp_options_nav;
+	public $bp_options_nav = array();
 
 	/**
 	 * Unfiltered URI.
 	 *
-	 * The unfiltered URI broken down into chunks.
-	 *
-	 * @var array
+	 * @see bp_core_set_uri_globals()
+	 * @var array The unfiltered URI broken down into chunks.
 	 */
 	public $unfiltered_uri = array();
 
 	/**
-	 * The canonical URI stack.
+	 * Canonical stack.
 	 *
 	 * @see bp_redirect_canonical()
 	 * @see bp_core_new_nav_item()
-	 * @var array
+	 * @var array The canonical URI stack.
 	 */
 	public $canonical_stack = array();
 
 	/**
 	 * Current action variables.
 	 *
-	 * @var array
+	 * @var array Additional navigation elements (supplemental).
 	 */
 	public $action_variables = array();
 
 	/**
-	 * Current member directory type.
+	 * Current member type.
 	 *
-	 * @var string
+	 * @var string Current member directory type.
 	 */
 	public $current_member_type = '';
 
 	/**
-	 * BuddyPress required components (core, members).
+	 * BuddyPress required components.
 	 *
-	 * @var array
+	 * @var array Required components (core, members).
 	 */
 	public $required_components = array();
 
 	/**
 	 * BuddyPress loaded components.
 	 *
-	 * @var array
+	 * @var array Additional active components.
 	 */
 	public $loaded_components = array();
 
 	/**
 	 * BuddyPress active components.
 	 *
-	 * @var array
+	 * @var array Active components.
 	 */
 	public $active_components = array();
 
@@ -107,115 +106,17 @@ class BuddyPress {
 	 * Whether autoload is in use.
 	 *
 	 * @since 2.5.0
+	 *
 	 * @var bool
 	 */
 	public $do_autoload = true;
-
-	/**
-	 * Activity component.
-	 *
-	 * @since 1.6.0
-	 * @var BP_Activity_Component
-	 */
-	public $activity;
-
-	/**
-	 * Blogs component.
-	 *
-	 * @since 1.5.0
-	 * @var BP_Blogs_Component
-	 */
-	public $blogs;
-
-	/**
-	 * Core component.
-	 *
-	 * @since 1.6.0
-	 * @var BP_Core
-	 */
-	public $core;
-
-	/**
-	 * Forums component.
-	 *
-	 * @since 1.5.0
-	 * @var BP_Forums_Component
-	 */
-	public $forums;
-
-	/**
-	 * Friends component.
-	 *
-	 * @since 1.6.0
-	 * @var BP_Friends_Component
-	 */
-	public $friends;
-
-	/**
-	 * Groups component.
-	 *
-	 * @since 1.5.0
-	 * @var BP_Groups_Component
-	 */
-	public $groups;
-
-	/**
-	 * Members component.
-	 *
-	 * @since 1.5.0
-	 * @var BP_Members_Component
-	 */
-	public $members;
-
-	/**
-	 * Messages component.
-	 *
-	 * @since 1.5.0
-	 * @var BP_Messages_Component
-	 */
-	public $messages;
-
-	/**
-	 * Notifications component.
-	 *
-	 * @since 1.9.0
-	 * @var BP_Notifications_Component
-	 */
-	public $notifications;
-
-	/**
-	 * Settings component.
-	 *
-	 * @since 1.6.0
-	 * @var BP_Settings_Component
-	 */
-	public $settings;
-
-	/**
-	 * XProfile component.
-	 *
-	 * @since 1.6.0
-	 * @var BP_XProfile_Component
-	 */
-	public $profile;
-
-	/**
-	 * BuddyPress Ajax actions.
-	 *
-	 * @since 12.0.0
-	 *
-	 * @var array The list of registered Ajax actions.
-	 */
-	public $ajax_actions = array();
 
 	/** Option Overload *******************************************************/
 
 	/**
 	 * BuddyPress options.
 	 *
-	 * Overloads default options retrieved from get_option().
-	 *
-	 * @var array
+	 * @var array Optional Overloads default options retrieved from get_option().
 	 */
 	public $options = array();
 
@@ -279,7 +180,7 @@ class BuddyPress {
 	 * @since 1.7.0
 	 */
 	public function __clone() {
-		_doing_it_wrong( __FUNCTION__, esc_html__( 'Cheatin&#8217; huh?', 'buddypress' ), '1.7' );
+		_doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?', 'buddypress' ), '1.7' );
 	}
 
 	/**
@@ -288,7 +189,7 @@ class BuddyPress {
 	 * @since 1.7.0
 	 */
 	public function __wakeup() {
-		_doing_it_wrong( __FUNCTION__, esc_html__( 'Cheatin&#8217; huh?', 'buddypress' ), '1.7' );
+		_doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?', 'buddypress' ), '1.7' );
 	}
 
 	/**
@@ -314,13 +215,7 @@ class BuddyPress {
 	 * @return mixed
 	 */
 	public function __get( $key ) {
-		$valid_key = $key;
-		if ( 'root_domain' === $key ) {
-			_doing_it_wrong( 'root_domain', esc_html__( 'The root_domain BuddyPress main class property is deprecated since 12.0.0, please use the root_url property instead.', 'buddypress' ), 'BuddyPress 12.0.0' );
-			$valid_key = 'root_url';
-		}
-
-		return isset( $this->data[ $valid_key ] ) ? $this->data[ $valid_key ] : null;
+		return isset( $this->data[ $key ] ) ? $this->data[ $key ] : null;
 	}
 
 	/**
@@ -332,13 +227,7 @@ class BuddyPress {
 	 * @param mixed  $value Value to set.
 	 */
 	public function __set( $key, $value ) {
-		$valid_key = $key;
-		if ( 'root_domain' === $key ) {
-			_doing_it_wrong( 'root_domain', esc_html__( 'The root_domain BuddyPress main class property is deprecated since 12.0.0, please use the root_url property instead.', 'buddypress' ), 'BuddyPress 12.0.0' );
-			$valid_key = 'root_url';
-		}
-
-		$this->data[ $valid_key ] = $value;
+		$this->data[ $key ] = $value;
 	}
 
 	/**
@@ -460,8 +349,8 @@ class BuddyPress {
 
 		/** Versions */
 
-		$this->version    = '14.5.6';
-		$this->db_version = 13906;
+		$this->version    = '11.6.4';
+		$this->db_version = 13408;
 
 		/** Loading */
 
@@ -484,6 +373,7 @@ class BuddyPress {
 
 		/**
 		 * @var int The current offset of the URI.
+		 * @see bp_core_set_uri_globals()
 		 */
 		$this->unfiltered_uri_offset = 0;
 
@@ -539,6 +429,10 @@ class BuddyPress {
 		// Templates (theme compatibility).
 		$this->themes_dir = $this->plugin_dir . 'bp-templates';
 		$this->themes_url = $this->plugin_url . 'bp-templates';
+
+		// Themes (for bp-default).
+		$this->old_themes_dir = $this->plugin_dir . 'bp-themes';
+		$this->old_themes_url = $this->plugin_url . 'bp-themes';
 
 		/** Theme Compat */
 
@@ -633,10 +527,10 @@ class BuddyPress {
 		require $this->plugin_dir . 'bp-core/bp-core-filters.php';
 		require $this->plugin_dir . 'bp-core/bp-core-attachments.php';
 		require $this->plugin_dir . 'bp-core/bp-core-avatars.php';
+		require $this->plugin_dir . 'bp-core/bp-core-widgets.php';
 		require $this->plugin_dir . 'bp-core/bp-core-template.php';
 		require $this->plugin_dir . 'bp-core/bp-core-adminbar.php';
 		require $this->plugin_dir . 'bp-core/bp-core-buddybar.php';
-		require $this->plugin_dir . 'bp-core/bp-core-rewrites.php';
 		require $this->plugin_dir . 'bp-core/bp-core-catchuri.php';
 		require $this->plugin_dir . 'bp-core/bp-core-functions.php';
 		require $this->plugin_dir . 'bp-core/bp-core-moderation.php';
@@ -654,7 +548,7 @@ class BuddyPress {
 
 			foreach ( $deprecated_functions_versions as $deprecated_functions_version ) {
 				// Load all or last 2 deprecated versions.
-				require $this->plugin_dir . sprintf( 'bp-core/deprecated/%s.php', number_format( $deprecated_functions_version, 1 ) );
+				require $this->plugin_dir . sprintf( 'bp-core/deprecated/%s.php', $deprecated_functions_version );
 			}
   		}
 
@@ -728,6 +622,15 @@ class BuddyPress {
 			'BP_Theme_Compat'                            => 'core',
 			'BP_User_Query'                              => 'core',
 			'BP_Walker_Category_Checklist'               => 'core',
+			/**
+			 * BP_Walker_Nav_Menu_Checklist class.
+			 *
+			 * As this class corresponding file is deprecated, it will trigger a deprecation notice if instantiated.
+			 * In a subsequent release, we'll remove it from our Classes Autoloader.
+			 *
+			 * @todo Remove the BP_Walker_Nav_Menu_Checklist from our Classes Autoloader.
+			 */
+			'BP_Walker_Nav_Menu_Checklist'               => 'core',
 			'BP_Walker_Nav_Menu'                         => 'core',
 			'BP_Invitation_Manager'                      => 'core',
 			'BP_Invitation'                              => 'core',
@@ -737,6 +640,7 @@ class BuddyPress {
 			'BP_Optout'                                  => 'core',
 			'BP_Optouts_List_Table'                      => 'core',
 
+			'BP_Core_Friends_Widget'                     => 'friends',
 			'BP_REST_Friends_Endpoint'                   => 'friends',
 
 			'BP_Group_Extension'                         => 'groups',
@@ -749,6 +653,9 @@ class BuddyPress {
 			'BP_REST_Attachments_Group_Cover_Endpoint'   => 'groups',
 
 			'BP_Core_Members_Template'                   => 'members',
+			'BP_Core_Members_Widget'                     => 'members',
+			'BP_Core_Recently_Active_Widget'             => 'members',
+			'BP_Core_Whos_Online_Widget'                 => 'members',
 			'BP_Registration_Theme_Compat'               => 'members',
 			'BP_Signup'                                  => 'members',
 			'BP_REST_Members_Endpoint'                   => 'members',
@@ -757,10 +664,8 @@ class BuddyPress {
 			'BP_REST_Signup_Endpoint'                    => 'members',
 			'BP_Members_Invitation_Manager'              => 'members',
 			'BP_Members_Invitations_Template'            => 'members',
-			'BP_Members_Invitations_Component'           => 'members',
 
 			'BP_REST_Messages_Endpoint'                  => 'messages',
-			'BP_REST_Sitewide_Notices_Endpoint'          => 'messages',
 
 			'BP_REST_Notifications_Endpoint'             => 'notifications',
 
@@ -837,6 +742,7 @@ class BuddyPress {
 			'register_post_statuses',   // Register post statuses.
 			'register_taxonomies',      // Register taxonomies.
 			'register_views',           // Register the views.
+			'register_theme_directory', // Register the theme directory.
 			'register_theme_packages',  // Register bundled theme packages (bp-themes).
 			'load_textdomain',          // Load textdomain.
 			'add_rewrite_tags',         // Add rewrite tags.
@@ -901,14 +807,17 @@ class BuddyPress {
 	 * registered (and bp-default no longer offered) on new installations.
 	 * Sites using bp-default (or a child theme of bp-default) will
 	 * continue to have bp-themes registered as before.
-	 * Since 12.0, BuddyPress is no longer including BP Default. To find it
-	 * back, you need to install and activate the BP Classic plugin.
 	 *
 	 * @since 1.5.0
-	 * @deprecated 12.0.0
+	 *
+	 * @todo Move bp-default to wordpress.org/extend/themes and remove this.
 	 */
 	public function register_theme_directory() {
-		_deprecated_function( __METHOD__, '12.0.0' );
+		if ( ! bp_do_register_theme_directory() ) {
+			return;
+		}
+
+		register_theme_directory( $this->old_themes_dir );
 	}
 
 	/**
@@ -926,7 +835,7 @@ class BuddyPress {
 		bp_register_theme_package(
 			array(
 				'id'      => 'legacy',
-				'name'    => 'BP Legacy',
+				'name'    => __( 'BuddyPress Legacy', 'buddypress' ),
 				'version' => bp_get_version(),
 				'dir'     => trailingslashit( $this->themes_dir . '/bp-legacy' ),
 				'url'     => trailingslashit( $this->themes_url . '/bp-legacy' ),
@@ -936,7 +845,7 @@ class BuddyPress {
 		bp_register_theme_package(
 			array(
 				'id'      => 'nouveau',
-				'name'    => 'BP Nouveau',
+				'name'    => __( 'BuddyPress Nouveau', 'buddypress' ),
 				'version' => bp_get_version(),
 				'dir'     => trailingslashit( $this->themes_dir . '/bp-nouveau' ),
 				'url'     => trailingslashit( $this->themes_url . '/bp-nouveau' ),

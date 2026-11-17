@@ -72,8 +72,9 @@ function bp_activity_embed_add_inline_styles() {
 
 	// Grab contents of CSS file and do some rudimentary CSS protection.
 	$css = file_get_contents( $css['file'] );
+	$css = wp_kses( $css, array( "\'", '\"' ) );
 
-	printf( '<style type="text/css">%s</style>', wp_kses( $css, array( "\'", '\"' ) ) );
+	printf( '<style type="text/css">%s</style>', $css );
 }
 add_action( 'embed_head', 'bp_activity_embed_add_inline_styles', 20 );
 
@@ -84,8 +85,6 @@ add_action( 'embed_head', 'bp_activity_embed_add_inline_styles', 20 );
  * use the activity loop without requerying for it again.
  *
  * @since 2.6.0
- *
- * @global BP_Activity_Template $activities_template The Activity template loop.
  *
  * @param  int $activity_id The activity ID.
  * @return bool
@@ -120,8 +119,6 @@ function bp_activity_embed_has_activity( $activity_id = 0 ) {
  * @since 2.6.0
  */
 function bp_activity_embed_excerpt( $content = '' ) {
-	// Escaping is made in `bp-activity/bp-activity-filters.php`.
-	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo bp_activity_get_embed_excerpt( $content );
 }
 
@@ -129,8 +126,6 @@ function bp_activity_embed_excerpt( $content = '' ) {
 	 * Generates excerpt for an activity embed item.
 	 *
 	 * @since 2.6.0
-	 *
-	 * @global BP_Activity_Template $activities_template The Activity template loop.
 	 *
 	 * @param  string $content The content to generate an excerpt for.
 	 * @return string
@@ -167,9 +162,6 @@ function bp_activity_embed_excerpt( $content = '' ) {
  * Outputs the first embedded item in the activity oEmbed template.
  *
  * @since 2.6.0
- *
- * @global BP_Activity_Template $activities_template The Activity template loop.
- *
  */
 function bp_activity_embed_media() {
 	// Bail if oEmbed request explicitly hides media.
@@ -318,8 +310,7 @@ EOD;
 		if ( '' !== $content ) {
 			printf( '<div class="bp-activity-embed-display-media %s" style="max-width:%spx">%s</div>',
 				$thumb_width < $float_width ? 'two-col' : 'one-col',
-				$thumb_width < $float_width ? intval( $width ) : intval( $thumb_width ),
-				// phpcs:ignore WordPress.Security.EscapeOutput
+				$thumb_width < $float_width ? $width : $thumb_width,
 				$content
 			);
 		}
@@ -356,17 +347,3 @@ EOD;
 	/** This hook is documented in /bp-activity/bp-activity-embeds.php */
 	do_action( 'bp_activity_embed_after_media' );
 }
-
-/**
- * Make sure the Activity embed template will be used if needed.
- *
- * @since 12.0.0
- *
- * @param WP_Query $query Required.
- */
-function bp_activity_parse_embed_query( $query ) {
-	if ( bp_is_single_activity() && $query->get( 'embed' ) ) {
-		$query->is_embed = true;
-	}
-}
-add_action( 'bp_members_parse_query', 'bp_activity_parse_embed_query', 10, 1 );

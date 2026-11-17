@@ -14,7 +14,6 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 3.0.0
  */
-#[AllowDynamicProperties]
 class BP_Nouveau_xProfile {
 	/**
 	 * Constructor

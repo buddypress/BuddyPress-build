@@ -45,7 +45,7 @@ function bp_members_signup_sanitization() {
 	);
 
 	// Add the filters to each field.
-	foreach ( $fields as $filter ) {
+	foreach( $fields as $filter ) {
 		add_filter( $filter, 'esc_html',       1 );
 		add_filter( $filter, 'wp_filter_kses', 2 );
 		add_filter( $filter, 'stripslashes',   3 );
@@ -108,10 +108,7 @@ function bp_members_edit_profile_url( $url, $user_id, $scheme = 'admin' ) {
 
 	// If xprofile is active, use profile domain link.
 	if ( ! is_admin() && bp_is_active( 'xprofile' ) ) {
-		$profile_link = bp_members_get_user_url(
-			$user_id,
-			bp_members_get_path_chunks( array( bp_get_profile_slug(), 'edit' ) )
-		);
+		$profile_link = trailingslashit( bp_core_get_user_domain( $user_id ) . bp_get_profile_slug() . '/edit' );
 
 	} else {
 		// Default to $url.
@@ -235,7 +232,7 @@ function bp_members_invitations_get_registration_welcome_message() {
 			esc_html__( 'Welcome! You are already a member of this site. Please %s to continue.', 'buddypress' ),
 			sprintf(
 				'<a href="%1$s">%2$s</a>',
-				esc_url( wp_login_url( bp_get_root_url() ) ),
+				esc_url( wp_login_url( bp_get_root_domain() ) ),
 				esc_html__( 'log in', 'buddypress' )
 			)
 		);
@@ -307,12 +304,12 @@ function bp_members_invitations_get_modified_registration_disabled_message() {
 				esc_html__( 'Welcome! You are already a member of this site. Please %1$s to continue. If you have forgotten your password, you can %2$s.', 'buddypress' ),
 				sprintf(
 					'<a href="%1$s">%2$s</a>',
-					esc_url( wp_login_url( bp_get_root_url() ) ),
+					esc_url( wp_login_url( bp_get_root_domain() ) ),
 					esc_html__( 'log in', 'buddypress' )
 				),
 				sprintf(
 					'<a href="%1$s">%2$s</a>',
-					esc_url( wp_lostpassword_url( bp_get_root_url() ) ),
+					esc_url( wp_lostpassword_url( bp_get_root_domain() ) ),
 					esc_html__( 'reset it', 'buddypress' )
 				)
 			);

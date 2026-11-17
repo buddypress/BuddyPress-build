@@ -14,13 +14,11 @@
  */
 function groups_screen_group_admin_settings() {
 
-	if ( 'group-settings' !== bp_get_group_current_admin_tab() ) {
-		return;
-	}
+	if ( 'group-settings' != bp_get_group_current_admin_tab() )
+		return false;
 
-	if ( ! bp_is_item_admin() ) {
-		return;
-	}
+	if ( ! bp_is_item_admin() )
+		return false;
 
 	$bp = buddypress();
 
@@ -39,9 +37,8 @@ function groups_screen_group_admin_settings() {
 		$invite_status	       = isset( $_POST['group-invite-status'] ) && in_array( $_POST['group-invite-status'], (array) $allowed_invite_status ) ? $_POST['group-invite-status'] : 'members';
 
 		// Check the nonce.
-		if ( ! check_admin_referer( 'groups_edit_group_settings' ) ) {
-			return;
-		}
+		if ( !check_admin_referer( 'groups_edit_group_settings' ) )
+			return false;
 
 		$group_id = bp_get_current_group_id();
 
@@ -86,12 +83,7 @@ function groups_screen_group_admin_settings() {
 		 */
 		do_action( 'groups_group_settings_edited', $bp->groups->current_group->id );
 
-		$redirect = bp_get_group_manage_url(
-			groups_get_current_group(),
-			bp_groups_get_path_chunks( array( 'group-settings' ), 'manage' )
-		);
-
-		bp_core_redirect( $redirect );
+		bp_core_redirect( bp_get_group_permalink( groups_get_current_group() ) . 'admin/group-settings/' );
 	}
 
 	/**
@@ -103,18 +95,13 @@ function groups_screen_group_admin_settings() {
 	 */
 	do_action( 'groups_screen_group_admin_settings', $bp->groups->current_group->id );
 
-	$templates = array(
-		/**
-		 * Filters the template to load for a group's admin/group-settings page.
-		 *
-		 * @since 1.0.0
-		 *
-		 * @param string $value Path to a group's admin/group-settings template.
-		 */
-		apply_filters( 'groups_template_group_admin_settings', 'groups/single/home' ),
-		'groups/single/index',
-	);
-
-	bp_core_load_template( $templates );
+	/**
+	 * Filters the template to load for a group's admin/group-settings page.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $value Path to a group's admin/group-settings template.
+	 */
+	bp_core_load_template( apply_filters( 'groups_template_group_admin_settings', 'groups/single/home' ) );
 }
 add_action( 'bp_screens', 'groups_screen_group_admin_settings' );

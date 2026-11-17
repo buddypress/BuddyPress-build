@@ -17,18 +17,18 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 1.5.0
  */
-#[AllowDynamicProperties]
 class BP_Core extends BP_Component {
 
 	/**
 	 * Start the members component creation process.
 	 *
 	 * @since 1.5.0
+	 *
 	 */
 	public function __construct() {
 		parent::start(
 			'core',
-			'BuddyPress Core',
+			__( 'BuddyPress Core', 'buddypress' ),
 			buddypress()->plugin_dir
 		);
 
@@ -42,19 +42,19 @@ class BP_Core extends BP_Component {
 	 *
 	 * @since 7.0.0
 	 *
-	 * @param string $key The object var to get.
+	 * @param string $key
 	 * @return mixed
 	 */
 	public function __get( $key = '' ) {
 
-		// Backwards compatibility for the original Notifications table var.
+		// Backwards compatibility for the original Notifications table var
 		if ( 'table_name_notifications' === $key ) {
 			return bp_is_active( 'notifications' )
 				? buddypress()->notifications->table_name
 				: buddypress()->table_prefix . 'bp_notifications';
 		}
 
-		// Return object var if set, else null.
+		// Return object var if set, else null
 		return isset( $this->{$key} )
 			? $this->{$key}
 			: null;
@@ -88,7 +88,7 @@ class BP_Core extends BP_Component {
 		 *
 		 * @since 1.5.0
 		 *
-		 * @param array $optional_components Array of included and optional components.
+		 * @param array $value Array of included and optional components.
 		 */
 		$bp->optional_components = apply_filters( 'bp_optional_components', array( 'activity', 'blogs', 'friends', 'groups', 'messages', 'notifications', 'settings', 'xprofile' ) );
 
@@ -102,11 +102,10 @@ class BP_Core extends BP_Component {
 		$bp->required_components = apply_filters( 'bp_required_components', array( 'members' ) );
 
 		// Get a list of activated components.
-		$active_components = bp_get_option( 'bp-active-components' );
-		if ( $active_components ) {
+		if ( $active_components = bp_get_option( 'bp-active-components' ) ) {
 
 			/** This filter is documented in bp-core/admin/bp-core-admin-components.php */
-			$bp->active_components = apply_filters( 'bp_active_components', $active_components );
+			$bp->active_components      = apply_filters( 'bp_active_components', $active_components );
 
 			/**
 			 * Filters the deactivated components.
@@ -117,7 +116,7 @@ class BP_Core extends BP_Component {
 			 */
 			$bp->deactivated_components = apply_filters( 'bp_deactivated_components', array_values( array_diff( array_values( array_merge( $bp->optional_components, $bp->required_components ) ), array_keys( $bp->active_components ) ) ) );
 
-			// Pre 1.5 Backwards compatibility.
+		// Pre 1.5 Backwards compatibility.
 		} elseif ( $deactivated_components = bp_get_option( 'bp-deactivated-components' ) ) {
 
 			// Trim off namespace and filename.
@@ -129,35 +128,35 @@ class BP_Core extends BP_Component {
 			$bp->deactivated_components = apply_filters( 'bp_deactivated_components', $trimmed );
 
 			// Setup the active components.
-			$active_components = array_fill_keys( array_diff( array_values( array_merge( $bp->optional_components, $bp->required_components ) ), array_values( $bp->deactivated_components ) ), '1' );
+			$active_components     = array_fill_keys( array_diff( array_values( array_merge( $bp->optional_components, $bp->required_components ) ), array_values( $bp->deactivated_components ) ), '1' );
 
 			/** This filter is documented in bp-core/admin/bp-core-admin-components.php */
 			$bp->active_components = apply_filters( 'bp_active_components', $bp->active_components );
 
-			// Default to all components active.
+		// Default to all components active.
 		} else {
 
 			// Set globals.
 			$bp->deactivated_components = array();
 
 			// Setup the active components.
-			$active_components = array_fill_keys( array_values( array_merge( $bp->optional_components, $bp->required_components ) ), '1' );
+			$active_components     = array_fill_keys( array_values( array_merge( $bp->optional_components, $bp->required_components ) ), '1' );
 
 			/** This filter is documented in bp-core/admin/bp-core-admin-components.php */
 			$bp->active_components = apply_filters( 'bp_active_components', $bp->active_components );
 		}
 
 		// Loop through optional components.
-		foreach ( $bp->optional_components as $component ) {
+		foreach( $bp->optional_components as $component ) {
 			if ( bp_is_active( $component ) && file_exists( $bp->plugin_dir . '/bp-' . $component . '/bp-' . $component . '-loader.php' ) ) {
-				include $bp->plugin_dir . '/bp-' . $component . '/bp-' . $component . '-loader.php';
+				include( $bp->plugin_dir . '/bp-' . $component . '/bp-' . $component . '-loader.php' );
 			}
 		}
 
 		// Loop through required components.
-		foreach ( $bp->required_components as $component ) {
+		foreach( $bp->required_components as $component ) {
 			if ( file_exists( $bp->plugin_dir . '/bp-' . $component . '/bp-' . $component . '-loader.php' ) ) {
-				include $bp->plugin_dir . '/bp-' . $component . '/bp-' . $component . '-loader.php';
+				include( $bp->plugin_dir . '/bp-' . $component . '/bp-' . $component . '-loader.php' );
 			}
 		}
 
@@ -188,7 +187,7 @@ class BP_Core extends BP_Component {
 		}
 
 		$includes = array(
-			'admin',
+			'admin'
 		);
 
 		parent::includes( $includes );
@@ -217,9 +216,9 @@ class BP_Core extends BP_Component {
 			$bp->table_prefix = bp_core_get_table_prefix();
 		}
 
-		// The URL for the root of the site where the main blog resides.
-		if ( empty( $bp->root_url ) ) {
-			$bp->root_url = bp_rewrites_get_root_url();
+		// The domain for the root of the site where the main blog resides.
+		if ( empty( $bp->root_domain ) ) {
+			$bp->root_domain = bp_core_get_root_domain();
 		}
 
 		// Fetches all of the core BuddyPress settings in one fell swoop.
@@ -236,17 +235,17 @@ class BP_Core extends BP_Component {
 		 */
 
 		// Logged in user is the 'current_user'.
-		$current_user = wp_get_current_user();
+		$current_user            = wp_get_current_user();
 
 		// The user ID of the user who is currently logged in.
-		$bp->loggedin_user     = new stdClass();
-		$bp->loggedin_user->id = isset( $current_user->ID ) ? $current_user->ID : 0;
+		$bp->loggedin_user       = new stdClass;
+		$bp->loggedin_user->id   = isset( $current_user->ID ) ? $current_user->ID : 0;
 
 		/** Avatars **********************************************************
 		 */
 
 		// Fetches the default Gravatar image to use if the user/group/blog has no avatar or gravatar.
-		$bp->grav_default = new stdClass();
+		$bp->grav_default        = new stdClass;
 
 		/**
 		 * Filters the default user Gravatar.
@@ -255,7 +254,7 @@ class BP_Core extends BP_Component {
 		 *
 		 * @param string $value Default user Gravatar.
 		 */
-		$bp->grav_default->user = apply_filters( 'bp_user_gravatar_default', $bp->site_options['avatar_default'] );
+		$bp->grav_default->user  = apply_filters( 'bp_user_gravatar_default',  $bp->site_options['avatar_default'] );
 
 		/**
 		 * Filters the default group Gravatar.
@@ -271,16 +270,13 @@ class BP_Core extends BP_Component {
 		 *
 		 * @since 1.1.0
 		 *
-		 * @param string $gravatar_default Default blog Gravatar.
+		 * @param string $value Default blog Gravatar.
 		 */
-		$bp->grav_default->blog = apply_filters( 'bp_blog_gravatar_default', $bp->grav_default->user );
+		$bp->grav_default->blog  = apply_filters( 'bp_blog_gravatar_default',  $bp->grav_default->user );
 
-		// Only fully deprecate the legacy navigation globals if BP Classic is not active.
-		if ( ! function_exists( 'bp_classic' ) ) {
-			// Backward compatibility for plugins modifying the legacy bp_nav and bp_options_nav global properties.
-			$bp->bp_nav         = new BP_Core_BP_Nav_BackCompat();
-			$bp->bp_options_nav = new BP_Core_BP_Options_Nav_BackCompat();
-		}
+		// Backward compatibility for plugins modifying the legacy bp_nav and bp_options_nav global properties.
+		$bp->bp_nav         = new BP_Core_BP_Nav_BackCompat();
+		$bp->bp_options_nav = new BP_Core_BP_Options_Nav_BackCompat();
 
 		/**
 		 * Used to determine if user has admin rights on current content. If the
@@ -294,16 +290,6 @@ class BP_Core extends BP_Component {
 
 		// Is the logged in user is a mod for the current item?
 		bp_update_is_item_mod( false, 'core' );
-
-		/*
-		 * As the BP Core component is excluded from the BP Component code
-		 * used to set the Rewrite IDs, we need to set it here. As the `search`
-		 * word is already a WordPress rewrite tag, we are not adding a custom
-		 * rule for this component to avoid messing with it.
-		 */
-		$this->rewrite_ids = array(
-			'community_search' => 'bp_search',
-		);
 
 		parent::setup_globals(
 			array(
@@ -324,13 +310,11 @@ class BP_Core extends BP_Component {
 	public function setup_cache_groups() {
 
 		// Global groups.
-		wp_cache_add_global_groups(
-			array(
-				'bp',
-				'bp_pages',
-				'bp_invitations',
-			)
-		);
+		wp_cache_add_global_groups( array(
+			'bp',
+			'bp_pages',
+			'bp_invitations',
+		) );
 
 		parent::setup_cache_groups();
 	}
@@ -338,96 +322,39 @@ class BP_Core extends BP_Component {
 	/**
 	 * Set up post types.
 	 *
-	 * @since 2.4.0
-	 * @since 12.0.0 Registers the 'buddypress' post type for component directories.
+	 * @since BuddyPress (2.4.0)
 	 */
 	public function register_post_types() {
-		// Component directories.
-		if ( (int) get_current_blog_id() === bp_get_post_type_site_id() ) {
-			register_post_type(
-				'buddypress',
-				array(
-					'label'               => _x( 'BuddyPress Directories', 'Post Type label', 'buddypress' ),
-					'labels'              => array(
-						'singular_name' => _x( 'BuddyPress Directory', 'Post Type singular name', 'buddypress' ),
-					),
-					'description'         => __( 'The BuddyPress Post Type used for component directories.', 'buddypress' ),
-					'public'              => true,
-					'hierarchical'        => true,
-					'exclude_from_search' => true,
-					'publicly_queryable'  => false,
-					'show_ui'             => false,
-					'show_in_nav_menus'   => true,
-					'show_in_rest'        => true,
-					'supports'            => array( 'title' ),
-					'has_archive'         => false,
-					'rewrite'             => false,
-					'query_var'           => false,
-					'delete_with_user'    => false,
-				)
-			);
-		}
 
-		// Emails.
+		// Emails
 		if ( bp_is_root_blog() && ! is_network_admin() ) {
 			register_post_type(
 				bp_get_email_post_type(),
-				apply_filters(
-					'bp_register_email_post_type',
-					array(
-						'description'        => _x( 'BuddyPress emails', 'email post type description', 'buddypress' ),
-						'capabilities'       => array(
-							'edit_posts'          => 'bp_moderate',
-							'edit_others_posts'   => 'bp_moderate',
-							'publish_posts'       => 'bp_moderate',
-							'read_private_posts'  => 'bp_moderate',
-							'delete_posts'        => 'bp_moderate',
-							'delete_others_posts' => 'bp_moderate',
-						),
-						'map_meta_cap'       => true,
-						'labels'             => bp_get_email_post_type_labels(),
-						'menu_icon'          => 'dashicons-email',
-						'public'             => false,
-						'publicly_queryable' => bp_current_user_can( 'bp_moderate' ),
-						'query_var'          => false,
-						'rewrite'            => false,
-						'show_in_admin_bar'  => false,
-						'show_ui'            => bp_current_user_can( 'bp_moderate' ),
-						'supports'           => bp_get_email_post_type_supports(),
-					)
-				)
+				apply_filters( 'bp_register_email_post_type', array(
+					'description'       => _x( 'BuddyPress emails', 'email post type description', 'buddypress' ),
+					'capabilities'      => array(
+						'edit_posts'          => 'bp_moderate',
+						'edit_others_posts'   => 'bp_moderate',
+						'publish_posts'       => 'bp_moderate',
+						'read_private_posts'  => 'bp_moderate',
+						'delete_posts'        => 'bp_moderate',
+						'delete_others_posts' => 'bp_moderate',
+					),
+					'map_meta_cap'      => true,
+					'labels'            => bp_get_email_post_type_labels(),
+					'menu_icon'         => 'dashicons-email',
+					'public'            => false,
+					'publicly_queryable' => bp_current_user_can( 'bp_moderate' ),
+					'query_var'         => false,
+					'rewrite'           => false,
+					'show_in_admin_bar' => false,
+					'show_ui'           => bp_current_user_can( 'bp_moderate' ),
+					'supports'          => bp_get_email_post_type_supports(),
+				) )
 			);
 		}
 
 		parent::register_post_types();
-	}
-
-	/**
-	 * Parse the WP_Query and eventually set the BP Search mechanism.
-	 *
-	 * Search doesn't have an associated page, so we check for it separately.
-	 *
-	 * @since 12.0.0
-	 *
-	 * @param WP_Query $query Required. See BP_Component::parse_query() for
-	 *                        description.
-	 */
-	public function parse_query( $query ) {
-		/*
-		 * If BP Rewrites are not in use, no need to parse BP URI globals another time.
-		 * Legacy Parser should have already set these.
-		 */
-		if ( 'rewrites' !== bp_core_get_query_parser() ) {
-			return parent::parse_query( $query );
-		}
-
-		$is_search = $query->get( 'pagename' ) === bp_get_search_slug() || ( isset( $_GET['bp_search'] ) && 1 === (int) $_GET['bp_search'] );
-
-		if ( isset( $_POST['search-terms'] ) && $is_search ) {
-			buddypress()->current_component = bp_get_search_slug();
-		}
-
-		parent::parse_query( $query );
 	}
 
 	/**
@@ -450,7 +377,6 @@ class BP_Core extends BP_Component {
 	 * Register the BP Core Blocks.
 	 *
 	 * @since 9.0.0
-	 * @since 12.0.0 Use the WP Blocks API v2.
 	 *
 	 * @param array $blocks Optional. See BP_Component::blocks_init() for
 	 *                      description.
@@ -459,8 +385,30 @@ class BP_Core extends BP_Component {
 		parent::blocks_init(
 			array(
 				'bp/login-form' => array(
-					'metadata'        => trailingslashit( buddypress()->plugin_dir ) . 'bp-core/blocks/login-form',
-					'render_callback' => 'bp_block_render_login_form_block',
+					'name'               => 'bp/login-form',
+					'editor_script'      => 'bp-login-form-block',
+					'editor_script_url'  => plugins_url( 'js/blocks/login-form.js', dirname( __FILE__ ) ),
+					'editor_script_deps' => array(
+						'wp-blocks',
+						'wp-element',
+						'wp-components',
+						'wp-i18n',
+						'wp-block-editor',
+						'wp-server-side-render',
+					),
+					'style'              => 'bp-login-form-block',
+					'style_url'          => plugins_url( 'css/blocks/login-form.css', dirname( __FILE__ ) ),
+					'attributes'         => array(
+						'title'         => array(
+							'type'    => 'string',
+							'default' => '',
+						),
+						'forgotPwdLink' => array(
+							'type'    => 'boolean',
+							'default' => false,
+						),
+					),
+					'render_callback'    => 'bp_block_render_login_form_block',
 				),
 			)
 		);

@@ -1,18 +1,16 @@
 <?php
 /**
- * BuddyPress Email Recipient class.
- *
- * Represents a recipient that an email will be sent to.
+ * Core component classes.
  *
  * @package BuddyPress
  * @subpackage Core
  */
 
-// Exit if accessed directly.
+// Exit if accessed directly
 defined( 'ABSPATH' ) || exit;
 
 /**
- * BP_Email_Recipient class.
+ * Represents a recipient that an email will be sent to.
  *
  * @since 2.5.0
  */
@@ -23,7 +21,7 @@ class BP_Email_Recipient extends BP_Email_Participant {
 	 *
 	 * @since 2.5.0
 	 *
-	 * @var WP_User|null
+	 * @var WP_User
 	 */
 	protected $user_object = null;
 
@@ -46,7 +44,7 @@ class BP_Email_Recipient extends BP_Email_Participant {
 			if ( is_object( $email_or_user ) ) {
 				$this->user_object = $email_or_user;
 
-				// Query for WP user by user ID.
+			// Query for WP user by user ID.
 			} elseif ( is_int( $email_or_user ) ) {
 				$this->user_object = get_user_by( 'id', $email_or_user );
 			}
@@ -56,7 +54,7 @@ class BP_Email_Recipient extends BP_Email_Participant {
 				$address = $email_or_user;
 			}
 
-			// Array or miscellaneous string.
+		// Array or miscellaneous string.
 		} else {
 			if ( ! is_array( $email_or_user ) ) {
 				$email_or_user = array( $email_or_user => $name );
@@ -83,7 +81,7 @@ class BP_Email_Recipient extends BP_Email_Participant {
 
 		// We have a user object; so set address and name from DB.
 		if ( $this->user_object ) {
-			// This is escaped with esc_html in bp_core_get_user_displayname().
+			// This is escaped with esc_html in bp_core_get_user_displayname()
 			$wp_name = wp_specialchars_decode( bp_core_get_user_displayname( $this->user_object->ID ), ENT_QUOTES );
 
 			$this->set_address( $this->user_object->user_email );

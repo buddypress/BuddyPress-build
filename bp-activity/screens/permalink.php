@@ -16,14 +16,12 @@
  */
 function bp_activity_action_permalink_router() {
 	// Not viewing activity.
-	if ( ! bp_is_activity_component() || ! bp_is_current_action( 'p' ) ) {
+	if ( ! bp_is_activity_component() || ! bp_is_current_action( 'p' ) )
 		return false;
-	}
 
 	// No activity to display.
-	if ( ! bp_action_variable( 0 ) || ! is_numeric( bp_action_variable( 0 ) ) ) {
+	if ( ! bp_action_variable( 0 ) || ! is_numeric( bp_action_variable( 0 ) ) )
 		return false;
-	}
 
 	// Get the activity details.
 	$activity = bp_activity_get_specific( array( 'activity_ids' => bp_action_variable( 0 ), 'show_hidden' => true ) );
@@ -37,41 +35,33 @@ function bp_activity_action_permalink_router() {
 	}
 
 	// Do not redirect at default.
-	$redirect    = false;
-	$path_chunks = bp_members_get_path_chunks( array( bp_get_activity_slug(), $activity->id ) );
+	$redirect = false;
 
 	// Redirect based on the type of activity.
 	if ( bp_is_active( 'groups' ) && $activity->component == buddypress()->groups->id ) {
 
 		// Activity is a user update.
 		if ( ! empty( $activity->user_id ) ) {
-			$redirect = bp_members_get_user_url( $activity->user_id, $path_chunks );
+			$redirect = bp_core_get_user_domain( $activity->user_id, $activity->user_nicename, $activity->user_login ) . bp_get_activity_slug() . '/' . $activity->id . '/';
 
 		// Activity is something else.
 		} else {
 
 			// Set redirect to group activity stream.
 			if ( $group = groups_get_group( $activity->item_id ) ) {
-				$path_chunks = bp_groups_get_path_chunks( array( bp_get_activity_slug(), $activity->id ) );
-				$redirect    = bp_get_group_url( $group, $path_chunks );
+				$redirect = bp_get_group_permalink( $group ) . bp_get_activity_slug() . '/' . $activity->id . '/';
 			}
 		}
 
 	// Set redirect to users' activity stream.
 	} elseif ( ! empty( $activity->user_id ) ) {
-		$redirect = bp_members_get_user_url( $activity->user_id, $path_chunks );
+		$redirect = bp_core_get_user_domain( $activity->user_id, $activity->user_nicename, $activity->user_login ) . bp_get_activity_slug() . '/' . $activity->id . '/';
 	}
 
-	// Make sure current BP URI query variables are removed.
-	$current_url = remove_query_arg( array( 'bp_activities', 'bp_activity_action', 'bp_activity_action_variables' ) );
-	$extra_args  = wp_parse_url( $current_url, PHP_URL_QUERY );
-
-	// If there are query variables left, add them back onto the redirect URL.
-	if ( $extra_args ) {
+	// If set, add the original query string back onto the redirect URL.
+	if ( ! empty( $_SERVER['QUERY_STRING'] ) ) {
 		$query_frags = array();
-		wp_parse_str( $extra_args, $query_frags );
-
-		// Add extra arguments to the redirect URL.
+		wp_parse_str( $_SERVER['QUERY_STRING'], $query_frags );
 		$redirect = add_query_arg( urlencode_deep( $query_frags ), $redirect );
 	}
 
@@ -83,7 +73,7 @@ function bp_activity_action_permalink_router() {
 	 * @param array $value Array with url to redirect to and activity related to the redirect.
 	 */
 	if ( ! $redirect = apply_filters_ref_array( 'bp_activity_permalink_redirect_url', array( $redirect, &$activity ) ) ) {
-		bp_core_redirect( bp_get_root_url() );
+		bp_core_redirect( bp_get_root_domain() );
 	}
 
 	// Redirect to the actual activity permalink page.
@@ -95,26 +85,26 @@ add_action( 'bp_actions', 'bp_activity_action_permalink_router' );
  * Load the page for a single activity item.
  *
  * @since 1.2.0
+ *
+ * @return bool|string Boolean on false or the template for a single activity item on success.
  */
 function bp_activity_screen_single_activity_permalink() {
 	// No displayed user or not viewing activity component.
 	if ( ! bp_is_activity_component() ) {
-		return;
+		return false;
 	}
 
 	$action = bp_current_action();
 	if ( ! $action || ! is_numeric( $action ) ) {
-		return;
+		return false;
 	}
 
 	// Get the activity details.
-	$activity = bp_activity_get_specific(
-		array(
-			'activity_ids' => $action,
-			'show_hidden'  => true,
-			'spam'         => 'ham_only',
-		)
-	);
+	$activity = bp_activity_get_specific( array(
+		'activity_ids' => $action,
+		'show_hidden'  => true,
+		'spam'         => 'ham_only',
+	) );
 
 	// 404 if activity does not exist.
 	if ( empty( $activity['activities'][0] ) || bp_action_variables() ) {
@@ -157,22 +147,20 @@ function bp_activity_screen_single_activity_permalink() {
 		// Redirect away.
 		} else {
 			bp_core_add_message( __( 'You do not have access to this activity.', 'buddypress' ), 'error' );
-			bp_core_redirect( bp_loggedin_user_url() );
+			bp_core_redirect( bp_loggedin_user_domain() );
 		}
 	}
 
-	$templates = array(
-		/**
-		 * Filters the template to load for a single activity screen.
-		 *
-		 * @since 1.0.0
-		 *
-		 * @param string $template Path to the activity template to load.
-		 */
-		apply_filters( 'bp_activity_template_profile_activity_permalink', 'members/single/activity/permalink' ),
-		'activity/single',
-	);
+	/**
+	 * Filters the template to load for a single activity screen.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $template Path to the activity template to load.
+	 */
+	$template = apply_filters( 'bp_activity_template_profile_activity_permalink', 'members/single/activity/permalink' );
 
-	bp_core_load_template( $templates );
+	// Load the template.
+	bp_core_load_template( $template );
 }
 add_action( 'bp_screens', 'bp_activity_screen_single_activity_permalink' );

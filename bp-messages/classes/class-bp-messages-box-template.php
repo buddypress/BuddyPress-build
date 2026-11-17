@@ -13,7 +13,6 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Message Box Template Class
  */
-#[AllowDynamicProperties]
 class BP_Messages_Box_Template {
 
 	/**
@@ -36,13 +35,6 @@ class BP_Messages_Box_Template {
 	 * @var int
 	 */
 	public $total_thread_count = 0;
-
-	/**
-	 * Total number of threads available to iterate on.
-	 *
-	 * @var int
-	 */
-	public $thread_count = 0;
 
 	/**
 	 * Array of threads located by the query.
@@ -101,25 +93,11 @@ class BP_Messages_Box_Template {
 	public $pag_links = '';
 
 	/**
-	 * URL argument used for the pagination param.
-	 *
-	 * @var string
-	 */
-	public $pag_arg = '';
-
-	/**
 	 * Search terms for limiting the thread query.
 	 *
 	 * @var string
 	 */
 	public $search_terms = '';
-
-	/**
-	 * Type of messages to return. Values: 'all', 'read', 'unread'.
-	 *
-	 * @var string
-	 */
-	public $type = '';
 
 	/**
 	 * Constructor method.

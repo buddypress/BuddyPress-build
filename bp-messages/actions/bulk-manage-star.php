@@ -72,11 +72,8 @@ function bp_messages_star_bulk_manage_handler() {
 			break;
 	}
 
-	$path_chunks = bp_members_get_path_chunks( array( bp_get_messages_slug(), bp_current_action() ) );
-	$redirect    = bp_displayed_user_url( $path_chunks );
-
 	// Redirect back to message box.
-	bp_core_redirect( $redirect );
+	bp_core_redirect( bp_displayed_user_domain() . bp_get_messages_slug() . '/' . bp_current_action() . '/' );
 	die();
 }
 add_action( 'bp_actions', 'bp_messages_star_bulk_manage_handler', 5 );

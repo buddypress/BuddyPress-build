@@ -106,7 +106,7 @@ function bp_groups_format_activity_action_created_group( $action, $activity ) {
 	$user_link = bp_core_get_userlink( $activity->user_id );
 
 	$group      = bp_groups_get_activity_group( $activity->item_id );
-	$group_link = '<a href="' . esc_url( bp_get_group_url( $group ) ) . '">' . esc_html( $group->name ) . '</a>';
+	$group_link = '<a href="' . esc_url( bp_get_group_permalink( $group ) ) . '">' . esc_html( $group->name ) . '</a>';
 
 	/* translators: 1: the user link. 2: the group link. */
 	$action = sprintf( esc_html__( '%1$s created the group %2$s', 'buddypress'), $user_link, $group_link );
@@ -135,7 +135,7 @@ function bp_groups_format_activity_action_joined_group( $action, $activity ) {
 	$user_link = bp_core_get_userlink( $activity->user_id );
 
 	$group      = bp_groups_get_activity_group( $activity->item_id );
-	$group_link = '<a href="' . esc_url( bp_get_group_url( $group ) ) . '">' . esc_html( $group->name ) . '</a>';
+	$group_link = '<a href="' . esc_url( bp_get_group_permalink( $group ) ) . '">' . esc_html( $group->name ) . '</a>';
 
 	/* translators: 1: the user link. 2: the group link. */
 	$action = sprintf( esc_html__( '%1$s joined the group %2$s', 'buddypress' ), $user_link, $group_link );
@@ -175,7 +175,7 @@ function bp_groups_format_activity_action_group_details_updated( $action, $activ
 	$user_link = bp_core_get_userlink( $activity->user_id );
 
 	$group      = bp_groups_get_activity_group( $activity->item_id );
-	$group_link = '<a href="' . esc_url( bp_get_group_url( $group ) ) . '">' . esc_html( $group->name ) . '</a>';
+	$group_link = '<a href="' . esc_url( bp_get_group_permalink( $group ) ) . '">' . esc_html( $group->name ) . '</a>';
 
 	/*
 	 * Changed group details are stored in groupmeta, keyed by the activity
@@ -232,7 +232,7 @@ function bp_groups_format_activity_action_group_activity_update( $action, $activ
 	$user_link = bp_core_get_userlink( $activity->user_id );
 	$group     = bp_groups_get_activity_group( $activity->item_id );
 
-	$group_link = '<a href="' . esc_url( bp_get_group_url( $group ) ) . '">' . esc_html( $group->name ) . '</a>';
+	$group_link = '<a href="' . esc_url( bp_get_group_permalink( $group ) ) . '">' . esc_html( $group->name ) . '</a>';
 
 	// Set the Activity update posted in a Group action.
 	$action = sprintf(
@@ -262,8 +262,6 @@ function bp_groups_format_activity_action_group_activity_update( $action, $activ
  * This reduces database overhead during the activity loop.
  *
  * @since 2.0.0
- *
- * @global wpdb $wpdb WordPress database object.
  *
  * @param array $activities Array of activity items.
  * @return array
@@ -650,24 +648,22 @@ function groups_post_update( $args = '' ) {
  * @return bool
  */
 function bp_groups_filter_activity_user_can_delete( $retval, $activity ) {
-	// Bail if no current user or group activity deletions are disabled.
-	if ( ! is_user_logged_in() || bp_disable_group_activity_deletions() ) {
+	// Bail if no current user.
+	if ( ! is_user_logged_in() ) {
 		return $retval;
 	}
 
-	if ( ! isset( $activity->component ) || 'groups' !== $activity->component ) {
+	if ( isset( $activity->component ) || 'groups' !== $activity->component ) {
 		return $retval;
 	}
 
-	// The first conditional statement will trust the passed value for administrators.
-	// The second conditional statement does not allow "site admin" activity posts to be deleted by "non site admins".
-	if ( bp_current_user_can( 'bp_moderate' ) || bp_user_can( $activity->user_id, 'bp_moderate' ) ) {
+	// Trust the passed value for administrators.
+	if ( bp_current_user_can( 'bp_moderate' ) ) {
 		return $retval;
 	}
 
+	// Group administrators or moderators can delete content in that group that doesn't belong to them.
 	$group_id = $activity->item_id;
-
-	// Group administrators or moderators can delete content in which deletions are allowed for that group.
 	if ( groups_is_user_admin( bp_loggedin_user_id(), $group_id ) || groups_is_user_mod( bp_loggedin_user_id(), $group_id ) ) {
 		$retval = true;
 	}
@@ -773,7 +769,7 @@ function bp_groups_membership_accepted_add_activity( $user_id, $group_id ) {
 	 * @param int    $user_id  ID of the user joining the group.
 	 * @param int    $group_id ID of the group. Passed by reference.
 	 */
-	$action = apply_filters_ref_array( 'groups_activity_membership_accepted_action', array( sprintf( __( '%1$s joined the group %2$s', 'buddypress' ), bp_core_get_userlink( $user_id ), '<a href="' . esc_url( bp_get_group_url( $group ) ) . '">' . esc_html( $group->name ) . '</a>' ), $user_id, &$group ) );
+	$action = apply_filters_ref_array( 'groups_activity_membership_accepted_action', array( sprintf( __( '%1$s joined the group %2$s', 'buddypress' ), bp_core_get_userlink( $user_id ), '<a href="' . bp_get_group_permalink( $group ) . '">' . esc_attr( $group->name ) . '</a>' ), $user_id, &$group ) );
 
 	// Record in activity streams.
 	groups_record_activity( array(

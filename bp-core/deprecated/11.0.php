@@ -7,7 +7,9 @@
  */
 
 // Exit if accessed directly.
-defined( 'ABSPATH' ) || exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
  * Catch the arguments for buttons
@@ -88,14 +90,4 @@ function bp_nouveau_blogs_catch_button_args( $button = array() ) {
 function bp_attachements_get_mime_type( $file = '' ) {
 	_deprecated_function( __FUNCTION__, '11.0.0', 'bp_attachments_get_mime_type()' );
 	return bp_attachments_get_mime_type( $file );
-}
-
-/**
- * Return moment.js config.
- *
- * @since 2.7.0
- * @deprecated 11.0.0
- */
-function bp_core_moment_js_config() {
-	_deprecated_function( __FUNCTION__, '11.0.0' );
 }

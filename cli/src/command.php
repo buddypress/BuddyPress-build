@@ -38,15 +38,13 @@ abstract class BuddyPressCommand extends CommandWithDBObject {
 	/**
 	 * Get a random user id.
 	 *
-	 * @global wpdb $wpdb WordPress database abstraction object.
-	 *
 	 * @since 1.1
 	 *
 	 * @return int
 	 */
 	protected function get_random_user_id() {
 		global $wpdb;
-		return (int) $wpdb->get_var( "SELECT ID FROM $wpdb->users ORDER BY RAND() LIMIT 1" );
+		return $wpdb->get_var( "SELECT ID FROM $wpdb->users ORDER BY RAND() LIMIT 1" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 	}
 
 	/**
@@ -54,15 +52,15 @@ abstract class BuddyPressCommand extends CommandWithDBObject {
 	 *
 	 * @since 2.0
 	 *
-	 * @param int  $activity_id     Activity ID.
-	 * @param bool $activity_object Return BP_Activity_Activity object.
+	 * @param int  $activity_id Activity ID.
+	 * @param bool $object      Return activity object.
 	 * @return int|BP_Activity_Activity
 	 */
-	protected function get_activity_id_from_identifier( $activity_id, $activity_object = false ) {
+	protected function get_activity_id_from_identifier( $activity_id, $object = false ) {
 		$fetcher  = new Activity_Fetcher();
 		$activity = $fetcher->get_check( $activity_id );
 
-		if ( true === $activity_object ) {
+		if ( true === $object ) {
 			return $activity;
 		}
 
@@ -85,7 +83,9 @@ abstract class BuddyPressCommand extends CommandWithDBObject {
 
 		// Get group object.
 		$group_obj = groups_get_group(
-			[ 'group_id' => $group_id ]
+			array(
+				'group_id' => $group_id,
+			)
 		);
 
 		if ( empty( $group_obj->id ) ) {
@@ -100,7 +100,7 @@ abstract class BuddyPressCommand extends CommandWithDBObject {
 	 *
 	 * @since 1.2.0
 	 *
-	 * @param mixed $identifier User ID, email, or login.
+	 * @param mixed $identifier User ID, email or login.
 	 * @return WP_User
 	 */
 	protected function get_user_id_from_identifier( $identifier ) {
@@ -169,7 +169,7 @@ abstract class BuddyPressCommand extends CommandWithDBObject {
 		$c  = buddypress()->active_components;
 		$ca = $this->get_components_and_actions();
 
-		return array_rand( (array) array_flip( array_intersect( array_keys( $c ), array_keys( $ca ) ) ) );
+		return array_rand( array_flip( array_intersect( array_keys( $c ), array_keys( $ca ) ) ) );
 	}
 
 	/**
@@ -181,44 +181,10 @@ abstract class BuddyPressCommand extends CommandWithDBObject {
 	 */
 	protected function get_components_and_actions() {
 		return array_map(
-			function ( $component ) {
+			function( $component ) {
 				return array_keys( (array) $component );
 			},
 			(array) bp_activity_get_actions()
 		);
-	}
-
-	/**
-	 * Generate callback.
-	 *
-	 * @param string   $message Message to display.
-	 * @param array    $assoc_args Command arguments.
-	 * @param callable $callback Callback to execute.
-	 */
-	protected function generate_callback( $message, $assoc_args, $callback ) {
-		$format = WP_CLI\Utils\get_flag_value( $assoc_args, 'format', 'progress' );
-		$limit  = $assoc_args['count'];
-		$notify = false;
-
-		if ( 'progress' === $format ) {
-			$notify = WP_CLI\Utils\make_progress_bar( $message, $limit );
-		}
-
-		for ( $index = 0; $index < $limit; $index++ ) {
-			$object_id = call_user_func( $callback, $assoc_args, $format );
-
-			if ( 'progress' === $format ) {
-				$notify->tick();
-			} elseif ( 'ids' === $format ) {
-				echo $object_id;
-				if ( $index < $limit - 1 ) {
-					echo ' ';
-				}
-			}
-		}
-
-		if ( 'progress' === $format ) {
-			$notify->finish();
-		}
 	}
 }
