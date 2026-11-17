@@ -8,7 +8,9 @@
  */
 
 // Exit if accessed directly.
-defined( 'ABSPATH' ) || exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
  * Callback function to render the Recent Posts Block.

@@ -87,9 +87,9 @@ function bp_member_total_friend_count() {
 	 *
 	 * Return value is a string of the form "x friends".
 	 *
-	 * @since 1.2.0
-	 *
 	 * @global BP_Core_Members_Template $members_template The main member template loop class.
+	 *
+	 * @since 1.2.0
 	 *
 	 * @return string A string of the form "x friends".
 	 */

@@ -18,12 +18,10 @@ defined( 'ABSPATH' ) || exit;
  * @since 2.6.0
  */
 class BP_Core_Nav {
-
 	/**
 	 * An associative array containing the nav items for the object ID.
 	 *
 	 * @since 2.6.0
-	 *
 	 * @var array
 	 */
 	protected $nav;
@@ -32,7 +30,6 @@ class BP_Core_Nav {
 	 * The current object ID.
 	 *
 	 * @since 2.6.0
-	 *
 	 * @var int
 	 */
 	private $object_id;
@@ -41,7 +38,6 @@ class BP_Core_Nav {
 	 * The component ID.
 	 *
 	 * @since 12.0.0
-	 *
 	 * @var string
 	 */
 	private $component_id;
@@ -51,8 +47,7 @@ class BP_Core_Nav {
 	 *
 	 * @since 2.6.0
 	 *
-	 * @param int    $object_id The item ID to build the nav for. Default is the displayed user ID.
-	 * @param string $component_id Optional. The component ID. Default is 'members'.
+	 * @param int $object_id The item ID to build the nav for. Default is the displayed user ID.
 	 */
 	public function __construct( $object_id = 0, $component_id = 'members' ) {
 		if ( bp_is_active( $component_id ) ) {
@@ -118,7 +113,7 @@ class BP_Core_Nav {
 	 * @since 2.6.0
 	 *
 	 * @param string $key The nav item slug to get. Optional.
-	 * @return mixed An array of nav item, a single nav item, or null if none found.
+	 * @return mixed       An array of nav item, a single nav item, or null if none found.
 	 */
 	public function get( $key = '' ) {
 		$return = null;
@@ -131,7 +126,7 @@ class BP_Core_Nav {
 				$return = $this->nav[ $this->object_id ][ $key ];
 			}
 
-			// Return all nav item items.
+		// Return all nav item items.
 		} else {
 			$return = $this->nav[ $this->object_id ];
 		}
@@ -163,7 +158,7 @@ class BP_Core_Nav {
 			$path_chunks['single_item_action']    = $args['slug'];
 			$args['secondary']                    = true;
 
-			// This is a parent.
+		// This is a parent.
 		} else {
 			$slug                                 = $args['slug'];
 			$path_chunks['single_item_component'] = $slug;
@@ -184,11 +179,11 @@ class BP_Core_Nav {
 				}
 
 				$chunk = 'single_item_action';
-				if ( $path_chunks['single_item'] . '_manage' === $path_chunks['single_item_component'] ) {
+				if ( $path_chunks['single_item'] . '_manage' ===  $path_chunks['single_item_component'] ) {
 					$chunk                             = 'single_item_action_variables';
 					$path_chunks[ $chunk ]             = $path_chunks['single_item_action'];
 					$path_chunks['single_item_action'] = bp_rewrites_get_slug( 'groups', 'bp_group_read_admin', 'admin' );
-					$group_screens                     = bp_get_group_screens( 'manage' );
+					$group_screens = bp_get_group_screens( 'manage' );
 				} else {
 					$group_screens = bp_get_group_screens( 'read' );
 				}
@@ -263,15 +258,9 @@ class BP_Core_Nav {
 			// Return the edited object.
 			return $this->nav[ $this->object_id ][ $slug ];
 
-			// We're editing a child.
+		// We're editing a child.
 		} else {
-			$sub_items = $this->get_secondary(
-				array(
-					'parent_slug' => $parent_slug,
-					'slug'        => $slug,
-				),
-				false
-			);
+			$sub_items = $this->get_secondary( array( 'parent_slug' => $parent_slug, 'slug' => $slug ), false );
 
 			if ( ! $sub_items ) {
 				return false;
@@ -315,13 +304,7 @@ class BP_Core_Nav {
 		if ( ! empty( $parent_slug ) ) {
 
 			// Validate the subnav.
-			$sub_items = $this->get_secondary(
-				array(
-					'parent_slug' => $parent_slug,
-					'slug'        => $slug,
-				),
-				false
-			);
+			$sub_items = $this->get_secondary( array( 'parent_slug' => $parent_slug, 'slug' => $slug ), false );
 
 			if ( ! $sub_items ) {
 				return false;
@@ -339,7 +322,7 @@ class BP_Core_Nav {
 			// Return the deleted item's screen function.
 			return array( $sub_item->screen_function );
 
-			// We're deleting a parent.
+		// We're deleting a parent.
 		} else {
 			// Validate the nav.
 			$nav_items = $this->get_primary( array( 'slug' => $slug ), false );
@@ -356,7 +339,7 @@ class BP_Core_Nav {
 
 			$screen_functions = array( $nav_item->screen_function );
 
-			// Life's unfair, children won't survive the parent.
+			// Life's unfair, children won't survive the parent :(
 			$sub_items = $this->get_secondary( array( 'parent_slug' => $nav_item->slug ), false );
 
 			if ( ! empty( $sub_items ) ) {
@@ -400,15 +383,14 @@ class BP_Core_Nav {
 				$sorted_keys = array_keys( $sorted );
 
 				do {
-					++$position;
-				} while ( in_array( $position, $sorted_keys, true ) );
+					$position += 1;
+				} while ( in_array( $position, $sorted_keys ) );
 			}
 
 			$sorted[ $position ] = $item;
 		}
 
 		ksort( $sorted );
-
 		return $sorted;
 	}
 
@@ -493,17 +475,12 @@ class BP_Core_Nav {
 		$primary_nav_items = $this->get_primary( array( 'show_for_displayed_user' => true ) );
 
 		if ( $primary_nav_items ) {
-			foreach ( $primary_nav_items as $key_nav => $primary_nav ) {
+			foreach( $primary_nav_items as $key_nav => $primary_nav ) {
 				// Try to get the children.
-				$children = $this->get_secondary(
-					array(
-						'parent_slug'     => $primary_nav->slug,
-						'user_has_access' => true,
-					)
-				);
+				$children = $this->get_secondary( array( 'parent_slug' => $primary_nav->slug, 'user_has_access' => true ) );
 
 				if ( $children ) {
-					$primary_nav_items[ $key_nav ]           = clone $primary_nav;
+					$primary_nav_items[ $key_nav ] = clone $primary_nav;
 					$primary_nav_items[ $key_nav ]->children = $children;
 				}
 			}

@@ -17,7 +17,7 @@ use WP_CLI;
  *     $ wp bp component deactivate groups
  *     Success: The Groups component has been deactivated.
  *
- *     # List required components.
+ *     # List components.
  *     $ wp bp component list --type=required
  *     +--------+---------+--------+------------------------+--------------------------------------------+
  *     | number | id      | status | title                  | description                                |
@@ -37,13 +37,13 @@ class Components extends BuddyPressCommand {
 	 *
 	 * @var array
 	 */
-	protected $obj_fields = [
+	protected $obj_fields = array(
 		'number',
 		'id',
 		'status',
 		'title',
 		'description',
-	];
+	);
 
 	/**
 	 * Activate a component.
@@ -55,7 +55,6 @@ class Components extends BuddyPressCommand {
 	 *
 	 * ## EXAMPLE
 	 *
-	 *     # Activate a component.
 	 *     $ wp bp component activate groups
 	 *     Success: The Groups component has been activated.
 	 */
@@ -101,7 +100,6 @@ class Components extends BuddyPressCommand {
 	 *
 	 * ## EXAMPLE
 	 *
-	 *     # Deactive a component.
 	 *     $ wp bp component deactivate groups
 	 *     Success: The Groups component has been deactivated.
 	 */
@@ -166,52 +164,22 @@ class Components extends BuddyPressCommand {
 	 * default: table
 	 * options:
 	 *   - table
-	 *   - csv
-	 *   - ids
-	 *   - json
 	 *   - count
-	 *   - yaml
+	 *   - csv
+	 *   - haml
 	 * ---
 	 *
 	 * ## EXAMPLES
 	 *
-	 *     # List components and get the count.
 	 *     $ wp bp component list --format=count
 	 *     10
 	 *
-	 *     # List components and get the ids.
-	 *     $ wp bp component list --format=ids
-	 *     core members xprofile settings friends messages activity notifications groups
-	 *
-	 *     # List components.
-	 *     $ wp bp component list
-	 *     +--------+---------------+--------+--------------------+---------------------------------------------------------------------------------+
-	 *     | number | id            | status | title              | description                                                                     |
-	 *     +--------+---------------+--------+--------------------+---------------------------------------------------------------------------------+
-	 *     | 1      | core          | active | BuddyPress Core    | It‘s what makes <del>time travel</del> BuddyPress possible!                     |
-	 *     | 2      | members       | active | Community Members  | Everything in a BuddyPress community revolves around its members.               |
-	 *     | 3      | xprofile      | active | Extended Profiles  | Customize your community with fully editable profile fields that allow your use |
-	 *     |        |               |        |                    | rs to describe themselves.                                                      |
-	 *     | 4      | settings      | active | Account Settings   | Allow your users to modify their account and notification settings directly fro |
-	 *     |        |               |        |                    | m within their profiles.                                                        |
-	 *     | 5      | friends       | active | Friend Connections | Let your users make connections so they can track the activity of others and fo |
-	 *     |        |               |        |                    | cus on the people they care about the most.                                     |
-	 *     | 6      | messages      | active | Private Messaging  | Allow your users to talk to each other directly and in private. Not just limite |
-	 *     |        |               |        |                    | d to one-on-one discussions, messages can be sent between any number of members |
-	 *     |        |               |        |                    | .                                                                               |
-	 *     | 7      | activity      | active | Activity Streams   | Global, personal, and group activity streams with threaded commenting, direct p |
-	 *     |        |               |        |                    | osting, favoriting, and @mentions, all with full RSS feed and email notificatio |
-	 *     |        |               |        |                    | n support.                                                                      |
-	 *     | 8      | notifications | active | Notifications      | Notify members of relevant activity with a toolbar bubble and/or via email, and |
-	 *     |        |               |        |                    |  allow them to customize their notification settings.                           |
-	 *     | 9      | groups        | active | User Groups        | Groups allow your users to organize themselves into specific public, private or |
-	 *     |        |               |        |                    |  hidden sections with separate activity streams and member listings.            |
-	 *     | 10     | blogs         | active | Site Tracking      | Record activity for new sites, posts, and comments across your network.         |
-	 *     +--------+---------------+--------+--------------------+---------------------------------------------------------------------------------+
+	 *     $ wp bp component list --status=inactive --format=count
+	 *     4
 	 *
 	 * @subcommand list
 	 */
-	public function list_( $args, $assoc_args ) {
+	public function list_( $args, $assoc_args ) { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
 		$formatter = $this->get_formatter( $assoc_args );
 
 		// Get type.
@@ -221,7 +189,7 @@ class Components extends BuddyPressCommand {
 		$components = (array) bp_core_get_components( $type );
 
 		// Active components.
-		$active_components = apply_filters( 'bp_active_components', bp_get_option( 'bp-active-components', [] ) );
+		$active_components = apply_filters( 'bp_active_components', bp_get_option( 'bp-active-components', array() ) );
 
 		// Core component is always active.
 		if ( 'optional' !== $type && isset( $components['core'] ) ) {
@@ -233,65 +201,47 @@ class Components extends BuddyPressCommand {
 		// Inactive components.
 		$inactive_components = array_diff( array_keys( $components ), array_keys( $active_components ) );
 
-		$current_components = [];
+		$current_components = array();
 		switch ( $assoc_args['status'] ) {
 			case 'all':
 				$index = 0;
 				foreach ( $components as $component_key => $component ) {
-
-					// Skip if the component is not available.
-					if ( ! isset( $components[ $component_key ] ) ) {
-						continue;
-					}
-
-					++$index;
-					$current_components[] = [
+					$index++;
+					$current_components[] = array(
 						'number'      => $index,
 						'id'          => $component_key,
 						'status'      => $this->verify_component_status( $component_key ),
 						'title'       => esc_html( $component['title'] ),
 						'description' => html_entity_decode( $component['description'] ),
-					];
+					);
 				}
 				break;
 
 			case 'active':
 				$index = 0;
 				foreach ( array_keys( $active_components ) as $component_key ) {
-
-					// Skip if the component is not available.
-					if ( ! isset( $components[ $component_key ] ) ) {
-						continue;
-					}
-
-					++$index;
-					$current_components[] = [
+					$index++;
+					$current_components[] = array(
 						'number'      => $index,
 						'id'          => $component_key,
 						'status'      => $this->verify_component_status( $component_key ),
 						'title'       => esc_html( $components[ $component_key ]['title'] ),
 						'description' => html_entity_decode( $components[ $component_key ]['description'] ),
-					];
+					);
 				}
 				break;
 
 			case 'inactive':
 				$index = 0;
 				foreach ( $inactive_components as $component_key ) {
-
-					// Skip if the component is not available.
-					if ( ! isset( $components[ $component_key ] ) ) {
-						continue;
-					}
-
-					++$index;
-					$current_components[] = [
+					$index++;
+					$current_components[] = array(
 						'number'      => $index,
 						'id'          => $component_key,
 						'status'      => $this->verify_component_status( $component_key ),
 						'title'       => esc_html( $components[ $component_key ]['title'] ),
 						'description' => html_entity_decode( $components[ $component_key ]['description'] ),
-					];
+					);
 				}
 				break;
 		}
@@ -301,7 +251,7 @@ class Components extends BuddyPressCommand {
 			WP_CLI::error( 'There is no component available.' );
 		}
 
-		$formatter->display_items( 'ids' === $formatter->format ? wp_list_pluck( $current_components, 'id' ) : $current_components );
+		$formatter->display_items( $current_components );
 	}
 
 	/**

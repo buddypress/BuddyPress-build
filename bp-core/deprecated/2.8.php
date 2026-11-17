@@ -211,7 +211,7 @@ function bp_core_admin_php53_admin_notice() {
 			&nbsp;
 			<?php
 			/* translators: %s: the url to a codex page */
-			printf( esc_html_x( 'See %s for more information.', 'deprecated string', 'buddypress' ), '<a href="https://codex.buddypress.org/getting-started/buddypress-2-8-will-require-php-5-3/">' . esc_html__( 'the Codex guide', 'buddypress' ) . '</a>' );
+			printf( esc_html_x( 'See %s for more information.', 'deprecated string', 'buddypress' ), '<a href="https://codex.buddypress.org/getting-started/buddypress-2-8-will-require-php-5-3/">' . esc_html( 'the Codex guide', 'buddypress' ) . '</a>' );
 			?>
 		</p>
 		<?php wp_nonce_field( "bp-dismissible-notice-$notice_id", "bp-dismissible-nonce-$notice_id" ); ?>

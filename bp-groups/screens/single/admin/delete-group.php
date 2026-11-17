@@ -15,11 +15,11 @@
 function groups_screen_group_admin_delete_group() {
 
 	if ( 'delete-group' != bp_get_group_current_admin_tab() ) {
-		return;
+		return false;
 	}
 
 	if ( ! bp_is_item_admin() && ! bp_current_user_can( 'bp_moderate' ) ) {
-		return;
+		return false;
 	}
 
 	$bp = buddypress();
@@ -30,7 +30,7 @@ function groups_screen_group_admin_delete_group() {
 
 		// Check the nonce first.
 		if ( ! check_admin_referer( 'groups_delete_group' ) ) {
-			return;
+			return false;
 		}
 
 		/**
@@ -70,18 +70,13 @@ function groups_screen_group_admin_delete_group() {
 	 */
 	do_action( 'groups_screen_group_admin_delete_group', $bp->groups->current_group->id );
 
-	$templates = array(
-		/**
-		 * Filters the template to load for the Delete Group page.
-		 *
-		 * @since 1.0.0
-		 *
-		 * @param string $value Path to the Delete Group template.
-		 */
-		apply_filters( 'groups_template_group_admin_delete_group', 'groups/single/home' ),
-		'groups/single/index',
-	);
-
-	bp_core_load_template( $templates );
+	/**
+	 * Filters the template to load for the Delete Group page.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $value Path to the Delete Group template.
+	 */
+	bp_core_load_template( apply_filters( 'groups_template_group_admin_delete_group', 'groups/single/home' ) );
 }
 add_action( 'bp_screens', 'groups_screen_group_admin_delete_group' );

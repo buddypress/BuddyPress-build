@@ -40,12 +40,10 @@ class Scaffold extends Scaffold_Command {
 	 *
 	 * ## EXAMPLES
 	 *
-	 *     # Scaffold BuddyPress specific tests.
-	 *     $ wp bp scaffold plugin sample-test
+	 *     $ wp bp scaffold tests sample-test
 	 *     Success: Created BuddyPress test files.
 	 *
-	 *     # Scaffold BuddyPress specific tests.
-	 *     $ wp bp scaffold tests another-sample-test
+	 *     $ wp bp scaffold tests another-ssample-test
 	 *     Success: Created BuddyPress test files.
 	 *
 	 * @subcommand tests
@@ -63,10 +61,10 @@ class Scaffold extends Scaffold_Command {
 			WP_CLI::error( "Invalid plugin slug specified. {$error_msg}" );
 		}
 
-		$to_copy = [
+		$to_copy = array(
 			'install-bp-tests.sh'      => "{$target_dir}/bin",
 			'bootstrap-buddypress.php' => "{$target_dir}/tests",
-		];
+		);
 
 		foreach ( $to_copy as $file => $dir ) {
 			$file_name = "$dir/$file";
@@ -103,6 +101,7 @@ class Scaffold extends Scaffold_Command {
 	 *
 	 * @param string $type       "theme" or "plugin"
 	 * @param string $target_dir The theme/plugin directory to check.
+	 *
 	 * @return null|string Returns null on success, error message on error.
 	 */
 	public function check_target_directory( $target_dir ) {
@@ -117,7 +116,7 @@ class Scaffold extends Scaffold_Command {
 	}
 
 	/**
-	 * Canonicalizes a path.
+	 * Fix path.
 	 *
 	 * @param string $path Path.
 	 * @return string
@@ -131,7 +130,7 @@ class Scaffold extends Scaffold_Command {
 			$path .= '/';
 		}
 
-		$output = [];
+		$output = array();
 
 		foreach ( explode( '/', $path ) as $segment ) {
 			if ( '..' === $segment ) {

@@ -305,7 +305,7 @@ function bp_activity_at_name_filter_updates( $activity ) {
 	// We have mentions!
 	if ( ! empty( $usernames ) ) {
 		// Replace @mention text with userlinks.
-		foreach ( (array) $usernames as $user_id => $username ) {
+		foreach( (array) $usernames as $user_id => $username ) {
 			$activity->content = preg_replace( '/(@' . $username . '\b)/', "<a class='bp-suggestions-mention' href='" . bp_members_get_user_url( $user_id ) . "' rel='nofollow'>@$username</a>", $activity->content );
 		}
 
@@ -343,7 +343,7 @@ function bp_activity_at_name_send_emails( $activity ) {
 	unset( $bp->activity->mentioned_users );
 
 	// Send @mentions and setup BP notifications.
-	foreach ( (array) $usernames as $user_id => $username ) {
+	foreach( (array) $usernames as $user_id => $username ) {
 
 		/**
 		 * Filters BuddyPress' ability to send email notifications for @mentions.
@@ -551,6 +551,11 @@ add_filter( 'bp_get_activity_css_class', 'bp_activity_timestamp_class', 9, 1 );
  */
 function bp_activity_heartbeat_last_recorded( $response = array(), $data = array() ) {
 	if ( empty( $data['bp_activity_last_recorded'] ) ) {
+		return $response;
+	}
+
+	// Respect activity component visibility.
+	if ( ! bp_current_user_can( 'bp_view', array( 'bp_component' => 'activity' ) ) ) {
 		return $response;
 	}
 

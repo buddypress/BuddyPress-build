@@ -1,6 +1,6 @@
 (()=>{"use strict";const e=window.wp.i18n,t=window.wp.escapeHtml,s=window.bp.dynamicWidgetBlock;class r extends s.dynamicWidgetBlock{loop(s=[],r="",i="active"){const n=super.useTemplate("bp-friends-item"),a=document.querySelector("#"+r);let d="";s&&s.length?s.forEach((s=>{if("active"===i&&s.last_activity)
 /* translators: %s: last activity timestamp (e.g. "Active 1 hour ago") */
-s.extra=(0,t.escapeHTML)((0,e.sprintf)((0,e.__)("Active %s","buddypress"),s.last_activity.timediff));else if("popular"===i&&s.total_friend_count){const r=parseInt(s.total_friend_count,10);s.extra=0===r?(0,t.escapeHTML)((0,e.__)("No friends","buddypress")):1===r?(0,t.escapeHTML)((0,e.__)("1 friend","buddypress")):(0,t.escapeHTML)((0,e.sprintf)(/* translators: %s: total friend count (more than 1). */ /* translators: %s: total friend count (more than 1). */
+s.extra=(0,t.escapeHTML)((0,e.sprintf)((0,e.__)("Active %s","buddypress"),s.last_activity.timediff));else if("popular"===i&&s.total_friend_count){const r=parseInt(s.total_friend_count,10);s.extra=0===r?(0,t.escapeHTML)((0,e.__)("No friends","buddypress")):1===r?(0,t.escapeHTML)((0,e.__)("1 friend","buddypress")):(0,t.escapeHTML)((0,e.sprintf)(/* translators: %s: total friend count (more than 1). */
 (0,e.__)("%s friends","buddypress"),s.total_friend_count))}else"newest"===i&&s.registered_since&&(
 /* translators: %s is time elapsed since the registration date happened */
 s.extra=(0,t.escapeHTML)((0,e.sprintf)((0,e.__)("Registered %s","buddypress"),s.registered_since)));s.name=(0,t.escapeHTML)(s.name),

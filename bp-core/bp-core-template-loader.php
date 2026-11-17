@@ -110,10 +110,7 @@ function bp_get_dynamic_template_part( $template = '', $type = 'js', $tokens = a
 	// Use the BP Theme Compat API to allow template override.
 	$template_path = bp_locate_template( $template );
 	if ( $template_path ) {
-		ob_start();
-		load_template( $template_path, false );
-
-		$template_string = ob_get_clean();
+		$template_string = file_get_contents( $template_path );
 	}
 
 	if ( ! $template_string ) {
@@ -185,7 +182,7 @@ function bp_locate_template( $template_names, $load = false, $require_once = tru
 		}
 
 		// Trim off any slashes from the template name.
-		$template_name = ltrim( $template_name, '/' );
+		$template_name  = ltrim( $template_name, '/' );
 
 		// Loop through template stack.
 		foreach ( (array) $template_locations as $template_location ) {
@@ -252,17 +249,17 @@ function bp_locate_template_asset( $filename ) {
 	}
 
 	// Set up data array.
-	$data         = array();
+	$data = array();
 	$data['file'] = $data['uri'] = $located;
 
 	$find = array(
 		get_theme_root(),
-		bp_get_theme_compat_dir(),
+		bp_get_theme_compat_dir()
 	);
 
 	$replace = array(
 		get_theme_root_uri(),
-		bp_get_theme_compat_url(),
+		bp_get_theme_compat_url()
 	);
 
 	// Make sure URI path is relative to site URL.
@@ -339,9 +336,8 @@ function bp_get_template_stack() {
 	global $wp_filter, $merged_filters, $wp_current_filter;
 
 	// Setup some default variables.
-	$tag   = 'bp_template_stack';
-	$args  = array();
-	$stack = array();
+	$tag  = 'bp_template_stack';
+	$args = $stack = array();
 
 	// Add 'bp_template_stack' to the current filter array.
 	$wp_current_filter[] = $tag;
@@ -363,7 +359,7 @@ function bp_get_template_stack() {
 
 	// Loop through 'bp_template_stack' filters, and call callback functions.
 	do {
-		foreach ( (array) current( $filter ) as $the_ ) {
+		foreach( (array) current( $filter ) as $the_ ) {
 			if ( ! is_null( $the_['function'] ) ) {
 				$args[1] = $stack;
 				$stack[] = call_user_func_array( $the_['function'], array_slice( $args, 1, (int) $the_['accepted_args'] ) );
@@ -384,7 +380,7 @@ function bp_get_template_stack() {
 	 *
 	 * @param array $stack Array of registered directories for template locations.
 	 */
-	return (array) apply_filters( 'bp_get_template_stack', $stack );
+	return (array) apply_filters( 'bp_get_template_stack', $stack ) ;
 }
 
 /**
@@ -397,12 +393,12 @@ function bp_get_template_stack() {
  *
  * @param string      $slug See {@link bp_get_template_part()}.
  * @param string|null $name See {@link bp_get_template_part()}.
- * @param bool        $ret  If true, template content will be echoed. If false,
+ * @param bool        $echo If true, template content will be echoed. If false,
  *                          returned. Default: true.
  * @param array       $args See {@link bp_get_template_part()}.
  * @return string|null If $echo, returns the template content.
  */
-function bp_buffer_template_part( $slug, $name = null, $ret = true, $args = array() ) {
+function bp_buffer_template_part( $slug, $name = null, $echo = true, $args = array() ) {
 	ob_start();
 
 	// Remove 'bp_replace_the_content' filter to prevent infinite loops.
@@ -417,7 +413,7 @@ function bp_buffer_template_part( $slug, $name = null, $ret = true, $args = arra
 	$output = ob_get_clean();
 
 	// Echo or return the output buffer contents.
-	if ( true === $ret ) {
+	if ( true === $echo ) {
 		// phpcs:ignore WordPress.Security.EscapeOutput
 		echo $output;
 	} else {
@@ -469,7 +465,7 @@ function bp_get_query_template( $type, $templates = array() ) {
 	 * The current theme is using the WordPress Full Site Editing feature.
 	 * BuddyPress then needs to use the WordPress template canvas to retrieve the community content.
 	 */
-	if ( wp_is_block_theme() ) {
+	if ( bp_is_running_wp( '5.9.0', '>=' ) && wp_is_block_theme() ) {
 		$template = ABSPATH . WPINC . '/template-canvas.php';
 	}
 
@@ -500,7 +496,7 @@ function bp_get_template_locations( $templates = array() ) {
 	$locations = array(
 		'buddypress',
 		'community',
-		'',
+		''
 	);
 
 	/**
@@ -565,7 +561,7 @@ function bp_parse_query( $posts_query ) {
 	}
 
 	// Bail if filters are suppressed on this query.
-	if ( true === $posts_query->get( 'suppress_filters' ) ) {
+	if ( true == $posts_query->get( 'suppress_filters' ) ) {
 		return;
 	}
 
@@ -593,7 +589,7 @@ function bp_parse_query( $posts_query ) {
 
 			$url_query_chunks = bp_parse_args( $GLOBALS['wp']->query_string, array() );
 			$directory        = key( $url_query_chunks );
-			if ( isset( $directory, $bp_directories[ $directory ] ) ) {
+			if ( isset( $bp_directories[ $directory ] ) ) {
 				$url_query_chunks[ $directory ] = $bp_directories[ $directory ];
 			}
 
@@ -653,7 +649,7 @@ function bp_parse_ajax_referer_query( $referer_query ) {
  * This is used for specific cases such as Root Member's profile.
  *
  * @since 12.0.0
- * @since 14.5.1 Make nullable type parameter compatible with PHP 8.4.
+ * @since 12.7.1 Make nullable type parameter compatible with PHP 8.4.
  *
  * @param string   $bp_request A specific BuddyPress request.
  * @param WP_Query $query The WordPress query object.
@@ -832,45 +828,14 @@ function bp_load_theme_functions() {
  * @return string Possible root level wrapper template files.
  */
 function bp_get_theme_compat_templates() {
-	return bp_get_query_template(
-		'buddypress',
-		array(
-			'plugin-buddypress.php',
-			'buddypress.php',
-			'community.php',
-			'generic.php',
-			'page.php',
-			'single.php',
-			'singular.php',
-			'index.php',
-		)
-	);
-}
-
-/**
- * Sets Block Theme compatibility if it supports BuddyPress.
- *
- * @since 14.0.0
- */
-function bp_set_block_theme_compat() {
-	if ( wp_is_block_theme() && current_theme_supports( 'buddypress' ) ) {
-		bp_deregister_template_stack( 'get_stylesheet_directory', 10 );
-		bp_deregister_template_stack( 'get_template_directory', 12 );
-
-		$block_theme     = wp_get_theme();
-		$theme_compat_id = $block_theme->stylesheet;
-
-		bp_register_theme_package(
-			array(
-				'id'             => $theme_compat_id,
-				'name'           => $block_theme->get( 'Name' ),
-				'version'        => $block_theme->get( 'Version' ),
-				'dir'            => '',
-				'url'            => '',
-				'is_block_theme' => true,
-			)
-		);
-
-		bp_setup_theme_compat( $theme_compat_id );
-	}
+	return bp_get_query_template( 'buddypress', array(
+		'plugin-buddypress.php',
+		'buddypress.php',
+		'community.php',
+		'generic.php',
+		'page.php',
+		'single.php',
+		'singular.php',
+		'index.php'
+	) );
 }

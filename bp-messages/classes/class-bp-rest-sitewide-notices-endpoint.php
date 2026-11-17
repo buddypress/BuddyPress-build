@@ -268,15 +268,17 @@ class BP_REST_Sitewide_Notices_Endpoint extends WP_REST_Controller {
 						'status' => 404,
 					)
 				);
-			} elseif ( bp_current_user_can( 'bp_moderate' ) ) {
-					$retval = true;
 			} else {
-				// Non-admin users can only see the active notice.
-				$is_active = isset( $notice->is_active ) ? $notice->is_active : false;
-				if ( ! $is_active ) {
-					$retval = $error;
-				} else {
+				if ( bp_current_user_can( 'bp_moderate' ) ) {
 					$retval = true;
+				} else {
+					// Non-admin users can only see the active notice.
+					$is_active = isset( $notice->is_active ) ? $notice->is_active : false;
+					if ( ! $is_active ) {
+						$retval = $error;
+					} else {
+						$retval = true;
+					}
 				}
 			}
 		}

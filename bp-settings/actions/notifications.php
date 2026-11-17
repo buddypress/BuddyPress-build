@@ -11,6 +11,8 @@
  * Handles the changing and saving of user notification settings.
  *
  * @since 1.6.0
+ *
+ * @return bool|void
  */
 function bp_settings_action_notifications() {
 	if ( ! bp_is_post_request() ) {
@@ -24,7 +26,7 @@ function bp_settings_action_notifications() {
 
 	// Bail if not in settings.
 	if ( ! bp_is_settings_component() || ! bp_is_current_action( 'notifications' ) ) {
-		return;
+		return false;
 	}
 
 	// 404 if there are any additional action variables attached

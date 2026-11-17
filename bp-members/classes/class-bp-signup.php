@@ -533,7 +533,6 @@ class BP_Signup {
 	 * default behavior.
 	 *
 	 * @since 2.0.0
-	 * @deprecated 14.0.0
 	 *
 	 * @global wpdb $wpdb The WordPress database object.
 	 *
@@ -544,8 +543,6 @@ class BP_Signup {
 	 * @return int User id.
 	 */
 	public static function add_backcompat( $user_login = '', $user_password = '', $user_email = '', $usermeta = array() ) {
-		_deprecated_function( __METHOD__, '14.0.0' );
-
 		global $wpdb;
 
 		$user_id = wp_insert_user(
@@ -606,21 +603,19 @@ class BP_Signup {
 		 * Fires after adding a new WP User (backcompat).
 		 *
 		 * @since 10.0.0
-		 * @deprecated 14.0.0
 		 *
 		 * @param int $user_id ID of the WP_User just added.
 		 */
-		do_action_deprecated( 'bp_core_signups_after_add_backcompat', array( $user_id ), '14.0.0' );
+		do_action( 'bp_core_signups_after_add_backcompat', $user_id );
 
 		/**
 		 * Filters the user ID for the backcompat functionality.
 		 *
 		 * @since 2.0.0
-		 * @deprecated 14.0.0
 		 *
 		 * @param int $user_id User ID being registered.
 		 */
-		return apply_filters_deprecated( 'bp_core_signups_add_backcompat', array( $user_id ), '14.0.0' );
+		return apply_filters( 'bp_core_signups_add_backcompat', $user_id );
 	}
 
 	/**
@@ -657,7 +652,7 @@ class BP_Signup {
 	 * @global wpdb $wpdb The WordPress database object.
 	 *
 	 * @param string $key Activation key.
-	 * @return bool
+	 * @return bool True on success, false on failure.
 	 */
 	public static function validate( $key = '' ) {
 		global $wpdb;

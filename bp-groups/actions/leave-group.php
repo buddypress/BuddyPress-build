@@ -17,15 +17,17 @@
  * another function handles this. See {@link bp_legacy_theme_ajax_joinleave_group()}.
  *
  * @since 1.2.4
+ *
+ * @return bool
  */
 function groups_action_leave_group() {
 	if ( ! bp_is_single_item() || ! bp_is_groups_component() || ! bp_is_current_action( 'leave-group' ) ) {
-		return;
+		return false;
 	}
 
 	// Nonce check.
 	if ( ! check_admin_referer( 'groups_leave_group' ) ) {
-		return;
+		return false;
 	}
 
 	// User wants to leave any group.
@@ -53,13 +55,8 @@ function groups_action_leave_group() {
 		bp_core_redirect( $redirect );
 	}
 
-	$templates = array(
-		/** This filter is documented in bp-groups/actions/join.php */
-		apply_filters( 'groups_template_group_home', 'groups/single/home' ),
-		'groups/single/index',
-	);
-
-	bp_core_load_template( $templates );
+	/** This filter is documented in bp-groups/bp-groups-actions.php */
+	bp_core_load_template( apply_filters( 'groups_template_group_home', 'groups/single/home' ) );
 }
 add_action( 'bp_actions', 'groups_action_leave_group' );
 

@@ -8,7 +8,9 @@
  */
 
 // Exit if accessed directly.
-defined( 'ABSPATH' ) || exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
  * Handles BP Rewrites settings updates & load styles and scripts.
@@ -44,8 +46,7 @@ function bp_core_admin_rewrites_load() {
 			$switched_to_root_blog = true;
 		}
 
-		$dir_pages_object    = bp_core_get_directory_pages();
-		$directory_pages     = (array) $dir_pages_object;
+		$directory_pages     = (array) bp_core_get_directory_pages();
 		$current_page_slugs  = wp_list_pluck( $directory_pages, 'slug', 'id' );
 		$current_page_titles = wp_list_pluck( $directory_pages, 'title', 'id' );
 		$reset_rewrites      = false;
@@ -80,15 +81,15 @@ function bp_core_admin_rewrites_load() {
 			}
 
 			if ( isset( $posted_data['_bp_component_slugs'] ) && is_array( $posted_data['_bp_component_slugs'] ) ) {
-				$postarr['meta_input']['_bp_component_slugs'] = array_map( 'sanitize_title', (array) $posted_data['_bp_component_slugs'] );
+				$postarr['meta_input']['_bp_component_slugs'] = array_map( 'sanitize_title', $posted_data['_bp_component_slugs'] );
 			}
 
 			if ( isset( $posted_data['_bp_component_slugs']['bp_group_create'] ) ) {
 				$new_current_group_create_slug    = sanitize_text_field( $posted_data['_bp_component_slugs']['bp_group_create'] );
 				$current_group_create_custom_slug = '';
 
-				if ( isset( $dir_pages_object->groups->custom_slugs['bp_group_create'] ) ) {
-					$current_group_create_custom_slug = $dir_pages_object->groups->custom_slugs['bp_group_create'];
+				if ( isset( $directory_pages->groups->custom_slugs['bp_group_create'] ) ) {
+					$current_group_create_custom_slug = $directory_pages->groups->custom_slugs['bp_group_create'];
 				}
 
 				if ( $new_current_group_create_slug !== $current_group_create_custom_slug ) {
@@ -99,7 +100,7 @@ function bp_core_admin_rewrites_load() {
 			wp_update_post( $postarr );
 		}
 
-		// Make sure the WP rewrites will be regenerated at next page load.
+		// Make sure the WP rewrites will be regenarated at next page load.
 		if ( $reset_rewrites ) {
 			bp_delete_rewrite_rules();
 		}
@@ -261,18 +262,18 @@ function bp_core_admin_rewrites_settings() {
 																	'name'       => __( 'Field Group', 'buddypress' ),
 																	'slug'       => 'group',
 																	'rewrite_id' => $edit_subnav['rewrite_id'] . '_group',
-																),
+																)
 															)
 														);
 													}
 												}
 
 												$members_sub_navigation[ $navs['main_nav']['slug'] ] = array(
-													'name' => $navs['main_nav']['name'],
+													'name'    => $navs['main_nav']['name'],
 													'sub_nav' => $navs['sub_nav'],
 												);
 											}
-											?>
+										?>
 										<tr>
 											<th scope="row">
 												<label class="bp-nav-slug" for="<?php echo esc_attr( sprintf( '%s-slug', sanitize_key( $navs['main_nav']['rewrite_id'] ) ) ); ?>">
@@ -286,7 +287,7 @@ function bp_core_admin_rewrites_settings() {
 												</label>
 											</th>
 											<td>
-												<input type="text" class="code" name="<?php printf( 'components[%1$d][_bp_component_slugs][%2$s]', absint( $directory_data->id ), esc_attr( $navs['main_nav']['rewrite_id'] ) ); ?>" id="<?php echo esc_attr( sprintf( '%s-slug', sanitize_key( $navs['main_nav']['rewrite_id'] ) ) ); ?>" value="<?php echo esc_attr( bp_rewrites_get_slug( $component_id, $navs['main_nav']['rewrite_id'], $navs['main_nav']['slug'] ) ); ?>">
+												<input type="text" class="code" name="<?php printf( 'components[%1$d][_bp_component_slugs][%2$s]', absint( $directory_data->id ), esc_attr( $navs['main_nav']['rewrite_id'] ) ); ?>" id="<?php echo esc_attr( sprintf( '%s-slug', sanitize_key( $navs['main_nav']['rewrite_id'] ) ) ); ?>" value="<?php echo esc_attr( bp_rewrites_get_slug( $component_id, $navs['main_nav']['rewrite_id'],  $navs['main_nav']['slug'] ) ); ?>">
 											</td>
 										</tr>
 										<?php endforeach; ?>
@@ -298,7 +299,7 @@ function bp_core_admin_rewrites_settings() {
 									<div class="health-check-accordion">
 										<h4 class="health-check-accordion-heading">
 											<button aria-expanded="false" class="health-check-accordion-trigger" aria-controls="<?php echo esc_attr( sprintf( 'health-check-accordion-block-member-%s-secondary-nav', $members_navigation_slug ) ); ?>" type="button">
-												<?php /* translators: %s is the BP Component name the secondary views belong to. */ ?>
+												<?php /* translators: %s is the BP Component name the secondery views belong to. */ ?>
 												<span class="title"><?php echo esc_html( sprintf( __( 'Single Member %s secondary screens slugs', 'buddypress' ), _bp_strip_spans_from_title( $members_component_navigations['name'] ) ) ); ?></span>
 												<span class="icon"></span>
 											</button>

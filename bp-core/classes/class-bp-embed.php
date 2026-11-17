@@ -70,14 +70,14 @@ class BP_Embed extends WP_Embed {
 	 * enabled, then the URL will be passed to {@link BP_Embed::parse_oembed()}
 	 * for oEmbed parsing.
 	 *
+	 *
 	 * @param array  $attr Shortcode attributes.
 	 * @param string $url  The URL attempting to be embeded.
 	 * @return string The embed HTML on success, otherwise the original URL.
 	 */
 	public function shortcode( $attr, $url = '' ) {
-		if ( empty( $url ) ) {
+		if ( empty( $url ) )
 			return '';
-		}
 
 		$rawattr = $attr;
 		$attr    = bp_parse_args(
@@ -94,15 +94,14 @@ class BP_Embed extends WP_Embed {
 		foreach ( $this->handlers as $priority => $handlers ) {
 			foreach ( $handlers as $hid => $handler ) {
 				if ( preg_match( $handler['regex'], $url, $matches ) && is_callable( $handler['callback'] ) ) {
-					$return = call_user_func( $handler['callback'], $matches, $attr, $url, $rawattr );
-					if ( false !== $return ) {
+					if ( false !== $return = call_user_func( $handler['callback'], $matches, $attr, $url, $rawattr ) ) {
 
 						/**
 						 * Filters the oEmbed handler result for the provided URL.
 						 *
 						 * @since 1.5.0
 						 *
-						 * @param mixed  $return Handler callback for the oEmbed.
+						 * @param string $return Handler callback for the oEmbed.
 						 * @param string $url    URL attempting to be embedded.
 						 * @param array  $attr   Shortcode attributes.
 						 */
@@ -117,7 +116,7 @@ class BP_Embed extends WP_Embed {
 		 *
 		 * @since 1.5.0
 		 *
-		 * @param int $embed_post_id Embed object id. Default is 0.
+		 * @param int $value Value of zero.
 		 */
 		$id = apply_filters( 'embed_post_id', 0 );
 
@@ -138,29 +137,27 @@ class BP_Embed extends WP_Embed {
 
 		// Set up a new WP oEmbed object to check URL with registered oEmbed providers.
 		if ( file_exists( ABSPATH . WPINC . '/class-wp-oembed.php' ) ) {
-			require_once ABSPATH . WPINC . '/class-wp-oembed.php';
+			require_once( ABSPATH . WPINC . '/class-wp-oembed.php' );
 		} else {
 			// class-oembed.php is deprecated in WordPress 5.3.0.
-			require_once ABSPATH . WPINC . '/class-oembed.php';
+			require_once( ABSPATH . WPINC . '/class-oembed.php' );
 		}
 
 		$oembed_obj = _wp_oembed_get_object();
 
 		// If oEmbed discovery is true, skip oEmbed provider check.
 		$is_oembed_link = false;
-		if ( ! $attr['discover'] ) {
+		if ( !$attr['discover'] ) {
 			foreach ( (array) $oembed_obj->providers as $provider_matchmask => $provider ) {
-				$regex = ( $provider[1] ) ? $provider_matchmask : '#' . str_replace( '___wildcard___', '(.+)', preg_quote( str_replace( '*', '___wildcard___', $provider_matchmask ), '#' ) ) . '#i';
+				$regex = ( $is_regex = $provider[1] ) ? $provider_matchmask : '#' . str_replace( '___wildcard___', '(.+)', preg_quote( str_replace( '*', '___wildcard___', $provider_matchmask ), '#' ) ) . '#i';
 
-				if ( preg_match( $regex, $url ) ) {
+				if ( preg_match( $regex, $url ) )
 					$is_oembed_link = true;
-				}
 			}
 
 			// If url doesn't match a WP oEmbed provider, stop parsing.
-			if ( ! $is_oembed_link ) {
+			if ( !$is_oembed_link )
 				return $this->maybe_make_link( $url );
-			}
 		}
 
 		return $this->parse_oembed( $id, $url, $attr, $rawattr );
@@ -185,7 +182,7 @@ class BP_Embed extends WP_Embed {
 		$id = intval( $id );
 
 		if ( $id ) {
-			// Setup the cache key.
+			// Setup the cachekey.
 			$cachekey = '_oembed_' . md5( $url . serialize( $attr ) );
 
 			// Let components / plugins grab their cache.
@@ -206,7 +203,7 @@ class BP_Embed extends WP_Embed {
 			$cache = apply_filters( 'bp_embed_get_cache', $cache, $id, $cachekey, $url, $attr, $rawattr );
 
 			// Grab cache and return it if available.
-			if ( ! empty( $cache ) ) {
+			if ( !empty( $cache ) ) {
 
 				/**
 				 * Filters the found cache for the provided URL.
@@ -220,9 +217,9 @@ class BP_Embed extends WP_Embed {
 				 */
 				return apply_filters( 'bp_embed_oembed_html', $cache, $url, $attr, $rawattr );
 
-				// If no cache, ping the oEmbed provider and cache the result.
+			// If no cache, ping the oEmbed provider and cache the result.
 			} else {
-				$html  = wp_oembed_get( $url, $attr );
+				$html = wp_oembed_get( $url, $attr );
 				$cache = ( $html ) ? $html : $url;
 
 				/**

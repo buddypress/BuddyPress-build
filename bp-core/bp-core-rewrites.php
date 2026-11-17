@@ -8,7 +8,9 @@
  */
 
 // Exit if accessed directly.
-defined( 'ABSPATH' ) || exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
  * Gets default URL chunks rewrite information.
@@ -185,9 +187,6 @@ function bp_rewrites_get_url( $args = array() ) {
 		)
 	);
 
-	// Define the path chunks out of parsed arguments to make them available & unchanged for the 'bp_rewrites_get_url' filter.
-	$path_chunks = $r;
-
 	if ( $r['component_id'] && isset( $bp->{$r['component_id']}->rewrite_ids ) ) {
 		$component = $bp->{$r['component_id']};
 		unset( $r['component_id'] );
@@ -275,12 +274,12 @@ function bp_rewrites_get_url( $args = array() ) {
 	}
 
 	/**
-	 * Filter here to edit any BuddyPress URL.
+	 * Filter here to edit any BudyPress URL.
 	 *
 	 * @since 12.0.0
 	 *
-	 * @param string $url The BuddyPress URL.
-	 * @param array  $path_chunks {
+	 * @param string $url The BudyPress URL.
+	 * @param array  $r {
 	 *      Optional. An array of arguments.
 	 *
 	 *      @type string $component_id                The BuddyPress component ID. Defaults ''.
@@ -294,9 +293,8 @@ function bp_rewrites_get_url( $args = array() ) {
 	 *                                                Eg: the member's Activity mentions page.
 	 *      @type array $single_item_action_variables The list of BuddyPress single item's action variable URL chunks. Defaults [].
 	 * }
-	 * @param array  $args Original arguments used with the function.
 	 */
-	return apply_filters( 'bp_rewrites_get_url', $url, $path_chunks, $args );
+	return apply_filters( 'bp_rewrites_get_url', $url, $r );
 }
 
 /**

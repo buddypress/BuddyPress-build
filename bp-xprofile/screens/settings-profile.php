@@ -20,19 +20,14 @@ function bp_xprofile_screen_settings() {
 		return;
 	}
 
-	$templates = array(
-		/**
-		 * Filters the template to load for the XProfile settings screen.
-		 *
-		 * @since 2.0.0
-		 *
-		 * @param string $template Path to the XProfile change avatar template to load.
-		 */
-		apply_filters( 'bp_settings_screen_xprofile', '/members/single/settings/profile' ),
-		'members/single/index',
-	);
-
-	bp_core_load_template( $templates );
+	/**
+	 * Filters the template to load for the XProfile settings screen.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param string $template Path to the XProfile change avatar template to load.
+	 */
+	bp_core_load_template( apply_filters( 'bp_settings_screen_xprofile', '/members/single/settings/profile' ) );
 }
 
 /**

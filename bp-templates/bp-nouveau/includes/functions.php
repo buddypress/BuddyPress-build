@@ -3,7 +3,7 @@
  * Common functions
  *
  * @since 3.0.0
- * @version 14.0.0
+ * @version 12.3.0
  */
 
 // Exit if accessed directly.
@@ -79,16 +79,16 @@ function bp_nouveau_ajax_querystring( $query_string, $object ) {
 	// Activity stream filtering on action.
 	if ( ! empty( $post_query['filter'] ) && '-1' !== $post_query['filter'] ) {
 		if ( 'notifications' === $object ) {
-			$qs[] = 'component_action=' . $post_query['filter'];
+			$qs[] = 'component_action=' . urlencode( $post_query['filter'] );
 		} else {
-			$qs[] = 'type=' . $post_query['filter'];
-			$qs[] = 'action=' . $post_query['filter'];
+			$qs[] = 'type=' . urlencode( $post_query['filter'] );
+			$qs[] = 'action=' . urlencode( $post_query['filter'] );
 		}
 	}
 
 	// Sort the notifications if needed
 	if ( ! empty( $post_query['extras'] ) && 'notifications' === $object ) {
-		$qs[] = 'sort_order=' . $post_query['extras'];
+		$qs[] = 'sort_order=' . urlencode( $post_query['extras'] );
 	}
 
 	if ( 'personal' === $post_query['scope'] ) {
@@ -98,7 +98,7 @@ function bp_nouveau_ajax_querystring( $query_string, $object ) {
 
 	// Activity stream scope only on activity directory.
 	if ( 'all' !== $post_query['scope'] && ! bp_displayed_user_id() && ! bp_is_single_item() ) {
-		$qs[] = 'scope=' . $post_query['scope'];
+		$qs[] = 'scope=' . urlencode( $post_query['scope'] );
 	}
 
 	// If page have been passed via the AJAX post request, use those.
@@ -129,7 +129,7 @@ function bp_nouveau_ajax_querystring( $query_string, $object ) {
 	// Specific to messages
 	if ( 'messages' === $object ) {
 		if ( ! empty( $post_query['box'] ) ) {
-			$qs[] = 'box=' . $post_query['box'];
+			$qs[] = 'box=' . urlencode( $post_query['box'] );
 		}
 	}
 
@@ -520,14 +520,14 @@ function bp_nouveau_parse_hooked_options( $hook = '', $filters = array() ) {
 }
 
 /**
- * Get Dropdown filters for the current component of the one passed in params.
+ * Get Dropdawn filters for the current component of the one passed in params
  *
  * @since 3.0.0
  *
- * @param string $context   'directory', 'user' or 'group'.
- * @param string $component The BuddyPress component ID.
+ * @param string $context   'directory', 'user' or 'group'
+ * @param string $component The BuddyPress component ID
  *
- * @return array the dropdown filters.
+ * @return array the dropdown filters
  */
 function bp_nouveau_get_component_filters( $context = '', $component = '' ) {
 	$filters = array();
@@ -1430,7 +1430,7 @@ function bp_nouveau_get_submit_button( $action = '' ) {
  * @param array  $order       A list of slugs ordered (eg: array( 'profile', 'activity', etc..) )
  * @param string $parent_slug A parent slug if it's a secondary nav we are reordering (case of the Groups single item)
  *
- * @return bool False otherwise.
+ * @return bool True on success. False otherwise.
  */
 function bp_nouveau_set_nav_item_order( $nav = null, $order = array(), $parent_slug = '' ) {
 	if ( ! is_object( $nav ) || empty( $order ) || ! is_array( $order ) ) {
@@ -1665,8 +1665,8 @@ function bp_nouveau_get_theme_layout_widths() {
 		);
 	}
 
-	// Use Block Theme global settings for Block Themes.
-	if ( wp_is_block_theme() ) {
+	// `wp_get_global_settings()` has been introduced in WordPress 5.9
+	if ( function_exists( 'wp_get_global_settings' ) ) {
 		$theme_layouts = wp_get_global_settings( array( 'layout' ) );
 
 		if ( isset( $theme_layouts['wideSize'] ) && $theme_layouts['wideSize'] ) {

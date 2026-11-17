@@ -2,34 +2,28 @@
 /**
  * Backward compatibility for the $bp->bp_nav global.
  *
- * @package BuddyPress
- * @subpackage Core
  * @since 2.6.0
  * @deprecated 12.0.0
- *
- * @phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter.Found
- * @phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
  */
 
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
 /**
+ * bp_nav backward compatibility class.
+ *
  * This class is used to provide backward compatibility for extensions that access and modify
  * the $bp->bp_nav global.
- *
- * Backward compatibility class for `bp_nav`.
  *
  * @since 2.6.0
  * @deprecated 12.0.0
  */
 class BP_Core_BP_Nav_BackCompat implements ArrayAccess {
-
 	/**
 	 * Nav items.
 	 *
 	 * @since 2.6.0
-	 *
+	 * @access public
 	 * @var array
 	 */
 	public $backcompat_nav = array();
@@ -38,7 +32,7 @@ class BP_Core_BP_Nav_BackCompat implements ArrayAccess {
 	 * Component to which nav items belong.
 	 *
 	 * @since 2.6.0
-	 *
+	 * @access public
 	 * @var array
 	 */
 	public $component;
@@ -86,6 +80,7 @@ class BP_Core_BP_Nav_BackCompat implements ArrayAccess {
 	 * @deprecated 12.0.0
 	 *
 	 * @param mixed $offset Array offset.
+	 * @return BP_Core_BP_Nav_BackCompat
 	 */
 	#[ReturnTypeWillChange]
 	public function offsetGet( $offset ) {
@@ -104,6 +99,7 @@ class BP_Core_BP_Nav_BackCompat implements ArrayAccess {
 	 * @deprecated 12.0.0
 	 *
 	 * @param mixed $offset Array offset.
+	 * @return bool
 	 */
 	#[ReturnTypeWillChange]
 	public function offsetExists( $offset ) {
@@ -138,8 +134,10 @@ class BP_Core_BP_Nav_BackCompat implements ArrayAccess {
 	 *
 	 * @since 2.6.0
 	 * @deprecated 12.0.0
+	 *
+	 * @param string $component
 	 */
-	public function set_component() {
+	public function set_component( $component ) {
 		_deprecated_function( __METHOD__, '12.0.0' );
 	}
 
@@ -152,8 +150,11 @@ class BP_Core_BP_Nav_BackCompat implements ArrayAccess {
 	 *
 	 * @since 2.6.0
 	 * @deprecated 12.0.0
+	 *
+	 * @param mixed $offset Array offset.
+	 * @return string|array
 	 */
-	public function get_component() {
+	public function get_component( $offset = '' ) {
 		_deprecated_function( __METHOD__, '12.0.0' );
 	}
 
@@ -176,6 +177,7 @@ class BP_Core_BP_Nav_BackCompat implements ArrayAccess {
 	 * @deprecated 12.0.0
 	 *
 	 * @param mixed $offset Array offset.
+	 * @return bool|array
 	 */
 	protected function get_nav( $offset ) {
 		_deprecated_function( __METHOD__, '12.0.0' );
@@ -194,6 +196,7 @@ class BP_Core_BP_Nav_BackCompat implements ArrayAccess {
 	 * @deprecated 12.0.0
 	 *
 	 * @param string $offset Nav item name.
+	 * @return BP_Core_Nav
 	 */
 	protected function get_component_nav( $offset = '' ) {
 		_deprecated_function( __METHOD__, '12.0.0' );
@@ -204,6 +207,8 @@ class BP_Core_BP_Nav_BackCompat implements ArrayAccess {
 	 *
 	 * @since 2.6.0
 	 * @deprecated 12.0.0
+	 *
+	 * @return array
 	 */
 	protected function to_array() {
 		_deprecated_function( __METHOD__, '12.0.0' );

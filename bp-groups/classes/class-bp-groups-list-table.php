@@ -218,17 +218,13 @@ class BP_Groups_List_Table extends WP_List_Table {
 	 * Get an array of all the columns on the page.
 	 *
 	 * @since 1.7.0
-	 * @since 14.5.0 The list of hidden columns are set.
 	 *
 	 * @return array Array of column headers.
 	 */
 	public function get_column_info() {
-		$columns = $this->get_columns();
-		$hidden  = get_hidden_columns( $this->screen );
-
 		$this->_column_headers = array(
-			$columns,
-			$hidden,
+			$this->get_columns(),
+			array(),
 			$this->get_sortable_columns(),
 			$this->get_default_primary_column_name(),
 		);
@@ -887,7 +883,7 @@ class BP_Groups_List_Table extends WP_List_Table {
 			<select name="<?php echo esc_attr( $id_name ); ?>" id="<?php echo esc_attr( $id_name ); ?>" style="display:inline-block;float:none;">
 				<option value=""><?php esc_html_e( 'Change group type to&hellip;', 'buddypress' ) ?></option>
 
-				<?php foreach ( $types as $type ) : ?>
+				<?php foreach( $types as $type ) : ?>
 
 					<option value="<?php echo esc_attr( $type->name ); ?>"><?php echo esc_html( $type->labels['singular_name'] ); ?></option>
 

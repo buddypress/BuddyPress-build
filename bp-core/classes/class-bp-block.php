@@ -8,7 +8,9 @@
  */
 
 // Exit if accessed directly.
-defined( 'ABSPATH' ) || exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
  * BP Block Class.
@@ -16,12 +18,10 @@ defined( 'ABSPATH' ) || exit;
  * @since 6.0.0
  */
 class BP_Block {
-
 	/**
 	 * WP Block Type object.
 	 *
 	 * @since 6.0.0
-	 *
 	 * @var WP_Block_Type|WP_Error
 	 */
 	public $block;
@@ -30,7 +30,6 @@ class BP_Block {
 	 * The script types registered.
 	 *
 	 * @since 6.0.0
-	 *
 	 * @var array
 	 */
 	private $registered_scripts;
@@ -39,7 +38,6 @@ class BP_Block {
 	 * The style types registered.
 	 *
 	 * @since 6.0.0
-	 *
 	 * @var array
 	 */
 	private $registered_styles;

@@ -670,7 +670,7 @@ function bp_notifications_mark_notifications_by_ids( $ids, $is_new = false ) {
 /**
  * Mark a batch of notifications as read or unread or delete them.
  *
- * @since 14.3.4
+ * @since 12.5.3 (Backported from 14.3.4)
  *
  * @param string $user_id          Action to run on notifications.
  * @param array  $notification_ids IDs of the notifications to change.

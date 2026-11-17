@@ -37,24 +37,24 @@ defined( 'ABSPATH' ) || exit;
  *
  *          v--WordPress Actions       v--BuddyPress Sub-actions
  */
-add_action( 'admin_menu', 'bp_admin_menu' );
-add_action( 'admin_init', 'bp_admin_init' );
-add_action( 'admin_head', 'bp_admin_head' );
-add_action( 'admin_notices', 'bp_admin_notices' );
-add_action( 'admin_enqueue_scripts', 'bp_admin_enqueue_scripts' );
-add_action( 'customize_controls_enqueue_scripts', 'bp_admin_enqueue_scripts', 8 );
-add_action( 'network_admin_menu', 'bp_admin_menu' );
-add_action( 'custom_menu_order', 'bp_admin_custom_menu_order' );
-add_action( 'menu_order', 'bp_admin_menu_order' );
-add_action( 'bp_insert_site', 'bp_new_site', 10, 6 );
+add_action( 'admin_menu',                         'bp_admin_menu'                    );
+add_action( 'admin_init',                         'bp_admin_init'                    );
+add_action( 'admin_head',                         'bp_admin_head'                    );
+add_action( 'admin_notices',                      'bp_admin_notices'                 );
+add_action( 'admin_enqueue_scripts',              'bp_admin_enqueue_scripts'         );
+add_action( 'customize_controls_enqueue_scripts', 'bp_admin_enqueue_scripts', 8      );
+add_action( 'network_admin_menu',                 'bp_admin_menu'                    );
+add_action( 'custom_menu_order',                  'bp_admin_custom_menu_order'       );
+add_action( 'menu_order',                         'bp_admin_menu_order'              );
+add_action( 'bp_insert_site',                     'bp_new_site',               10, 6 );
 
 // Hook on to admin_init.
-add_action( 'bp_admin_init', 'bp_setup_updater', 1000 );
+add_action( 'bp_admin_init', 'bp_setup_updater',          1000 );
 add_action( 'bp_admin_init', 'bp_core_activation_notice', 1010 );
-add_action( 'bp_admin_init', 'bp_register_importers' );
-add_action( 'bp_admin_init', 'bp_register_admin_style' );
-add_action( 'bp_admin_init', 'bp_register_admin_settings' );
-add_action( 'bp_admin_init', 'bp_do_activation_redirect', 1 );
+add_action( 'bp_admin_init', 'bp_register_importers'           );
+add_action( 'bp_admin_init', 'bp_register_admin_style'         );
+add_action( 'bp_admin_init', 'bp_register_admin_settings'      );
+add_action( 'bp_admin_init', 'bp_do_activation_redirect',    1 );
 add_action( 'bp_admin_init', 'bp_core_set_ajax_uri_globals', 2 );
 
 // Add a new separator.
@@ -76,9 +76,8 @@ add_action( 'bp_admin_menu', 'bp_admin_separator' );
 function bp_new_site( $blog_id, $user_id, $domain, $path, $site_id, $meta ) {
 
 	// Bail if plugin is not network activated.
-	if ( ! is_plugin_active_for_network( buddypress()->basename ) ) {
+	if ( ! is_plugin_active_for_network( buddypress()->basename ) )
 		return;
-	}
 
 	// Switch to the new blog.
 	switch_to_blog( $blog_id );
@@ -107,6 +106,7 @@ function bp_new_site( $blog_id, $user_id, $domain, $path, $site_id, $meta ) {
  * Piggy back admin_init action.
  *
  * @since 1.7.0
+ *
  */
 function bp_admin_init() {
 
@@ -122,6 +122,7 @@ function bp_admin_init() {
  * Piggy back admin_menu action.
  *
  * @since 1.7.0
+ *
  */
 function bp_admin_menu() {
 
@@ -137,6 +138,7 @@ function bp_admin_menu() {
  * Piggy back admin_head action.
  *
  * @since 1.7.0
+ *
  */
 function bp_admin_head() {
 
@@ -152,6 +154,7 @@ function bp_admin_head() {
  * Piggy back admin_notices action.
  *
  * @since 1.7.0
+ *
  */
 function bp_admin_notices() {
 
@@ -168,7 +171,8 @@ function bp_admin_notices() {
  *
  * @since 1.7.0
  *
- * @param string $hook_suffix The current admin page, passed to admin_enqueue_scripts.
+ * @param string $hook_suffix The current admin page, passed to
+ *                            'admin_enqueue_scripts'.
  */
 function bp_admin_enqueue_scripts( $hook_suffix = '' ) {
 
@@ -186,6 +190,7 @@ function bp_admin_enqueue_scripts( $hook_suffix = '' ) {
  * Dedicated action to register BuddyPress importers.
  *
  * @since 1.7.0
+ *
  */
 function bp_register_importers() {
 
@@ -203,6 +208,7 @@ function bp_register_importers() {
  * Dedicated action to register admin styles.
  *
  * @since 1.7.0
+ *
  */
 function bp_register_admin_style() {
 
@@ -218,6 +224,7 @@ function bp_register_admin_style() {
  * Dedicated action to register admin settings.
  *
  * @since 1.7.0
+ *
  */
 function bp_register_admin_settings() {
 

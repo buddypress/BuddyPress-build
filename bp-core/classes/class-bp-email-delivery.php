@@ -1,16 +1,16 @@
 <?php
 /**
- * Email delivery implementation base class.
+ * Core component classes.
  *
  * @package BuddyPress
  * @subpackage Core
  */
 
-// Exit if accessed directly.
+// Exit if accessed directly
 defined( 'ABSPATH' ) || exit;
 
 /**
- * BP_Email_Delivery Interface.
+ * Email delivery implementation base class.
  *
  * When implementing support for an email delivery service into BuddyPress,
  * you are required to create a class that implements this interface.

@@ -12,11 +12,12 @@
  * Also checks to make sure this can only be accessed for the logged in users profile.
  *
  * @since 1.0.0
+ *
  */
 function xprofile_screen_edit_profile() {
 
 	if ( ! bp_is_my_profile() && ! bp_current_user_can( 'bp_moderate' ) ) {
-		return;
+		return false;
 	}
 
 	// Make sure a group is set.
@@ -170,17 +171,12 @@ function xprofile_screen_edit_profile() {
 	 */
 	do_action( 'xprofile_screen_edit_profile' );
 
-	$templates = array(
-		/**
-		 * Filters the template to load for the XProfile edit screen.
-		 *
-		 * @since 1.0.0
-		 *
-		 * @param string $template Path to the XProfile edit template to load.
-		 */
-		apply_filters( 'xprofile_template_edit_profile', 'members/single/home' ),
-		'members/single/index',
-	);
-
-	bp_core_load_template( $templates );
+	/**
+	 * Filters the template to load for the XProfile edit screen.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $template Path to the XProfile edit template to load.
+	 */
+	bp_core_load_template( apply_filters( 'xprofile_template_edit_profile', 'members/single/home' ) );
 }

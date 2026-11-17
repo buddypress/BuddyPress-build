@@ -173,8 +173,6 @@ class BP_Activity_Activity {
 	 * Populate the object with data about the specific activity item.
 	 *
 	 * @since 1.0.0
-	 *
-	 * @global wpdb $wpdb WordPress database object.
 	 */
 	public function populate() {
 		global $wpdb;
@@ -228,8 +226,6 @@ class BP_Activity_Activity {
 	 * Save the activity item to the database.
 	 *
 	 * @since 1.0.0
-	 *
-	 * @global wpdb $wpdb WordPress database object.
 	 *
 	 * @return WP_Error|bool True on success.
 	 */
@@ -353,8 +349,6 @@ class BP_Activity_Activity {
 	 *      'filter' parameter.
 	 * @see WP_Meta_Query::queries for a description of the 'meta_query'
 	 *      parameter format.
-	 *
-	 * @global wpdb $wpdb WordPress database object.
 	 *
 	 * @param array $args {
 	 *     An array of arguments. All items are optional.
@@ -887,8 +881,6 @@ class BP_Activity_Activity {
 	 *
 	 * @since 2.0.0
 	 *
-	 * @global wpdb $wpdb WordPress database object.
-	 *
 	 * @param array $activity_ids Array of activity IDs.
 	 * @return array
 	 */
@@ -1247,8 +1239,6 @@ class BP_Activity_Activity {
 	 * @since 1.2.0
 	 * @since 10.0.0 Parameters were made optional.
 	 *
-	 * @global wpdb $wpdb WordPress database object.
-	 *
 	 * @param array $args {
 	 *     An array of arguments. All items are optional.
 	 *     @type int    $user_id           User ID to filter by.
@@ -1360,8 +1350,6 @@ class BP_Activity_Activity {
 	 * Otherwise use the filters.
 	 *
 	 * @since 1.2.0
-	 *
-	 * @global wpdb $wpdb WordPress database object.
 	 *
 	 * @param array $args {
 	 *     @int    $id                Optional. The ID of a specific item to delete.
@@ -1540,13 +1528,11 @@ class BP_Activity_Activity {
 	 *
 	 * @since 1.2.0
 	 *
-	 * @global wpdb $wpdb WordPress database object.
-	 *
 	 * @deprecated 2.3.0
 	 *
 	 * @param array $activity_ids Activity IDs whose comments should be deleted.
 	 * @param bool  $delete_meta  Should we delete the activity meta items for these comments.
-	 * @return bool
+	 * @return bool True on success.
 	 */
 	public static function delete_activity_item_comments( $activity_ids = array(), $delete_meta = true ) {
 		global $wpdb;
@@ -1574,7 +1560,7 @@ class BP_Activity_Activity {
 	 * @since 1.2.0
 	 *
 	 * @param array $activity_ids Activity IDs whose meta should be deleted.
-	 * @return bool
+	 * @return bool True on success.
 	 */
 	public static function delete_activity_meta_entries( $activity_ids = array() ) {
 		$activity_ids = wp_parse_id_list( $activity_ids );
@@ -1628,7 +1614,7 @@ class BP_Activity_Activity {
 	 * @param int    $right               Right-most node boundary.
 	 * @param string $spam                Optional. 'ham_only' (default), 'spam_only' or 'all'.
 	 * @param int    $top_level_parent_id Optional. The id of the root-level parent activity item.
-	 * @return array|false The updated activities with nested comments. False if no comments are found.
+	 * @return array The updated activities with nested comments.
 	 */
 	public static function get_activity_comments( $activity_id, $left, $right, $spam = 'ham_only', $top_level_parent_id = 0 ) {
 		global $wpdb;
@@ -1743,7 +1729,7 @@ class BP_Activity_Activity {
 						$direct_parent = new BP_Activity_Activity( $parent_id );
 						if ( isset( $direct_parent->secondary_item_id ) ) {
 							// If the direct parent is not an activity update, that means we've reached
-							// the parent activity item (e.g. new_blog_post).
+							// the parent activity item (eg. new_blog_post).
 							if ( 'activity_update' !== $direct_parent->type ) {
 								$parent_id = $r->item_id;
 
@@ -1843,8 +1829,6 @@ class BP_Activity_Activity {
 	 *
 	 * @since 1.2.0
 	 *
-	 * @global wpdb $wpdb WordPress database object.
-	 *
 	 * @param bool $skip_last_activity If true, components will not be
 	 *                                 included if the only activity type associated with them is
 	 *                                 'last_activity'. (Since 2.0.0, 'last_activity' is stored in
@@ -1880,7 +1864,7 @@ class BP_Activity_Activity {
 
 		for ( $i = 0, $count = count( $activities ); $i < $count; ++$i ) {
 			$title                            = explode( '<span', $activities[$i]['content'] );
-			$activity_feed[$i]['title']       = wp_strip_all_tags( $title[0] );
+			$activity_feed[$i]['title']       = trim( strip_tags( $title[0] ) );
 			$activity_feed[$i]['link']        = $activities[$i]['primary_link'];
 			$activity_feed[$i]['description'] = @sprintf( $activities[$i]['content'], '' );
 			$activity_feed[$i]['pubdate']     = $activities[$i]['date_recorded'];
@@ -1895,8 +1879,6 @@ class BP_Activity_Activity {
 	 * @since 1.5.0
 	 *
 	 * @see BP_Activity_Activity::get_filter_sql()
-	 *
-	 * @global wpdb $wpdb WordPress database object.
 	 *
 	 * @param string     $field The database field.
 	 * @param array|bool $items The values for the IN clause, or false when none are found.
@@ -2019,8 +2001,6 @@ class BP_Activity_Activity {
 	 *
 	 * @since 1.2.0
 	 *
-	 * @global wpdb $wpdb WordPress database object.
-	 *
 	 * @return string ISO timestamp.
 	 */
 	public static function get_last_updated() {
@@ -2056,8 +2036,6 @@ class BP_Activity_Activity {
 	 *
 	 * @since 1.1.0
 	 *
-	 * @global wpdb $wpdb WordPress database object.
-	 *
 	 * @param string $content The content to filter by.
 	 * @return int|false The ID of the first matching item if found, otherwise false.
 	 */
@@ -2076,8 +2054,6 @@ class BP_Activity_Activity {
 	 *
 	 * @since 1.2.0
 	 *
-	 * @global wpdb $wpdb WordPress database object.
-	 *
 	 * @param int $user_id The ID of the user whose activity you want to mark hidden.
 	 * @return mixed
 	 */
@@ -2087,43 +2063,5 @@ class BP_Activity_Activity {
 		$bp = buddypress();
 
 		return $wpdb->get_var( $wpdb->prepare( "UPDATE {$bp->activity->table_name} SET hide_sitewide = 1 WHERE user_id = %d", $user_id ) );
-	}
-
-	/**
-	 * Recursively find a comment object from a nested comment tree.
-	 *
-	 * @since 14.5.0
-	 *
-	 * @param array $comments  Array of comment objects with nested children.
-	 * @param int   $target_id The comment ID to find.
-	 * @return object|false The comment object if found, false otherwise.
-	 */
-	public static function find_comment_in_tree( $comments, $target_id ) {
-
-		if ( ! is_array( $comments ) ) {
-			return false;
-		}
-
-		foreach ( $comments as $comment_id => $comment ) {
-			// Skip items that are not a comment object.
-			if ( ! is_numeric( $comment_id ) || ! is_object( $comment ) ) {
-				continue;
-			}
-
-			if ( (int) $comment_id === (int) $target_id ) {
-				return $comment;
-			}
-
-			// Recurse into children if they exist.
-			if ( ! empty( $comment->children ) && is_array( $comment->children ) ) {
-				$found = self::find_comment_in_tree( $comment->children, $target_id );
-
-				if ( false !== $found ) {
-					return $found;
-				}
-			}
-		}
-
-		return false;
 	}
 }

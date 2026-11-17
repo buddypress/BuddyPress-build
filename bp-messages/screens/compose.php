@@ -29,17 +29,12 @@ function messages_screen_compose() {
 	 */
 	do_action( 'messages_screen_compose' );
 
-	$templates = array(
-		/**
-		 * Filters the template to load for the Messages compose screen.
-		 *
-		 * @since 1.0.0
-		 *
-		 * @param string $template Path to the messages template to load.
-		 */
-		apply_filters( 'messages_template_compose', 'members/single/home' ),
-		'members/single/index',
-	);
-
-	bp_core_load_template( $templates );
+	/**
+	 * Filters the template to load for the Messages compose screen.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $template Path to the messages template to load.
+	 */
+	bp_core_load_template( apply_filters( 'messages_template_compose', 'members/single/home' ) );
 }
