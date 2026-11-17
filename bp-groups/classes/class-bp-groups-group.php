@@ -265,7 +265,7 @@ class BP_Groups_Group {
 	 *
 	 * @since 1.6.0
 	 *
-	 * @return bool True on success, false on failure.
+	 * @return bool
 	 */
 	public function save() {
 		global $wpdb;
@@ -386,7 +386,7 @@ class BP_Groups_Group {
 	 *
 	 * @since 1.6.0
 	 *
-	 * @return bool True on success, false on failure.
+	 * @return bool
 	 */
 	public function delete() {
 		global $wpdb;
@@ -1022,7 +1022,7 @@ class BP_Groups_Group {
 	 * @since 2.8.0 Changed `$search_terms` parameter handling and added `$search_columns` parameter.
 	 * @since 2.9.0 Added `$slug` parameter.
 	 * @since 10.0.0 Added `$date_query` parameter.
-	 * @since 12.7.3 Backported from 14.5.3 Added `$status__not_in` parameter.
+	 * @since 14.5.3 Added `$status__not_in` parameter.
 	 *
 	 * @param array $args {
 	 *     Array of parameters. All items are optional.

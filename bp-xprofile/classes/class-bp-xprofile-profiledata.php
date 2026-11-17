@@ -76,7 +76,7 @@ class BP_XProfile_ProfileData {
 	 * Populates the XProfile profile data.
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @global wpdb $wpdb WordPress database object.
 	 *
 	 * @param int $field_id Field ID to populate.
@@ -103,13 +103,14 @@ class BP_XProfile_ProfileData {
 			$this->id           = (int) $profiledata->id;
 			$this->user_id      = (int) $profiledata->user_id;
 			$this->field_id     = (int) $profiledata->field_id;
-			$this->value        = stripslashes( $profiledata->value );
 			$this->last_updated = $profiledata->last_updated;
 
+			// If the value is serializable, do not stripslashes.
+			$this->value = is_serialized( $profiledata->value ) ? $profiledata->value : stripslashes( $profiledata->value );
 		} else {
 			// When no row is found, we'll need to set these properties manually.
-			$this->field_id	    = (int) $field_id;
-			$this->user_id	    = (int) $user_id;
+			$this->field_id = (int) $field_id;
+			$this->user_id  = (int) $user_id;
 		}
 	}
 
@@ -128,12 +129,17 @@ class BP_XProfile_ProfileData {
 		// Check cache first.
 		$cache_key = "{$this->user_id}:{$this->field_id}";
 		$cached    = wp_cache_get( $cache_key, 'bp_xprofile_data' );
+		$retval    = false;
 
 		if ( $cached && ! empty( $cached->id ) ) {
 			$retval = true;
 		} else {
-			$bp     = buddypress();
-			$retval = $wpdb->get_row( $wpdb->prepare( "SELECT id FROM {$bp->profile->table_name_data} WHERE user_id = %d AND field_id = %d", $this->user_id, $this->field_id ) );
+			$bp    = buddypress();
+			$dbval = $wpdb->get_row( $wpdb->prepare( "SELECT id FROM {$bp->profile->table_name_data} WHERE user_id = %d AND field_id = %d", $this->user_id, $this->field_id ) );
+
+			if ( ! is_wp_error( $dbval ) && ! empty( $dbval ) ) {
+				$retval = true;
+			}
 		}
 
 		/**
@@ -144,7 +150,7 @@ class BP_XProfile_ProfileData {
 		 * @param bool                    $retval       Whether or not data already exists.
 		 * @param BP_XProfile_ProfileData $profile_data Instance of the current BP_XProfile_ProfileData class.
 		 */
-		return apply_filters_ref_array( 'xprofile_data_exists', array( (bool)$retval, $this ) );
+		return (bool) apply_filters_ref_array( 'xprofile_data_exists', array( $retval, $this ) );
 	}
 
 	/**
@@ -162,6 +168,10 @@ class BP_XProfile_ProfileData {
 		$bp     = buddypress();
 		$retval = $wpdb->get_row( $wpdb->prepare( "SELECT id FROM {$bp->profile->table_name_fields} WHERE id = %d", $this->field_id ) );
 
+		if ( is_wp_error( $retval ) || empty( $retval ) ) {
+			$retval = false;
+		}
+
 		/**
 		 * Filters whether or not data is for a valid field.
 		 *
@@ -170,14 +180,14 @@ class BP_XProfile_ProfileData {
 		 * @param bool                    $retval       Whether or not data is valid.
 		 * @param BP_XProfile_ProfileData $profile_data Instance of the current BP_XProfile_ProfileData class.
 		 */
-		return apply_filters_ref_array( 'xprofile_data_is_valid_field', array( (bool)$retval, $this ) );
+		return (bool) apply_filters_ref_array( 'xprofile_data_is_valid_field', array( (bool) $retval, $this ) );
 	}
 
 	/**
 	 * Save the data for the XProfile field.
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @global wpdb $wpdb WordPress database object.
 	 *
 	 * @return bool
@@ -280,7 +290,7 @@ class BP_XProfile_ProfileData {
 	 *
 	 * @global wpdb $wpdb WordPress database object.
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	public function delete() {
 		global $wpdb;
@@ -321,7 +331,7 @@ class BP_XProfile_ProfileData {
 	 * @since 2.0.0
 	 * @since 8.0.0 Checks if a null field data is an xProfile WP Field.
 	 *              Adds a new parameter `$field_type_objects` to pass the list of field type objects.
-	 * 
+	 *
 	 * @global wpdb $wpdb WordPress database object.
 	 *
 	 * @param int   $user_id            ID of user whose data is being queried.
@@ -480,7 +490,7 @@ class BP_XProfile_ProfileData {
 	 * Get the user's field data id by the id of the xprofile field.
 	 *
 	 * @since 1.6.0
-	 * 
+	 *
 	 * @global wpdb $wpdb WordPress database object.
 	 *
 	 * @param int $field_id Field ID being queried for.
@@ -515,7 +525,7 @@ class BP_XProfile_ProfileData {
 	 *
 	 * @since 1.0.0
 	 * @since 8.0.0 Checks if a null field data is an xProfile WP Field.
-	 * 
+	 *
 	 * @global wpdb $wpdb WordPress database object.
 	 *
 	 * @param int            $field_id ID of the field.
@@ -625,9 +635,9 @@ class BP_XProfile_ProfileData {
 	 * Get profile field values by field name and user ID.
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @global wpdb $wpdb WordPress database object.
-	 * 
+	 *
 	 * @deprecated 8.0.0 This function is not used anymore.
 	 *
 	 * @param array|string $fields  Field(s) to get.
@@ -694,7 +704,7 @@ class BP_XProfile_ProfileData {
 	 * Delete field.
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @global wpdb $wpdb WordPress database object.
 	 *
 	 * @param int $field_id ID of the field to delete.
@@ -716,7 +726,7 @@ class BP_XProfile_ProfileData {
 	 * Get time for last XProfile field data update by user.
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @global wpdb $wpdb WordPress database object.
 	 *
 	 * @param int $user_id User ID to get time for.
@@ -736,7 +746,7 @@ class BP_XProfile_ProfileData {
 	 * Delete all data for provided user ID.
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @global wpdb $wpdb WordPress database object.
 	 *
 	 * @param int $user_id User ID to remove data for.
@@ -764,7 +774,7 @@ class BP_XProfile_ProfileData {
 	 * Get random field type by user ID.
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @global wpdb $wpdb WordPress database object.
 	 *
 	 * @param int    $user_id          User ID to query for.
