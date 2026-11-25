@@ -16,7 +16,7 @@ defined( 'ABSPATH' ) || exit;
  * @since 1.5.0
  */
 function bp_groups_slug() {
-	echo bp_get_groups_slug();
+	echo esc_attr( bp_get_groups_slug() );
 }
 	/**
 	 * Return the groups component slug.
@@ -43,7 +43,7 @@ function bp_groups_slug() {
  * @since 1.5.0
  */
 function bp_groups_root_slug() {
-	echo bp_get_groups_root_slug();
+	echo esc_attr( bp_get_groups_root_slug() );
 }
 	/**
 	 * Return the groups component root slug.
@@ -70,7 +70,7 @@ function bp_groups_root_slug() {
  * @since 2.7.0
  */
 function bp_groups_group_type_base() {
-	echo esc_url( bp_get_groups_group_type_base() );
+	echo esc_attr( bp_get_groups_group_type_base() );
 }
 	/**
 	 * Get the group type base slug.
@@ -95,31 +95,76 @@ function bp_groups_group_type_base() {
 	}
 
 /**
- * Output group directory permalink.
+ * Output Groups directory's URL.
  *
- * @since 1.5.0
+ * @since 12.0.0
  */
-function bp_groups_directory_permalink() {
-	echo esc_url( bp_get_groups_directory_permalink() );
+function bp_groups_directory_url() {
+	echo esc_url( bp_get_groups_directory_url() );
 }
-	/**
-	 * Return group directory permalink.
-	 *
-	 * @since 1.5.0
-	 *
-	 * @return string
-	 */
-	function bp_get_groups_directory_permalink() {
 
-		/**
-		 * Filters the group directory permalink.
-		 *
-		 * @since 1.5.0
-		 *
-		 * @param string $value Permalink for the group directory.
-		 */
-		return apply_filters( 'bp_get_groups_directory_permalink', trailingslashit( bp_get_root_domain() . '/' . bp_get_groups_root_slug() ) );
+/**
+ * Returns the Groups directory's URL.
+ *
+ * @since 12.0.0
+ *
+ * @param array $path_chunks {
+ *     An array of arguments. Optional.
+ *
+ *     @type int   $create_single_item `1` to get the create a group URL.
+ *     @type array $directory_type     The group type slug.
+ * }
+ * @return string The URL built for the BP Rewrites URL parser.
+ */
+function bp_get_groups_directory_url( $path_chunks = array() ) {
+	$supported_chunks = array_fill_keys( array( 'create_single_item', 'create_single_item_variables', 'directory_type' ), true );
+
+	$path_chunks = bp_parse_args(
+		array_intersect_key( $path_chunks, $supported_chunks ),
+		array(
+			'component_id' => 'groups'
+		)
+	);
+
+	$url = bp_rewrites_get_url( $path_chunks );
+
+	/**
+	 * Filters the Groups directory's URL.
+	 *
+	 * @since 12.0.0
+	 *
+	 * @param string  $url The Groups directory's URL.
+	 * @param array   $path_chunks {
+	 *     An array of arguments. Optional.
+	 *
+	 *      @type int   $create_single_item `1` to get the create a group URL.
+	 *      @type array $directory_type     The group type slug.
+	 * }
+	 */
+	return apply_filters( 'bp_get_groups_directory_url', $url, $path_chunks );
+}
+
+/**
+ * Returns a group create URL accoding to requested path chunks.
+ *
+ * @since 12.0.0
+ *
+ * @param array $chunks array A list of create action variables.
+ * @return string The group create URL.
+ */
+function bp_groups_get_create_url( $action_variables = array() ) {
+	$path_chunks = array();
+
+	if ( is_array( $action_variables ) && $action_variables ) {
+		$path_chunks = bp_groups_get_path_chunks( $action_variables, 'create' );
+	} else {
+		$path_chunks = array(
+			'create_single_item' => 1,
+		);
 	}
+
+	return bp_get_groups_directory_url( $path_chunks );
+}
 
 /**
  * Output group type directory permalink.
@@ -155,16 +200,22 @@ function bp_group_type_directory_permalink( $group_type = '' ) {
 			return '';
 		}
 
+		$url = bp_get_groups_directory_url(
+			array(
+				'directory_type' => $type->directory_slug,
+			)
+		);
+
 		/**
 		 * Filters the group type directory permalink.
 		 *
 		 * @since 2.7.0
 		 *
-		 * @param string $value       Group type directory permalink.
+		 * @param string $url         Group type directory permalink.
 		 * @param object $type        Group type object.
 		 * @param string $member_type Group type name, as passed to the function.
 		 */
-		return apply_filters( 'bp_get_group_type_directory_permalink', trailingslashit( bp_get_groups_directory_permalink() . bp_get_groups_group_type_base() . '/' . $type->directory_slug ), $type, $group_type );
+		return apply_filters( 'bp_get_group_type_directory_permalink', $url, $type, $group_type );
 	}
 
 /**
@@ -175,6 +226,7 @@ function bp_group_type_directory_permalink( $group_type = '' ) {
  * @param string $group_type Unique group type identifier as used in bp_groups_register_group_type().
  */
 function bp_group_type_directory_link( $group_type = '' ) {
+	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo bp_get_group_type_directory_link( $group_type );
 }
 	/**
@@ -217,8 +269,12 @@ function bp_group_type_directory_link( $group_type = '' ) {
  *
  * @since 2.7.0
  * @see   bp_get_group_type_list() for parameter documentation.
+ *
+ * @param integer $group_id The group ID.
+ * @param array   $r        List parameters.
  */
 function bp_group_type_list( $group_id = 0, $r = array() ) {
+	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo bp_get_group_type_list( $group_id, $r );
 }
 	/**
@@ -363,6 +419,8 @@ function bp_group_type_list( $group_id = 0, $r = array() ) {
  * @since 2.7.0 Added `$update_admin_cache` parameter.
  * @since 7.0.0 Added `$status` parameter.
  * @since 10.0.0 Added `$date_query` parameter.
+ *
+ * @global BP_Groups_Template $groups_template The Groups template loop class.
  *
  * @param array|string $args {
  *     Array of parameters. All items are optional.
@@ -539,6 +597,8 @@ function bp_has_groups( $args = '' ) {
  *
  * @since 1.0.0
  *
+ * @global BP_Groups_Template $groups_template The Groups template loop class.
+ *
  * @return bool
  */
 function bp_groups() {
@@ -550,6 +610,8 @@ function bp_groups() {
  * Set up the current group inside the loop.
  *
  * @since 1.0.0
+ *
+ * @global BP_Groups_Template $groups_template The Groups template loop class.
  *
  * @return BP_Groups_Group
  */
@@ -599,7 +661,7 @@ function bp_group_is_visible( $group = false, $user_id = 0 ) {
  *                                                 Default: false.
  */
 function bp_group_id( $group = false ) {
-	echo bp_get_group_id( $group );
+	echo intval( bp_get_group_id( $group ) );
 }
 	/**
 	 * Get the ID of the group.
@@ -638,12 +700,15 @@ function bp_group_id( $group = false ) {
  * @param array $classes Array of custom classes.
  */
 function bp_group_class( $classes = array() ) {
+	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo bp_get_group_class( $classes );
 }
 	/**
 	 * Get the row class of the current group in the loop.
 	 *
 	 * @since 1.7.0
+	 *
+	 * @global BP_Groups_Template $groups_template The Groups template loop class.
 	 *
 	 * @param array $classes Array of custom classes.
 	 * @return string Row class of the group.
@@ -704,7 +769,7 @@ function bp_group_class( $classes = array() ) {
 		 *
 		 * @param array $classes Array of determined classes for the row.
 		 */
-		$classes = apply_filters( 'bp_get_group_class', $classes );
+		$classes = array_map( 'sanitize_html_class', apply_filters( 'bp_get_group_class', $classes ) );
 		$classes = array_merge( $classes, array() );
 		$retval = 'class="' . join( ' ', $classes ) . '"';
 
@@ -720,6 +785,8 @@ function bp_group_class( $classes = array() ) {
  *                                                Default: false.
  */
 function bp_group_name( $group = false ) {
+	// Escaping is made in `bp-groups/bp-groups-filters.php`.
+	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo bp_get_group_name( $group );
 }
 	/**
@@ -760,7 +827,7 @@ function bp_group_name( $group = false ) {
  *                                                Default: false.
  */
 function bp_group_type( $group = false ) {
-	echo bp_get_group_type( $group );
+	echo esc_html( bp_get_group_type( $group ) );
 }
 	/**
 	 * Get the type of the group.
@@ -810,7 +877,7 @@ function bp_group_type( $group = false ) {
  *                                                 Default: false.
  */
 function bp_group_status( $group = false ) {
-	echo bp_get_group_status( $group );
+	echo esc_html( bp_get_group_status( $group ) );
 }
 	/**
 	 * Get the status of the group.
@@ -854,6 +921,7 @@ function bp_group_status( $group = false ) {
  *                                                Default: false.
  */
 function bp_group_avatar( $args = '', $group = false ) {
+	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo bp_get_group_avatar( $args, $group );
 }
 	/**
@@ -958,6 +1026,7 @@ function bp_group_avatar( $args = '', $group = false ) {
  *                                                Default: false.
  */
 function bp_group_avatar_thumb( $group = false ) {
+	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo bp_get_group_avatar_thumb( $group );
 }
 	/**
@@ -988,6 +1057,7 @@ function bp_group_avatar_thumb( $group = false ) {
  *                                                Default: false.
  */
 function bp_group_avatar_mini( $group = false ) {
+	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo bp_get_group_avatar_mini( $group );
 }
 	/**
@@ -1022,7 +1092,7 @@ function bp_group_avatar_mini( $group = false ) {
  *                                                Default 'full'.
  */
 function bp_group_avatar_url( $group = false, $type = 'full' ) {
-	echo bp_get_group_avatar_url( $group, $type );
+	echo esc_url( bp_get_group_avatar_url( $group, $type ) );
 }
 	/**
 	 * Returns the group avatar URL.
@@ -1102,7 +1172,7 @@ function bp_get_group_cover_url( $group = false ) {
  * @param array|string                     $args  Optional. {@see bp_get_group_last_active()}.
  */
 function bp_group_last_active( $group = false, $args = array() ) {
-	echo bp_get_group_last_active( $group, $args );
+	echo esc_html( bp_get_group_last_active( $group, $args ) );
 }
 	/**
 	 * Return the 'last active' string for the group.
@@ -1165,44 +1235,80 @@ function bp_group_last_active( $group = false, $args = array() ) {
 	}
 
 /**
- * Output the permalink for the group.
+ * Output the URL for the group.
  *
- * @since 1.0.0
+ * @since 12.0.0
  *
  * @param false|int|string|BP_Groups_Group $group (Optional) The Group ID, the Group Slug or the Group object.
  *                                                Default: false.
+ * @param array                            $chunk (Optional) A list of slugs to append to the URL.
  */
-function bp_group_permalink( $group = false ) {
-	echo bp_get_group_permalink( $group );
-}
-	/**
-	 * Return the permalink for the group.
-	 *
-	 * @since 1.0.0
-	 * @since 10.0.0 Updated to use `bp_get_group`.
-	 *
-	 * @param false|int|string|BP_Groups_Group $group (Optional) The Group ID, the Group Slug or the Group object.
-     *                                                Default: false.
-	 * @return string
-	 */
-	function bp_get_group_permalink( $group = false ) {
-		$group = bp_get_group( $group );
+function bp_group_url( $group = false, $chunks = array() ) {
+	$path_chunks = array();
+	$chunks      = (array) $chunks;
 
-		if ( empty( $group->id ) ) {
-			return '';
-		}
-
-		/**
-		 * Filters the permalink for the group.
-		 *
-		 * @since 1.0.0
-		 * @since 2.5.0 Added the `$group` parameter.
-		 *
-		 * @param string          $permalink Permalink for the group.
-		 * @param BP_Groups_Group $group     The group object.
-		 */
-		return apply_filters( 'bp_get_group_permalink', trailingslashit( bp_get_groups_directory_permalink() . bp_get_group_slug( $group ) . '/' ), $group );
+	if ( $chunks ) {
+		$path_chunks = bp_groups_get_path_chunks( $chunks );
 	}
+
+	echo esc_url( bp_get_group_url( $group, $path_chunks ) );
+}
+
+/**
+ * Returns the Groups single item's URL.
+ *
+ * @since 12.0.0
+ *
+ * @param integer|BP_Groups_Group $group The group ID or the Group object.
+ * @param array                   $path_chunks {
+ *     An array of arguments. Optional.
+ *
+ *     @type string $single_item_action           The slug of the action to perform.
+ *     @type array  $single_item_action_variables An array of additional informations about the action to perform.
+ * }
+ * @return string The URL built for the BP Rewrites URL parser.
+ */
+function bp_get_group_url( $group = 0, $path_chunks = array() ) {
+	$url  = '';
+	$slug = groups_get_slug( $group );
+
+	if ( $group instanceof BP_Groups_Group || ( is_object( $group ) && isset( $group->id, $group->name, $group->slug ) ) ) {
+		$group_id = (int) $group->id;
+	} else {
+		$group_id = (int) $group;
+	}
+
+	if ( $slug ) {
+		$supported_chunks = array_fill_keys( array( 'single_item_action', 'single_item_action_variables' ), true );
+		$path_chunks      = bp_parse_args(
+			array_intersect_key( $path_chunks, $supported_chunks ),
+			array(
+				'component_id' => 'groups',
+				'single_item'  => $slug,
+			)
+		);
+
+		$url = bp_rewrites_get_url( $path_chunks );
+	}
+
+	/**
+	 * Filters the URL for the passed group.
+	 *
+	 * @since 12.0.0
+	 *
+	 * @param string  $url      The group url.
+	 * @param integer $group_id The group ID.
+	 * @param string  $slug     The group slug.
+	 * @param array   $path_chunks {
+	 *     An array of arguments. Optional.
+	 *
+	 *     @type string $single_item_component        The component slug the action is relative to.
+	 *     @type string $single_item_action           The slug of the action to perform.
+	 *     @type array  $single_item_action_variables An array of additional informations about the action to perform.
+	 * }
+	 */
+	return apply_filters( 'bp_get_group_url', $url, $group_id, $slug, $path_chunks );
+}
 
 /**
  * Output an HTML-formatted link for the group.
@@ -1213,6 +1319,7 @@ function bp_group_permalink( $group = false ) {
  *                                                Default: false.
  */
 function bp_group_link( $group = false ) {
+	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo bp_get_group_link( $group );
 }
 	/**
@@ -1234,7 +1341,7 @@ function bp_group_link( $group = false ) {
 
 		$link = sprintf(
 			'<a href="%s" class="bp-group-home-link %s-home-link">%s</a>',
-			esc_url( bp_get_group_permalink( $group ) ),
+			esc_url( bp_get_group_url( $group ) ),
 			esc_attr( bp_get_group_slug( $group ) ),
 			esc_html( bp_get_group_name( $group ) )
 		);
@@ -1251,44 +1358,68 @@ function bp_group_link( $group = false ) {
 	}
 
 /**
- * Output the permalink for the admin section of the group.
+ * Outputs the requested group's manage URL.
  *
- * @since 1.0.0
+ * @since 12.0.0
  *
  * @param false|int|string|BP_Groups_Group $group (Optional) The Group ID, the Group Slug or the Group object.
- *                                                Default: false.
+ *                                                 Default: false.
+ * @param array                            $chunks (Optional) A list of slugs to append to the URL.
  */
-function bp_group_admin_permalink( $group = false ) {
-	echo bp_get_group_admin_permalink( $group );
-}
-	/**
-	 * Return the permalink for the admin section of the group.
-	 *
-	 * @since 1.0.0
-	 * @since 10.0.0 Updated to use `bp_get_group`.
-	 *
-	 * @param false|int|string|BP_Groups_Group $group (Optional) The Group ID, the Group Slug or the Group object.
-     *                                                Default: false.
-	 * @return string
-	 */
-	function bp_get_group_admin_permalink( $group = false ) {
-		$group = bp_get_group( $group );
+function bp_group_manage_url( $group = false, $chunks = array() ) {
+	$path_chunks = array();
+	$chunks      = (array) $chunks;
 
-		if ( empty( $group->id ) ) {
-			return '';
-		}
-
-		/**
-		 * Filters the permalink for the admin section of the group.
-		 *
-		 * @since 1.0.0
-		 * @since 2.5.0 Added the `$group` parameter.
-		 *
-		 * @param string          $permalink Permalink for the admin section of the group.
-		 * @param BP_Groups_Group $group     The group object.
-		 */
-		return apply_filters( 'bp_get_group_admin_permalink', trailingslashit( bp_get_group_permalink( $group ) . 'admin' ), $group );
+	if ( $chunks ) {
+		$path_chunks = bp_groups_get_path_chunks( $chunks, 'manage' );
 	}
+
+	echo esc_url( bp_get_group_manage_url( $group, $path_chunks ) );
+}
+
+/**
+ * Gets the requested group's manage URL.
+ *
+ * @since 12.0.0
+ *
+ * @param false|int|string|BP_Groups_Group $group (Optional) The Group ID, the Group Slug or the Group object.
+ *                                                 Default: false.
+ * @param array                            $path_chunks {
+ *     An array of arguments. Optional.
+ *
+ *     @type array  $single_item_action_variables An array of additional informations about the action to perform.
+ * }
+ * @return string The requested group's manage URL.
+ */
+function bp_get_group_manage_url( $group = false, $path_chunks = array() ) {
+	$group = bp_get_group( $group );
+	$url   = '';
+
+	if ( empty( $group->id ) ) {
+		return $url;
+	}
+
+	$admin_chunks = array(
+		'single_item_action' => bp_rewrites_get_slug( 'groups', 'bp_group_read_admin', 'admin' ),
+	);
+
+	if ( isset( $path_chunks['single_item_action_variables'] ) ) {
+		$admin_chunks['single_item_action_variables'] = (array) $path_chunks['single_item_action_variables'];
+	}
+
+	$url = bp_get_group_url( $group, $admin_chunks );
+
+	/**
+	 * Filters the group's manage URL.
+	 *
+	 * @since 12.0.0
+	 *
+	 * @param string          $url         Permalink for the admin section of the group.
+	 * @param BP_Groups_Group $group       The group object.
+	 * @param array           $path_chunks BP Rewrites path chunks.
+	 */
+	return apply_filters( 'bp_get_group_manage_url', $url, $group, $path_chunks );
+}
 
 /**
  * Output the slug for the group.
@@ -1299,7 +1430,7 @@ function bp_group_admin_permalink( $group = false ) {
  *                                                Default: false.
  */
 function bp_group_slug( $group = false ) {
-	echo bp_get_group_slug( $group );
+	echo esc_attr( bp_get_group_slug( $group ) );
 }
 	/**
 	 * Return the slug for the group.
@@ -1339,6 +1470,8 @@ function bp_group_slug( $group = false ) {
  *                                                Default: false.
  */
 function bp_group_description( $group = false ) {
+	// Escaping is made in `bp-groups/bp-groups-filters.php`.
+	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo bp_get_group_description( $group );
 }
 	/**
@@ -1379,7 +1512,7 @@ function bp_group_description( $group = false ) {
  *                                                Default: false.
  */
 function bp_group_description_editable( $group = false ) {
-	echo bp_get_group_description_editable( $group );
+	echo esc_textarea( bp_get_group_description_editable( $group ) );
 }
 	/**
 	 * Return the permalink for the group, for use in a textarea.
@@ -1428,6 +1561,8 @@ function bp_group_description_editable( $group = false ) {
  *                                                 Default: 225.
  */
 function bp_group_description_excerpt( $group = false, $length = 225 ) {
+	// Escaping is made in `bp-groups/bp-groups-filters.php`.
+	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo bp_get_group_description_excerpt( $group, $length );
 }
 	/**
@@ -1471,7 +1606,7 @@ function bp_group_description_excerpt( $group = false, $length = 225 ) {
  * @param array|string                     $args  {@see bp_get_group_date_created()}.
  */
 function bp_group_date_created( $group = false, $args = array() ) {
-	echo bp_get_group_date_created( $group, $args );
+	echo esc_html( bp_get_group_date_created( $group, $args ) );
 }
 	/**
 	 * Return the created date of the group.
@@ -1530,6 +1665,8 @@ function bp_group_date_created( $group = false, $args = array() ) {
  *                                                Default: false.
  */
 function bp_group_creator_username( $group = false ) {
+	// Escaping is made in `bp-members/bp-members-functions.php`.
+	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo bp_get_group_creator_username( $group );
 }
 	/**
@@ -1570,7 +1707,7 @@ function bp_group_creator_username( $group = false ) {
  *                                                Default: false.
  */
 function bp_group_creator_id( $group = false ) {
-	echo bp_get_group_creator_id( $group );
+	echo intval( bp_get_group_creator_id( $group ) );
 }
 	/**
 	 * Return the user ID of the creator of the group.
@@ -1610,7 +1747,7 @@ function bp_group_creator_id( $group = false ) {
  *                                                Default: false.
  */
 function bp_group_creator_permalink( $group = false ) {
-	echo bp_get_group_creator_permalink( $group );
+	echo esc_url( bp_get_group_creator_permalink( $group ) );
 }
 	/**
 	 * Return the permalink of the creator of the group.
@@ -1638,7 +1775,7 @@ function bp_group_creator_permalink( $group = false ) {
 		 * @param string          $permalink Permalink of the group creator.
 		 * @param BP_Groups_Group $group     The group object.
 		 */
-		return apply_filters( 'bp_get_group_creator_permalink', bp_core_get_user_domain( $group->creator_id ), $group );
+		return apply_filters( 'bp_get_group_creator_permalink', bp_members_get_user_url( $group->creator_id ), $group );
 	}
 
 /**
@@ -1680,6 +1817,7 @@ function bp_is_group_creator( $group = false, $user_id = 0 ) {
  * }
  */
 function bp_group_creator_avatar( $group = false, $args = array() ) {
+	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo bp_get_group_creator_avatar( $group, $args );
 }
 	/**
@@ -1791,12 +1929,13 @@ function bp_group_is_mod() {
 function bp_group_list_admins( $group = false ) {
 	$group = bp_get_group( $group );
 
+	// phpcs:disable WordPress.Security.EscapeOutput
 	if ( ! empty( $group->admins ) ) { ?>
 		<ul id="group-admins">
 			<?php foreach ( (array) $group->admins as $admin ) { ?>
 				<li>
 					<a
-						href="<?php echo esc_url( bp_core_get_user_domain( $admin->user_id, $admin->user_nicename, $admin->user_login ) ); ?>"
+						href="<?php echo esc_url( bp_members_get_user_url( $admin->user_id ) ); ?>"
 						class="bp-tooltip"
 						data-bp-tooltip="<?php printf( ( '%s' ), bp_core_get_user_displayname( $admin->user_id ) ); ?>"
 					>
@@ -1823,6 +1962,7 @@ function bp_group_list_admins( $group = false ) {
 		</span>
 	<?php } ?>
 	<?php
+	// phpcs:enable
 }
 
 /**
@@ -1837,13 +1977,14 @@ function bp_group_list_admins( $group = false ) {
 function bp_group_list_mods( $group = false ) {
 	$group = bp_get_group( $group );
 
+	// phpcs:disable WordPress.Security.EscapeOutput
 	if ( ! empty( $group->mods ) ) :
 		?>
 		<ul id="group-mods">
 			<?php foreach ( (array) $group->mods as $mod ) { ?>
 				<li>
 					<a
-						href="<?php echo esc_url( bp_core_get_user_domain( $mod->user_id, $mod->user_nicename, $mod->user_login ) ); ?>"
+						href="<?php echo esc_url( bp_members_get_user_url( $mod->user_id ) ); ?>"
 						class="bp-tooltip"
 						data-bp-tooltip="<?php printf( ( '%s' ), bp_core_get_user_displayname( $mod->user_id ) ); ?>">
 						<?php
@@ -1869,6 +2010,7 @@ function bp_group_list_mods( $group = false ) {
 		</span>
 		<?php
 	endif;
+	// phpcs:enable
 }
 
 /**
@@ -1966,116 +2108,21 @@ function bp_group_mod_ids( $group = false, $format = 'string' ) {
 }
 
 /**
- * Output the permalink of a group's Members page.
- *
- * @since 1.0.0
- * @since 10.0.0 Added the `$group` parameter.
- *
- * @param false|int|string|BP_Groups_Group $group (Optional) The Group ID, the Group Slug or the Group object.
- *                                                Default: false.
- */
-function bp_group_all_members_permalink( $group = false ) {
-	echo bp_get_group_all_members_permalink( $group );
-}
-	/**
-	 * Return the permalink of the Members page of a group.
-	 *
-	 * @since 1.0.0
-	 * @since 10.0.0 Updated to use `bp_get_group`.
-	 *
-	 * @param false|int|string|BP_Groups_Group $group (Optional) The Group ID, the Group Slug or the Group object.
-     *                                                Default: false.
-	 * @return string
-	 */
-	function bp_get_group_all_members_permalink( $group = false ) {
-		$group = bp_get_group( $group );
-
-		if ( empty( $group->id ) ) {
-			return '';
-		}
-
-		/**
-		 * Filters the permalink of the Members page for a group.
-		 *
-		 * @since 1.0.0
-		 * @since 2.5.0 Added the `$group` parameter.
-		 *
-		 * @param string          $value Permalink of the Members page for a group.
-		 * @param BP_Groups_Group $group The group object.
-		 */
-		return apply_filters( 'bp_get_group_all_members_permalink', trailingslashit( bp_get_group_permalink( $group ) . 'members' ), $group );
-	}
-
-/**
- * Display a Groups search form.
- *
- * No longer used in BuddyPress.
- *
- * @todo Deprecate.
- */
-function bp_group_search_form() {
-
-	$action = bp_displayed_user_domain() . bp_get_groups_slug() . '/my-groups/search/';
-	$label = __('Filter Groups', 'buddypress');
-	$name = 'group-filter-box';
-
-	$search_form_html = '<form action="' . $action . '" id="group-search-form" method="post">
-		<label for="'. $name .'" id="'. $name .'-label">'. $label .'</label>
-		<input type="search" name="'. $name . '" id="'. $name .'" value="'. $value .'"'.  $disabled .' />
-
-		'. wp_nonce_field( 'group-filter-box', '_wpnonce_group_filter', true, false ) .'
-		</form>';
-
-	echo apply_filters( 'bp_group_search_form', $search_form_html );
-}
-
-/**
- * Determine whether the displayed user has no groups.
- *
- * No longer used in BuddyPress.
- *
- * @todo Deprecate.
- *
- * @return bool True if the displayed user has no groups, otherwise false.
- */
-function bp_group_show_no_groups_message() {
-	if ( !groups_total_groups_for_user( bp_displayed_user_id() ) ) {
-		return true;
-	}
-
-	return false;
-}
-
-/**
- * Determine whether the current page is a group activity permalink.
- *
- * No longer used in BuddyPress.
- *
- * @todo Deprecate.
- *
- * @return bool True if this is a group activity permalink, otherwise false.
- */
-function bp_group_is_activity_permalink() {
-
-	if ( !bp_is_single_item() || !bp_is_groups_component() || !bp_is_current_action( bp_get_activity_slug() ) ) {
-		return false;
-	}
-
-	return true;
-}
-
-/**
  * Output the pagination HTML for a group loop.
  *
  * @since 1.2.0
  */
 function bp_groups_pagination_links() {
+	// Escaping is done in WordPress's `paginate_links()` function.
+	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo bp_get_groups_pagination_links();
 }
 	/**
 	 * Get the pagination HTML for a group loop.
 	 *
 	 * @since 1.2.0
+	 *
+	 * @global BP_Groups_Template $groups_template The Groups template loop class.
 	 *
 	 * @return string
 	 */
@@ -2098,12 +2145,14 @@ function bp_groups_pagination_links() {
  * @since 1.2.0
  */
 function bp_groups_pagination_count() {
-	echo bp_get_groups_pagination_count();
+	echo esc_html( bp_get_groups_pagination_count() );
 }
 	/**
 	 * Generate the "Viewing x-y of z groups" pagination message.
 	 *
 	 * @since 1.5.0
+	 *
+	 * @global BP_Groups_Template $groups_template The Groups template loop class.
 	 *
 	 * @return string
 	 */
@@ -2166,7 +2215,7 @@ function bp_groups_auto_join() {
  *                                                Default: false.
  */
 function bp_group_total_members( $group = false ) {
-	echo bp_get_group_total_members( $group );
+	echo intval( bp_get_group_total_members( $group ) );
 }
 	/**
 	 * Get the total member count for a group.
@@ -2206,7 +2255,7 @@ function bp_group_total_members( $group = false ) {
  *                                                Default: false.
  */
 function bp_group_member_count( $group = false ) {
-	echo bp_get_group_member_count( $group );
+	echo esc_html( bp_get_group_member_count( $group ) );
 }
 	/**
 	 * Generate the "x members" count string for a group.
@@ -2255,7 +2304,7 @@ function bp_group_member_count( $group = false ) {
  *                                                Default: false.
  */
 function bp_group_forum_permalink( $group = false ) {
-	echo bp_get_group_forum_permalink( $group );
+	echo esc_url( bp_get_group_forum_permalink( $group ) );
 }
 	/**
 	 * Generate the URL of the Forum page of a group.
@@ -2268,11 +2317,8 @@ function bp_group_forum_permalink( $group = false ) {
 	 * @return string
 	 */
 	function bp_get_group_forum_permalink( $group = false ) {
-		$group = bp_get_group( $group );
-
-		if ( empty( $group->id ) ) {
-			return '';
-		}
+		$path_chunks = bp_groups_get_path_chunks( array( 'forum' ) );
+		$url         = bp_get_group_url( $group, $path_chunks );
 
 		/**
 		 * Filters the URL of the Forum page of a group.
@@ -2283,7 +2329,7 @@ function bp_group_forum_permalink( $group = false ) {
 		 * @param string          $value URL permalink for the Forum Page.
 		 * @param BP_Groups_Group $group The group object.
 		 */
-		return apply_filters( 'bp_get_group_forum_permalink', trailingslashit( bp_get_group_permalink( $group ) . 'forum' ), $group );
+		return apply_filters( 'bp_get_group_forum_permalink', $url, $group );
 	}
 
 /**
@@ -2451,221 +2497,6 @@ function bp_groups_user_can_send_invites( $group_id = 0, $user_id = 0 ) {
 }
 
 /**
- * Since BuddyPress 1.0, this generated the group settings admin/member screen.
- * As of BuddyPress 1.5 (r4489), and because this function outputs HTML, it was moved into /bp-default/groups/single/admin.php.
- *
- * @deprecated 1.5
- * @deprecated No longer used.
- * @since 1.0.0
- * @todo Remove in 1.4
- *
- * @param bool $admin_list
- * @param bool $group
- */
-function bp_group_admin_memberlist( $admin_list = false, $group = false ) {
-	global $groups_template;
-
-	_deprecated_function( __FUNCTION__, '1.5', 'No longer used. See /bp-default/groups/single/admin.php' );
-
-	if ( empty( $group ) ) {
-		$group =& $groups_template->group;
-	}
-
-
-	if ( $admins = groups_get_group_admins( $group->id ) ) : ?>
-
-		<ul id="admins-list" class="item-list<?php if ( !empty( $admin_list ) ) : ?> single-line<?php endif; ?>">
-
-		<?php foreach ( (array) $admins as $admin ) { ?>
-
-			<?php if ( !empty( $admin_list ) ) : ?>
-
-			<li>
-
-				<?php
-				echo bp_core_fetch_avatar(
-					array(
-						'item_id' => $admin->user_id,
-						'type'    => 'thumb',
-						'width'   => 30,
-						'height'  => 30,
-						'alt'     => sprintf(
-							/* translators: %s: member name */
-							__( 'Profile picture of %s', 'buddypress' ),
-							bp_core_get_user_displayname( $admin->user_id )
-						),
-					)
-				);
-				?>
-
-				<h5>
-
-					<?php echo bp_core_get_userlink( $admin->user_id ); ?>
-
-					<span class="small">
-						<a class="button confirm admin-demote-to-member" href="<?php bp_group_member_demote_link($admin->user_id) ?>"><?php _e( 'Demote to Member', 'buddypress' ) ?></a>
-					</span>
-				</h5>
-			</li>
-
-			<?php else : ?>
-
-			<li>
-
-				<?php
-				echo bp_core_fetch_avatar(
-					array(
-						'item_id' => $admin->user_id,
-						'type'    => 'thumb',
-						'alt'     => sprintf(
-							/* translators: %s: member name */
-							__( 'Profile picture of %s', 'buddypress' ),
-							bp_core_get_user_displayname( $admin->user_id )
-						),
-					)
-				);
-				?>
-
-				<h5><?php echo bp_core_get_userlink( $admin->user_id ) ?></h5>
-				<span class="activity">
-					<?php
-					/* translators: %s: human time diff */
-					echo bp_core_get_last_activity( strtotime( $admin->date_modified ), __( 'joined %s', 'buddypress') );
-					?>
-				</span>
-
-				<?php if ( bp_is_active( 'friends' ) ) : ?>
-
-					<div class="action">
-
-						<?php bp_add_friend_button( $admin->user_id ); ?>
-
-					</div>
-
-				<?php endif; ?>
-
-			</li>
-
-			<?php endif;
-		} ?>
-
-		</ul>
-
-	<?php else : ?>
-
-		<div id="message" class="info">
-			<p><?php _e( 'This group has no administrators', 'buddypress' ); ?></p>
-		</div>
-
-	<?php endif;
-}
-
-/**
- * Generate the HTML for a list of group moderators.
- *
- * No longer used.
- *
- * @todo Deprecate.
- *
- * @param bool $admin_list
- * @param bool $group
- */
-function bp_group_mod_memberlist( $admin_list = false, $group = false ) {
-	global $groups_template;
-
-	if ( empty( $group ) ) {
-		$group =& $groups_template->group;
-	}
-
-	if ( $group_mods = groups_get_group_mods( $group->id ) ) { ?>
-
-		<ul id="mods-list" class="item-list<?php if ( $admin_list ) { ?> single-line<?php } ?>">
-
-		<?php foreach ( (array) $group_mods as $mod ) { ?>
-
-			<?php if ( !empty( $admin_list ) ) { ?>
-
-			<li>
-
-				<?php
-				/* translators: %s: member name */
-				echo bp_core_fetch_avatar(
-					array(
-						'item_id' => $mod->user_id,
-						'type' => 'thumb',
-						'width' => 30,
-						'height' => 30,
-						'alt' => sprintf(
-							/* translators: %s: member name */
-							__( 'Profile picture of %s', 'buddypress' ),
-							bp_core_get_user_displayname( $mod->user_id )
-						),
-					)
-				);
-				?>
-
-				<h5>
-					<?php echo bp_core_get_userlink( $mod->user_id ); ?>
-
-					<span class="small">
-						<a href="<?php bp_group_member_promote_admin_link( array( 'user_id' => $mod->user_id ) ) ?>" class="button confirm mod-promote-to-admin"><?php _e( 'Promote to Admin', 'buddypress' ); ?></a>
-						<a class="button confirm mod-demote-to-member" href="<?php bp_group_member_demote_link($mod->user_id) ?>"><?php _e( 'Demote to Member', 'buddypress' ) ?></a>
-					</span>
-				</h5>
-			</li>
-
-			<?php } else { ?>
-
-			<li>
-
-				<?php
-				echo bp_core_fetch_avatar(
-					array(
-						'item_id' => $mod->user_id,
-						'type'    => 'thumb',
-						'alt'     => sprintf(
-							/* translators: %s: member name */
-							__( 'Profile picture of %s', 'buddypress' ),
-							bp_core_get_user_displayname( $mod->user_id )
-						),
-					)
-				);
-				?>
-
-				<h5><?php echo bp_core_get_userlink( $mod->user_id ) ?></h5>
-
-				<span class="activity">
-					<?php
-					/* translators: %s: human time diff */
-					echo bp_core_get_last_activity( strtotime( $mod->date_modified ), __( 'joined %s', 'buddypress') );
-					?>
-				</span>
-
-				<?php if ( bp_is_active( 'friends' ) ) : ?>
-
-					<div class="action">
-						<?php bp_add_friend_button( $mod->user_id ) ?>
-					</div>
-
-				<?php endif; ?>
-
-			</li>
-
-			<?php } ?>
-		<?php } ?>
-
-		</ul>
-
-	<?php } else { ?>
-
-		<div id="message" class="info">
-			<p><?php _e( 'This group has no moderators', 'buddypress' ); ?></p>
-		</div>
-
-	<?php }
-}
-
-/**
  * Determine whether a group has moderators.
  *
  * @since 1.0.0
@@ -2702,12 +2533,15 @@ function bp_group_has_moderators( $group = false ) {
  * @param array|string $args See {@link bp_get_group_member_promote_mod_link()}.
  */
 function bp_group_member_promote_mod_link( $args = '' ) {
-	echo bp_get_group_member_promote_mod_link( $args );
+	echo esc_url( bp_get_group_member_promote_mod_link( $args ) );
 }
 	/**
 	 * Generate a URL for promoting a user to moderator.
 	 *
 	 * @since 1.1.0
+	 *
+	 * @global BP_Groups_Template       $groups_template  The Groups template loop class.
+	 * @global BP_Core_Members_Template $members_template The Members template loop class.
 	 *
 	 * @param array|string $args {
 	 *     @type int    $user_id ID of the member to promote. Default:
@@ -2728,16 +2562,22 @@ function bp_group_member_promote_mod_link( $args = '' ) {
 			'group_member_promote_mod_link'
 		);
 
-		extract( $r, EXTR_SKIP );
+		$url = wp_nonce_url(
+			bp_get_group_manage_url(
+				$r['group'],
+				bp_groups_get_path_chunks( array( 'manage-members', 'promote', 'mod', $r['user_id'] ), 'manage' )
+			),
+			'groups_promote_member'
+		);
 
 		/**
 		 * Filters a URL for promoting a user to moderator.
 		 *
 		 * @since 1.1.0
 		 *
-		 * @param string $value URL to use for promoting a user to moderator.
+		 * @param string $url URL to use for promoting a user to moderator.
 		 */
-		return apply_filters( 'bp_get_group_member_promote_mod_link', wp_nonce_url( trailingslashit( bp_get_group_permalink( $group ) . 'admin/manage-members/promote/mod/' . $user_id ), 'groups_promote_member' ) );
+		return apply_filters( 'bp_get_group_member_promote_mod_link', $url );
 	}
 
 /**
@@ -2748,12 +2588,15 @@ function bp_group_member_promote_mod_link( $args = '' ) {
  * @param array|string $args See {@link bp_get_group_member_promote_admin_link()}.
  */
 function bp_group_member_promote_admin_link( $args = '' ) {
-	echo bp_get_group_member_promote_admin_link( $args );
+	echo esc_url( bp_get_group_member_promote_admin_link( $args ) );
 }
 	/**
 	 * Generate a URL for promoting a user to admin.
 	 *
 	 * @since 1.1.0
+	 *
+	 * @global BP_Groups_Template       $groups_template  The Groups template loop class.
+	 * @global BP_Core_Members_Template $members_template The Members template loop class.
 	 *
 	 * @param array|string $args {
 	 *     @type int    $user_id ID of the member to promote. Default:
@@ -2774,16 +2617,22 @@ function bp_group_member_promote_admin_link( $args = '' ) {
 			'group_member_promote_admin_link'
 		);
 
-		extract( $r, EXTR_SKIP );
+		$url = wp_nonce_url(
+			bp_get_group_manage_url(
+				$r['group'],
+				bp_groups_get_path_chunks( array( 'manage-members', 'promote', 'admin', $r['user_id'] ), 'manage' )
+			),
+			'groups_promote_member'
+		);
 
 		/**
 		 * Filters a URL for promoting a user to admin.
 		 *
 		 * @since 1.1.0
 		 *
-		 * @param string $value URL to use for promoting a user to admin.
+		 * @param string $url URL to use for promoting a user to admin.
 		 */
-		return apply_filters( 'bp_get_group_member_promote_admin_link', wp_nonce_url( trailingslashit( bp_get_group_permalink( $group ) . 'admin/manage-members/promote/admin/' . $user_id ), 'groups_promote_member' ) );
+		return apply_filters( 'bp_get_group_member_promote_admin_link', $url );
 	}
 
 /**
@@ -2797,13 +2646,15 @@ function bp_group_member_promote_admin_link( $args = '' ) {
  *                                                  Default: false.
  */
 function bp_group_member_demote_link( $user_id = 0, $group = false ) {
-	echo bp_get_group_member_demote_link( $user_id, $group );
+	echo esc_url( bp_get_group_member_demote_link( $user_id, $group ) );
 }
 	/**
 	 * Generate a URL for demoting a user to member.
 	 *
 	 * @since 1.0.0
 	 * @since 10.0.0 Updated to use `bp_get_group`.
+	 *
+	 * @global BP_Core_Members_Template $members_template The Members template loop class.
 	 *
 	 * @param int                              $user_id ID of the member to demote. Default: 0.
 	 * @param false|int|string|BP_Groups_Group $group (Optional) The Group ID, the Group Slug or the Group object.
@@ -2813,15 +2664,17 @@ function bp_group_member_demote_link( $user_id = 0, $group = false ) {
 	function bp_get_group_member_demote_link( $user_id = 0, $group = false ) {
 		global $members_template;
 
-		$group = bp_get_group( $group );
-
-		if ( empty( $group->id ) ) {
-			return '';
-		}
-
 		if ( ! $user_id ) {
 			$user_id = $members_template->member->user_id;
 		}
+
+		$url = wp_nonce_url(
+			bp_get_group_manage_url(
+				$group,
+				bp_groups_get_path_chunks( array( 'manage-members', 'demote', $user_id ), 'manage' )
+			),
+			'groups_demote_member'
+		);
 
 		/**
 		 * Filters a URL for demoting a user to member.
@@ -2830,16 +2683,11 @@ function bp_group_member_demote_link( $user_id = 0, $group = false ) {
 		 * @since 2.5.0  Added the `$group` parameter.
 		 * @since 10.0.0 Added the `$user_id` parameter.
 		 *
-		 * @param string          $value   URL to use for demoting a user to member.
+		 * @param string          $url     URL to use for demoting a user to member.
 		 * @param BP_Groups_Group $group   The group object.
 		 * @param int             $user_id The user ID.
 		 */
-		return apply_filters(
-			'bp_get_group_member_demote_link',
-			wp_nonce_url( trailingslashit( bp_get_group_permalink( $group ) . 'admin/manage-members/demote/' . $user_id ), 'groups_demote_member' ),
-			$group,
-			$user_id
-		);
+		return apply_filters( 'bp_get_group_member_demote_link', $url, $group, $user_id );
 	}
 
 /**
@@ -2853,13 +2701,15 @@ function bp_group_member_demote_link( $user_id = 0, $group = false ) {
  *                                                  Default: false.
  */
 function bp_group_member_ban_link( $user_id = 0, $group = false ) {
-	echo bp_get_group_member_ban_link( $user_id, $group );
+	echo esc_url( bp_get_group_member_ban_link( $user_id, $group ) );
 }
 	/**
 	 * Generate a URL for banning a member from a group.
 	 *
 	 * @since 1.0.0
 	 * @since 10.0.0 Updated to use `bp_get_group`.
+	 *
+	 * @global BP_Core_Members_Template $members_template The Members template loop class.
 	 *
 	 * @param int                              $user_id ID of the member to ban. Default: 0.
 	 * @param false|int|string|BP_Groups_Group $group   (Optional) The Group ID, the Group Slug or the Group object.
@@ -2869,15 +2719,17 @@ function bp_group_member_ban_link( $user_id = 0, $group = false ) {
 	function bp_get_group_member_ban_link( $user_id = 0, $group = false ) {
 		global $members_template;
 
-		$group = bp_get_group( $group );
-
-		if ( empty( $group->id ) ) {
-			return '';
-		}
-
 		if ( ! $user_id ) {
 			$user_id = $members_template->member->user_id;
 		}
+
+		$url = wp_nonce_url(
+			bp_get_group_manage_url(
+				$group,
+				bp_groups_get_path_chunks( array( 'manage-members', 'ban', $user_id ), 'manage' )
+			),
+			'groups_ban_member'
+		);
 
 		/**
 		 * Filters a URL for banning a member from a group.
@@ -2889,12 +2741,7 @@ function bp_group_member_ban_link( $user_id = 0, $group = false ) {
 		 * @param BP_Groups_Group $group   The group object.
 		 * @param int             $user_id The user ID.
 		 */
-		return apply_filters(
-			'bp_get_group_member_ban_link',
-			wp_nonce_url( trailingslashit( bp_get_group_permalink( $group ) . 'admin/manage-members/ban/' . $user_id ), 'groups_ban_member' ),
-			$group,
-			$user_id
-		);
+		return apply_filters( 'bp_get_group_member_ban_link', $url, $group, $user_id );
 	}
 
 /**
@@ -2908,13 +2755,15 @@ function bp_group_member_ban_link( $user_id = 0, $group = false ) {
  *                                                  Default: false.
  */
 function bp_group_member_unban_link( $user_id = 0, $group = false ) {
-	echo bp_get_group_member_unban_link( $user_id, $group );
+	echo esc_url( bp_get_group_member_unban_link( $user_id, $group ) );
 }
 	/**
 	 * Generate a URL for unbanning a member from a group.
 	 *
 	 * @since 1.0.0
 	 * @since 10.0.0 Updated to use `bp_get_group`.
+	 *
+	 * @global BP_Core_Members_Template $members_template The Members template loop class.
 	 *
 	 * @param int                              $user_id ID of the member to unban. Default: 0.
 	 * @param false|int|string|BP_Groups_Group $group   (Optional) The Group ID, the Group Slug or the Group object.
@@ -2924,15 +2773,17 @@ function bp_group_member_unban_link( $user_id = 0, $group = false ) {
 	function bp_get_group_member_unban_link( $user_id = 0, $group = false ) {
 		global $members_template;
 
-		$group = bp_get_group( $group );
-
-		if ( empty( $group->id ) ) {
-			return '';
-		}
-
 		if ( ! $user_id ) {
 			$user_id = $members_template->member->user_id;
 		}
+
+		$url = wp_nonce_url(
+			bp_get_group_manage_url(
+				$group,
+				bp_groups_get_path_chunks( array( 'manage-members', 'unban', $user_id ), 'manage' )
+			),
+			'groups_unban_member'
+		);
 
 		/**
 		 * Filters a URL for unbanning a member from a group.
@@ -2944,12 +2795,7 @@ function bp_group_member_unban_link( $user_id = 0, $group = false ) {
 		 * @param BP_Groups_Group $group   The group object.
 		 * @param int             $user_id The user ID.
 		 */
-		return apply_filters(
-			'bp_get_group_member_unban_link',
-			wp_nonce_url( trailingslashit( bp_get_group_permalink( $group ) . 'admin/manage-members/unban/' . $user_id ), 'groups_unban_member' ),
-			$group,
-			$user_id
-		);
+		return apply_filters( 'bp_get_group_member_unban_link', $url, $group, $user_id );
 	}
 
 /**
@@ -2963,13 +2809,15 @@ function bp_group_member_unban_link( $user_id = 0, $group = false ) {
  *                                                  Default: false.
  */
 function bp_group_member_remove_link( $user_id = 0, $group = false ) {
-	echo bp_get_group_member_remove_link( $user_id, $group );
+	echo esc_url( bp_get_group_member_remove_link( $user_id, $group ) );
 }
 	/**
 	 * Generate a URL for removing a member from a group.
 	 *
 	 * @since 1.2.6
 	 * @since 10.0.0 Updated to use `bp_get_group`.
+	 *
+	 * @global BP_Core_Members_Template $members_template The Members template loop class.
 	 *
 	 * @param int                              $user_id ID of the member to remove. Default: 0.
 	 * @param false|int|string|BP_Groups_Group $group   (Optional) The Group ID, the Group Slug or the Group object.
@@ -2979,15 +2827,17 @@ function bp_group_member_remove_link( $user_id = 0, $group = false ) {
 	function bp_get_group_member_remove_link( $user_id = 0, $group = false ) {
 		global $members_template;
 
-		$group = bp_get_group( $group );
-
-		if ( empty( $group->id ) ) {
-			return '';
-		}
-
 		if ( ! $user_id ) {
 			$user_id = $members_template->member->user_id;
 		}
+
+		$url = wp_nonce_url(
+			bp_get_group_manage_url(
+				$group,
+				bp_groups_get_path_chunks( array( 'manage-members', 'remove', $user_id ), 'manage' )
+			),
+			'groups_remove_member'
+		);
 
 		/**
 		 * Filters a URL for removing a member from a group.
@@ -2996,22 +2846,19 @@ function bp_group_member_remove_link( $user_id = 0, $group = false ) {
 		 * @since 2.5.0  Added the `$group` parameter.
 		 * @since 10.0.0 Added the `$user_id` parameter.
 		 *
-		 * @param string          $value   URL to use for removing a member.
+		 * @param string          $url     URL to use for removing a member.
 		 * @param BP_Groups_Group $group   The group object.
 		 * @param int             $user_id The user ID.
 		 */
-		return apply_filters(
-			'bp_get_group_member_remove_link',
-			wp_nonce_url( trailingslashit( bp_get_group_permalink( $group ) . 'admin/manage-members/remove/' . $user_id ), 'groups_remove_member' ),
-			$group,
-			$user_id
-		);
+		return apply_filters( 'bp_get_group_member_remove_link', $url, $group, $user_id );
 	}
 
 /**
  * HTML admin subnav items for group pages.
  *
  * @since 1.0.0
+ *
+ * @global BP_Core_Members_Template $members_template The Members template loop class.
  *
  * @param object|bool $group Optional. Group object.
  *                           Default: current group in the loop.
@@ -3062,7 +2909,7 @@ function bp_group_admin_tabs_backcompat( $subnav_output = '', $subnav_item = '',
 	ob_end_clean();
 
 	if ( ! empty( $admin_tabs_backcompat ) ) {
-		_doing_it_wrong( "do_action( 'groups_admin_tabs' )", __( 'This action should not be used directly. Please use the BuddyPress Group Extension API to generate Manage tabs.', 'buddypress' ), '2.2.0' );
+		_doing_it_wrong( "do_action( 'groups_admin_tabs' )", esc_html__( 'This action should not be used directly. Please use the BuddyPress Group Extension API to generate Manage tabs.', 'buddypress' ), '2.2.0' );
 		$subnav_output .= $admin_tabs_backcompat;
 	}
 
@@ -3075,7 +2922,7 @@ function bp_group_admin_tabs_backcompat( $subnav_output = '', $subnav_item = '',
  * @since 1.1.0
  */
 function bp_group_total_for_member() {
-	echo bp_get_group_total_for_member();
+	echo intval( bp_get_group_total_for_member() );
 }
 	/**
 	 * Get the group count for the displayed user.
@@ -3107,7 +2954,7 @@ function bp_group_total_for_member() {
  *                                                Default: false.
  */
 function bp_group_form_action( $page, $group = false ) {
-	echo bp_get_group_form_action( $page, $group );
+	echo esc_url( bp_get_group_form_action( $page, $group ) );
 }
 	/**
 	 * Generate the 'action' attribute for a group form.
@@ -3122,9 +2969,18 @@ function bp_group_form_action( $page, $group = false ) {
 	 */
 	function bp_get_group_form_action( $page, $group = false ) {
 		$group = bp_get_group( $group );
+		$url   = '';
 
 		if ( empty( $group->id ) || empty( $page ) ) {
-			return '';
+			return $url;
+		}
+
+		$screens = bp_get_group_screens( 'read' );
+		if ( isset( $screens[ $page ]['rewrite_id'] ) ) {
+			$url = bp_get_group_url(
+				$group,
+				bp_groups_get_path_chunks( array( $page ) )
+			);
 		}
 
 		/**
@@ -3133,11 +2989,11 @@ function bp_group_form_action( $page, $group = false ) {
 		 * @since 1.0.0
 		 * @since 2.5.0 Added the `$group` parameter.
 		 *
-		 * @param string          $value Action attribute for a group form.
+		 * @param string          $url   Action attribute for a group form.
 		 * @param BP_Groups_Group $group The group object.
 		 * @param int|string|bool $page  Page slug.
 		 */
-		return apply_filters( 'bp_group_form_action', trailingslashit( bp_get_group_permalink( $group ) . $page ), $group, $page );
+		return apply_filters( 'bp_group_form_action', $url, $group, $page );
 	}
 
 /**
@@ -3151,7 +3007,7 @@ function bp_group_form_action( $page, $group = false ) {
  *                                                Default: false.
  */
 function bp_group_admin_form_action( $page = false, $group = false ) {
-	echo bp_get_group_admin_form_action( $page, $group );
+	echo esc_url( bp_get_group_admin_form_action( $page, $group ) );
 }
 	/**
 	 * Generate the 'action' attribute for a group admin form.
@@ -3166,13 +3022,22 @@ function bp_group_admin_form_action( $page = false, $group = false ) {
 	 */
 	function bp_get_group_admin_form_action( $page = false, $group = false ) {
 		$group = bp_get_group( $group );
+		$url   = '';
 
 		if ( empty( $group->id ) ) {
-			return '';
+			return $url;
 		}
 
 		if ( empty( $page ) ) {
 			$page = bp_action_variable( 0 );
+		}
+
+		$screens = bp_get_group_screens( 'manage' );
+		if ( isset( $screens[ $page ]['rewrite_id'] ) ) {
+			$url = bp_get_group_manage_url(
+				$group,
+				bp_groups_get_path_chunks( array( $page ), 'manage' )
+			);
 		}
 
 		/**
@@ -3182,11 +3047,11 @@ function bp_group_admin_form_action( $page = false, $group = false ) {
 		 * @since 2.5.0  Added the `$group` parameter.
 		 * @since 10.0.0 Added the `$page` parameter.
 		 *
-		 * @param string          $value Action attribute for a group admin form.
+		 * @param string          $url   Action attribute for a group admin form.
 		 * @param BP_Groups_Group $group The group object.
 		 * @param int|string|bool $page  Page slug.
 		 */
-		return apply_filters( 'bp_group_admin_form_action', trailingslashit( bp_get_group_permalink( $group ) . 'admin/' . $page ), $group, $page );
+		return apply_filters( 'bp_group_admin_form_action', $url, $group, $page );
 	}
 
 /**
@@ -3214,7 +3079,7 @@ function bp_group_has_requested_membership( $group = false ) {
  *
  * @since 1.0.0
  *
- * @global object $groups_template
+ * @global BP_Groups_Template $groups_template The Groups template loop class.
  *
  * @param object|bool $group Optional. Group to check is_member.
  *                           Default: current group in the loop.
@@ -3248,6 +3113,8 @@ function bp_group_is_member( $group = false ) {
  * Check whether the current user has an outstanding invite to the current group in the loop.
  *
  * @since 2.1.0
+ *
+ * @global BP_Core_Members_Template $members_template The Members template loop class.
  *
  * @param object|bool $group Optional. Group data object.
  *                           Default: the current group in the groups loop.
@@ -3287,7 +3154,7 @@ function bp_group_is_invited( $group = false ) {
  *
  * @since 1.5.0
  *
- * @global BP_Groups_Template $groups_template Group template loop object.
+ * @global BP_Groups_Template $groups_template The Groups template loop class.
  *
  * @param BP_Groups_Group|bool $group   Group to check if user is banned.
  * @param int                  $user_id The user ID to check.
@@ -3342,12 +3209,14 @@ function bp_group_is_user_banned( $group = false, $user_id = 0 ) {
  * @since 1.0.0
  */
 function bp_group_accept_invite_link() {
-	echo bp_get_group_accept_invite_link();
+	echo esc_url( bp_get_group_accept_invite_link() );
 }
 	/**
 	 * Generate the URL for accepting an invitation to a group.
 	 *
 	 * @since 1.0.0
+	 *
+	 * @global BP_Groups_Template $groups_template The Groups template loop class.
 	 *
 	 * @param object|bool $group Optional. Group object.
 	 *                           Default: Current group in the loop.
@@ -3360,10 +3229,15 @@ function bp_group_accept_invite_link() {
 			$group =& $groups_template->group;
 		}
 
-		$user_domain = bp_loggedin_user_domain();
+		$path_chunks = bp_members_get_path_chunks( array( bp_get_groups_slug(), 'invites', array( 'accept', $group->id ) ) );
+
 		if ( bp_is_user() ) {
-			$user_domain = bp_displayed_user_domain();
+			$user_domain = bp_displayed_user_url( $path_chunks );
+		} else {
+			$user_domain = bp_loggedin_user_url( $path_chunks );
 		}
+
+		$url = wp_nonce_url( $user_domain, 'groups_accept_invite' );
 
 		/**
 		 * Filters the URL for accepting an invitation to a group.
@@ -3371,10 +3245,10 @@ function bp_group_accept_invite_link() {
 		 * @since 1.0.0
 		 * @since 2.5.0 Added the `$group` parameter.
 		 *
-		 * @param string $value URL for accepting an invitation to a group.
+		 * @param string $url   URL for accepting an invitation to a group.
 		 * @param object $group Group object.
 		 */
-		return apply_filters( 'bp_get_group_accept_invite_link', wp_nonce_url( trailingslashit( $user_domain . bp_get_groups_slug() . '/invites/accept/' . $group->id ), 'groups_accept_invite' ), $group );
+		return apply_filters( 'bp_get_group_accept_invite_link', $url, $group );
 	}
 
 /**
@@ -3383,12 +3257,14 @@ function bp_group_accept_invite_link() {
  * @since 1.0.0
  */
 function bp_group_reject_invite_link() {
-	echo bp_get_group_reject_invite_link();
+	echo esc_url( bp_get_group_reject_invite_link() );
 }
 	/**
 	 * Generate the URL for rejecting an invitation to a group.
 	 *
 	 * @since 1.0.0
+	 *
+	 * @global BP_Groups_Template $groups_template The Groups template loop class.
 	 *
 	 * @param object|bool $group Optional. Group object.
 	 *                           Default: Current group in the loop.
@@ -3401,10 +3277,15 @@ function bp_group_reject_invite_link() {
 			$group =& $groups_template->group;
 		}
 
-		$user_domain = bp_loggedin_user_domain();
+		$path_chunks = bp_members_get_path_chunks( array( bp_get_groups_slug(), 'invites', array( 'reject', $group->id ) ) );
+
 		if ( bp_is_user() ) {
-			$user_domain = bp_displayed_user_domain();
+			$user_domain = bp_displayed_user_url( $path_chunks );
+		} else {
+			$user_domain = bp_loggedin_user_url( $path_chunks );
 		}
+
+		$url = wp_nonce_url( $user_domain, 'groups_reject_invite' );
 
 		/**
 		 * Filters the URL for rejecting an invitation to a group.
@@ -3412,10 +3293,10 @@ function bp_group_reject_invite_link() {
 		 * @since 1.0.0
 		 * @since 2.5.0 Added the `$group` parameter.
 		 *
-		 * @param string $value URL for rejecting an invitation to a group.
+		 * @param string $url   URL for rejecting an invitation to a group.
 		 * @param object $group Group object.
 		 */
-		return apply_filters( 'bp_get_group_reject_invite_link', wp_nonce_url( trailingslashit( $user_domain . bp_get_groups_slug() . '/invites/reject/' . $group->id ), 'groups_reject_invite' ), $group );
+		return apply_filters( 'bp_get_group_reject_invite_link', $url, $group );
 	}
 
 /**
@@ -3424,12 +3305,14 @@ function bp_group_reject_invite_link() {
  * @since 1.0.0
  */
 function bp_group_leave_confirm_link() {
-	echo bp_get_group_leave_confirm_link();
+	echo esc_url( bp_get_group_leave_confirm_link() );
 }
 	/**
 	 * Generate the URL for confirming a request to leave a group.
 	 *
 	 * @since 1.0.0
+	 *
+	 * @global BP_Groups_Template $groups_template The Groups template loop class.
 	 *
 	 * @param object|bool $group Optional. Group object.
 	 *                           Default: Current group in the loop.
@@ -3442,16 +3325,24 @@ function bp_group_leave_confirm_link() {
 			$group =& $groups_template->group;
 		}
 
+		$url = wp_nonce_url(
+			bp_get_group_url(
+				$group,
+				bp_groups_get_path_chunks( array( 'leave-group', 'yes' ) )
+			),
+			'groups_leave_group'
+		);
+
 		/**
 		 * Filters the URL for confirming a request to leave a group.
 		 *
 		 * @since 1.0.0
 		 * @since 2.5.0 Added the `$group` parameter.
 		 *
-		 * @param string $value URL for confirming a request to leave a group.
+		 * @param string $url   URL for confirming a request to leave a group.
 		 * @param object $group Group object.
 		 */
-		return apply_filters( 'bp_group_leave_confirm_link', wp_nonce_url( trailingslashit( bp_get_group_permalink( $group ) . 'leave-group/yes' ), 'groups_leave_group' ), $group );
+		return apply_filters( 'bp_group_leave_confirm_link', $url, $group );
 	}
 
 /**
@@ -3460,12 +3351,14 @@ function bp_group_leave_confirm_link() {
  * @since 1.0.0
  */
 function bp_group_leave_reject_link() {
-	echo bp_get_group_leave_reject_link();
+	echo esc_url( bp_get_group_leave_reject_link() );
 }
 	/**
 	 * Generate the URL for rejecting a request to leave a group.
 	 *
 	 * @since 1.0.0
+	 *
+	 * @global BP_Groups_Template $groups_template The Groups template loop class.
 	 *
 	 * @param object|bool $group Optional. Group object.
 	 *                           Default: Current group in the loop.
@@ -3487,7 +3380,7 @@ function bp_group_leave_reject_link() {
 		 * @param string $value URL for rejecting a request to leave a group.
 		 * @param object $group Group object.
 		 */
-		return apply_filters( 'bp_get_group_leave_reject_link', bp_get_group_permalink( $group ), $group );
+		return apply_filters( 'bp_get_group_leave_reject_link', bp_get_group_url( $group ), $group );
 	}
 
 /**
@@ -3496,12 +3389,14 @@ function bp_group_leave_reject_link() {
  * @since 1.0.0
  */
 function bp_group_send_invite_form_action() {
-	echo bp_get_group_send_invite_form_action();
+	echo esc_url( bp_get_group_send_invite_form_action() );
 }
 	/**
 	 * Output the 'action' attribute for a group send invite form.
 	 *
 	 * @since 1.0.0
+	 *
+	 * @global BP_Groups_Template $groups_template The Groups template loop class.
 	 *
 	 * @param object|bool $group Optional. Group object.
 	 *                           Default: current group in the loop.
@@ -3514,6 +3409,11 @@ function bp_group_send_invite_form_action() {
 			$group =& $groups_template->group;
 		}
 
+		$url = bp_get_group_url(
+			$group,
+			bp_groups_get_path_chunks( array( 'send-invites', 'send' ) )
+		);
+
 		/**
 		 * Filters the 'action' attribute for a group send invite form.
 		 *
@@ -3523,13 +3423,15 @@ function bp_group_send_invite_form_action() {
 		 * @param string $value Action attribute for a group send invite form.
 		 * @param object $group Group object.
 		 */
-		return apply_filters( 'bp_group_send_invite_form_action', trailingslashit( bp_get_group_permalink( $group ) . 'send-invites/send' ), $group );
+		return apply_filters( 'bp_group_send_invite_form_action', $url, $group );
 	}
 
 /**
  * Determine whether the current user has friends to invite to a group.
  *
  * @since 1.0.0
+ *
+ * @global BP_Groups_Template $groups_template The Groups template loop class.
  *
  * @param object|bool $group Optional. Group object.
  *                           Default: current group in the loop.
@@ -3538,7 +3440,7 @@ function bp_group_send_invite_form_action() {
 function bp_has_friends_to_invite( $group = false ) {
 	global $groups_template;
 
-	if ( !bp_is_active( 'friends' ) ) {
+	if ( ! bp_is_active( 'friends' ) ) {
 		return false;
 	}
 
@@ -3561,6 +3463,8 @@ function bp_has_friends_to_invite( $group = false ) {
  * @param object|bool $group Single group object.
  */
 function bp_group_join_button( $group = false ) {
+	// Escaping is done in `BP_Core_HTML_Element()`.
+	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo bp_get_group_join_button( $group );
 }
 
@@ -3598,6 +3502,14 @@ function bp_group_join_button( $group = false ) {
 				return $button_args;
 			}
 
+			$url = wp_nonce_url(
+				bp_get_group_url(
+					$group,
+					bp_groups_get_path_chunks( array( 'leave-group' ) )
+				),
+				'groups_leave_group'
+			);
+
 			// Setup button attributes.
 			$button_args = array(
 				'id'                => 'leave_group',
@@ -3606,7 +3518,7 @@ function bp_group_join_button( $group = false ) {
 				'block_self'        => false,
 				'wrapper_class'     => 'group-button ' . $group->status,
 				'wrapper_id'        => 'groupbutton-' . $group->id,
-				'link_href'         => wp_nonce_url( trailingslashit( bp_get_group_permalink( $group ) . 'leave-group' ), 'groups_leave_group' ),
+				'link_href'         => $url,
 				'link_text'         => __( 'Leave Group', 'buddypress' ),
 				'link_title'        => __( 'Leave Group', 'buddypress' ),
 				'link_class'        => 'group-button leave-group',
@@ -3621,6 +3533,14 @@ function bp_group_join_button( $group = false ) {
 					return $button_args;
 
 				case 'public':
+					$url = wp_nonce_url(
+						bp_get_group_url(
+							$group,
+							bp_groups_get_path_chunks( array( 'join' ) )
+						),
+						'groups_join_group'
+					);
+
 					$button_args = array(
 						'id'                => 'join_group',
 						'component'         => 'groups',
@@ -3628,7 +3548,7 @@ function bp_group_join_button( $group = false ) {
 						'block_self'        => false,
 						'wrapper_class'     => 'group-button ' . $group->status,
 						'wrapper_id'        => 'groupbutton-' . $group->id,
-						'link_href'         => wp_nonce_url( trailingslashit( bp_get_group_permalink( $group ) . 'join' ), 'groups_join_group' ),
+						'link_href'         => $url,
 						'link_text'         => __( 'Join Group', 'buddypress' ),
 						'link_title'        => __( 'Join Group', 'buddypress' ),
 						'link_class'        => 'group-button join-group',
@@ -3647,7 +3567,7 @@ function bp_group_join_button( $group = false ) {
 							'block_self'        => false,
 							'wrapper_class'     => 'group-button ' . $group->status,
 							'wrapper_id'        => 'groupbutton-' . $group->id,
-							'link_href'         => add_query_arg( 'redirect_to', bp_get_group_permalink( $group ), bp_get_group_accept_invite_link( $group ) ),
+							'link_href'         => add_query_arg( 'redirect_to', bp_get_group_url( $group ), bp_get_group_accept_invite_link( $group ) ),
 							'link_text'         => __( 'Accept Invitation', 'buddypress' ),
 							'link_title'        => __( 'Accept Invitation', 'buddypress' ),
 							'link_class'        => 'group-button accept-invite',
@@ -3663,7 +3583,7 @@ function bp_group_join_button( $group = false ) {
 							'block_self'        => false,
 							'wrapper_class'     => 'group-button pending ' . $group->status,
 							'wrapper_id'        => 'groupbutton-' . $group->id,
-							'link_href'         => bp_get_group_permalink( $group ),
+							'link_href'         => bp_get_group_url( $group ),
 							'link_text'         => __( 'Request Sent', 'buddypress' ),
 							'link_title'        => __( 'Request Sent', 'buddypress' ),
 							'link_class'        => 'group-button pending membership-requested',
@@ -3672,6 +3592,14 @@ function bp_group_join_button( $group = false ) {
 					// Member has not requested membership yet -
 					// show a "Request Membership" button.
 					} else {
+						$url = wp_nonce_url(
+							bp_get_group_url(
+								$group,
+								bp_groups_get_path_chunks( array( 'request-membership' ) )
+							),
+							'groups_request_membership'
+						);
+
 						$button_args = array(
 							'id'                => 'request_membership',
 							'component'         => 'groups',
@@ -3679,7 +3607,7 @@ function bp_group_join_button( $group = false ) {
 							'block_self'        => false,
 							'wrapper_class'     => 'group-button ' . $group->status,
 							'wrapper_id'        => 'groupbutton-' . $group->id,
-							'link_href'         => wp_nonce_url( trailingslashit( bp_get_group_permalink( $group ) . 'request-membership' ), 'groups_request_membership' ),
+							'link_href'         => $url,
 							'link_text'         => __( 'Request Membership', 'buddypress' ),
 							'link_title'        => __( 'Request Membership', 'buddypress' ),
 							'link_class'        => 'group-button request-membership',
@@ -3707,6 +3635,8 @@ function bp_group_join_button( $group = false ) {
 	 * @since 1.0.0
 	 * @since 11.0.0 uses `bp_groups_get_group_join_button_args()`.
 	 *
+	 * @global BP_Groups_Template $groups_template The Groups template loop class.
+	 *
 	 * @param object|bool $group Single group object.
 	 * @return false|string
 	 */
@@ -3733,6 +3663,8 @@ function bp_group_join_button( $group = false ) {
  * @since 2.0.0
  */
 function bp_group_create_button() {
+	// Escaping is done in `BP_Core_HTML_Element()`.
+	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo bp_get_group_create_button();
 }
 	/**
@@ -3756,7 +3688,7 @@ function bp_group_create_button() {
 			'component'  => 'groups',
 			'link_text'  => __( 'Create a Group', 'buddypress' ),
 			'link_class' => 'group-create no-ajax',
-			'link_href'  => trailingslashit( bp_get_groups_directory_permalink() . 'create' ),
+			'link_href'  => bp_groups_get_create_url(),
 			'wrapper'    => false,
 			'block_self' => false,
 		);
@@ -3779,6 +3711,8 @@ function bp_group_create_button() {
  * @since 2.2.0
  */
 function bp_group_create_nav_item() {
+	// Escaping is done in `BP_Core_HTML_Element()`.
+	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo bp_get_group_create_nav_item();
 }
 	/**
@@ -3838,7 +3772,7 @@ add_action( 'bp_groups_directory_group_filter', 'bp_group_backcompat_create_nav_
  *
  * @since 1.0.0
  *
- * @global BP_Groups_Template $groups_template Groups template object.
+ * @global BP_Groups_Template $groups_template The Groups template loop class.
  *
  * @param object|null $group Group to get status message for. Optional; defaults to current group.
  */
@@ -3894,7 +3828,7 @@ function bp_group_status_message( $group = null ) {
 	 * @param string $message Message to display to the current user.
 	 * @param object $group   Group to get status message for.
 	 */
-	echo apply_filters( 'bp_group_status_message', $message, $group );
+	echo esc_html( apply_filters( 'bp_group_status_message', $message, $group ) );
 }
 
 /**
@@ -3926,7 +3860,7 @@ function bp_group_hidden_fields() {
  * @since 1.0.0
  */
 function bp_total_group_count() {
-	echo bp_get_total_group_count();
+	echo intval( bp_get_total_group_count() );
 }
 	/**
 	 * Return the total number of groups.
@@ -3955,7 +3889,7 @@ function bp_total_group_count() {
  * @param int $user_id User ID to get group membership count.
  */
 function bp_total_group_count_for_user( $user_id = 0 ) {
-	echo bp_get_total_group_count_for_user( $user_id );
+	echo intval( bp_get_total_group_count_for_user( $user_id ) );
 }
 	/**
 	 * Return the total number of groups a user belongs to.
@@ -3987,6 +3921,8 @@ function bp_total_group_count_for_user( $user_id = 0 ) {
  * Initialize a group member query loop.
  *
  * @since 1.0.0
+ *
+ * @global BP_Core_Members_Template $members_template The Members template loop class.
  *
  * @param array|string $args {
  *     An array of optional arguments.
@@ -4073,7 +4009,11 @@ function bp_group_has_members( $args = '' ) {
 }
 
 /**
+ * The list of group members.
+ *
  * @since 1.0.0
+ *
+ * @global BP_Core_Members_Template $members_template The Members template loop class.
  *
  * @return mixed
  */
@@ -4084,7 +4024,11 @@ function bp_group_members() {
 }
 
 /**
+ * The current Member being iterated on.
+ *
  * @since 1.0.0
+ *
+ * @global BP_Core_Members_Template $members_template The Members template loop class.
  *
  * @return mixed
  */
@@ -4102,12 +4046,15 @@ function bp_group_the_member() {
  * @param array|string $args {@see bp_core_fetch_avatar()}.
  */
 function bp_group_member_avatar( $args = '' ) {
+	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo bp_get_group_member_avatar( $args );
 }
 	/**
 	 * Return the group member avatar while in the groups members loop.
 	 *
 	 * @since 1.0.0
+	 *
+	 * @global BP_Core_Members_Template $members_template The Members template loop class.
 	 *
 	 * @param array|string $args {@see bp_core_fetch_avatar()}.
 	 * @return string
@@ -4145,12 +4092,15 @@ function bp_group_member_avatar( $args = '' ) {
  * @param array|string $args {@see bp_core_fetch_avatar()}.
  */
 function bp_group_member_avatar_thumb( $args = '' ) {
+	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo bp_get_group_member_avatar_thumb( $args );
 }
 	/**
 	 * Return the group member avatar while in the groups members loop.
 	 *
 	 * @since 1.0.0
+	 *
+	 * @global BP_Core_Members_Template $members_template The Members template loop class.
 	 *
 	 * @param array|string $args {@see bp_core_fetch_avatar()}.
 	 * @return string
@@ -4189,12 +4139,15 @@ function bp_group_member_avatar_thumb( $args = '' ) {
  * @param int $height Height of avatar to fetch.
  */
 function bp_group_member_avatar_mini( $width = 30, $height = 30 ) {
+	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo bp_get_group_member_avatar_mini( $width, $height );
 }
 	/**
 	 * Output the group member avatar while in the groups members loop.
 	 *
 	 * @since 1.0.0
+	 *
+	 * @global BP_Core_Members_Template $members_template The Members template loop class.
 	 *
 	 * @param int $width  Width of avatar to fetch.
 	 * @param int $height Height of avatar to fetch.
@@ -4228,13 +4181,19 @@ function bp_group_member_avatar_mini( $width = 30, $height = 30 ) {
 	}
 
 /**
+ * Outputs the group member name.
+ *
  * @since 1.0.0
  */
 function bp_group_member_name() {
-	echo bp_get_group_member_name();
+	echo esc_html( bp_get_group_member_name() );
 }
 	/**
+	 * Returns the group member's name.
+	 *
 	 * @since 1.0.0
+	 *
+	 * @global BP_Core_Members_Template $members_template The Members template loop class.
 	 *
 	 * @return mixed|void
 	 */
@@ -4252,13 +4211,19 @@ function bp_group_member_name() {
 	}
 
 /**
+ * Outputs the group member's URL.
+ *
  * @since 1.0.0
  */
 function bp_group_member_url() {
-	echo bp_get_group_member_url();
+	echo esc_url( bp_get_group_member_url() );
 }
 	/**
+	 * Returns the group member's URL.
+	 *
 	 * @since 1.0.0
+	 *
+	 * @global BP_Core_Members_Template $members_template The Members template loop class.
 	 *
 	 * @return mixed|void
 	 */
@@ -4272,17 +4237,24 @@ function bp_group_member_url() {
 		 *
 		 * @param string $value URL for the current user.
 		 */
-		return apply_filters( 'bp_get_group_member_url', bp_core_get_user_domain( $members_template->member->user_id, $members_template->member->user_nicename, $members_template->member->user_login ) );
+		return apply_filters( 'bp_get_group_member_url', bp_members_get_user_url( $members_template->member->user_id ) );
 	}
 
 /**
+ * Outputs the group member's link.
+ *
  * @since 1.0.0
  */
 function bp_group_member_link() {
+	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo bp_get_group_member_link();
 }
 	/**
+	 * Returns the group member's link.
+	 *
 	 * @since 1.0.0
+	 *
+	 * @global BP_Core_Members_Template $members_template The Members template loop class.
 	 *
 	 * @return mixed|void
 	 */
@@ -4296,17 +4268,23 @@ function bp_group_member_link() {
 		 *
 		 * @param string $value HTML link for the current user.
 		 */
-		return apply_filters( 'bp_get_group_member_link', '<a href="' . bp_core_get_user_domain( $members_template->member->user_id, $members_template->member->user_nicename, $members_template->member->user_login ) . '">' . $members_template->member->display_name . '</a>' );
+		return apply_filters( 'bp_get_group_member_link', '<a href="' . esc_url( bp_members_get_user_url( $members_template->member->user_id ) ) . '">' . esc_html( $members_template->member->display_name ) . '</a>' );
 	}
 
 /**
+ * Outputs the group member's domain.
+ *
  * @since 1.2.0
  */
 function bp_group_member_domain() {
-	echo bp_get_group_member_domain();
+	echo esc_url( bp_get_group_member_domain() );
 }
 	/**
+	 * Returns the group member's domain.
+	 *
 	 * @since 1.2.0
+	 *
+	 * @global BP_Core_Members_Template $members_template The Members template loop class.
 	 *
 	 * @return mixed|void
 	 */
@@ -4320,17 +4298,23 @@ function bp_group_member_domain() {
 		 *
 		 * @param string $value Domain for the current user.
 		 */
-		return apply_filters( 'bp_get_group_member_domain', bp_core_get_user_domain( $members_template->member->user_id, $members_template->member->user_nicename, $members_template->member->user_login ) );
+		return apply_filters( 'bp_get_group_member_domain', bp_members_get_user_url( $members_template->member->user_id ) );
 	}
 
 /**
+ * Outputs the group member's friendship status with logged in user.
+ *
  * @since 1.2.0
  */
 function bp_group_member_is_friend() {
-	echo bp_get_group_member_is_friend();
+	echo esc_html( bp_get_group_member_is_friend() );
 }
 	/**
+	 * Retruns the group member's friendship status with logged in user.
+	 *
 	 * @since 1.2.0
+	 *
+	 * @global BP_Core_Members_Template $members_template The Members template loop class.
 	 *
 	 * @return mixed|void
 	 */
@@ -4361,12 +4345,15 @@ function bp_group_member_is_friend() {
  * @since 1.0.0
  */
 function bp_group_member_is_banned() {
+	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo bp_get_group_member_is_banned();
 }
 	/**
 	 * Check whether the member is banned from the current group.
 	 *
 	 * @since 1.0.0
+	 *
+	 * @global BP_Core_Members_Template $members_template The Members template loop class.
 	 *
 	 * @return bool
 	 */
@@ -4403,7 +4390,7 @@ function bp_group_member_css_class() {
 		 *
 		 * @param string $value HTML class to add.
 		 */
-		echo apply_filters( 'bp_group_member_css_class', 'banned-user' );
+		echo esc_attr( apply_filters( 'bp_group_member_css_class', 'banned-user' ) );
 	}
 }
 
@@ -4417,13 +4404,15 @@ function bp_group_member_css_class() {
  * @return string|null
  */
 function bp_group_member_joined_since( $args = array() ) {
-	echo bp_get_group_member_joined_since( $args );
+	echo esc_html( bp_get_group_member_joined_since( $args ) );
 }
 	/**
 	 * Return the joined date for the current member in the group member loop.
 	 *
 	 * @since 1.0.0
 	 * @since 2.7.0 Added $args as a parameter.
+	 *
+	 * @global BP_Core_Members_Template $members_template The Members template loop class.
 	 *
 	 * @param array|string $args {
 	 *     Array of optional parameters.
@@ -4473,12 +4462,14 @@ function bp_group_member_joined_since( $args = array() ) {
  * @since 1.0.0
  */
 function bp_group_member_id() {
-	echo bp_get_group_member_id();
+	echo intval( bp_get_group_member_id() );
 }
 	/**
 	 * Get group member from current group.
 	 *
 	 * @since 1.0.0
+	 *
+	 * @global BP_Core_Members_Template $members_template The Members template loop class.
 	 *
 	 * @return int
 	 */
@@ -4500,7 +4491,11 @@ function bp_group_member_id() {
 	}
 
 /**
+ * Do the list of group members needs a pagination?
+ *
  * @since 1.0.0
+ *
+ * @global BP_Core_Members_Template $members_template The Members template loop class.
  *
  * @return bool
  */
@@ -4514,7 +4509,7 @@ function bp_group_member_needs_pagination() {
  * @since 1.0.0
  */
 function bp_group_pag_id() {
-	echo bp_get_group_pag_id();
+	echo esc_attr( bp_get_group_pag_id() );
 }
 	/**
 	 * @since 1.0.0
@@ -4534,14 +4529,22 @@ function bp_group_pag_id() {
 	}
 
 /**
+ * Outputs the group members list pagination links.
+ *
  * @since 1.0.0
  */
 function bp_group_member_pagination() {
+	// Escaping is done in WordPress's `paginate_links()` function.
+	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo bp_get_group_member_pagination();
 	wp_nonce_field( 'bp_groups_member_list', '_member_pag_nonce' );
 }
 	/**
-	 * @since 1.0.0
+	 * Returns the group members list pagination links.
+	 *
+	 *  @since 1.0.0
+	 *
+	 * @global BP_Core_Members_Template $members_template The Members template loop class.
 	 *
 	 * @return mixed|void
 	 */
@@ -4559,13 +4562,19 @@ function bp_group_member_pagination() {
 	}
 
 /**
+ * Outputs the group members list pagination count.
+ *
  * @since 1.0.0
  */
 function bp_group_member_pagination_count() {
-	echo bp_get_group_member_pagination_count();
+	echo esc_html( bp_get_group_member_pagination_count() );
 }
 	/**
+	 * Returns the group members list pagination count.
+	 *
 	 * @since 1.0.0
+	 *
+	 * @global BP_Core_Members_Template $members_template The Members template loop class.
 	 *
 	 * @return mixed|void
 	 */
@@ -4598,14 +4607,22 @@ function bp_group_member_pagination_count() {
 	}
 
 /**
+ * Outputs the group members list pagination links inside the Group's Manage screen.
+ *
  * @since 1.0.0
  */
 function bp_group_member_admin_pagination() {
+	// Escaping is done in WordPress's `paginate_links()` function.
+	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo bp_get_group_member_admin_pagination();
 	wp_nonce_field( 'bp_groups_member_admin_list', '_member_admin_pag_nonce' );
 }
 	/**
+	 * Returns the group members list pagination links inside the Group's Manage screen.
+	 *
 	 * @since 1.0.0
+	 *
+	 * @global BP_Core_Members_Template $members_template The Members template loop class.
 	 *
 	 * @return mixed
 	 */
@@ -4729,10 +4746,12 @@ function bp_groups_members_template_part() {
 		</ul>
 	</div>
 
-	<h2 class="bp-screen-reader-text"><?php
-		/* translators: accessibility text */
-		_e( 'Members', 'buddypress' );
-	?></h2>
+	<h2 class="bp-screen-reader-text">
+		<?php
+			/* translators: accessibility text */
+			esc_html_e( 'Members', 'buddypress' );
+		?>
+	</h2>
 
 	<div id="members-group-list" class="group_members dir-list">
 
@@ -4750,16 +4769,16 @@ function bp_groups_members_template_part() {
 function bp_groups_members_filter() {
 	?>
 	<li id="group_members-order-select" class="last filter">
-		<label for="group_members-order-by"><?php _e( 'Order By:', 'buddypress' ); ?></label>
+		<label for="group_members-order-by"><?php esc_html_e( 'Order By:', 'buddypress' ); ?></label>
 		<select id="group_members-order-by">
-			<option value="last_joined"><?php _e( 'Newest', 'buddypress' ); ?></option>
-			<option value="first_joined"><?php _e( 'Oldest', 'buddypress' ); ?></option>
+			<option value="last_joined"><?php esc_html_e( 'Newest', 'buddypress' ); ?></option>
+			<option value="first_joined"><?php esc_html_e( 'Oldest', 'buddypress' ); ?></option>
 
 			<?php if ( bp_is_active( 'activity' ) ) : ?>
-				<option value="group_activity"><?php _e( 'Group Activity', 'buddypress' ); ?></option>
+				<option value="group_activity"><?php esc_html_e( 'Group Activity', 'buddypress' ); ?></option>
 			<?php endif; ?>
 
-			<option value="alphabetical"><?php _e( 'Alphabetical', 'buddypress' ); ?></option>
+			<option value="alphabetical"><?php esc_html_e( 'Alphabetical', 'buddypress' ); ?></option>
 
 			<?php
 
@@ -4818,32 +4837,47 @@ function bp_user_can_create_groups() {
 }
 
 /**
- * @since 1.0.0
+ * Outputs the Group creation tabs.
  *
- * @return bool
+ * @since 1.0.0
  */
 function bp_group_creation_tabs() {
-	$bp = buddypress();
+	$bp           = buddypress();
+	$create_steps = $bp->groups->group_creation_steps;
 
-	if ( !is_array( $bp->groups->group_creation_steps ) ) {
+	if ( ! is_array( $create_steps ) ) {
 		return false;
 	}
 
-	if ( !bp_get_groups_current_create_step() ) {
-		$keys = array_keys( $bp->groups->group_creation_steps );
+	if ( ! bp_get_groups_current_create_step() ) {
+		$keys                            = array_keys( $create_steps );
 		$bp->groups->current_create_step = array_shift( $keys );
 	}
 
 	$counter = 1;
 
-	foreach ( (array) $bp->groups->group_creation_steps as $slug => $step ) {
-		$is_enabled = bp_are_previous_group_creation_steps_complete( $slug ); ?>
+	foreach ( (array) $create_steps as $create_step => $step ) {
+		$is_enabled    = bp_are_previous_group_creation_steps_complete( $create_step );
+		$current_class = '';
+		$step_name     = $step['name'];
 
-		<li<?php if ( bp_get_groups_current_create_step() == $slug ) : ?> class="current"<?php endif; ?>><?php if ( $is_enabled ) : ?><a href="<?php bp_groups_directory_permalink(); ?>create/step/<?php echo $slug ?>/"><?php else: ?><span><?php endif; ?><?php echo $counter ?>. <?php echo $step['name'] ?><?php if ( $is_enabled ) : ?></a><?php else: ?></span><?php endif ?></li><?php
+		if ( bp_get_groups_current_create_step() === $create_step ) {
+			$current_class = ' class="current"';
+		}
+
+		if ( $is_enabled && isset( $create_steps[ $create_step ]['rewrite_id'], $create_steps[ $create_step ]['default_slug'] ) ) {
+			$url = bp_groups_get_create_url( array( $create_steps[ $create_step ]['default_slug'] ) );
+
+			$step_name = sprintf( '<a href="%1$s">%2$s. %3$s</a>', esc_url( $url ), absint( $counter ), esc_html( $step_name ) );
+		} else {
+			$step_name = sprintf( '<span>%1$s. %2$s</span>', absint( $counter ), esc_html( $step_name ) );
+		}
+
+		// phpcs:ignore WordPress.Security.EscapeOutput
+		printf( '<li%1$s>%2$s</li>', $current_class, $step_name );
 		$counter++;
+		unset( $is_enabled );
 	}
-
-	unset( $is_enabled );
 
 	/**
 	 * Fires at the end of the creation of the group tabs.
@@ -4854,39 +4888,56 @@ function bp_group_creation_tabs() {
 }
 
 /**
+ * Output the group creation step's title.
+ *
  * @since 1.0.0
  */
 function bp_group_creation_stage_title() {
 	$bp = buddypress();
 
-	/**
-	 * Filters the group creation stage title.
-	 *
-	 * @since 1.1.0
-	 *
-	 * @param string $value HTML markup for the group creation stage title.
-	 */
-	echo apply_filters( 'bp_group_creation_stage_title', '<span>&mdash; ' . $bp->groups->group_creation_steps[bp_get_groups_current_create_step()]['name'] . '</span>' );
+	// phpcs:ignore WordPress.Security.EscapeOutput
+	echo apply_filters(
+		/**
+		 * Filters the group creation stage title.
+		 *
+		 * @since 1.1.0
+		 *
+		 * @param string $value HTML markup for the group creation stage title.
+		 */
+		'bp_group_creation_stage_title',
+		'<span>&mdash; ' . esc_html( $bp->groups->group_creation_steps[bp_get_groups_current_create_step()]['name'] ) . '</span>'
+	);
 }
 
 /**
+ * Output the group's creation form action URL.
+ *
  * @since 1.1.0
  */
 function bp_group_creation_form_action() {
-	echo bp_get_group_creation_form_action();
+	echo esc_url( bp_get_group_creation_form_action() );
 }
 
 /**
+ * Get the group's creation form action URL.
+ *
  * @since 1.1.0
  *
- * @return mixed|void
+ * @return string The group's creation form action URL.
  */
 	function bp_get_group_creation_form_action() {
-		$bp = buddypress();
+		$bp           = buddypress();
+		$create_steps = $bp->groups->group_creation_steps;
+		$url          = '';
 
-		if ( !bp_action_variable( 1 ) ) {
-			$keys = array_keys( $bp->groups->group_creation_steps );
+		if ( ! bp_action_variable( 1 ) ) {
+			$keys = array_keys( $create_steps );
 			$bp->action_variables[1] = array_shift( $keys );
+		}
+
+		$create_step  = bp_action_variable( 1 );
+		if ( $create_step && isset( $create_steps[ $create_step ]['rewrite_id'], $create_steps[ $create_step ]['default_slug'] ) ) {
+			$url = bp_groups_get_create_url( array( $create_steps[ $create_step ]['default_slug'] ) );
 		}
 
 		/**
@@ -4894,15 +4945,17 @@ function bp_group_creation_form_action() {
 		 *
 		 * @since 1.1.0
 		 *
-		 * @param string $value Action to be used with group creation form.
+		 * @param string $url Action to be used with group creation form.
 		 */
-		return apply_filters( 'bp_get_group_creation_form_action', trailingslashit( bp_get_groups_directory_permalink() . 'create/step/' . bp_action_variable( 1 ) ) );
+		return apply_filters( 'bp_get_group_creation_form_action', $url );
 	}
 
 /**
+ * Check the requested creation step is the current one.
+ *
  * @since 1.1.0
  *
- * @param string $step_slug
+ * @param string $step_slug The group creation step's slug.
  *
  * @return bool
  */
@@ -4917,14 +4970,14 @@ function bp_is_group_creation_step( $step_slug ) {
 
 	// If this the first step, we can just accept and return true.
 	$keys = array_keys( $bp->groups->group_creation_steps );
-	if ( !bp_action_variable( 1 ) && array_shift( $keys ) == $step_slug ) {
+	if ( ! bp_action_variable( 1 ) && array_shift( $keys ) == $step_slug ) {
 		return true;
 	}
 
 	// Before allowing a user to see a group creation step we must make sure
 	// previous steps are completed.
-	if ( !bp_is_first_group_creation_step() ) {
-		if ( !bp_are_previous_group_creation_steps_complete( $step_slug ) ) {
+	if ( ! bp_is_first_group_creation_step() ) {
+		if ( ! bp_are_previous_group_creation_steps_complete( $step_slug ) ) {
 			return false;
 		}
 	}
@@ -4938,16 +4991,18 @@ function bp_is_group_creation_step( $step_slug ) {
 }
 
 /**
+ * Check the requested creation step is completed.
+ *
  * @since 1.1.0
  *
- * @param array $step_slugs
+ * @param array $step_slugs The list of group creation step slugs.
  *
  * @return bool
  */
 function bp_is_group_creation_step_complete( $step_slugs ) {
 	$bp = buddypress();
 
-	if ( !isset( $bp->groups->completed_create_steps ) ) {
+	if ( ! isset( $bp->groups->completed_create_steps ) ) {
 		return false;
 	}
 
@@ -4955,7 +5010,7 @@ function bp_is_group_creation_step_complete( $step_slugs ) {
 		$found = true;
 
 		foreach ( (array) $step_slugs as $step_slug ) {
-			if ( !in_array( $step_slug, $bp->groups->completed_create_steps ) ) {
+			if ( ! in_array( $step_slug, $bp->groups->completed_create_steps ) ) {
 				$found = false;
 			}
 		}
@@ -4969,9 +5024,11 @@ function bp_is_group_creation_step_complete( $step_slugs ) {
 }
 
 /**
+ * Check previous steps compared to the requested creation step are completed.
+ *
  * @since 1.1.0
  *
- * @param string $step_slug
+ * @param string $step_slug The group creation step's slug.
  *
  * @return bool
  */
@@ -5001,10 +5058,12 @@ function bp_are_previous_group_creation_steps_complete( $step_slug ) {
 }
 
 /**
+ * Outputs the new group ID.
+ *
  * @since 1.1.0
  */
 function bp_new_group_id() {
-	echo bp_get_new_group_id();
+	echo intval( bp_get_new_group_id() );
 }
 
 	/**
@@ -5029,16 +5088,22 @@ function bp_new_group_id() {
 	}
 
 /**
+ * Output the new group's name.
+ *
  * @since 1.1.0
  */
 function bp_new_group_name() {
+	// Escaping is made in `bp-groups/bp-groups-filters.php`.
+	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo bp_get_new_group_name();
 }
 
 	/**
+	 * Get the new group's name.
+	 *
 	 * @since 1.1.0
 	 *
-	 * @return mixed|void
+	 * @return string The new group's name.
 	 */
 	function bp_get_new_group_name() {
 		$bp   = buddypress();
@@ -5057,16 +5122,22 @@ function bp_new_group_name() {
 	}
 
 /**
+ * Output the new group's description.
+ *
  * @since 1.1.0
  */
 function bp_new_group_description() {
+	// Escaping is made in `bp-groups/bp-groups-filters.php`.
+	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo bp_get_new_group_description();
 }
 
 	/**
+	 * Get the new group's description.
+	 *
 	 * @since 1.1.0
 	 *
-	 * @return mixed|void
+	 * @return string The new group's description.
 	 */
 	function bp_get_new_group_description() {
 		$bp          = buddypress();
@@ -5085,16 +5156,22 @@ function bp_new_group_description() {
 	}
 
 /**
+ * Outputs 1 if the new group has a forum.
+ *
+ * @todo deprecate
  * @since 1.1.0
  */
 function bp_new_group_enable_forum() {
-	echo bp_get_new_group_enable_forum();
+	echo intval( bp_get_new_group_enable_forum() );
 }
 
 	/**
+	 * Checks whether a new group has a forum or not.
+	 *
+	 * @todo deprecate
 	 * @since 1.1.0
 	 *
-	 * @return int
+	 * @return int 1 if the new group has a forum. O otherwise.
 	 */
 	function bp_get_new_group_enable_forum() {
 		$bp    = buddypress();
@@ -5113,16 +5190,20 @@ function bp_new_group_enable_forum() {
 	}
 
 /**
+ * Outputs the new group's status.
+ *
  * @since 1.1.0
  */
 function bp_new_group_status() {
-	echo bp_get_new_group_status();
+	echo esc_html( bp_get_new_group_status() );
 }
 
 	/**
+	 * Gets the new group's status.
+	 *
 	 * @since 1.1.0
 	 *
-	 * @return mixed|void
+	 * @return string The new group's status.
 	 */
 	function bp_get_new_group_status() {
 		$bp     = buddypress();
@@ -5150,6 +5231,7 @@ function bp_new_group_status() {
  * @param array|string $args See bp_core_fetch_avatar().
  */
 function bp_new_group_avatar( $args = '' ) {
+	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo bp_get_new_group_avatar( $args );
 }
 	/**
@@ -5226,8 +5308,9 @@ function bp_group_creation_previous_link() {
 	 * @return string
 	 */
 	function bp_get_group_creation_previous_link() {
-		$bp    = buddypress();
-		$steps = array_keys( $bp->groups->group_creation_steps );
+		$create_steps = buddypress()->groups->group_creation_steps;
+		$steps        = array_keys( $create_steps );
+		$url          = '';
 
 		// Loop through steps.
 		foreach ( $steps as $slug ) {
@@ -5242,10 +5325,11 @@ function bp_group_creation_previous_link() {
 		}
 
 		// Generate the URL for the previous step.
-		$group_directory = bp_get_groups_directory_permalink();
-		$create_step     = 'create/step/';
-		$previous_step   = array_pop( $previous_steps );
-		$url             = trailingslashit( $group_directory . $create_step . $previous_step );
+		$previous_step = array_pop( $previous_steps );
+
+		if ( isset( $create_steps[ $previous_step ]['rewrite_id'], $create_steps[ $previous_step ]['default_slug'] ) ) {
+			$url = bp_groups_get_create_url( array( $create_steps[ $previous_step ]['default_slug'] ) );
+		}
 
 		/**
 		 * Filters the permalink for the previous step with the group creation process.
@@ -5263,7 +5347,7 @@ function bp_group_creation_previous_link() {
  * @since 1.6.0
  */
 function bp_groups_current_create_step() {
-	echo bp_get_groups_current_create_step();
+	echo esc_html( bp_get_groups_current_create_step() );
 }
 	/**
 	 * Returns the current group creation step. If none is found, returns an empty string.
@@ -5372,6 +5456,7 @@ function bp_is_first_group_creation_step( $step = '' ) {
  * @param array $args Array of arguments for friends list output.
  */
 function bp_new_group_invite_friend_list( $args = array() ) {
+	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo bp_get_new_group_invite_friend_list( $args );
 }
 	/**
@@ -5459,6 +5544,8 @@ function bp_new_group_invite_friend_list( $args = array() ) {
 	}
 
 /**
+ * Outputs a search form for the Groups directory.
+ *
  * @since 1.0.0
  */
 function bp_directory_groups_search_form() {
@@ -5473,72 +5560,21 @@ function bp_directory_groups_search_form() {
 
 	$search_form_html = '<form action="" method="get" id="search-groups-form">
 		<label for="groups_search"><input type="text" name="' . esc_attr( $query_arg ) . '" id="groups_search" placeholder="'. esc_attr( $search_value ) .'" /></label>
-		<input type="submit" id="groups_search_submit" name="groups_search_submit" value="'. __( 'Search', 'buddypress' ) .'" />
+		<input type="submit" id="groups_search_submit" name="groups_search_submit" value="'. esc_html__( 'Search', 'buddypress' ) .'" />
 	</form>';
 
-	/**
-	 * Filters the HTML markup for the groups search form.
-	 *
-	 * @since 1.9.0
-	 *
-	 * @param string $search_form_html HTML markup for the search form.
-	 */
-	echo apply_filters( 'bp_directory_groups_search_form', $search_form_html );
-
-}
-
-/**
- * Displays group header tabs.
- *
- * @since 1.0.0
- *
- * @todo Deprecate?
- */
-function bp_groups_header_tabs() {
-	$user_groups = bp_displayed_user_domain() . bp_get_groups_slug(); ?>
-
-	<li<?php if ( !bp_action_variable( 0 ) || bp_is_action_variable( 'recently-active', 0 ) ) : ?> class="current"<?php endif; ?>><a href="<?php echo trailingslashit( $user_groups . '/my-groups/recently-active' ); ?>"><?php _e( 'Recently Active', 'buddypress' ); ?></a></li>
-	<li<?php if ( bp_is_action_variable( 'recently-joined', 0 ) ) : ?> class="current"<?php endif; ?>><a href="<?php echo trailingslashit( $user_groups . '/my-groups/recently-joined' ); ?>"><?php _e( 'Recently Joined',  'buddypress' ); ?></a></li>
-	<li<?php if ( bp_is_action_variable( 'most-popular',    0 ) ) : ?> class="current"<?php endif; ?>><a href="<?php echo trailingslashit( $user_groups . '/my-groups/most-popular'    ); ?>"><?php _e( 'Most Popular',     'buddypress' ); ?></a></li>
-	<li<?php if ( bp_is_action_variable( 'admin-of',        0 ) ) : ?> class="current"<?php endif; ?>><a href="<?php echo trailingslashit( $user_groups . '/my-groups/admin-of'        ); ?>"><?php _e( 'Administrator Of', 'buddypress' ); ?></a></li>
-	<li<?php if ( bp_is_action_variable( 'mod-of',          0 ) ) : ?> class="current"<?php endif; ?>><a href="<?php echo trailingslashit( $user_groups . '/my-groups/mod-of'          ); ?>"><?php _e( 'Moderator Of',     'buddypress' ); ?></a></li>
-	<li<?php if ( bp_is_action_variable( 'alphabetically'     ) ) : ?> class="current"<?php endif; ?>><a href="<?php echo trailingslashit( $user_groups . '/my-groups/alphabetically'  ); ?>"><?php _e( 'Alphabetically',   'buddypress' ); ?></a></li>
-
-<?php
-	do_action( 'groups_header_tabs' );
-}
-
-/**
- * Displays group filter titles.
- *
- * @since 1.0.0
- *
- * @todo Deprecate?
- */
-function bp_groups_filter_title() {
-	$current_filter = bp_action_variable( 0 );
-
-	switch ( $current_filter ) {
-		case 'recently-active': default:
-			_e( 'Recently Active', 'buddypress' );
-			break;
-		case 'recently-joined':
-			_e( 'Recently Joined', 'buddypress' );
-			break;
-		case 'most-popular':
-			_e( 'Most Popular', 'buddypress' );
-			break;
-		case 'admin-of':
-			_e( 'Administrator Of', 'buddypress' );
-			break;
-		case 'mod-of':
-			_e( 'Moderator Of', 'buddypress' );
-			break;
-		case 'alphabetically':
-			_e( 'Alphabetically', 'buddypress' );
-		break;
-	}
-	do_action( 'bp_groups_filter_title' );
+	// phpcs:ignore WordPress.Security.EscapeOutput
+	echo apply_filters(
+		/**
+		 * Filters the HTML markup for the groups search form.
+		 *
+		 * @since 1.9.0
+		 *
+		 * @param string $search_form_html HTML markup for the search form.
+		 */
+		'bp_directory_groups_search_form',
+		$search_form_html
+	);
 }
 
 /**
@@ -5547,7 +5583,7 @@ function bp_groups_filter_title() {
  * @since 2.7.0
  */
 function bp_current_group_directory_type_message() {
-	echo bp_get_current_group_directory_type_message();
+	echo wp_kses( bp_get_current_group_directory_type_message(), array( 'strong' =>  true ) );
 }
 	/**
 	 * Generate the current group type message.
@@ -5590,7 +5626,7 @@ function bp_is_group_admin_screen( $slug = '' ) {
  * @since 1.6.0
  */
 function bp_group_current_admin_tab() {
-	echo bp_get_group_current_admin_tab();
+	echo esc_html( bp_get_group_current_admin_tab() );
 }
 	/**
 	 * Returns the current group admin tab slug.
@@ -5627,6 +5663,7 @@ function bp_group_current_admin_tab() {
  * @param string $type Thumb or full.
  */
 function bp_group_current_avatar( $type = 'thumb' ) {
+	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo bp_get_group_current_avatar( $type );
 }
 	/**
@@ -5692,31 +5729,44 @@ function bp_get_group_has_avatar( $group_id = false ) {
 }
 
 /**
+ * Outputs the URL to delete a group avatar.
+ *
  * @since 1.1.0
  */
 function bp_group_avatar_delete_link() {
-	echo bp_get_group_avatar_delete_link();
+	echo esc_url( bp_get_group_avatar_delete_link() );
 }
 
 	/**
+	 * Gets the URL to delete a group avatar.
+	 *
 	 * @since 1.1.0
 	 *
-	 * @return mixed|void
+	 * @return string The URL to delete a group avatar.
 	 */
 	function bp_get_group_avatar_delete_link() {
-		$bp = buddypress();
+		$group = groups_get_current_group();
+		$url   = wp_nonce_url(
+			bp_get_group_manage_url(
+				$group,
+				bp_groups_get_path_chunks( array( 'group-avatar', 'delete' ), 'manage' )
+			),
+			'bp_group_avatar_delete'
+		);
 
 		/**
 		 * Filters the URL to delete the group avatar.
 		 *
 		 * @since 1.1.0
 		 *
-		 * @param string $value URL to delete the group avatar.
+		 * @param string $url URL to delete the group avatar.
 		 */
-		return apply_filters( 'bp_get_group_avatar_delete_link', wp_nonce_url( trailingslashit( bp_get_group_permalink( $bp->groups->current_group ) . 'admin/group-avatar/delete' ), 'bp_group_avatar_delete' ) );
+		return apply_filters( 'bp_get_group_avatar_delete_link', $url );
 	}
 
 /**
+ * Fires a hook to let 3rd party plugins add some html content to group's home page.
+ *
  * @since 1.0.0
  */
 function bp_custom_group_boxes() {
@@ -5724,6 +5774,9 @@ function bp_custom_group_boxes() {
 }
 
 /**
+ * Fires a hook to let 3rd party plugins add custom group admin tabs.
+ *
+ * @todo deprecate.
  * @since 1.0.0
  */
 function bp_custom_group_admin_tabs() {
@@ -5731,6 +5784,9 @@ function bp_custom_group_admin_tabs() {
 }
 
 /**
+ * Fires a hook to let 3rd party plugins add custom group editable fields.
+ *
+ * @todo deprecate.
  * @since 1.0.0
  */
 function bp_custom_group_fields_editable() {
@@ -5738,6 +5794,9 @@ function bp_custom_group_fields_editable() {
 }
 
 /**
+ * Fires a hook to let 3rd party plugins add custom group fields.
+ *
+ * @todo deprecate.
  * @since 1.0.0
  */
 function bp_custom_group_fields() {
@@ -5814,14 +5873,15 @@ function bp_group_the_membership_request() {
 function bp_group_request_user_avatar_thumb() {
 	global $requests_template;
 
-	/**
-	 * Filters the requesting user's avatar thumbnail.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param string $value HTML markup for the user's avatar thumbnail.
-	 */
+	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo apply_filters(
+		/**
+		 * Filters the requesting user's avatar thumbnail.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param string $value HTML markup for the user's avatar thumbnail.
+		 */
 		'bp_group_request_user_avatar_thumb',
 		bp_core_fetch_avatar(
 			array(
@@ -5835,55 +5895,76 @@ function bp_group_request_user_avatar_thumb() {
 }
 
 /**
+ * Outputs the URL to reject a group membership request.
+ *
  * @since 1.0.0
  */
 function bp_group_request_reject_link() {
-	echo bp_get_group_request_reject_link();
+	echo esc_url( bp_get_group_request_reject_link() );
 }
 
 	/**
+	 * Gets the URL to reject a group membership request.
+	 *
 	 * @since 1.2.6
 	 *
-	 * @return mixed|void
+	 * @return string The URL to reject a group membership request.
 	 */
 	function bp_get_group_request_reject_link() {
 		global $requests_template;
 
-		$link = add_query_arg( array(
-			'_wpnonce' => wp_create_nonce( 'groups_reject_membership_request' ),
-			'user_id'  => $requests_template->request->user_id,
-			'action'   => 'reject'
-		), trailingslashit( bp_get_group_permalink( groups_get_current_group() ) ) . 'admin/membership-requests/' );
+		$link = add_query_arg(
+			array(
+				'_wpnonce' => wp_create_nonce( 'groups_reject_membership_request' ),
+				'user_id'  => $requests_template->request->user_id,
+				'action'   => 'reject'
+			),
+			bp_get_group_manage_url(
+				groups_get_current_group(),
+				bp_groups_get_path_chunks( array( 'membership-requests' ), 'manage' )
+			)
+		);
 
 		/**
 		 * Filters the URL to use to reject a membership request.
 		 *
 		 * @since 1.2.6
 		 *
-		 * @param string $value URL to use to reject a membership request.
+		 * @param string $link URL to use to reject a membership request.
 		 */
 		return apply_filters( 'bp_get_group_request_reject_link', $link );
 	}
 
 /**
+ * Outputs the URL to accept a group membership request.
+ *
  * @since 1.0.0
  */
 function bp_group_request_accept_link() {
-	echo bp_get_group_request_accept_link();
+	echo esc_url( bp_get_group_request_accept_link() );
 }
 
 	/**
+	 * Gets the URL to reject a group membership request.
+	 *
 	 * @since 1.2.6
-	 * @return mixed|void
+	 *
+	 * @return string The URL to reject a group membership request.
 	 */
 	function bp_get_group_request_accept_link() {
 		global $requests_template;
 
-		$link = add_query_arg( array(
-			'_wpnonce' => wp_create_nonce( 'groups_accept_membership_request' ),
-			'user_id'  => $requests_template->request->user_id,
-			'action'   => 'accept'
-		), trailingslashit( bp_get_group_permalink( groups_get_current_group() ) ) . 'admin/membership-requests/' );
+		$link = add_query_arg(
+			array(
+				'_wpnonce' => wp_create_nonce( 'groups_accept_membership_request' ),
+				'user_id'  => $requests_template->request->user_id,
+				'action'   => 'accept'
+			),
+			bp_get_group_manage_url(
+				groups_get_current_group(),
+				bp_groups_get_path_chunks( array( 'membership-requests' ), 'manage' )
+			)
+		);
 
 		/**
 		 * Filters the URL to use to accept a membership request.
@@ -5896,16 +5977,21 @@ function bp_group_request_accept_link() {
 	}
 
 /**
+ * Outputs the link to reach the requesting user's profile page.
+ *
  * @since 1.0.0
  */
 function bp_group_request_user_link() {
+	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo bp_get_group_request_user_link();
 }
 
 	/**
+	 * Gets the link to reach the requesting user's profile page.
+	 *
 	 * @since 1.2.6
 	 *
-	 * @return mixed|void
+	 * @return string HTML output.
 	 */
 	function bp_get_group_request_user_link() {
 		global $requests_template;
@@ -5921,26 +6007,33 @@ function bp_group_request_user_link() {
 	}
 
 /**
+ * Outputs the elapsed time since the group membership request was made.
+ *
  * @since 1.0.0
  */
 function bp_group_request_time_since_requested() {
 	global $requests_template;
 
-	/**
-	 * Filters the formatted time since membership was requested.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param string $value Formatted time since membership was requested.
-	 */
-	echo apply_filters(
-		'bp_group_request_time_since_requested',
-		/* translators: %s: human time diff */
-		sprintf( __( 'requested %s', 'buddypress' ), bp_core_time_since( $requests_template->request->date_modified ) )
+	// phpcs:ignore WordPress.Security.EscapeOutput
+	echo esc_html(
+		/**
+		 * Filters the formatted time since membership was requested.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param string $value Formatted time since membership was requested.
+		 */
+		apply_filters(
+			'bp_group_request_time_since_requested',
+			/* translators: %s: human time diff */
+			sprintf( __( 'requested %s', 'buddypress' ), bp_core_time_since( $requests_template->request->date_modified ) )
+		)
 	);
 }
 
 /**
+ * Outputs the comment a member sent with their membership request.
+ *
  * @since 1.0.0
  */
 function bp_group_request_comment() {
@@ -5953,7 +6046,7 @@ function bp_group_request_comment() {
 	 *
 	 * @param string $value Membership request comment left by user.
 	 */
-	echo apply_filters( 'bp_group_request_comment', strip_tags( stripslashes( $requests_template->request->comments ) ) );
+	echo esc_html( apply_filters( 'bp_group_request_comment', stripslashes( $requests_template->request->comments ) ) );
 }
 
 /**
@@ -5962,6 +6055,8 @@ function bp_group_request_comment() {
  * @since 2.0.0
  */
 function bp_group_requests_pagination_links() {
+	// Escaping is done in WordPress's `paginate_links()` function.
+	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo bp_get_group_requests_pagination_links();
 }
 	/**
@@ -5990,7 +6085,7 @@ function bp_group_requests_pagination_links() {
  * @since 2.0.0
  */
 function bp_group_requests_pagination_count() {
-	echo bp_get_group_requests_pagination_count();
+	echo esc_html( bp_get_group_requests_pagination_count() );
 }
 	/**
 	 * Get pagination count text for group membership requests.
@@ -6107,7 +6202,7 @@ function bp_group_the_invite() {
  * @since 1.1.0
  */
 function bp_group_invite_item_id() {
-	echo bp_get_group_invite_item_id();
+	echo esc_attr( bp_get_group_invite_item_id() );
 }
 
 	/**
@@ -6132,6 +6227,7 @@ function bp_group_invite_item_id() {
  * @since 1.1.0
  */
 function bp_group_invite_user_avatar() {
+	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo bp_get_group_invite_user_avatar();
 }
 
@@ -6157,6 +6253,7 @@ function bp_group_invite_user_avatar() {
  * @since 1.1.0
  */
 function bp_group_invite_user_link() {
+	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo bp_get_group_invite_user_link();
 }
 
@@ -6182,7 +6279,7 @@ function bp_group_invite_user_link() {
  * @since 1.1.0
  */
 function bp_group_invite_user_last_active() {
-	echo bp_get_group_invite_user_last_active();
+	echo esc_html( bp_get_group_invite_user_last_active() );
 }
 
 	/**
@@ -6207,7 +6304,7 @@ function bp_group_invite_user_last_active() {
  * @since 1.1.0
  */
 function bp_group_invite_user_remove_invite_url() {
-	echo bp_get_group_invite_user_remove_invite_url();
+	echo esc_url( bp_get_group_invite_user_remove_invite_url() );
 }
 
 	/**
@@ -6221,9 +6318,16 @@ function bp_group_invite_user_remove_invite_url() {
 		$user_id = intval( $invites_template->invite->user->id );
 
 		if ( bp_is_current_action( 'create' ) ) {
-			$uninvite_url = bp_get_groups_directory_permalink() . 'create/step/group-invites/?user_id=' . $user_id;
+			$uninvite_url = add_query_arg(
+				'user_id',
+				$user_id,
+				bp_get_groups_directory_url( bp_groups_get_path_chunks( array( 'group-invites' ), 'create' ) )
+			);
 		} else {
-			$uninvite_url = trailingslashit( bp_get_group_permalink( groups_get_current_group() ) . 'send-invites/remove/' . $user_id );
+			$uninvite_url = bp_get_group_url(
+				groups_get_current_group(),
+				bp_groups_get_path_chunks( array( 'send-invites', 'remove', $user_id ) )
+			);
 		}
 
 		return wp_nonce_url( $uninvite_url, 'groups_invite_uninvite_user' );
@@ -6235,6 +6339,8 @@ function bp_group_invite_user_remove_invite_url() {
  * @since 2.0.0
  */
 function bp_group_invite_pagination_links() {
+	// Escaping is done in WordPress's `paginate_links()` function.
+	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo bp_get_group_invite_pagination_links();
 }
 
@@ -6264,7 +6370,7 @@ function bp_group_invite_pagination_links() {
  * @since 2.0.0
  */
 function bp_group_invite_pagination_count() {
-	echo bp_get_group_invite_pagination_count();
+	echo esc_html( bp_get_group_invite_pagination_count() );
 }
 	/**
 	 * Get pagination count text for group invitations.
@@ -6304,11 +6410,10 @@ function bp_groups_activity_feed() {
 	// Bail if not viewing a single group or activity is not active.
 	if ( ! bp_is_active( 'groups' ) || ! bp_is_active( 'activity' ) || ! bp_is_group() ) {
 		return;
-	} ?>
-
-	<link rel="alternate" type="application/rss+xml" title="<?php bloginfo( 'name' ) ?> | <?php echo esc_attr( bp_get_current_group_name() ); ?> | <?php _e( 'Group Activity RSS Feed', 'buddypress' ) ?>" href="<?php bp_group_activity_feed_link() ?>" />
-
-<?php
+	}
+	?>
+	<link rel="alternate" type="application/rss+xml" title="<?php bloginfo( 'name' ) ?> | <?php echo esc_attr( bp_get_current_group_name() ); ?> | <?php esc_html_e( 'Group Activity RSS Feed', 'buddypress' ) ?>" href="<?php bp_group_activity_feed_link(); ?>" />
+	<?php
 }
 add_action( 'bp_head', 'bp_groups_activity_feed' );
 
@@ -6318,7 +6423,7 @@ add_action( 'bp_head', 'bp_groups_activity_feed' );
  * @since 1.5.0
  */
 function bp_group_activity_feed_link() {
-	echo bp_get_group_activity_feed_link();
+	echo esc_url( bp_get_group_activity_feed_link() );
 }
 	/**
 	 * Return the current group activity-stream RSS URL.
@@ -6328,9 +6433,10 @@ function bp_group_activity_feed_link() {
 	 * @return string
 	 */
 	function bp_get_group_activity_feed_link() {
-		$current_group = groups_get_current_group();
-		$group_link    = bp_get_group_permalink( $current_group ) . 'feed';
-		$feed_link     = trailingslashit( $group_link );
+		$feed_link = bp_get_group_url(
+			groups_get_current_group(),
+			bp_groups_get_path_chunks( array( 'feed' ) )
+		);
 
 		/**
 		 * Filters the current group activity-stream RSS URL.
@@ -6350,7 +6456,7 @@ function bp_group_activity_feed_link() {
  * @since 1.5.0
  */
 function bp_current_group_id() {
-	echo bp_get_current_group_id();
+	echo intval( bp_get_current_group_id() );
 }
 	/**
 	 * Returns the ID of the current group.
@@ -6380,7 +6486,7 @@ function bp_current_group_id() {
  * @since 1.5.0
  */
 function bp_current_group_slug() {
-	echo bp_get_current_group_slug();
+	echo esc_attr( bp_get_current_group_slug() );
 }
 	/**
 	 * Returns the slug of the current group.
@@ -6410,6 +6516,8 @@ function bp_current_group_slug() {
  * @since 1.5.0
  */
 function bp_current_group_name() {
+	// Escaping is made in `bp-groups/bp-groups-filters.php`.
+	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo bp_get_current_group_name();
 }
 	/**
@@ -6440,6 +6548,8 @@ function bp_current_group_name() {
  * @since 2.1.0
  */
 function bp_current_group_description() {
+	// Escaping is made in `bp-groups/bp-groups-filters.php`.
+	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo bp_get_current_group_description();
 }
 	/**
@@ -6486,7 +6596,7 @@ function bp_current_group_description() {
  * @return string|null
  */
 function bp_groups_action_link( $action = '', $query_args = '', $nonce = false ) {
-	echo bp_get_groups_action_link( $action, $query_args, $nonce );
+	echo esc_url( bp_get_groups_action_link( $action, $query_args, $nonce ) );
 }
 	/**
 	 * Get a URL for a group component action.
@@ -6507,10 +6617,13 @@ function bp_groups_action_link( $action = '', $query_args = '', $nonce = false )
 		if ( ! empty( $current_group->id ) ) {
 
 			// Append $action to $url if provided
-			if ( !empty( $action ) ) {
-				$url = bp_get_group_permalink( $current_group ) . $action;
+			if ( ! empty( $action ) ) {
+				$url = bp_get_group_url(
+					$current_group,
+					bp_groups_get_path_chunks( array( $action ) )
+				);
 			} else {
-				$url = bp_get_group_permalink( $current_group );
+				$url = bp_get_group_url( $current_group );
 			}
 
 			// Add a slash at the end of our user url.
@@ -6553,7 +6666,15 @@ function bp_groups_action_link( $action = '', $query_args = '', $nonce = false )
  *
  */
 function bp_groups_profile_stats( $args = '' ) {
-	echo bp_groups_get_profile_stats( $args );
+	echo wp_kses(
+		bp_groups_get_profile_stats( $args ),
+		array(
+			'li'     => array( 'class' => true ),
+			'div'    => array( 'class' => true ),
+			'strong' => true,
+			'a'      => array( 'href' => true ),
+		)
+	);
 }
 add_action( 'bp_members_admin_user_stats', 'bp_groups_profile_stats', 8, 1 );
 

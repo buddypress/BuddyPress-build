@@ -37,7 +37,7 @@ function bp_messages_render_sitewide_notices_block( $attributes = array() ) {
 	$feedback_tpl .= '</div>';
 
 	// Don't display the block if there are no Notices to show.
-	$notice = \BP_Messages_Notice::get_active();
+	$notice = BP_Messages_Notice::get_active();
 	if ( empty( $notice->id ) ) {
 		// Previewing the Block inside the editor.
 		if ( defined( 'REST_REQUEST' ) && REST_REQUEST ) {
@@ -117,6 +117,9 @@ function bp_messages_render_sitewide_notices_block( $attributes = array() ) {
 	);
 
 	$widget_content .= '</div>';
+
+	// Enqueue BP Tooltips.
+	wp_enqueue_style( 'bp-tooltips' );
 
 	if ( ! did_action( 'dynamic_sidebar_before' ) ) {
 		return sprintf(

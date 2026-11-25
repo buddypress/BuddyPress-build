@@ -20,7 +20,9 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 2.1.0
  *
- * @return object
+ * @global WP_Roles $wp_roles WordPress role management object.
+ *
+ * @return array
  */
 function bp_get_current_blog_roles() {
 	global $wp_roles;
@@ -56,6 +58,8 @@ function bp_get_current_blog_roles() {
  * This is called on plugin activation.
  *
  * @since 1.6.0
+ *
+ * @global WP_Roles $wp_roles WordPress role management object.
  */
 function bp_add_caps() {
 	global $wp_roles;
@@ -88,6 +92,8 @@ function bp_add_caps() {
  * This is called on plugin deactivation.
  *
  * @since 1.6.0
+ *
+ * @global WP_Roles $wp_roles WordPress role management object.
  */
 function bp_remove_caps() {
 	global $wp_roles;
@@ -118,6 +124,7 @@ function bp_remove_caps() {
  * Map community caps to built in WordPress caps.
  *
  * @since 1.6.0
+ * @since 12.0.0 Added mapping for `bp_view` capability.
  *
  * @see WP_User::has_cap() for description of the arguments passed to the
  *      'map_meta_cap' filter.
@@ -130,6 +137,21 @@ function bp_remove_caps() {
  * @return array Actual capabilities for meta capability. See {@link WP_User::has_cap()}.
  */
 function bp_map_meta_caps( $caps, $cap, $user_id, $args ) {
+
+	switch ( $cap ) {
+		case 'bp_view' :
+			$caps = array( 'exist' );
+			if ( ! $user_id ) {
+
+				// A BuddyPress component ID may be optionally passed with the `bp_view` check.
+				$component = isset( $args[0]['bp_component'] ) ? $args[0]['bp_component'] : '';
+
+				if ( 'members' === bp_get_community_visibility( $component ) ) {
+					$caps = array( 'do_not_allow' );
+				}
+			}
+			break;
+	}
 
 	/**
 	 * Filters the community caps mapping to be built in WordPress caps.
@@ -298,6 +320,17 @@ function bp_current_user_can( $capability, $args = array() ) {
 }
 
 /**
+ * Callback function to inform whether current user can moderate the community.
+ *
+ * @since 12.0.0
+ *
+ * @return boolean True if current user can moderate the community. False otherwise.
+ */
+function bp_current_user_can_moderate() {
+	return bp_current_user_can( 'bp_moderate' );
+}
+
+/**
  * Check whether the specified user has a given capability on a given site.
  *
  * @since 2.7.0
@@ -449,7 +482,7 @@ function _bp_enforce_bp_moderate_cap_for_admins( $caps = array(), $cap = '', $us
  * @deprecated 1.7.0
  */
 function bp_add_roles() {
-	_doing_it_wrong( 'bp_add_roles', __( 'Special community roles no longer exist. Use mapped capabilities instead', 'buddypress' ), '1.7' );
+	_doing_it_wrong( 'bp_add_roles', esc_html__( 'Special community roles no longer exist. Use mapped capabilities instead', 'buddypress' ), '1.7' );
 }
 
 /**
@@ -461,7 +494,7 @@ function bp_add_roles() {
  * @deprecated 1.7.0
  */
 function bp_remove_roles() {
-	_doing_it_wrong( 'bp_remove_roles', __( 'Special community roles no longer exist. Use mapped capabilities instead', 'buddypress' ), '1.7' );
+	_doing_it_wrong( 'bp_remove_roles', esc_html__( 'Special community roles no longer exist. Use mapped capabilities instead', 'buddypress' ), '1.7' );
 }
 
 
@@ -475,7 +508,7 @@ function bp_remove_roles() {
  * @deprecated 1.7.0
  */
 function bp_get_participant_role() {
-	_doing_it_wrong( 'bp_get_participant_role', __( 'Special community roles no longer exist. Use mapped capabilities instead', 'buddypress' ), '1.7' );
+	_doing_it_wrong( 'bp_get_participant_role', esc_html__( 'Special community roles no longer exist. Use mapped capabilities instead', 'buddypress' ), '1.7' );
 }
 
 /**
@@ -485,5 +518,5 @@ function bp_get_participant_role() {
  * @deprecated 1.7.0
  */
 function bp_get_moderator_role() {
-	_doing_it_wrong( 'bp_get_moderator_role', __( 'Special community roles no longer exist. Use mapped capabilities instead', 'buddypress' ), '1.7' );
+	_doing_it_wrong( 'bp_get_moderator_role', esc_html__( 'Special community roles no longer exist. Use mapped capabilities instead', 'buddypress' ), '1.7' );
 }

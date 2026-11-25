@@ -59,8 +59,6 @@ class BP_Members_Invitations_List_Table extends WP_Users_List_Table {
 	 * @since 8.0.0
 	 */
 	public function prepare_items() {
-		global $usersearch;
-
 		$search   = isset( $_REQUEST['s'] ) ? $_REQUEST['s'] : '';
 		$per_page = $this->get_items_per_page( str_replace( '-', '_', "{$this->screen->id}_per_page" ) );
 		$paged    = $this->get_pagenum();
@@ -260,8 +258,13 @@ class BP_Members_Invitations_List_Table extends WP_Users_List_Table {
 				esc_html__( 'Edit settings', 'buddypress' )
 			);
 
-			/* translators: %s: url to site settings */
-			printf( __( 'Invitations are not allowed. %s', 'buddypress' ), $link );
+			printf(
+				/* translators: %s: url to site settings */
+				esc_html__( 'Invitations are not allowed. %s', 'buddypress' ),
+				// The link has been escaped at line 255.
+				// phpcs:ignore WordPress.Security.EscapeOutput
+				$link
+			);
 		}
 
 	}
@@ -289,7 +292,10 @@ class BP_Members_Invitations_List_Table extends WP_Users_List_Table {
 	public function display_rows() {
 		$style = '';
 		foreach ( $this->items as $invite ) {
-			$style = ( ' class="alternate"' == $style ) ? '' : ' class="alternate"';
+			$style = 'alt' === $style ? '' : 'alt';
+
+			// Escapes are made into `self::single_row()`.
+			// phpcs:ignore WordPress.Security.EscapeOutput
 			echo "\n\t" . $this->single_row( $invite, $style );
 		}
 	}
@@ -308,7 +314,14 @@ class BP_Members_Invitations_List_Table extends WP_Users_List_Table {
 	 * @return void
 	 */
 	public function single_row( $invite = null, $style = '', $role = '', $numposts = 0 ) {
-		echo '<tr' . $style . ' id="invitation-' . esc_attr( $invite->id ) . '">';
+		if ( '' === $style ) {
+			echo '<tr id="signup-' . esc_attr( $invite->id ) . '">';
+		} else {
+			echo '<tr class="alternate" id="signup-' . esc_attr( $invite->id ) . '">';
+		}
+
+		// BuddyPress relies on WordPress's `WP_Users_List_Table::single_row_columns()`.
+		// phpcs:ignore WordPress.Security.EscapeOutput
 		echo $this->single_row_columns( $invite );
 		echo '</tr>';
 	}
@@ -325,7 +338,7 @@ class BP_Members_Invitations_List_Table extends WP_Users_List_Table {
 		<label class="screen-reader-text" for="invitation_<?php echo intval( $invite->id ); ?>">
 			<?php
 				/* translators: accessibility text */
-				printf( esc_html__( 'Select invitation: %s', 'buddypress' ), $invite->id );
+				printf( esc_html__( 'Select invitation: %s', 'buddypress' ), intval( $invite->id ) );
 			?>
 		</label>
 		<input type="checkbox" id="invitation_<?php echo intval( $invite->id ) ?>" name="invite_ids[]" value="<?php echo esc_attr( $invite->id ) ?>" />
@@ -397,6 +410,8 @@ class BP_Members_Invitations_List_Table extends WP_Users_List_Table {
 		 */
 		$actions = apply_filters( 'bp_members_invitations_management_row_actions', $actions, $invite );
 
+		// BuddyPress relies on WordPress's `WP_Users_List_Table::row_actions()`.
+		// phpcs:ignore WordPress.Security.EscapeOutput
 		echo $this->row_actions( $actions );
 	}
 
@@ -425,9 +440,26 @@ class BP_Members_Invitations_List_Table extends WP_Users_List_Table {
 			return;
 		}
 
-		$user_link = bp_core_get_user_domain( $invite->inviter_id );
+		$user_link = bp_members_get_user_url( $invite->inviter_id );
 
-		printf( '%1$s <strong><a href="%2$s" class="edit">%3$s</a></strong><br/>', $avatar, esc_url( $user_link ), esc_html( $inviter->user_login ) );
+		printf(
+			'%1$s <strong><a href="%2$s" class="edit">%3$s</a></strong><br/>',
+			wp_kses(
+				$avatar,
+				array(
+					'img' => array(
+						'alt'    => true,
+						'src'    => true,
+						'srcset' => true,
+						'class'  => true,
+						'height' => true,
+						'width'  => true,
+					)
+				)
+			),
+			esc_url( $user_link ),
+			esc_html( $inviter->user_login )
+		);
 	}
 
 	/**

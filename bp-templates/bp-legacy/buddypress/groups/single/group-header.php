@@ -4,7 +4,7 @@
  *
  * @package BuddyPress
  * @subpackage bp-legacy
- * @version 3.0.0
+ * @version 12.0.0
  */
 
 /**
@@ -20,7 +20,7 @@ do_action( 'bp_before_group_header' );
 
 	<?php if ( bp_group_is_visible() ) : ?>
 
-		<h2><?php _e( 'Group Admins', 'buddypress' ); ?></h2>
+		<h2><?php esc_html_e( 'Group Admins', 'buddypress' ); ?></h2>
 
 		<?php bp_group_list_admins();
 
@@ -40,7 +40,7 @@ do_action( 'bp_before_group_header' );
 			 */
 			do_action( 'bp_before_group_menu_mods' ); ?>
 
-			<h2><?php _e( 'Group Mods' , 'buddypress' ); ?></h2>
+			<h2><?php esc_html_e( 'Group Mods' , 'buddypress' ); ?></h2>
 
 			<?php bp_group_list_mods();
 
@@ -59,7 +59,7 @@ do_action( 'bp_before_group_header' );
 
 <?php if ( ! bp_disable_group_avatar_uploads() ) : ?>
 	<div id="item-header-avatar">
-		<a href="<?php echo esc_url( bp_get_group_permalink() ); ?>" class="bp-tooltip" data-bp-tooltip="<?php echo esc_attr( bp_get_group_name() ); ?>">
+		<a href="<?php bp_group_url(); ?>" class="bp-tooltip" data-bp-tooltip="<?php echo esc_attr( bp_get_group_name() ); ?>">
 
 			<?php bp_group_avatar(); ?>
 
@@ -72,7 +72,7 @@ do_action( 'bp_before_group_header' );
 	<span class="activity" data-livestamp="<?php bp_core_iso8601_date( bp_get_group_last_active( 0, array( 'relative' => false ) ) ); ?>">
 		<?php
 		/* translators: %s: last activity timestamp (e.g. "Active 1 hour ago") */
-		printf( __( 'Active %s', 'buddypress' ), bp_get_group_last_active() );
+		printf( esc_html__( 'Active %s', 'buddypress' ), esc_html( bp_get_group_last_active() ) );
 		?>
 	</span>
 

@@ -16,26 +16,27 @@ defined( 'ABSPATH' ) || exit;
  * @since 1.5.0
  */
 function bp_settings_slug() {
-	echo bp_get_settings_slug();
+	echo esc_attr( bp_get_settings_slug() );
 }
+
+/**
+ * Return the settings component slug.
+ *
+ * @since 1.5.0
+ *
+ * @return string
+ */
+function bp_get_settings_slug() {
+
 	/**
-	 * Return the settings component slug.
+	 * Filters the Settings component slug.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @return string
+	 * @param string $slug Settings component slug.
 	 */
-	function bp_get_settings_slug() {
-
-		/**
-		 * Filters the Settings component slug.
-		 *
-		 * @since 1.5.0
-		 *
-		 * @param string $slug Settings component slug.
-		 */
-		return apply_filters( 'bp_get_settings_slug', buddypress()->settings->slug );
-	}
+	return apply_filters( 'bp_get_settings_slug', buddypress()->settings->slug );
+}
 
 /**
  * Output the settings component root slug.
@@ -43,26 +44,27 @@ function bp_settings_slug() {
  * @since 1.5.0
  */
 function bp_settings_root_slug() {
-	echo bp_get_settings_root_slug();
+	echo esc_attr( bp_get_settings_root_slug() );
 }
+
+/**
+ * Return the settings component root slug.
+ *
+ * @since 1.5.0
+ *
+ * @return string
+ */
+function bp_get_settings_root_slug() {
+
 	/**
-	 * Return the settings component root slug.
+	 * Filters the Settings component root slug.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @return string
+	 * @param string $root_slug Settings component root slug.
 	 */
-	function bp_get_settings_root_slug() {
-
-		/**
-		 * Filters the Settings component root slug.
-		 *
-		 * @since 1.5.0
-		 *
-		 * @param string $root_slug Settings component root slug.
-		 */
-		return apply_filters( 'bp_get_settings_root_slug', buddypress()->settings->root_slug );
-	}
+	return apply_filters( 'bp_get_settings_root_slug', buddypress()->settings->root_slug );
+}
 
 /**
  * Add the 'pending email change' message to the settings page.
@@ -80,6 +82,16 @@ function bp_settings_pending_email_notice() {
 		return;
 	}
 
+	$dismiss_url = wp_nonce_url(
+		add_query_arg(
+			'dismiss_email_change',
+			1,
+			bp_displayed_user_url(
+				bp_members_get_path_chunks( array( bp_get_settings_slug() ) )
+			)
+		),
+		'bp_dismiss_email_change'
+	);
 	?>
 
 	<div id="message" class="bp-template-notice error">
@@ -87,7 +99,7 @@ function bp_settings_pending_email_notice() {
 			<?php
 			printf(
 				/* translators: %s: new email address */
-				__( 'There is a pending change of your email address to %s.', 'buddypress' ),
+				esc_html__( 'There is a pending change of your email address to %s.', 'buddypress' ),
 				'<code>' . esc_html( $pending_email['newemail'] ) . '</code>'
 			);
 			?>
@@ -95,9 +107,9 @@ function bp_settings_pending_email_notice() {
 			<?php
 			printf(
 				/* translators: 1: email address. 2: cancel email change url. */
-				__( 'Check your email (%1$s) for the verification link, or <a href="%2$s">cancel the pending change</a>.', 'buddypress' ),
+				esc_html__( 'Check your email (%1$s) for the verification link, or %2$s.', 'buddypress' ),
 				'<code>' . esc_html( $pending_email['newemail'] ) . '</code>',
-				esc_url( wp_nonce_url( bp_displayed_user_domain() . bp_get_settings_slug() . '/?dismiss_email_change=1', 'bp_dismiss_email_change' ) )
+				'<a href="' . esc_url( $dismiss_url ) . '">' . esc_html__( 'cancel the pending change', 'buddypress' ) . '</a>'
 			);
 			?>
 		</p>

@@ -41,6 +41,14 @@ class BP_Groups_Invite_Template {
 	public $invite;
 
 	/**
+	 * List of invites found and their respective data.
+	 *
+	 * @since 1.1.0
+	 * @var array
+	 */
+	public $invite_data = array();
+
+	/**
 	 * @since 1.1.0
 	 * @var bool
 	 */
@@ -65,6 +73,14 @@ class BP_Groups_Invite_Template {
 	public $pag_links;
 
 	/**
+	 * URL argument used for the pagination param.
+	 *
+	 * @since 1.1.0
+	 * @var string
+	 */
+	public $pag_arg;
+
+	/**
 	 * @since 1.1.0
 	 * @var int
 	 */
@@ -83,7 +99,7 @@ class BP_Groups_Invite_Template {
 		// Backward compatibility with old method of passing arguments.
 		if ( ! is_array( $args ) || count( $function_args ) > 1 ) {
 			/* translators: 1: the name of the method. 2: the name of the file. */
-			_deprecated_argument( __METHOD__, '2.0.0', sprintf( __( 'Arguments passed to %1$s should be in an associative array. See the inline documentation at %2$s for more details.', 'buddypress' ), __METHOD__, __FILE__ ) );
+			_deprecated_argument( __METHOD__, '2.0.0', sprintf( esc_html__( 'Arguments passed to %1$s should be in an associative array. See the inline documentation at %2$s for more details.', 'buddypress' ), __METHOD__, __FILE__ ) );
 
 			$old_args_keys = array(
 				0  => 'user_id',
@@ -276,7 +292,7 @@ class BP_Groups_Invite_Template {
 		);
 
 		$this->invite->user->email     = $this->invite->user->user_email;
-		$this->invite->user->user_url  = bp_core_get_user_domain( $user_id, $this->invite->user->user_nicename, $this->invite->user->user_login );
+		$this->invite->user->user_url  = bp_members_get_user_url( $user_id );
 		$this->invite->user->user_link = "<a href='{$this->invite->user->user_url}'>{$this->invite->user->fullname}</a>";
 
 		/* translators: %s: last activity timestamp (e.g. "Active 1 hour ago") */

@@ -3,7 +3,7 @@
  * BuddyPress - Members Settings ( General )
  *
  * @since 3.0.0
- * @version 8.0.0
+ * @version 12.0.0
  */
 
 bp_nouveau_member_hook( 'before', 'settings_template' ); ?>
@@ -16,13 +16,13 @@ bp_nouveau_member_hook( 'before', 'settings_template' ); ?>
 	<?php esc_html_e( 'Update your email and or password.', 'buddypress' ); ?>
 </p>
 
-<form action="<?php echo esc_url( bp_displayed_user_domain() . bp_nouveau_get_component_slug( 'settings' ) . '/general' ); ?>" method="post" class="standard-form" id="your-profile">
+<form action="<?php bp_displayed_user_link( array( bp_nouveau_get_component_slug( 'settings' ), 'general' ) ); ?>" method="post" class="standard-form" id="your-profile">
 
 	<?php if ( ! is_super_admin() ) : ?>
 
 		<label for="pwd">
 			<?php
-			/* translators: %s: email requirement explanations */
+			/* translators: %s: the required text information. */
 			printf( esc_html__( 'Current Password %s', 'buddypress' ), '<span>' . esc_html__( '(required to update email or change current password)', 'buddypress' ) . '</span>' );
 			?>
 		</label>

@@ -18,6 +18,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 1.0.0
  */
+#[AllowDynamicProperties]
 class BP_Blogs_Blog {
 
 	/**
@@ -80,8 +81,8 @@ class BP_Blogs_Blog {
 		 *
 		 * @since 1.0.0
 		 *
-		 * @param int $value User ID.
-		 * @param int $value Site ID.
+		 * @param int $user_id User ID.
+		 * @param int $site_id Site ID.
 		 */
 		$this->user_id = apply_filters( 'bp_blogs_blog_user_id_before_save', $this->user_id, $this->id );
 
@@ -90,8 +91,8 @@ class BP_Blogs_Blog {
 		 *
 		 * @since 1.0.0
 		 *
-		 * @param int $value Blog ID.
-		 * @param int $value Site ID.
+		 * @param int $blog_id Blog ID.
+		 * @param int $site_id Site ID.
 		 */
 		$this->blog_id = apply_filters( 'bp_blogs_blog_id_before_save', $this->blog_id, $this->id );
 
@@ -164,7 +165,7 @@ class BP_Blogs_Blog {
 	 * Retrieve a set of blog-user associations.
 	 *
 	 * @since 1.2.0
-	 * @since 10.0.0 Converted to array as main function argument. Added $date_query parameter.
+	 * @since 10.0.0 Converted to array as main function argument. Added `$date_query` parameter.
 	 *
 	 * @param array $data {
 	 *     Array of site data to query for.
@@ -196,7 +197,7 @@ class BP_Blogs_Blog {
 
 		// Backward compatibility with old method of passing arguments.
 		if ( ! is_array( $args[0] ) || count( $args ) > 1 ) {
-			_deprecated_argument( __METHOD__, '10.0.0', sprintf( __( 'Arguments passed to %1$s should be in an associative array. See the inline documentation at %2$s for more details.', 'buddypress' ), __METHOD__, __FILE__ ) );
+			_deprecated_argument( __METHOD__, '10.0.0', sprintf( esc_html__( 'Arguments passed to %1$s should be in an associative array. See the inline documentation at %2$s for more details.', 'buddypress' ), __METHOD__, __FILE__ ) );
 
 			$old_args_keys = [
 				0  => 'type',

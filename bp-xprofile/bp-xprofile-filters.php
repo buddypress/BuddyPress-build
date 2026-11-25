@@ -247,7 +247,7 @@ function xprofile_sanitize_data_value_before_save( $field_value, $field_id = 0, 
 			$filtered_values[] = apply_filters( 'xprofile_filtered_data_value_before_save', $filtered_value, $value, $data_obj );
 		}
 
-		if ( !empty( $reserialize ) ) {
+		if ( ! empty( $reserialize ) ) {
 			$filtered_field_value = serialize( $filtered_values );
 		} else {
 			$filtered_field_value = $filtered_values;
@@ -564,6 +564,8 @@ add_action( 'bp_pre_user_query', 'bp_xprofile_add_xprofile_query_to_user_query' 
  *
  * @since 2.0.0
  *
+ * @global wpdb $wpdb WordPress database object.
+ *
  * @access private Do not use.
  *
  * @param string $q SQL query.
@@ -726,7 +728,7 @@ function _bp_xprofile_signup_do_backcompat( $args = array() ) {
 	$needed_args   = array_intersect_key( $args, $expected_args );
 
 	if ( 1 === $args['profile_group_id'] || array_diff_key( $expected_args, $needed_args ) ) {
-		_doing_it_wrong( 'bp_has_profile()', __( 'The argument of this function into your custom `members/register.php` template should be bp_xprofile_signup_args()', 'buddypress' ), '8.0.0' );
+		_doing_it_wrong( 'bp_has_profile()', esc_html__( 'The argument of this function into your custom `members/register.php` template should be bp_xprofile_signup_args()', 'buddypress' ), '8.0.0' );
 		$args = $expected_args;
 	}
 

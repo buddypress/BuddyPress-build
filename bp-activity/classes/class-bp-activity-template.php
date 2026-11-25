@@ -108,6 +108,38 @@ class BP_Activity_Template {
 	public $full_name;
 
 	/**
+	 * Check if post/comment replies are disabled.
+	 *
+	 * @since 1.0.0
+	 * @var bool
+	 */
+	public $disable_blogforum_replies;
+
+	/**
+	 * If more items are available.
+	 *
+	 * @since 1.0.0
+	 * @var bool
+	 */
+	public $has_more_items;
+
+	/**
+	 * An array of the logged in user's favorite activities.
+	 *
+	 * @since 1.0.0
+	 * @var array
+	 */
+	public $my_favs;
+
+	/**
+	 * An array of parent activities.
+	 *
+	 * @since 1.0.0
+	 * @var array
+	 */
+	public $activity_parents;
+
+	/**
 	 * Constructor method.
 	 *
 	 * The arguments passed to this class constructor are of the same
@@ -137,13 +169,11 @@ class BP_Activity_Template {
 	 * }
 	 */
 	public function __construct( $args ) {
-		$bp = buddypress();
-
 		$function_args = func_get_args();
 
 		// Backward compatibility with old method of passing arguments.
 		if ( !is_array( $args ) || count( $function_args ) > 1 ) {
-			_deprecated_argument( __METHOD__, '1.6', sprintf( __( 'Arguments passed to %1$s should be in an associative array. See the inline documentation at %2$s for more details.', 'buddypress' ), __METHOD__, __FILE__ ) );
+			_deprecated_argument( __METHOD__, '1.6', sprintf( esc_html__( 'Arguments passed to %1$s should be in an associative array. See the inline documentation at %2$s for more details.', 'buddypress' ), __METHOD__, __FILE__ ) );
 
 			$old_args_keys = array(
 				0 => 'page',
@@ -283,7 +313,7 @@ class BP_Activity_Template {
 
 		if ( !empty( $activity_parents['activities'] ) ) {
 			foreach( $activity_parents['activities'] as $parent ) {
-				$this->activity_parents[$parent->id] = $parent;
+				$this->activity_parents[ $parent->id ] = $parent;
 			}
 
 			unset( $activity_parents );

@@ -91,36 +91,25 @@ function bp_get_options_nav( $parent_slug = '' ) {
 		// List type depends on our current component.
 		$list_type = bp_is_group() ? 'groups' : 'personal';
 
-		/**
-		 * Filters the "options nav", the secondary-level single item navigation menu.
-		 *
-		 * This is a dynamic filter that is dependent on the provided css_id value.
-		 *
-		 * @since 1.1.0
-		 *
-		 * @param string $value         HTML list item for the submenu item.
-		 * @param array  $subnav_item   Submenu array item being displayed.
-		 * @param string $selected_item Current action.
-		 */
-		echo apply_filters( 'bp_get_options_nav_' . $subnav_item->css_id, '<li id="' . esc_attr( $subnav_item->css_id . '-' . $list_type . '-li' ) . '" ' . $selected . '><a id="' . esc_attr( $subnav_item->css_id ) . '" href="' . esc_url( $subnav_item->link ) . '">' . $subnav_item->name . '</a></li>', $subnav_item, $selected_item );
+		// phpcs:ignore WordPress.Security.EscapeOutput
+		echo apply_filters(
+			/**
+			 * Filters the "options nav", the secondary-level single item navigation menu.
+			 *
+			 * This is a dynamic filter that is dependent on the provided css_id value.
+			 *
+			 * @since 1.1.0
+			 *
+			 * @param string $value         HTML list item for the submenu item.
+			 * @param array  $subnav_item   Submenu array item being displayed.
+			 * @param string $selected_item Current action.
+			 */
+			'bp_get_options_nav_' . $subnav_item->css_id,
+			'<li id="' . esc_attr( $subnav_item->css_id . '-' . $list_type . '-li' ) . '" ' . $selected . '><a id="' . esc_attr( $subnav_item->css_id ) . '" href="' . esc_url( $subnav_item->link ) . '">' . wp_kses( $subnav_item->name, array( 'span' => array( 'class' => true ) ) ) . '</a></li>',
+			$subnav_item,
+			$selected_item
+		);
 	}
-}
-
-/**
- * Get the 'bp_options_title' property from the BP global.
- *
- * Not currently used in BuddyPress.
- *
- * @todo Deprecate.
- */
-function bp_get_options_title() {
-	$bp = buddypress();
-
-	if ( empty( $bp->bp_options_title ) ) {
-		$bp->bp_options_title = __( 'Options', 'buddypress' );
-	}
-
-	echo apply_filters( 'bp_get_options_title', esc_attr( $bp->bp_options_title ) );
 }
 
 /**
@@ -161,75 +150,12 @@ function bp_get_directory_title( $component = '' ) {
 /** Avatars *******************************************************************/
 
 /**
- * Check to see if there is an options avatar.
- *
- * An options avatar is an avatar for something like a group, or a friend.
- * Basically an avatar that appears in the sub nav options bar.
- *
- * Not currently used in BuddyPress.
- *
- * @return bool $value Returns true if an options avatar has been set, otherwise false.
- */
-function bp_has_options_avatar() {
-	return (bool) buddypress()->bp_options_avatar;
-}
-
-/**
- * Output the options avatar.
- *
- * Not currently used in BuddyPress.
- *
- * @todo Deprecate.
- */
-function bp_get_options_avatar() {
-	echo apply_filters( 'bp_get_options_avatar', buddypress()->bp_options_avatar );
-}
-
-/**
- * Output a comment author's avatar.
- *
- * Not currently used in BuddyPress.
- */
-function bp_comment_author_avatar() {
-	global $comment;
-
-	echo apply_filters( 'bp_comment_author_avatar', bp_core_fetch_avatar( array(
-		'item_id' => $comment->user_id,
-		'type'    => 'thumb',
-		'alt'     => sprintf(
-			/* translators: %s: member name */
-			__( 'Profile photo of %s', 'buddypress' ),
-			bp_core_get_user_displayname( $comment->user_id )
-		),
-	) ) );
-}
-
-/**
- * Output a post author's avatar.
- *
- * Not currently used in BuddyPress.
- */
-function bp_post_author_avatar() {
-	global $post;
-
-	echo apply_filters( 'bp_post_author_avatar', bp_core_fetch_avatar( array(
-		'item_id' => $post->post_author,
-		'type'    => 'thumb',
-		'alt'     => sprintf(
-			/* translators: %s: member name */
-			__( 'Profile photo of %s', 'buddypress' ),
-			bp_core_get_user_displayname( $post->post_author )
-		),
-	) ) );
-}
-
-/**
  * Output the current avatar upload step.
  *
  * @since 1.1.0
  */
 function bp_avatar_admin_step() {
-	echo bp_get_avatar_admin_step();
+	echo esc_html( bp_get_avatar_admin_step() );
 }
 	/**
 	 * Return the current avatar upload step.
@@ -261,7 +187,7 @@ function bp_avatar_admin_step() {
  * @since 1.1.0
  */
 function bp_avatar_to_crop() {
-	echo bp_get_avatar_to_crop();
+	echo esc_url( bp_get_avatar_to_crop() );
 }
 	/**
 	 * Return the URL of the avatar to crop.
@@ -292,7 +218,7 @@ function bp_avatar_to_crop() {
  * @since 1.1.0
  */
 function bp_avatar_to_crop_src() {
-	echo bp_get_avatar_to_crop_src();
+	echo esc_attr( bp_get_avatar_to_crop_src() );
 }
 	/**
 	 * Return the relative file path to the avatar to crop.
@@ -318,25 +244,12 @@ function bp_avatar_to_crop_src() {
 	}
 
 /**
- * Output the avatar cropper <img> markup.
- *
- * No longer used in BuddyPress.
- *
- * @todo Deprecate.
- */
-function bp_avatar_cropper() {
-?>
-	<img id="avatar-to-crop" class="avatar" src="<?php echo esc_url( buddypress()->avatar_admin->image ); ?>" />
-<?php
-}
-
-/**
  * Output the name of the BP site. Used in RSS headers.
  *
  * @since 1.0.0
  */
 function bp_site_name() {
-	echo bp_get_site_name();
+	echo esc_html( bp_get_site_name() );
 }
 	/**
 	 * Returns the name of the BP site. Used in RSS headers.
@@ -473,7 +386,7 @@ function bp_word_or_name( $youtext, $nametext, $capitalize = true, $echo = true 
 			 *
 			 * @param string $youtext Context-determined string to display.
 			 */
-			echo apply_filters( 'bp_word_or_name', $youtext );
+			echo esc_html( apply_filters( 'bp_word_or_name', $youtext ) );
 		} else {
 
 			/** This filter is documented in bp-core/bp-core-template.php */
@@ -486,25 +399,13 @@ function bp_word_or_name( $youtext, $nametext, $capitalize = true, $echo = true 
 		if ( true == $echo ) {
 
 			/** This filter is documented in bp-core/bp-core-template.php */
-			echo apply_filters( 'bp_word_or_name', $nametext );
+			echo esc_html( apply_filters( 'bp_word_or_name', $nametext ) );
 		} else {
 
 			/** This filter is documented in bp-core/bp-core-template.php */
 			return apply_filters( 'bp_word_or_name', $nametext );
 		}
 	}
-}
-
-/**
- * Do the 'bp_styles' action, and call wp_print_styles().
- *
- * No longer used in BuddyPress.
- *
- * @todo Deprecate.
- */
-function bp_styles() {
-	do_action( 'bp_styles' );
-	wp_print_styles();
 }
 
 /** Search Form ***************************************************************/
@@ -517,15 +418,21 @@ function bp_styles() {
  * @return string URL action attribute for search forms, eg example.com/search/.
  */
 function bp_search_form_action() {
+	$url = bp_rewrites_get_url(
+		array(
+			'component_id'     => 'core',
+			'community_search' => 1,
+		)
+	);
 
 	/**
 	 * Filters the "action" attribute for search forms.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string $value Search form action url.
+	 * @param string $url Search form action url.
 	 */
-	return apply_filters( 'bp_search_form_action', trailingslashit( bp_get_root_domain() . '/' . bp_get_search_slug() ) );
+	return apply_filters( 'bp_search_form_action', $url );
 }
 
 /**
@@ -554,7 +461,7 @@ function bp_search_form_type_select() {
 	$options['posts'] = _x( 'Posts', 'search form', 'buddypress' );
 
 	// Eventually this won't be needed and a page will be built to integrate all search results.
-	$selection_box  = '<label for="search-which" class="accessibly-hidden">' . _x( 'Search these:', 'search form', 'buddypress' ) . '</label>';
+	$selection_box  = '<label for="search-which" class="accessibly-hidden">' . esc_html_x( 'Search these:', 'search form', 'buddypress' ) . '</label>';
 	$selection_box .= '<select name="search-which" id="search-which" style="width: auto">';
 
 	/**
@@ -566,7 +473,7 @@ function bp_search_form_type_select() {
 	 */
 	$options = apply_filters( 'bp_search_form_type_select_options', $options );
 	foreach( (array) $options as $option_value => $option_title ) {
-		$selection_box .= sprintf( '<option value="%s">%s</option>', $option_value, $option_title );
+		$selection_box .= sprintf( '<option value="%s">%s</option>', esc_attr( $option_value ), esc_html( $option_title ) );
 	}
 
 	$selection_box .= '</select>';
@@ -656,7 +563,7 @@ function bp_get_search_placeholder( $component = '' ) {
  * @param string $component See {@link bp_get_search_default_text()}.
  */
 function bp_search_default_text( $component = '' ) {
-	echo bp_get_search_default_text( $component );
+	echo esc_attr( bp_get_search_default_text( $component ) );
 }
 	/**
 	 * Return the default text for the search box for a given component.
@@ -704,28 +611,6 @@ function bp_search_default_text( $component = '' ) {
 	}
 
 /**
- * Fire the 'bp_custom_profile_boxes' action.
- *
- * No longer used in BuddyPress.
- *
- * @todo Deprecate.
- */
-function bp_custom_profile_boxes() {
-	do_action( 'bp_custom_profile_boxes' );
-}
-
-/**
- * Fire the 'bp_custom_profile_sidebar_boxes' action.
- *
- * No longer used in BuddyPress.
- *
- * @todo Deprecate.
- */
-function bp_custom_profile_sidebar_boxes() {
-	do_action( 'bp_custom_profile_sidebar_boxes' );
-}
-
-/**
  * Output the attributes for a form field.
  *
  * @since 2.2.0
@@ -734,6 +619,7 @@ function bp_custom_profile_sidebar_boxes() {
  * @param array  $attributes Array of existing attributes to add.
  */
 function bp_form_field_attributes( $name = '', $attributes = array() ) {
+	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo bp_get_form_field_attributes( $name, $attributes );
 }
 	/**
@@ -816,6 +702,8 @@ function bp_form_field_attributes( $name = '', $attributes = array() ) {
  * @param array|string $args See {@link BP_Button}.
  */
 function bp_button( $args = '' ) {
+	// Escaping is done in `BP_Core_HTML_Element()`.
+	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo bp_get_button( $args );
 }
 	/**
@@ -1093,7 +981,7 @@ add_filter( 'bp_create_excerpt', 'force_balance_tags' );
  * @since 1.2.0
  */
 function bp_total_member_count() {
-	echo bp_get_total_member_count();
+	echo esc_html( bp_get_total_member_count() );
 }
 	/**
 	 * Return the total member count in your BP instance.
@@ -1124,14 +1012,6 @@ function bp_total_member_count() {
 	}
 	add_filter( 'bp_get_total_member_count', 'bp_core_number_format' );
 
-/**
- * Output whether blog signup is allowed.
- *
- * @todo Deprecate. It doesn't make any sense to echo a boolean.
- */
-function bp_blog_signup_allowed() {
-	echo bp_get_blog_signup_allowed();
-}
 	/**
 	 * Is blog signup allowed?
 	 *
@@ -1402,39 +1282,51 @@ function bp_action_variable( $position = 0 ) {
 }
 
 /**
- * Output the "root domain", the URL of the BP root blog.
+ * Returns the BP root blog's domain name.
  *
- * @since 1.1.0
+ * @since 12.0.0
+ *
+ * @return string The BP root blog's domain name.
  */
-function bp_root_domain() {
-	echo bp_get_root_domain();
+function bp_get_domain() {
+	return wp_parse_url( bp_get_root_url(), PHP_URL_HOST );
 }
-	/**
-	 * Return the "root domain", the URL of the BP root blog.
-	 *
-	 * @since 1.1.0
-	 *
-	 * @return string URL of the BP root blog.
-	 */
-	function bp_get_root_domain() {
-		$bp = buddypress();
 
-		if ( ! empty( $bp->root_domain ) ) {
-			$domain = $bp->root_domain;
-		} else {
-			$domain          = bp_core_get_root_domain();
-			$bp->root_domain = $domain;
-		}
+/**
+ * Gets the BP root blog's URL.
+ *
+ * @since 12.0.0
+ *
+ * @return string The BP root blog's URL.
+ */
+function bp_get_root_url() {
+	$bp = buddypress();
 
-		/**
-		 * Filters the "root domain", the URL of the BP root blog.
-		 *
-		 * @since 1.2.4
-		 *
-		 * @param string $domain URL of the BP root blog.
-		 */
-		return apply_filters( 'bp_get_root_domain', $domain );
+	if ( ! empty( $bp->root_url ) ) {
+		$url = $bp->root_url;
+	} else {
+		$url          = bp_rewrites_get_root_url();
+		$bp->root_url = $url;
 	}
+
+	/**
+	 * Filters the "root url", the URL of the BP root blog.
+	 *
+	 * @since 12.0.0
+	 *
+	 * @param string $url URL of the BP root blog.
+	 */
+	return apply_filters( 'bp_get_root_url', $url );
+}
+
+/**
+ * Output the "root url", the URL of the BP root blog.
+ *
+ * @since 12.0.0
+ */
+function bp_root_url() {
+	echo esc_url( bp_get_root_url() );
+}
 
 /**
  * Output the root slug for a given component.
@@ -1444,7 +1336,7 @@ function bp_root_domain() {
  * @param string $component The component name.
  */
 function bp_root_slug( $component = '' ) {
-	echo bp_get_root_slug( $component );
+	echo esc_attr( bp_get_root_slug( $component ) );
 }
 	/**
 	 * Get the root slug for given component.
@@ -1574,7 +1466,7 @@ function bp_user_has_access() {
  *
  */
 function bp_search_slug() {
-	echo bp_get_search_slug();
+	echo esc_attr( bp_get_search_slug() );
 }
 	/**
 	 * Return the search slug.
@@ -2043,6 +1935,25 @@ function bp_is_blog_page() {
 	 * @param bool $is_blog_page Whether or not current page is a blog page.
 	 */
 	return (bool) apply_filters( 'bp_is_blog_page', $is_blog_page );
+}
+
+/**
+ * Checks whether the requested URL is site home's one.
+ *
+ * @since 12.1.0
+ *
+ * @return boolean True if the requested URL is site home's one. False otherwise.
+ */
+function bp_is_site_home() {
+	$requested_url = bp_get_requested_url();
+	$home_url      = home_url( '/' );
+
+	if ( is_customize_preview() && ! bp_is_email_customizer() ) {
+		$requested_url = wp_parse_url( $requested_url, PHP_URL_PATH );
+		$home_url      = wp_parse_url( $home_url, PHP_URL_PATH );
+	}
+
+	return $home_url === $requested_url;
 }
 
 /**
@@ -2718,11 +2629,13 @@ function bp_is_user_members_invitations_send_screen() {
  * @return bool True if the current page is the groups directory.
  */
 function bp_is_groups_directory() {
-	if ( bp_is_groups_component() && ! bp_is_group() && ( ! bp_current_action() || ( bp_action_variable() && bp_is_current_action( bp_get_groups_group_type_base() ) ) ) ) {
-		return true;
+	$return = false;
+
+	if ( bp_is_groups_component() && ! bp_is_group() ) {
+		$return = ! bp_current_action() || ! empty( buddypress()->groups->current_directory_type );
 	}
 
-	return false;
+	return $return;
 }
 
 /**
@@ -3143,7 +3056,7 @@ function bp_get_title_parts( $seplocation = 'right' ) {
 		}
 
 		// If on the user profile's landing page, just use the fullname.
-		if ( bp_is_current_component( $bp->default_component ) && ( bp_get_requested_url() === bp_displayed_user_domain() ) ) {
+		if ( bp_is_current_component( $bp->default_component ) && ( bp_get_requested_url() === bp_displayed_user_url() ) ) {
 			$bp_title_parts[] = $displayed_user_name;
 
 		// Use component name on member pages.
@@ -3239,7 +3152,7 @@ function bp_get_title_parts( $seplocation = 'right' ) {
  * @since 1.1.0
  */
 function bp_the_body_class() {
-	echo bp_get_the_body_class();
+	echo implode( ' ', array_map( 'sanitize_html_class', bp_get_the_body_class() ) );
 }
 	/**
 	 * Customize the body class, according to the currently displayed BP content.
@@ -3582,7 +3495,10 @@ function bp_get_nav_menu_items( $component = 'members' ) {
 	// Get the item nav and build the menus.
 	foreach ( $bp->{$component}->nav->get_item_nav() as $nav_menu ) {
 		// Get the correct menu link. See https://buddypress.trac.wordpress.org/ticket/4624.
-		$link = bp_loggedin_user_domain() ? str_replace( bp_loggedin_user_domain(), bp_displayed_user_domain(), $nav_menu->link ) : trailingslashit( bp_displayed_user_domain() . $nav_menu->link );
+		$link = $nav_menu->link;
+		if ( bp_loggedin_user_url() ) {
+			$link = str_replace( bp_loggedin_user_url(), bp_displayed_user_url(), $nav_menu->link );
+		}
 
 		// Add this menu.
 		$menu         = new stdClass;
@@ -3798,6 +3714,7 @@ function bp_nav_menu( $args = array() ) {
 	$nav_menu = apply_filters( 'bp_nav_menu', $nav_menu, $args );
 
 	if ( ! empty( $args->echo ) ) {
+		// phpcs:ignore WordPress.Security.EscapeOutput
 		echo $nav_menu;
 	} else {
 		return $nav_menu;
@@ -3812,7 +3729,7 @@ function bp_nav_menu( $args = array() ) {
  * @param array $settings Email Settings.
  */
 function bp_email_the_salutation( $settings = array() ) {
-	echo bp_email_get_salutation( $settings );
+	echo esc_html( bp_email_get_salutation( $settings ) );
 }
 
 	/**
@@ -3877,6 +3794,20 @@ function bp_email_the_salutation( $settings = array() ) {
 	}
 
 /**
+ * Outputs the BP Email's template footer.
+ *
+ * @since 12.1.0
+ */
+function bp_email_footer() {
+	// `the_block_template_skip_link()` was deprecated in WP 6.4.0.
+	if ( bp_is_running_wp( '6.4.0', '>=' ) && has_action( 'wp_footer', 'the_block_template_skip_link' ) ) {
+		remove_action( 'wp_footer', 'the_block_template_skip_link' );
+	}
+
+	wp_footer();
+}
+
+/**
  * Checks if a Widget/Block is active.
  *
  * @since 9.0.0
@@ -3891,7 +3822,7 @@ function bp_is_widget_block_active( $block_name = '', $widget_id_base = '' ) {
 		'block'  => false,
 	);
 
-	if ( $block_name && bp_is_running_wp( '5.8.0', '>=' ) ) {
+	if ( $block_name ) {
 		$widget_blocks = get_option( 'widget_block', array() );
 		$sidebars      = wp_get_sidebars_widgets();
 

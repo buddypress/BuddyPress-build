@@ -60,7 +60,7 @@ function bp_groups_render_group_block( $attributes = array() ) {
 
 	// Group name/link/description variables.
 	$group_name        = bp_get_group_name( $group );
-	$group_link        = bp_get_group_permalink( $group );
+	$group_link        = bp_get_group_url( $group );
 	$group_description = '';
 	$group_content     = '';
 
@@ -136,10 +136,10 @@ function bp_groups_render_group_block( $attributes = array() ) {
 	if ( $display_action_button ) {
 		$action_button = sprintf(
 			'<div class="bp-profile-button">
-				<a href="%1$s" class="button large primary button-primary" role="button">%2$s</a>
+				<a href="%1$s" class="button large primary button-primary wp-block-button__link wp-element-button" role="button">%2$s</a>
 			</div>',
 			esc_url( $group_link ),
-			esc_html__( 'Visit Group', 'buddypress' )
+			esc_html__( 'View Group', 'buddypress' )
 		);
 	}
 
@@ -239,7 +239,7 @@ function bp_groups_render_groups_block( $attributes = array() ) {
 		$output .= sprintf( '<div class="%s">', $group_item_classes );
 
 		// Get Member link.
-		$group_link = bp_get_group_permalink( $group );
+		$group_link = bp_get_group_url( $group );
 
 		// Set the Avatar output.
 		if ( $bp->avatar && $bp->avatar->show_avatars && ! bp_disable_group_avatar_uploads() && 'none' !== $block_args['avatarSize'] ) {
@@ -348,6 +348,7 @@ function bp_groups_blocks_add_script_data() {
 	);
 
 	// Include the common JS template.
+	// phpcs:ignore WordPress.Security.EscapeOutput
 	echo bp_get_dynamic_template_part( 'assets/widgets/dynamic-groups.php' );
 
 	// List the block specific props.
@@ -370,12 +371,16 @@ function bp_groups_render_dynamic_groups_block( $attributes = array() ) {
 	$block_args = bp_parse_args(
 		$attributes,
 		array(
-			'title'        => __( 'Groups', 'buddypress' ),
+			'title'        => '',
 			'maxGroups'    => 5,
 			'groupDefault' => 'active',
 			'linkTitle'    => false,
 		)
 	);
+
+	if ( ! $block_args['title'] ) {
+		$block_args['title'] = __( 'Groups', 'buddypress' );
+	}
 
 	$classnames         = 'widget_bp_groups_widget buddypress widget';
 	$wrapper_attributes = get_block_wrapper_attributes( array( 'class' => $classnames ) );
@@ -388,7 +393,7 @@ function bp_groups_render_dynamic_groups_block( $attributes = array() ) {
 
 	// Make sure the widget ID is unique.
 	$widget_id             = uniqid( 'groups-list-' );
-	$groups_directory_link = bp_get_groups_directory_permalink();
+	$groups_directory_link = bp_get_groups_directory_url();
 
 	// Set the Block's title.
 	if ( true === $block_args['linkTitle'] ) {
@@ -404,19 +409,19 @@ function bp_groups_render_dynamic_groups_block( $attributes = array() ) {
 	$item_options = array(
 		'newest'       => array(
 			'class' => '',
-			'label' => __( 'Newest', 'buddypress' ),
+			'label' => _x( 'Newest', 'Groups', 'buddypress' ),
 		),
 		'active'       => array(
 			'class' => '',
-			'label' => __( 'Active', 'buddypress' ),
+			'label' => _x( 'Active', 'Groups', 'buddypress' ),
 		),
 		'popular'      => array(
 			'class' => '',
-			'label' => __( 'Popular', 'buddypress' ),
+			'label' => _x( 'Popular', 'Groups', 'buddypress' ),
 		),
 		'alphabetical' => array(
 			'class' => '',
-			'label' => __( 'Alphabetical', 'buddypress' ),
+			'label' => _x( 'Alphabetical', 'Groups', 'buddypress' ),
 		),
 	);
 
@@ -469,7 +474,7 @@ function bp_groups_render_dynamic_groups_block( $attributes = array() ) {
 					'assets/widgets/dynamic-groups.php',
 					'php',
 					array(
-						'data.link'              => bp_get_group_permalink( $group ),
+						'data.link'              => bp_get_group_url( $group ),
 						'data.name'              => bp_get_group_name( $group ),
 						'data.avatar_urls.thumb' => bp_core_fetch_avatar(
 							array(
@@ -482,11 +487,11 @@ function bp_groups_render_dynamic_groups_block( $attributes = array() ) {
 							sprintf(
 								/* Translators: %s is the group's name. */
 								__( 'Group Profile photo of %s', 'buddypress' ),
-								$group->name
+								bp_get_group_name( $group )
 							)
 						),
 						'data.id'                => $group->id,
-						'data.extra'             => $extra,
+						'data.extra'             => esc_html( $extra ),
 					)
 				);
 			}

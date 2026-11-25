@@ -15,6 +15,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 1.6.0
  */
+#[AllowDynamicProperties]
 class BP_Groups_Group {
 
 	/**
@@ -754,13 +755,10 @@ class BP_Groups_Group {
 	 *
 	 * @since 2.9.0
 	 *
-	 * @param string      $slug       Slug to check.
-	 *
-	 * @return int|null|false Group ID if found; null if not; false if missing parameters.
+	 * @param  string         $slug Slug to check.
+	 * @return int|null|false       Group ID if found; null if not; false if missing parameters.
 	 */
 	public static function get_id_by_previous_slug( $slug ) {
-		global $wpdb;
-
 		if ( empty( $slug ) ) {
 			return false;
 		}
@@ -1024,7 +1022,7 @@ class BP_Groups_Group {
 	 * @since 2.8.0 Changed `$search_terms` parameter handling and added `$search_columns` parameter.
 	 * @since 2.9.0 Added `$slug` parameter.
 	 * @since 10.0.0 Added `$date_query` parameter.
-	 * @since 11.6.3 Backported from 14.5.3 Added `$status__not_in` parameter.
+	 * @since 12.7.3 Backported from 14.5.3 Added `$status__not_in` parameter.
 	 *
 	 * @param array $args {
 	 *     Array of parameters. All items are optional.
@@ -1760,8 +1758,7 @@ class BP_Groups_Group {
 	 * @since 1.6.0
 	 * @since 10.0.0 Added the `$skip_cache` parameter.
 	 *
-	 * @global BuddyPress $bp   The one true BuddyPress instance.
-	 * @global wpdb       $wpdb WordPress database object.
+	 * @global wpdb $wpdb WordPress database object.
 	 *
 	 * @param bool $skip_cache Optional. Skip getting count from cache.
 	 *                         Defaults to false.

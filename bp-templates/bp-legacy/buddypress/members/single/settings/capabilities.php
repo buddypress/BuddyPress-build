@@ -4,13 +4,13 @@
  *
  * @package BuddyPress
  * @subpackage bp-legacy
- * @version 3.0.0
+ * @version 12.0.0
  */
 
 /** This action is documented in bp-templates/bp-legacy/buddypress/members/single/settings/profile.php */
 do_action( 'bp_before_member_settings_template' ); ?>
 
-<form action="<?php echo bp_displayed_user_domain() . bp_get_settings_slug() . '/capabilities/'; ?>" name="account-capabilities-form" id="account-capabilities-form" class="standard-form" method="post">
+<form action="<?php bp_displayed_user_link( array( bp_get_settings_slug(), 'capabilities' ) ); ?>" name="account-capabilities-form" id="account-capabilities-form" class="standard-form" method="post">
 
 	<?php
 
@@ -23,7 +23,7 @@ do_action( 'bp_before_member_settings_template' ); ?>
 
 	<label for="user-spammer">
 		<input type="checkbox" name="user-spammer" id="user-spammer" value="1" <?php checked( bp_is_user_spammer( bp_displayed_user_id() ) ); ?> />
-		 <?php _e( 'This user is a spammer.', 'buddypress' ); ?>
+		 <?php esc_html_e( 'This user is a spammer.', 'buddypress' ); ?>
 	</label>
 
 	<div class="submit">

@@ -857,11 +857,11 @@ class BP_REST_Messages_Endpoint extends WP_REST_Controller {
 			'sender_id' => (int) $message->sender_id,
 			'subject'   => array(
 				'raw'      => $message->subject,
-				'rendered' => apply_filters( 'bp_get_message_thread_subject', wp_staticize_emoji( $message->subject ) ),
+				'rendered' => apply_filters( 'bp_get_message_thread_subject', $message->subject ),
 			),
 			'message'   => array(
 				'raw'      => $message->message,
-				'rendered' => apply_filters( 'bp_get_the_thread_message_content', wp_staticize_emoji( $message->message ) ),
+				'rendered' => apply_filters( 'bp_get_the_thread_message_content', $message->message ),
 			),
 			'date_sent' => bp_rest_prepare_date_response( $message->date_sent ),
 		);
@@ -910,7 +910,7 @@ class BP_REST_Messages_Endpoint extends WP_REST_Controller {
 			'thread_id'    => (int) $recipient->thread_id,
 			'unread_count' => (int) $recipient->unread_count,
 			'user_id'      => (int) $recipient->user_id,
-			'user_link'    => esc_url( bp_core_get_user_domain( $recipient->user_id ) ),
+			'user_link'    => esc_url( bp_members_get_user_url( $recipient->user_id ) ),
 		);
 
 		// Fetch the user avatar urls (Full & thumb).
@@ -959,7 +959,7 @@ class BP_REST_Messages_Endpoint extends WP_REST_Controller {
 			'last_sender_id' => (int) $thread->last_sender_id,
 			'subject'        => array(
 				'raw'      => $thread->last_message_subject,
-				'rendered' => apply_filters( 'bp_get_message_thread_subject', wp_staticize_emoji( $thread->last_message_subject ) ),
+				'rendered' => apply_filters( 'bp_get_message_thread_subject', $thread->last_message_subject ),
 			),
 			'excerpt'        => array(
 				'raw'      => $excerpt,
@@ -967,7 +967,7 @@ class BP_REST_Messages_Endpoint extends WP_REST_Controller {
 			),
 			'message'        => array(
 				'raw'      => $thread->last_message_content,
-				'rendered' => apply_filters( 'bp_get_message_thread_content', wp_staticize_emoji( $thread->last_message_content ) ),
+				'rendered' => apply_filters( 'bp_get_message_thread_content', $thread->last_message_content ),
 			),
 			'date'           => bp_rest_prepare_date_response( $thread->last_message_date, get_date_from_gmt( $thread->last_message_date ) ),
 			'date_gmt'       => bp_rest_prepare_date_response( $thread->last_message_date ),
@@ -1470,7 +1470,7 @@ class BP_REST_Messages_Endpoint extends WP_REST_Controller {
 	 *
 	 * Returns a WP_Error if the requested user ID is invalid.
 	 *
-	 * @since 11.6.0 (Backported from 14.5.0)
+	 * @since 12.7.0 (Backported from 14.5.0)
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_Error|int

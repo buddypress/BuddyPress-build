@@ -210,7 +210,7 @@ abstract class BP_Recursive_Query {
 	/**
 	 * Sanitize a 'relation' operator.
 	 *
-	 * @since 11.6.5
+	 * @since 12.7.5
 	 *
 	 * @param mixed $relation Relation to sanitize.
 	 * @return string Either 'AND' or 'OR'.

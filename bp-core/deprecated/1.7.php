@@ -17,7 +17,7 @@ defined( 'ABSPATH' ) || exit;
  * @deprecated 1.7.0
  */
 function bp_maintenance_mode() {
-	echo bp_get_maintenance_mode();
+	echo esc_html( bp_get_maintenance_mode() );
 }
 	/**
 	 * Return the BuddyPress maintenance mode
@@ -119,7 +119,8 @@ function bp_is_page( $page = '' ) {
  * before we had a legitimate update process.
  *
  * @deprecated 1.7.0
- * @global WPDB $wpdb
+ *
+ * @global wpdb $wpdb WordPress database object.
  */
 function bp_update_db_stuff() {
 	global $wpdb;

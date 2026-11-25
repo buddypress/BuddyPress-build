@@ -3,7 +3,7 @@
  * BuddyPress - Groups Cover Image Header.
  *
  * @since 3.0.0
- * @version 7.0.0
+ * @version 12.0.0
  */
 ?>
 
@@ -13,7 +13,7 @@
 	<div id="item-header-cover-image">
 		<?php if ( ! bp_disable_group_avatar_uploads() ) : ?>
 			<div id="item-header-avatar">
-				<a href="<?php echo esc_url( bp_get_group_permalink() ); ?>" title="<?php echo esc_attr( bp_get_group_name() ); ?>">
+				<a href="<?php bp_group_url(); ?>" title="<?php echo esc_attr( bp_get_group_name() ); ?>">
 
 					<?php bp_group_avatar(); ?>
 
@@ -25,7 +25,7 @@
 			<div id="item-header-content">
 
 				<?php if ( bp_nouveau_group_has_meta( 'status' ) ) : ?>
-					<p class="highlight group-status"><strong><?php echo esc_html( bp_nouveau_the_group_meta( array( 'keys' => 'status' ) ) ); ?></strong></p>
+					<p class="highlight group-status"><strong><?php bp_nouveau_the_group_meta( array( 'keys' => 'status' ) ); ?></strong></p>
 				<?php endif; ?>
 
 				<p class="activity">
@@ -35,7 +35,7 @@
 							esc_html__( 'Active %s', 'buddypress' ),
 							sprintf(
 								'<span data-livestamp="%1$s">%2$s</span>',
-								bp_core_get_iso8601_date( bp_get_group_last_active( 0, array( 'relative' => false ) ) ),
+								esc_attr( bp_core_get_iso8601_date( bp_get_group_last_active( 0, array( 'relative' => false ) ) ) ),
 								esc_html( bp_get_group_last_active() )
 							)
 						);
@@ -60,7 +60,7 @@
 				<?php if ( bp_nouveau_group_has_meta_extra() ) : ?>
 					<div class="item-meta">
 
-						<?php echo bp_nouveau_the_group_meta( array( 'keys' => 'extra' ) ); ?>
+						<?php bp_nouveau_the_group_meta( array( 'keys' => 'extra' ) ); ?>
 
 					</div><!-- .item-meta -->
 				<?php endif; ?>

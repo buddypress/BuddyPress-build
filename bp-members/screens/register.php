@@ -27,7 +27,7 @@ function bp_core_screen_signup() {
 
 		$redirect_to = bp_is_component_front_page( 'register' )
 			? bp_get_members_directory_permalink()
-			: bp_get_root_domain();
+			: bp_get_root_url();
 
 		/**
 		 * Filters the URL to redirect logged in users to when visiting registration page.
@@ -172,7 +172,7 @@ function bp_core_screen_signup() {
 
 				// This situation doesn't naturally occur so bounce to website root.
 			} else {
-				bp_core_redirect( bp_get_root_domain() );
+				bp_core_redirect( bp_get_root_url() );
 			}
 		}
 
@@ -212,16 +212,21 @@ function bp_core_screen_signup() {
 				 * @param string $fieldname The name of the signup field.
 				 */
 				add_action( 'bp_' . $fieldname . '_errors', function() use ( $error_message, $fieldname ) {
-					/**
-					 * Filter here to edit the error message about the invalid field value.
-					 *
-					 * @since 1.5.0
-					 * @since 8.0.0 Adds the `$fieldname` parameter.
-					 *
-					 * @param string $value     Error message wrapped in html.
-					 * @param string $fieldname The name of the signup field.
-					 */
-					echo apply_filters( 'bp_members_signup_error_message', "<div class=\"error\">" . $error_message . "</div>", $fieldname );
+					echo wp_kses(
+						/**
+						 * Filter here to edit the error message about the invalid field value.
+						 *
+						 * @since 1.5.0
+						 * @since 8.0.0 Adds the `$fieldname` parameter.
+						 *
+						 * @param string $value     Error message wrapped in html.
+						 * @param string $fieldname The name of the signup field.
+						 */
+						apply_filters( 'bp_members_signup_error_message', "<div class=\"error\">" . $error_message . "</div>", $fieldname ),
+						array(
+							'div' => array( 'class' => true ),
+						)
+					);
 				} );
 			}
 		} else {

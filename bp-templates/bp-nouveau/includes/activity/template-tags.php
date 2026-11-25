@@ -3,7 +3,7 @@
  * Activity Template tags
  *
  * @since 3.0.0
- * @version 10.0.0
+ * @version 12.0.0
  */
 
 // Exit if accessed directly.
@@ -159,27 +159,21 @@ function bp_nouveau_activity_hook( $when = '', $suffix = '' ) {
 }
 
 /**
- * Output the `data-bp-activity-id` or `data-bp-activity-comment-id` attribute
- * according to the activity type.
+ * Output the `data-bp-activity-id` attribute.
  *
  * @since 10.0.0
  */
 function bp_nouveau_activity_data_attribute_id() {
-	$attribute  = 'data-bp-%1$s-id="%2$s"';
-	$type       = 'activity';
-	$id         = (int) bp_get_activity_id();
-	$comment_id = (int) bp_get_activity_comment_id();
+	printf( 'data-bp-activity-id="%d"', (int) bp_get_activity_id() );
+}
 
-	if ( 'activity_comment' === bp_get_activity_type() || $comment_id ) {
-		$type = 'activity-comment';
-
-
-		if ( $comment_id ) {
-			$id = $comment_id;
-		}
-	}
-
-	printf( $attribute, $type, $id );
+/**
+ * Output the `data-bp-activity-comment-id` attribute.
+ *
+ * @since 12.0.0
+ */
+function bp_nouveau_activity_comment_data_attribute_id() {
+	printf( 'data-bp-activity-comment-id="%d"', (int) bp_get_activity_comment_id() );
 }
 
 /**
@@ -276,6 +270,8 @@ function bp_nouveau_activity_entry_buttons( $args = array() ) {
 	 *
 	 * @todo This function is too large and needs refactoring and reviewing.
 	 * @since 3.0.0
+	 *
+	 * @global BP_Activity_Template $activities_template The Activity template loop.
 	 *
 	 * @param array $args See bp_nouveau_wrapper() for the description of parameters.
 	 * @return array      Activity action buttons used into an Activity Loop.
@@ -553,7 +549,13 @@ function bp_nouveau_activity_entry_buttons( $args = array() ) {
 			}
 
 			$buttons['activity_spam']['button_attr'][ $data_element ] = wp_nonce_url(
-				bp_get_root_domain() . '/' . bp_nouveau_get_component_slug( 'activity' ) . '/spam/' . $activity_id . '/',
+				bp_rewrites_get_url(
+					array(
+						'component_id'                 => 'activity',
+						'single_item_action'           => 'spam',
+						'single_item_action_variables' => array( $activity_id ),
+					)
+				),
 				'bp_activity_akismet_spam_' . $activity_id
 			);
 		}
@@ -647,14 +649,12 @@ function bp_nouveau_activity_recurse_comments( $comment ) {
 		return;
 	}
 
-	/**
-	 * Filters the opening tag for the template that lists activity comments.
-	 *
-	 * @since 1.6.0
-	 *
-	 * @param string $value Opening tag for the HTML markup to use.
-	 */
-	echo apply_filters( 'bp_activity_recurse_comments_start_ul', '<ul>' );
+	// phpcs:ignore WordPress.Security.EscapeOutput
+	echo apply_filters(
+		/** This filter is documented in bp-activity/bp-activity-template.php. */
+		'bp_activity_recurse_comments_start_ul',
+		'<ul>'
+	);
 
 	foreach ( (array) $comment->children as $comment_child ) {
 
@@ -680,14 +680,12 @@ function bp_nouveau_activity_recurse_comments( $comment ) {
 		unset( $activities_template->activity->current_comment );
 	}
 
-	/**
-	 * Filters the closing tag for the template that list activity comments.
-	 *
-	 * @since 1.6.0
-	 *
-	 * @param string $value Closing tag for the HTML markup to use.
-	 */
-	echo apply_filters( 'bp_activity_recurse_comments_end_ul', '</ul>' );
+	// phpcs:ignore WordPress.Security.EscapeOutput
+	echo apply_filters(
+		/** This filter is documented in bp-activity/bp-activity-template.php. */
+		'bp_activity_recurse_comments_end_ul',
+		'</ul>'
+	);
 }
 
 /**
@@ -696,7 +694,20 @@ function bp_nouveau_activity_recurse_comments( $comment ) {
  * @since 3.0.0
  */
 function bp_nouveau_activity_comment_action() {
-	echo bp_nouveau_get_activity_comment_action();
+	echo wp_kses(
+		bp_nouveau_get_activity_comment_action(),
+		array(
+			'a'    => array(
+				'href'  => true,
+				'class' => true,
+			),
+			'time' => array(
+				'datetime'          => true,
+				'class'             => true,
+				'data-bp-timestamp' => true,
+			),
+		)
+	);
 }
 
 	/**
@@ -769,6 +780,8 @@ function bp_nouveau_activity_comment_buttons( $args = array() ) {
 	 * Get the action buttons for the activity comments
 	 *
 	 * @since 3.0.0
+	 *
+	 * @global BP_Activity_Template $activities_template The Activity template loop.
 	 *
 	 * @param array $args Optional. See bp_nouveau_wrapper() for the description of parameters.
 	 *
@@ -881,7 +894,17 @@ function bp_nouveau_activity_comment_buttons( $args = array() ) {
 			}
 
 			$buttons['activity_comment_spam']['button_attr'][ $data_element ] = wp_nonce_url(
-				bp_get_root_domain() . '/' . bp_nouveau_get_component_slug( 'activity' ) . '/spam/' . $activity_comment_id . '/?cid=' . $activity_comment_id,
+				add_query_arg(
+					'cid',
+					$activity_comment_id,
+					bp_rewrites_get_url(
+						array(
+							'component_id'                 => 'activity',
+							'single_item_action'           => 'spam',
+							'single_item_action_variables' => array( $activity_comment_id ),
+						)
+					)
+				),
 				'bp_activity_akismet_spam_' . $activity_comment_id
 			);
 		}

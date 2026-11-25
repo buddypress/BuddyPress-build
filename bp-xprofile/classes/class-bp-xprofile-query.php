@@ -161,7 +161,7 @@ class BP_XProfile_Query {
 	/**
 	 * Sanitize a 'relation' operator.
 	 *
-	 * @since 11.6.5
+	 * @since 12.7.5
 	 *
 	 * @param mixed $relation Relation to sanitize.
 	 * @return string Either 'AND' or 'OR'.
@@ -366,6 +366,8 @@ class BP_XProfile_Query {
 	 *
 	 * @since 2.2.0
 	 *
+	 * @global wpdb $wpdb WordPress database object.
+	 *
 	 * @param array $clause       Query clause.
 	 * @param array $parent_query Parent query array.
 	 * @return array {
@@ -395,7 +397,7 @@ class BP_XProfile_Query {
 			'IN', 'NOT IN',
 			'BETWEEN', 'NOT BETWEEN',
 			'EXISTS', 'NOT EXISTS',
-			'REGEXP', 'NOT REGEXP', 'RLIKE'
+			'REGEXP', 'NOT REGEXP', 'RLIKE',
 		) ) ) {
 			$clause['compare'] = '=';
 		}

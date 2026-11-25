@@ -6,7 +6,7 @@
  * dealing with user's private messages.
  *
  * @since 3.0.0
- * @version 10.0.0
+ * @version 12.0.0
  */
 
 // Backward Compatibility for plugins still needing the placeholders to be located into this file.
@@ -37,7 +37,7 @@ if ( ! did_action( '_bp_nouveau_messages_print_placeholders' ) ) {
 	<label for="send-to-input"><?php esc_html_e( 'Send @Username', 'buddypress' ); ?></label>
 	<input type="text" name="send_to" class="send-to-input" id="send-to-input" />
 
-	<label for="subject"><?php _e( 'Subject', 'buddypress' ); ?></label>
+	<label for="subject"><?php esc_html_e( 'Subject', 'buddypress' ); ?></label>
 	<input type="text" name="subject" id="subject"/>
 
 	<div id="bp-message-content"></div>
@@ -155,9 +155,9 @@ if ( ! did_action( '_bp_nouveau_messages_print_placeholders' ) ) {
 	<div class="thread-content" data-thread-id="{{data.id}}">
 		<div class="thread-subject">
 			<span class="thread-count">({{data.count}})</span>
-			<a class="subject" href="./view/{{data.id}}/">{{data.subject}}</a>
+			<a class="subject" href="./view/{{data.id}}/">{{{data.subject}}}</a>
 		</div>
-		<p class="excerpt">{{data.excerpt}}</p>
+		<p class="excerpt">{{{data.excerpt}}}</p>
 	</div>
 	<div class="thread-date">
 		<time datetime="{{data.date.toISOString()}}">{{data.display_date}}</time>
@@ -344,7 +344,7 @@ if ( ! did_action( '_bp_nouveau_messages_print_placeholders' ) ) {
 
 				<?php bp_nouveau_messages_hook( 'before', 'reply_box' ); ?>
 
-				<label for="message_content" class="bp-screen-reader-text"><?php _e( 'Reply to Message', 'buddypress' ); ?></label>
+				<label for="message_content" class="bp-screen-reader-text"><?php esc_html_e( 'Reply to Message', 'buddypress' ); ?></label>
 				<div id="bp-message-content"></div>
 
 				<?php bp_nouveau_messages_hook( 'after', 'reply_box' ); ?>
