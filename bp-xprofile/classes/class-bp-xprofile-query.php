@@ -161,7 +161,7 @@ class BP_XProfile_Query {
 	/**
 	 * Sanitize a 'relation' operator.
 	 *
-	 * @since 12.7.5
+	 * @since 14.5.7
 	 *
 	 * @param mixed $relation Relation to sanitize.
 	 * @return string Either 'AND' or 'OR'.

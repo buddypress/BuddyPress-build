@@ -2634,20 +2634,15 @@ function bp_activity_comment_depth( $comment = 0 ) {
 				// Fetch the entire root comment tree... ugh.
 				$comments = BP_Activity_Activity::get_activity_comments( $comment->item_id, 1, constant( 'PHP_INT_MAX' ) );
 
-				// Recursively find our comment object from the comment tree.
-				$iterator  = new RecursiveArrayIterator( $comments );
-				$recursive = new RecursiveIteratorIterator( $iterator, RecursiveIteratorIterator::SELF_FIRST );
-				foreach ( $recursive as $cid => $cobj ) {
-					// Skip items that are not a comment object.
-					if ( ! is_numeric( $cid ) || ! is_object( $cobj ) ) {
-						continue;
-					}
+				if ( ! is_array( $comments ) ) {
+					$comments = [];
+				}
 
-					// We found the activity comment! Set the depth.
-					if ( $cid === $comment->id && isset( $cobj->depth ) ) {
-						$depth = $cobj->depth;
-						break;
-					}
+				// Recursively find our comment object from the comment tree.
+				$comment_in_tree = BP_Activity_Activity::find_comment_in_tree( $comments, $comment->id );
+
+				if ( is_object( $comment_in_tree ) && isset( $comment_in_tree->depth ) ) {
+					$depth = $comment_in_tree->depth;
 				}
 			}
 		}
@@ -3204,7 +3199,7 @@ function bp_activity_latest_update( $user_id = 0 ) {
 		 * @param string $value   The excerpt for the latest update.
 		 * @param int    $user_id ID of the queried user.
 		 */
-		$latest_update = apply_filters( 'bp_get_activity_latest_update_excerpt', trim( strip_tags( bp_create_excerpt( $update['content'], bp_activity_get_excerpt_length() ) ) ), $user_id );
+		$latest_update = apply_filters( 'bp_get_activity_latest_update_excerpt', wp_strip_all_tags( bp_create_excerpt( $update['content'], bp_activity_get_excerpt_length() ) ), $user_id );
 
 		$latest_update = sprintf(
 			'%s <a href="%s">%s</a>',
@@ -3855,6 +3850,8 @@ function bp_activity_comments_user_avatars( $args = array() ) {
  *
  * @since 1.7.0
  *
+ * @global BP_Activity_Template $activities_template The Activity template object.
+ *
  * @return bool|array An array of IDs, or false if none are found.
  */
 function bp_activity_get_comments_user_ids() {
@@ -4193,14 +4190,14 @@ function bp_activity_feed_item_title() {
 		}
 
 		$content = explode( '<span', $content );
-		$title   = strip_tags( ent2ncr( trim( convert_chars( $content[0] ) ) ) );
+		$title   = wp_strip_all_tags( ent2ncr( trim( convert_chars( $content[0] ) ) ) );
 
 		if ( ':' === substr( $title, -1 ) ) {
 			$title = substr( $title, 0, -1 );
 		}
 
 		if ( 'activity_update' === $activities_template->activity->type ) {
-			$title .= ': ' . strip_tags( ent2ncr( trim( convert_chars( bp_create_excerpt( $activities_template->activity->content, 70, array( 'ending' => " [&#133;]" ) ) ) ) ) );
+			$title .= ': ' . wp_strip_all_tags( ent2ncr( trim( convert_chars( bp_create_excerpt( $activities_template->activity->content, 70, array( 'ending' => " [&#133;]" ) ) ) ) ) );
 		}
 
 		/**
